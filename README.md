@@ -12,12 +12,11 @@ Prereq
 
 Requires Python 2.6 to 3.x
 
-Runs on Linux, Unix, and Windows XP, Vista, and 7
+Runs on Linux, and Unix x86_32 and x86_64.
+Windows support is comming soon.
 
-Currently only works on x86_32
 
-
-Alternate aproaches, and why the do not work
+Alternate aproaches, and why they were not used
 -----
 
 __Windows __cpuinfo__: This is a special function of the MSVC compiler, and would

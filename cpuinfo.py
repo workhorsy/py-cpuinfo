@@ -29,21 +29,38 @@
 
 # FIXME: How do we get the MHz?
 # FIXME: Figure out how /proc/cpuinfo simulates cpuinfo on non x86 cpus
-# FIXME: Make sure this works on 64bit machines, and with memory execution protection.
 # FIXME: See if running this in a multiprocessing process will stop it from segfaulting when it breaks
 # FIXME: Check how this compares to numpy. How does numpy get MHz and sse3 detection when the registry
 # does not have this info, and there is no /proc/cpuinfo ? Does it use win32 __cpuinfo ?
 
 import ctypes
+# FIXME: Windows is missing valloc. Use VirtualAlloc instead:
+#VirtualAlloc = ctypes.windll.kernel32.VirtualAllocEx
 
 def is_bit_set(reg, bit):
 	mask = 1 << bit
 	is_set = reg & mask > 0
 	return is_set
 
-def run_asm(raw_byte_code):
-	byte_code = ctypes.create_string_buffer(raw_byte_code, len(raw_byte_code))
-	fun = ctypes.CFUNCTYPE(ctypes.c_uint)(ctypes.addressof(byte_code))
+def run_asm(byte_code, restype=ctypes.c_ulong, argtypes=()):
+	# Allocate a memory segment the size of the byte code
+	size = len(byte_code)
+	address = ctypes.pythonapi.valloc(size)
+	if not address:
+		raise Exception("Failed to valloc")
+
+	# Mark the memory segment as safe for code execution
+	READ_WRITE_EXECUTE = 0x1 | 0x2 | 0x4
+	if ctypes.pythonapi.mprotect(address, size, READ_WRITE_EXECUTE) < 0:
+		raise Exception("Failed to mprotect")
+
+	# Copy the byte code into the memory segment
+	if ctypes.pythonapi.memmove(address, byte_code, size) < 0:
+		raise Exception("Failed to memmove")
+
+	# Call the byte code like a function
+	functype = ctypes.CFUNCTYPE(restype, *argtypes)
+	fun = functype(address)
 	return fun()
 
 # http://en.wikipedia.org/wiki/CPUID#EAX.3D0:_Get_vendor_ID
