@@ -2,11 +2,9 @@
 # -*- coding: UTF-8 -*-
 
 # Copyright (c) 2013, Matthew Brennan Jones <mattjones@workhorsy.org>
-# This is a Python module to show the cpuinfo of a processor
-# It should work on Linux, Unix, and Windows, as it does not use /proc/cpuinfo 
-# or any external native libraries.
-# It uses Python CTypes to run x86 assembly byte code directly.
-# It should work on Python 2.6 to 3.X
+# Py-cpuinfo is a Python module to show the cpuinfo of a processor
+# It uses a MIT style license
+# It is hosted at: https://github.com/workhorsy/py-cpuinfo
 # 
 # Permission is hereby granted, free of charge, to any person obtaining
 # a copy of this software and associated documentation files (the
@@ -32,6 +30,21 @@
 # FIXME: See if running this in a multiprocessing process will stop it from segfaulting when it breaks
 # FIXME: Check how this compares to numpy. How does numpy get MHz and sse3 detection when the registry
 # does not have this info, and there is no /proc/cpuinfo ? Does it use win32 __cpuinfo ?
+
+# Assembly code can be assembled and disassembled like this:
+'''
+; cpuid.asm
+; clear && nasm -o out -f bin cpuid.asm && ndisasm out
+section .data
+section .text
+global main
+
+main:
+	mov ax, 1
+	cpuid
+	mov ax, bx
+	ret
+'''
 
 import ctypes
 # FIXME: Windows is missing valloc. Use VirtualAlloc instead:
