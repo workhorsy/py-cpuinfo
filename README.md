@@ -28,7 +28,7 @@ Windows __cpuinfo: This is a special function of the MSVC compiler, and would
 require us to ship a small C/C++ library. It is also not callable by Python.
 
 Windows registry: Only available to Windows. Is missing support for many CPU 
-flags such as sse3, ssse3, sse4_1, sse4_2, et cetera
+flags such as sse3, ssse3, sse4_1, sse4_2, et cetera.
 See "HKLM\SYSTEM\CurrentControlSet\Control\Session Manager\Environment", and
 "HKLM\Hardware\Description\System\CentralProcessor\0" for more information.
 
@@ -53,6 +53,7 @@ Alternate libraries, and how they differ from py-cpuinfo
 Numpy: Great, but just wraps /proc/cpuinfo on unix, and the registry on Windows.
 Does not return flags on Windows. The results are different depending on the OS.
 Requires all of Numpy to be installed to use. Is missing new CPU flags like sse4
+http://www.numpy.org/
 
 PyCPUID:
 Elegant. But is missing many common CPU flags like 3dnow, ht, et cetera. Uses a C library 
@@ -62,4 +63,9 @@ https://github.com/FlightDataServices/PyCPUID
 cpuidpy: Written in C++. Requires a compile. Missing CPU flags and MHz.
 http://code.google.com/p/cpuidpy/
 
+
+Bug and Correction
+-----
+
+Please report a Bug if you suspect any of this information is wrong.
 
