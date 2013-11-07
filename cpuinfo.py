@@ -45,17 +45,21 @@ main:
 	mov ax, bx
 	ret
 '''
-
+import platform
 import ctypes
 # FIXME: Windows is missing valloc. Use VirtualAlloc instead:
 #VirtualAlloc = ctypes.windll.kernel32.VirtualAllocEx
+
+bits = platform.architecture()[0]
 
 def is_bit_set(reg, bit):
 	mask = 1 << bit
 	is_set = reg & mask > 0
 	return is_set
 
-def run_asm(byte_code, restype=ctypes.c_ulong, argtypes=()):
+def run_asm(*byte_code):
+	byte_code = b''.join(byte_code)
+
 	# Allocate a memory segment the size of the byte code
 	size = len(byte_code)
 	address = ctypes.pythonapi.valloc(size)
@@ -72,34 +76,57 @@ def run_asm(byte_code, restype=ctypes.c_ulong, argtypes=()):
 		raise Exception("Failed to memmove")
 
 	# Call the byte code like a function
-	functype = ctypes.CFUNCTYPE(restype, *argtypes)
+	functype = ctypes.CFUNCTYPE(ctypes.c_ulong)
 	fun = functype(address)
 	return fun()
+
+# FIXME: We should not have to use different instructions to 
+# set eax to 0 or 1, on 32bit and 64bit machines.
+def _zero_eax():
+	if bits == '64bit':
+		return (
+			b"\x66\xB8\x00\x00" # mov eax,0x0"
+		)
+	else:
+		return (
+			b"\x31\xC0"         # xor ax,ax
+		)
+
+def _one_eax():
+	if bits == '64bit':
+		return (
+			b"\x66\xB8\x01\x00" # mov eax,0x1"
+		)
+	else:
+		return (
+			b"\x31\xC0"         # xor ax,ax
+			b"\x40"             # inc ax
+		)
 
 # http://en.wikipedia.org/wiki/CPUID#EAX.3D0:_Get_vendor_ID
 def get_vendor_id():
 	# EBX
 	ebx = run_asm(
-		b"\x31\xC0"     # xor ax, ax
-		b"\x0f\xa2"     # cpuid
-		b"\x89\xD8"     # mov ax,bx
-		b"\xc3"         # ret
+		_zero_eax(),
+		b"\x0F\xA2"         # cpuid
+		b"\x89\xD8"         # mov ax,bx
+		b"\xC3"             # ret
 	)
 
 	# ECX
 	ecx = run_asm(
-		b"\x31\xC0"     # xor ax, ax
-		b"\x0f\xa2"     # cpuid
-		b"\x89\xC8"     # mov ax,cx
-		b"\xc3"         # ret
+		_zero_eax(),
+		b"\x0f\xa2"         # cpuid
+		b"\x89\xC8"         # mov ax,cx
+		b"\xC3"             # ret
 	)
 
 	# EDX
 	edx = run_asm(
-		b"\x31\xC0"     # xor ax, ax
-		b"\x0f\xa2"     # cpuid
-		b"\x89\xD0"     # mov ax,dx
-		b"\xc3"         # ret
+		_zero_eax(),
+		b"\x0f\xa2"         # cpuid
+		b"\x89\xD0"         # mov ax,dx
+		b"\xC3"             # ret
 	)
 
 	# Each 4bits is a ascii letter in the name
@@ -115,11 +142,11 @@ def get_vendor_id():
 def get_info():
 	# EAX
 	eax = run_asm(
-		b"\x31\xC0"     # xor ax, ax
-		b"\x40"         # inc ax
-		b"\x0f\xa2"     # cpuid
-		b"\xc3"         # ret
+		_one_eax(),
+		b"\x0f\xa2"         # cpuid
+		b"\xC3"             # ret
 	)
+	print('eax', eax)
 
 	# Get the CPU info
 	stepping = (eax >> 0) & 0xF # 4 bits
@@ -129,33 +156,31 @@ def get_info():
 	extended_model = (eax >> 16) & 0xF # 4 bits
 	extended_family = (eax >> 20) & 0xFF # 8 bits
 
-	return (
-		stepping, 
-		model, 
-		family,
-		processor_type,
-		extended_model,
-		extended_family
-	)
+	return {
+		'stepping' : stepping, 
+		'model' : model, 
+		'family' : family,
+		'processor_type' : processor_type,
+		'extended_model' : extended_model,
+		'extended_family' : extended_family
+	}
 
 # http://en.wikipedia.org/wiki/CPUID#EAX.3D1:_Processor_Info_and_Feature_Bits
 def get_flags():
 	# EDX
 	edx = run_asm(
-		b"\x31\xC0"     # xor ax, ax
-		b"\x40"         # inc ax
-		b"\x0f\xa2"     # cpuid
-		b"\x89\xD0"     # mov ax,dx
-		b"\xc3"         # ret
+		_one_eax(),
+		b"\x0f\xa2"         # cpuid
+		b"\x89\xD0"         # mov ax,dx
+		b"\xC3"             # ret
 	)
 
 	# ECX
 	ecx = run_asm(
-		b"\x31\xC0"     # xor ax, ax
-		b"\x40"         # inc ax
-		b"\x0f\xa2"     # cpuid
-		b"\x89\xC8"     # mov ax,cx
-		b"\xc3"         # ret
+		_one_eax(),
+		b"\x0f\xa2"         # cpuid
+		b"\x89\xC8"         # mov ax,cx
+		b"\xC3"             # ret
 	)
 
 	# Get the CPU flags
@@ -234,16 +259,14 @@ def get_flags():
 	return flags
 
 
-print(get_info())
 print('vendor_id', get_vendor_id())
-'''
-print('cpu_stepping', cpu_stepping)
-print('cpu_model', cpu_model)
-print('cpu_family', cpu_family)
-print('cpu_type', cpu_type)
-print('cpu_extended_model', cpu_extended_model)
-print('cpu_extended_family', cpu_extended_family)
-'''
+info = get_info()
+print('stepping', info['stepping'])
+print('model', info['model'])
+print('family', info['family'])
+print('processor_type', info['processor_type'])
+print('extended_model', info['extended_model'])
+print('extended_family', info['extended_family'])
 print(get_flags())
 
 
