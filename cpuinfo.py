@@ -35,6 +35,7 @@
 '''
 ; cpuid.asm
 ; clear && nasm -o out -f bin cpuid.asm && ndisasm out
+BITS 32
 section .data
 section .text
 global main
@@ -371,7 +372,7 @@ def get_flags(max_extension_support):
 	flags.sort()
 	return flags
 
-def processor_brand(max_extension_support):
+def get_processor_brand(max_extension_support):
 	processor_brand = ""
 
 	# Processor brand string
@@ -439,7 +440,7 @@ exit()
 '''
 max_extension_support = get_max_extension_support()
 print('vendor_id', get_vendor_id())
-print('processor_brand', processor_brand(max_extension_support))
+print('processor_brand', get_processor_brand(max_extension_support))
 info = get_info()
 print('stepping', info['stepping'])
 print('model', info['model'])
