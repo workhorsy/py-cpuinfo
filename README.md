@@ -60,9 +60,8 @@ __cpuidpy__: Written completly in C++. Requires a compile. Missing CPU flags and
 MHz.
 http://code.google.com/p/cpuidpy/
 
-__PyCPU__: Uses a C library. Requires a compile. Inaccurate MHz calculation. Not 
-Python 3 compatible.
-http://screeniqsys.com/blog/2012/11/07/pycpu-a-python-library-for-cpu-information/
+__PyCPU__: Uses a C library. Requires a compile. Not Python 3 compatible.
+http://screeniqsys.com/blog/utilities/pycpu/
 
 
 Bugs and Corrections
