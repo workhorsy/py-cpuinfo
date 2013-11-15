@@ -62,6 +62,15 @@ def is_bit_set(reg, bit):
 def run_asm(*byte_code):
 	byte_code = b''.join(byte_code)
 
+	# Check for brain damage
+	has_brain_damage = False
+	try:
+		import selinux
+		if selinux.is_selinux_enabled() and selinux.security_getenforce():
+			has_brain_damage = True
+	except ImportError:
+		pass
+
 	# Allocate a memory segment the size of the byte code
 	size = len(byte_code)
 	address = ctypes.pythonapi.valloc(size)
@@ -69,9 +78,10 @@ def run_asm(*byte_code):
 		raise Exception("Failed to valloc")
 
 	# Mark the memory segment as safe for code execution
-	READ_WRITE_EXECUTE = 0x1 | 0x2 | 0x4
-	if ctypes.pythonapi.mprotect(address, size, READ_WRITE_EXECUTE) < 0:
-		raise Exception("Failed to mprotect")
+	if not has_brain_damage:
+		READ_WRITE_EXECUTE = 0x1 | 0x2 | 0x4
+		if ctypes.pythonapi.mprotect(address, size, READ_WRITE_EXECUTE) < 0:
+			raise Exception("Failed to mprotect")
 
 	# Copy the byte code into the memory segment
 	if ctypes.pythonapi.memmove(address, byte_code, size) < 0:
