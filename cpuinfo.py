@@ -60,8 +60,8 @@ def is_bit_set(reg, bit):
 	is_set = reg & mask > 0
 	return is_set
 
-def run_asm(*byte_code):
-	byte_code = b''.join(byte_code)
+def asm_func(restype=None, argtypes=(), byte_code=[]):
+	byte_code = bytes.join(b'', byte_code)
 
 	# Check for brain damage
 	has_brain_damage = False
@@ -88,10 +88,23 @@ def run_asm(*byte_code):
 	if ctypes.pythonapi.memmove(address, byte_code, size) < 0:
 		raise Exception("Failed to memmove")
 
-	# Call the byte code like a function
-	functype = ctypes.CFUNCTYPE(ctypes.c_ulong)
+	# Cast the memory segment into a function
+	functype = ctypes.CFUNCTYPE(restype, *argtypes)
 	fun = functype(address)
-	return fun()
+	return fun
+
+def run_asm(*byte_code):
+	# Convert the byte code into a function the returns an int
+	restype = ctypes.c_ulong
+	argtypes = ()
+	func = asm_func(restype, argtypes, byte_code)
+
+	# Call the byte code like a function
+	retval = func()
+
+	# FIXME: It should to free the function memory here
+
+	return retval
 
 # FIXME: We should not have to use different instructions to 
 # set eax to 0 or 1, on 32bit and 64bit machines.
