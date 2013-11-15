@@ -422,6 +422,29 @@ def get_processor_brand(max_extension_support):
 
 	return processor_brand[:-1]
 
+def get_cache(max_extension_support):
+	cache_info = {}
+
+	# Just return if the cache feature is not supported
+	if max_extension_support < 0x80000006:
+		return cache_info
+
+	# ECX
+	ecx = run_asm(
+		b"\xB8\x06\x00\x00\x80"  # mov ax,0x80000006
+		b"\x0f\xa2"              # cpuid
+		b"\x89\xC8"              # mov ax,cx
+		b"\xC3"                   # ret
+	)
+
+	cache_info = {
+		'size_kb' : ecx & 0xFF,
+		'line_size_b' : (ecx >> 12) & 0xF,
+		'associativity' : (ecx >> 16) & 0xFFFF
+	}
+
+	return cache_info
+
 '''
 real_flags = os.popen('cat /proc/cpuinfo').read().split('flags')[1].split('\n')[0].split()
 real_flags.sort()
@@ -441,6 +464,12 @@ exit()
 max_extension_support = get_max_extension_support()
 print('vendor_id', get_vendor_id())
 print('processor_brand', get_processor_brand(max_extension_support))
+
+cache_info = get_cache(max_extension_support)
+print('L2 Cache Size KB:', cache_info['size_kb'])
+print('L2 Cache Line Size B:', cache_info['line_size_b'])
+print('L2 Cache Associativity: ', hex(cache_info['associativity']))
+
 info = get_info()
 print('stepping', info['stepping'])
 print('model', info['model'])
