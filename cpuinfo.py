@@ -25,7 +25,6 @@
 # TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-# FIXME: How do we get the MHz?
 # FIXME: Figure out how /proc/cpuinfo simulates cpuinfo on non x86 cpus
 # FIXME: See if running this in a multiprocessing process will stop it from segfaulting when it breaks
 # FIXME: Check how this compares to numpy. How does numpy get MHz and sse3 detection when the registry
@@ -51,12 +50,12 @@ import os
 import time
 import platform
 import ctypes
-# FIXME: Windows is missing valloc. Use VirtualAlloc instead:
-#VirtualAlloc = ctypes.windll.kernel32.VirtualAllocEx
 
 bits = platform.architecture()[0]
+is_windows = platform.system().lower() == 'windows'
 has_checked_for_selinux = False
 has_selinux = False
+
 
 def program_paths(program_name):
 	paths = []
@@ -82,7 +81,7 @@ def asm_func(restype=None, argtypes=(), byte_code=[]):
 	global has_selinux
 	byte_code = bytes.join(b'', byte_code)
 
-	# Check for brain damage
+	# Check for SE Linux
 	if not has_checked_for_selinux:
 		can_selinux_exec_heap, can_selinux_exec_memory = True, True
 		if program_paths('sestatus'):
@@ -92,21 +91,37 @@ def asm_func(restype=None, argtypes=(), byte_code=[]):
 		has_selinux = (not can_selinux_exec_heap or not can_selinux_exec_memory)
 		has_checked_for_selinux = True
 
-	# Allocate a memory segment the size of the byte code
-	size = len(byte_code)
-	address = ctypes.pythonapi.valloc(size)
-	if not address:
-		raise Exception("Failed to valloc")
+	address = None
+		
+	if is_windows:
+		# Allocate a memory segment the size of the byte code, and make it executable
+		size = len(byte_code)
+		MEM_COMMIT = ctypes.c_ulong(0x1000)
+		PAGE_EXECUTE_READWRITE = ctypes.c_ulong(0x40)
+		address = ctypes.windll.kernel32.VirtualAlloc(ctypes.c_int(0), ctypes.c_size_t(size), MEM_COMMIT, PAGE_EXECUTE_READWRITE)
+		if not address:
+			raise Exception("Failed to VirtualAlloc")
+				
+		# Copy the byte code into the memory segment
+		memmove = ctypes.CFUNCTYPE(ctypes.c_void_p, ctypes.c_void_p, ctypes.c_void_p, ctypes.c_size_t)(ctypes._memmove_addr)
+		if memmove(address, byte_code, size) < 0:
+			raise Exception("Failed to memmove")
+	else:
+		# Allocate a memory segment the size of the byte code
+		size = len(byte_code)
+		address = ctypes.pythonapi.valloc(size)
+		if not address:
+			raise Exception("Failed to valloc")
 
-	# Mark the memory segment as safe for code execution
-	if not has_selinux:
-		READ_WRITE_EXECUTE = 0x1 | 0x2 | 0x4
-		if ctypes.pythonapi.mprotect(address, size, READ_WRITE_EXECUTE) < 0:
-			raise Exception("Failed to mprotect")
-
-	# Copy the byte code into the memory segment
-	if ctypes.pythonapi.memmove(address, byte_code, size) < 0:
-		raise Exception("Failed to memmove")
+		# Mark the memory segment as safe for code execution
+		if not has_selinux:
+			READ_WRITE_EXECUTE = 0x1 | 0x2 | 0x4
+			if ctypes.pythonapi.mprotect(address, size, READ_WRITE_EXECUTE) < 0:
+				raise Exception("Failed to mprotect")
+				
+		# Copy the byte code into the memory segment
+		if ctypes.pythonapi.memmove(address, byte_code, size) < 0:
+			raise Exception("Failed to memmove")
 
 	# Cast the memory segment into a function
 	functype = ctypes.CFUNCTYPE(restype, *argtypes)
@@ -123,7 +138,12 @@ def run_asm(*byte_code):
 	retval = func()
 
 	# Free the function memory segment
-	ctypes.pythonapi.free(address)
+	if is_windows:
+		size = ctypes.c_size_t(len(byte_code))
+		MEM_RELEASE = ctypes.c_ulong(0x8000)
+		ctypes.windll.kernel32.VirtualFree(address, size, MEM_RELEASE)
+	else:
+		ctypes.pythonapi.free(address)
 
 	return retval
 
