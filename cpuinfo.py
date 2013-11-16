@@ -110,18 +110,19 @@ def asm_func(restype=None, argtypes=(), byte_code=[]):
 	# Cast the memory segment into a function
 	functype = ctypes.CFUNCTYPE(restype, *argtypes)
 	fun = functype(address)
-	return fun
+	return fun, address
 
 def run_asm(*byte_code):
-	# Convert the byte code into a function the returns an int
+	# Convert the byte code into a function that returns an int
 	restype = ctypes.c_ulong
 	argtypes = ()
-	func = asm_func(restype, argtypes, byte_code)
+	func, address = asm_func(restype, argtypes, byte_code)
 
 	# Call the byte code like a function
 	retval = func()
 
-	# FIXME: It should to free the function memory here
+	# Free the function memory segment
+	ctypes.pythonapi.free(address)
 
 	return retval
 
