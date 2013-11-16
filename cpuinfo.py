@@ -54,6 +54,22 @@ import ctypes
 #VirtualAlloc = ctypes.windll.kernel32.VirtualAllocEx
 
 bits = platform.architecture()[0]
+has_checked_for_selinux = False
+has_selinux = False
+
+def program_paths(program_name):
+	paths = []
+	exts = filter(None, os.environ.get('PATHEXT', '').split(os.pathsep))
+	path = os.environ['PATH']
+	for p in os.environ['PATH'].split(os.pathsep):
+		p = os.path.join(p, program_name)
+		if os.access(p, os.X_OK):
+			paths.append(p)
+		for e in exts:
+			pext = p + e
+			if os.access(pext, os.X_OK):
+				paths.append(pext)
+	return paths
 
 def is_bit_set(reg, bit):
 	mask = 1 << bit
@@ -61,16 +77,19 @@ def is_bit_set(reg, bit):
 	return is_set
 
 def asm_func(restype=None, argtypes=(), byte_code=[]):
+	global has_checked_for_selinux
+	global has_selinux
 	byte_code = bytes.join(b'', byte_code)
 
 	# Check for brain damage
-	has_brain_damage = False
-	try:
-		import selinux
-		if selinux.is_selinux_enabled() and selinux.security_getenforce():
-			has_brain_damage = True
-	except ImportError:
-		pass
+	if not has_checked_for_selinux:
+		can_selinux_exec_heap, can_selinux_exec_memory = True, True
+		if program_paths('sestatus'):
+			can_selinux_exec_heap = os.popen("sestatus -b | grep -i \"allow_execheap\"").read().strip().lower().endswith('on')
+			can_selinux_exec_memory = os.popen("sestatus -b | grep -i \"allow_execmem\"").read().strip().lower().endswith('on')
+
+		has_selinux = (not can_selinux_exec_heap or not can_selinux_exec_memory)
+		has_checked_for_selinux = True
 
 	# Allocate a memory segment the size of the byte code
 	size = len(byte_code)
@@ -79,7 +98,7 @@ def asm_func(restype=None, argtypes=(), byte_code=[]):
 		raise Exception("Failed to valloc")
 
 	# Mark the memory segment as safe for code execution
-	if not has_brain_damage:
+	if not has_selinux:
 		READ_WRITE_EXECUTE = 0x1 | 0x2 | 0x4
 		if ctypes.pythonapi.mprotect(address, size, READ_WRITE_EXECUTE) < 0:
 			raise Exception("Failed to mprotect")
