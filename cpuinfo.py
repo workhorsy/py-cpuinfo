@@ -48,6 +48,7 @@ main:
 '''
 
 import os
+import time
 import platform
 import ctypes
 # FIXME: Windows is missing valloc. Use VirtualAlloc instead:
@@ -478,6 +479,77 @@ def get_cache(max_extension_support):
 
 	return cache_info
 
+# Works on x86_64
+restype = ctypes.c_ulong
+argtypes = ()
+get_ticks_x86_64, address = asm_func(restype, argtypes,
+	[
+	b"\x48",         # dec ax
+	b"\x31\xC0",     # xor ax,ax
+	b"\x0F\xA2",     # cpuid
+	b"\x0F\x31",     # rdtsc
+	b"\x48",         # dec ax
+	b"\xC1\xE2\x20", # shl dx,byte 0x20
+	b"\x48",         # dec ax
+	b"\x09\xD0",     # or ax,dx
+	b"\xC3",         # ret
+	]
+)
+
+# Works on x86_32
+restype = None
+argtypes = (ctypes.POINTER(ctypes.c_uint), ctypes.POINTER(ctypes.c_uint))
+get_ticks_x86_32, address = asm_func(restype, argtypes,
+	[
+	b"\x55",         # push bp
+	b"\x89\xE5",     # mov bp,sp
+	b"\x31\xC0",     # xor ax,ax
+	b"\x0F\xA2",     # cpuid
+	b"\x0F\x31",     # rdtsc
+	b"\x8B\x5D\x08", # mov bx,[di+0x8]
+	b"\x8B\x4D\x0C", # mov cx,[di+0xc]
+	b"\x89\x13",     # mov [bp+di],dx
+	b"\x89\x01",     # mov [bx+di],ax
+	b"\x5D",         # pop bp
+	b"\xC3"          # ret
+	]
+)
+
+def get_ticks():
+	retval = None
+
+	if bits == '32bit':
+		high = ctypes.c_uint(0)
+		low = ctypes.c_uint(0)
+
+		get_ticks_x86_32(ctypes.byref(high), ctypes.byref(low))
+		retval = ((high.value << 32) & 0xFFFFFFFF00000000) | low.value
+	elif bits == '64bit':
+		retval = get_ticks_x86_64()
+
+	return retval
+
+def get_ticks_hz():
+	start = get_ticks()
+
+	time.sleep(1)
+
+	end = get_ticks()
+
+	ticks = (end - start)
+
+	hz_map = [
+		{'GHz' : 1000000000.0}, 
+		{'MHz' : 1000000.0}, 
+		{'KHz' : 1000.0}, 
+		{'Hz' : 1.0}
+	]
+
+	for pair in hz_map:
+		for symbol, place in pair.items():
+			if ticks >= place:
+				return '{0:.4f} {1}'.format(ticks / place, symbol)
+
 '''
 real_flags = os.popen('cat /proc/cpuinfo').read().split('flags')[1].split('\n')[0].split()
 real_flags.sort()
@@ -497,6 +569,8 @@ exit()
 max_extension_support = get_max_extension_support()
 print('vendor_id', get_vendor_id())
 print('processor_brand', get_processor_brand(max_extension_support))
+
+print('processor_hz', get_ticks_hz())
 
 cache_info = get_cache(max_extension_support)
 print('L2 Cache Size KB:', cache_info['size_kb'])
