@@ -130,7 +130,11 @@ def asm_func(restype=None, argtypes=(), byte_code=[]):
 
 def run_asm(*byte_code):
 	# Convert the byte code into a function that returns an int
-	restype = ctypes.c_ulong
+	restype = None
+	if bits == '64bit':
+		restype = ctypes.c_uint64
+	else:
+		restype = ctypes.c_uint32
 	argtypes = ()
 	func, address = asm_func(restype, argtypes, byte_code)
 
@@ -138,6 +142,7 @@ def run_asm(*byte_code):
 	retval = func()
 
 	# Free the function memory segment
+	# FIXME: This should set the memory as non executable before freeing
 	if is_windows:
 		size = ctypes.c_size_t(len(byte_code))
 		MEM_RELEASE = ctypes.c_ulong(0x8000)
@@ -500,7 +505,7 @@ def get_cache(max_extension_support):
 	return cache_info
 
 # Works on x86_64
-restype = ctypes.c_ulong
+restype = ctypes.c_uint64
 argtypes = ()
 get_ticks_x86_64, address = asm_func(restype, argtypes,
 	[
@@ -539,8 +544,8 @@ def get_ticks():
 	retval = None
 
 	if bits == '32bit':
-		high = ctypes.c_uint(0)
-		low = ctypes.c_uint(0)
+		high = ctypes.c_uint32(0)
+		low = ctypes.c_uint32(0)
 
 		get_ticks_x86_32(ctypes.byref(high), ctypes.byref(low))
 		retval = ((high.value << 32) & 0xFFFFFFFF00000000) | low.value
