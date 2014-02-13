@@ -1,45 +1,22 @@
 py-cpuinfo
 ==========
 
-Py-cpuinfo uses Python to dynamically query the CPU for info using byte code. 
-This means that py-cpuinfo will work exactly the same on all OSes. Py-cpuinfo 
-will work on any vanilla OS without any thrid party programs or libraries. 
-Py-cpuinfo does not need to compile any C/C++ or assembly code. It is only a 
-Python script.
+Py-cpuinfo gets CPU info. Py-cpuinfo will work on any vanilla OS without any 
+thrid party programs or libraries. Py-cpuinfo is only a Python script. It does 
+not use any C/C++ or assembly code.
+
+These approaches are used for getting info:
+1. /proc/cpuinfo
+2. Querying x86 CPUID register
+3. Windows Registry
 
 Prereq
 -----
 
 Requires Python 2.6 to 3.x
 
-Runs on Linux, and Unix x86_32 and x86_64.
-Windows support is comming soon.
+Runs on Linux, FreeBSD, and Windows x86_32 and x86_64.
 
-
-Alternate aproaches, and why they were not used
------
-
-__Windows __cpuinfo__: This is a special function of the MSVC compiler, and would
-require us to ship a small C/C++ library. It is also not callable by Python.
-
-__Windows registry__: Only available to Windows. Is missing support for many CPU 
-flags such as sse3, ssse3, sse4_1, sse4_2, et cetera.
-See "HKLM\SYSTEM\CurrentControlSet\Control\Session Manager\Environment", and
-"HKLM\Hardware\Description\System\CentralProcessor\0" for more information.
-
-__Windows WMI/CIM__: Only runs on Windows. Only has basic CPU info. Is missing 
-details like flags and cache.
-
-__Linux & Unix /proc/cpuinfo__: The perfect solution. But does not work on Windows.
-
-__Linux & Unix lscpu__: Not on Windows
-
-__BSD & OS X sysctl__: Requires root. Does not work on Linux & Windows. Only gives
-basic info.
-sysctl -a | egrep -i 'hw.machine|hw.model|hw.ncpu'
-
-__dmesg__: Does not work on Windows. Only gives basic info.
-dmesg | grep -i cpu
 
 
 Alternate libraries, and how they differ from py-cpuinfo
