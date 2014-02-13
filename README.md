@@ -6,6 +6,7 @@ thrid party programs or libraries. Py-cpuinfo is only a Python script. It does
 not use any C/C++ or assembly code.
 
 These approaches are used for getting info:
+
 1. /proc/cpuinfo
 2. Querying x86 CPUID register
 3. Windows Registry
