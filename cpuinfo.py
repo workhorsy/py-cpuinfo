@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: UTF-8 -*-
 
-# Copyright (c) 2013, Matthew Brennan Jones <mattjones@workhorsy.org>
+# Copyright (c) 2014, Matthew Brennan Jones <mattjones@workhorsy.org>
 # Py-cpuinfo is a Python module to show the cpuinfo of a processor
 # It uses a MIT style license
 # It is hosted at: https://github.com/workhorsy/py-cpuinfo
@@ -47,8 +47,10 @@ main:
 '''
 
 import os
+import re
 import time
 import platform
+import multiprocessing
 import ctypes
 
 bits = platform.architecture()[0]
@@ -579,15 +581,40 @@ def to_friendly_hz(ticks):
 			if ticks >= place:
 				return '{0:.4f} {1}'.format(ticks / place, symbol)
 
+def parse_arch(raw_arch_string):
+	arch, bits = None, None
+
+	if re.match('^i\d86$|^x86$|^x86_32$|^i86pc$', raw_arch_string):
+		arch = 'x86_32'
+		bits = '32'
+	elif re.match('^x64$|^x86_64$|^amd64$', raw_arch_string):
+		arch = 'x86_64'
+		bits = '64'
+
+	return (arch, bits)
+
 def get_cpu_info_from_cpuid():
+	'''
+	Returns the CPU info gathered by querying the X86 cpuid register.
+	Caution: Will only work on X86 CPUs.
+	Caution: Will crash python if running under SELinux in enforcing mode.
+	'''
 	max_extension_support = get_max_extension_support()
 	cache_info = get_cache(max_extension_support)
 	info = get_info()
+
+	# Get the CPU arch and bits
+	raw_arch_string = platform.machine()
+	arch, bits = parse_arch(raw_arch_string)
 
 	return {
 	'vendor_id' : get_vendor_id(), 
 	'processor_brand' : get_processor_brand(max_extension_support), 
 	'processor_hz' : get_ticks_hz(), 
+	'processor_arch' : arch, 
+	'processor_bits' : bits, 
+	'processor_count' : multiprocessing.cpu_count(), 
+	'processor_raw_arch_string' : raw_arch_string, 
 
 	'l2_cache_size:' : cache_info['size_kb'], 
 	'l2_cache_line_size' : cache_info['line_size_b'], 
@@ -603,6 +630,10 @@ def get_cpu_info_from_cpuid():
 	}
 
 def get_cpu_info_from_proc_cpuinfo():
+	'''
+	Returns the CPU info gathered from /proc/cpuinfo. Will return None if
+	/proc/cpuinfo is not found.
+	'''
 	# Just return None if there is no cpuinfo
 	if not os.path.exists('/proc/cpuinfo'):
 		return None
@@ -614,16 +645,28 @@ def get_cpu_info_from_proc_cpuinfo():
 
 	vendor_id = output.split('vendor_id	: ')[1].split('\n')[0]
 	processor_brand = output.split('model name	: ')[1].split('\n')[0]
-	processor_hz = to_friendly_hz(output.split('cpu MHz		: ')[1].split('\n')[0])
 	cache_size = output.split('cache size	: ')[1].split('\n')[0]
 	stepping = output.split('stepping	: ')[1].split('\n')[0]
 	model = output.split('model		: ')[1].split('\n')[0]
 	family = output.split('cpu family	: ')[1].split('\n')[0]
 
+	# Convert from MHz string to Hz
+	processor_hz = output.split('cpu MHz		: ')[1].split('\n')[0]
+	processor_hz = float(processor_hz) * 1000000.0
+	processor_hz = to_friendly_hz(processor_hz)
+
+	# Get the CPU arch and bits
+	raw_arch_string = platform.machine()
+	arch, bits = parse_arch(raw_arch_string)
+
 	return {
 	'vendor_id' : vendor_id, 
 	'processor_brand' : processor_brand, 
 	'processor_hz' : processor_hz, 
+	'processor_arch' : arch, 
+	'processor_bits' : bits, 
+	'processor_count' : multiprocessing.cpu_count(), 
+	'processor_raw_arch_string' : raw_arch_string, 
 
 	'l2_cache_size:' : cache_size, 
 	'l2_cache_line_size' : 0, 
@@ -638,8 +681,138 @@ def get_cpu_info_from_proc_cpuinfo():
 	'flags' : flags
 	}
 
+def get_cpu_info_from_registry():
+	'''
+	FIXME: Is missing many of the newer CPU flags like sse3
+	Returns the CPU info gathered from the Windows Registry. Will return None if
+	not on Windows.
+	'''
+	# Just return None if not on Windows
+	if not is_windows:
+		return None
 
-print(get_cpu_info_from_cpuid())
-print(get_cpu_info_from_proc_cpuinfo())
+	import _winreg
+
+	# Get the CPU arch and bits
+	key = _winreg.OpenKey(_winreg.HKEY_LOCAL_MACHINE, r"SYSTEM\CurrentControlSet\Control\Session Manager\Environment")
+	raw_arch_string = _winreg.QueryValueEx(key, "PROCESSOR_ARCHITECTURE")[0]
+	_winreg.CloseKey(key)
+	arch, bits = parse_arch(raw_arch_string)
+
+	# Get the CPU MHz
+	key = _winreg.OpenKey(_winreg.HKEY_LOCAL_MACHINE, r"Hardware\Description\System\CentralProcessor\0")
+	processor_hz = _winreg.QueryValueEx(key, "~Mhz")[0]
+	_winreg.CloseKey(key)
+
+	# Get the CPU name
+	key = _winreg.OpenKey(_winreg.HKEY_LOCAL_MACHINE, r"Hardware\Description\System\CentralProcessor\0")
+	processor_brand = _winreg.QueryValueEx(key, "ProcessorNameString")[0]
+	_winreg.CloseKey(key)
+
+	# Get the CPU vendor id
+	key = _winreg.OpenKey(_winreg.HKEY_LOCAL_MACHINE, r"Hardware\Description\System\CentralProcessor\0")
+	vendor_id = _winreg.QueryValueEx(key, "VendorIdentifier")[0]
+	_winreg.CloseKey(key)
+
+	# Get the CPU features
+	key = _winreg.OpenKey(_winreg.HKEY_LOCAL_MACHINE, r"Hardware\Description\System\CentralProcessor\0")
+	feature_bits = _winreg.QueryValueEx(key, "FeatureSet")[0]
+	_winreg.CloseKey(key)
+
+	def is_set(bit):
+		mask = 0x80000000 >> bit
+		retval = mask & feature_bits > 0
+		return retval
+
+	# http://en.wikipedia.org/wiki/CPUID
+	# http://unix.stackexchange.com/questions/43539/what-do-the-flags-in-proc-cpuinfo-mean
+	# http://www.lohninger.com/helpcsuite/public_constants_cpuid.htm
+	flags = {
+		'fpu' : is_set(0), # Floating Point Unit
+		'vme' : is_set(1), # V86 Mode Extensions
+		'de' : is_set(2), # Debug Extensions - I/O breakpoints supported
+		'pse' : is_set(3), # Page Size Extensions (4 MB pages supported)
+		'tsc' : is_set(4), # Time Stamp Counter and RDTSC instruction are available
+		'msr' : is_set(5), # Model Specific Registers
+		'pae' : is_set(6), # Physical Address Extensions (36 bit address, 2MB pages)
+		'mce' : is_set(7), # Machine Check Exception supported
+		'cx8' : is_set(8), # Compare Exchange Eight Byte instruction available
+		'apic' : is_set(9), # Local APIC present (multiprocessor operation support)
+		'sepamd' : is_set(10), # Fast system calls (AMD only)
+		'sep' : is_set(11), # Fast system calls
+		'mtrr' : is_set(12), # Memory Type Range Registers
+		'pge' : is_set(13), # Page Global Enable
+		'mca' : is_set(14), # Machine Check Architecture
+		'cmov' : is_set(15), # Conditional MOVe instructions
+		'pat' : is_set(16), # Page Attribute Table
+		'pse36' : is_set(17), # 36 bit Page Size Extensions
+		'serial' : is_set(18), # Processor Serial Number
+		'clflush' : is_set(19), # Cache Flush
+		#'reserved1' : is_set(20), # reserved
+		'dts' : is_set(21), # Debug Trace Store
+		'acpi' : is_set(22), # ACPI support
+		'mmx' : is_set(23), # MultiMedia Extensions
+		'fxsr' : is_set(24), # FXSAVE and FXRSTOR instructions
+		'sse' : is_set(25), # SSE instructions
+		'sse2' : is_set(26), # SSE2 (WNI) instructions
+		'ss' : is_set(27), # self snoop
+		#'reserved2' : is_set(28), # reserved
+		'tm' : is_set(29), # Automatic clock control
+		'ia64' : is_set(30), # IA64 instructions
+		'3dnow' : is_set(31) # 3DNow! instructions available
+	}
+
+	# Get a list of only the flags that are true
+	flags = [k for k, v in flags.items() if v]
+	flags.sort()
+
+	return {
+	'vendor_id' : vendor_id, 
+	'processor_brand' : processor_brand, 
+	'processor_hz' : processor_hz, 
+	'processor_arch' : arch, 
+	'processor_bits' : bits, 
+	'processor_count' : multiprocessing.cpu_count(), 
+	'processor_raw_arch_string' : raw_arch_string, 
+
+	'l2_cache_size:' : 0, 
+	'l2_cache_line_size' : 0, 
+	'l2_cache_associativity' : 0, 
+
+	'stepping' : 0, 
+	'model' : 0, 
+	'family' : 0, 
+	'processor_type' : 0, 
+	'extended_model' : 0, 
+	'extended_family' : 0, 
+	'flags' : flags
+	}
+
+def get_cpu_info():
+	info = None
+
+	# Try the Windows registry
+	if is_windows:
+		info = get_cpu_info_from_registry()
+
+	# Try /proc/cpuinfo
+	if not info:
+		info = get_cpu_info_from_proc_cpuinfo()
+
+	# Try querying the CPU cpuid register
+	if not info:
+		info = get_cpu_info_from_cpuid()
+
+	return info
+
+if __name__ == '__main__':
+	info = get_cpu_info()
+	print('Vendor ID', info['vendor_id'])
+	print('Brand', info['processor_brand'])
+	print('Hz', info['processor_hz'])
+	print('Arch', info['processor_arch'])
+	print('Bits', info['processor_bits'])
+	print('Count', info['processor_count'])
+	print('Flags:', info['flags'])
 
 
