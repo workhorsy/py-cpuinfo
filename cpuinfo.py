@@ -504,52 +504,51 @@ def get_cache(max_extension_support):
 
 	return cache_info
 
-# Works on x86_64
-restype = ctypes.c_uint64
-argtypes = ()
-get_ticks_x86_64, address = asm_func(restype, argtypes,
-	[
-	b"\x48",         # dec ax
-	b"\x31\xC0",     # xor ax,ax
-	b"\x0F\xA2",     # cpuid
-	b"\x0F\x31",     # rdtsc
-	b"\x48",         # dec ax
-	b"\xC1\xE2\x20", # shl dx,byte 0x20
-	b"\x48",         # dec ax
-	b"\x09\xD0",     # or ax,dx
-	b"\xC3",         # ret
-	]
-)
-
-# Works on x86_32
-restype = None
-argtypes = (ctypes.POINTER(ctypes.c_uint), ctypes.POINTER(ctypes.c_uint))
-get_ticks_x86_32, address = asm_func(restype, argtypes,
-	[
-	b"\x55",         # push bp
-	b"\x89\xE5",     # mov bp,sp
-	b"\x31\xC0",     # xor ax,ax
-	b"\x0F\xA2",     # cpuid
-	b"\x0F\x31",     # rdtsc
-	b"\x8B\x5D\x08", # mov bx,[di+0x8]
-	b"\x8B\x4D\x0C", # mov cx,[di+0xc]
-	b"\x89\x13",     # mov [bp+di],dx
-	b"\x89\x01",     # mov [bx+di],ax
-	b"\x5D",         # pop bp
-	b"\xC3"          # ret
-	]
-)
-
 def get_ticks():
 	retval = None
 
 	if bits == '32bit':
+		# Works on x86_32
+		restype = None
+		argtypes = (ctypes.POINTER(ctypes.c_uint), ctypes.POINTER(ctypes.c_uint))
+		get_ticks_x86_32, address = asm_func(restype, argtypes,
+			[
+			b"\x55",         # push bp
+			b"\x89\xE5",     # mov bp,sp
+			b"\x31\xC0",     # xor ax,ax
+			b"\x0F\xA2",     # cpuid
+			b"\x0F\x31",     # rdtsc
+			b"\x8B\x5D\x08", # mov bx,[di+0x8]
+			b"\x8B\x4D\x0C", # mov cx,[di+0xc]
+			b"\x89\x13",     # mov [bp+di],dx
+			b"\x89\x01",     # mov [bx+di],ax
+			b"\x5D",         # pop bp
+			b"\xC3"          # ret
+			]
+		)
+
 		high = ctypes.c_uint32(0)
 		low = ctypes.c_uint32(0)
 
 		get_ticks_x86_32(ctypes.byref(high), ctypes.byref(low))
 		retval = ((high.value << 32) & 0xFFFFFFFF00000000) | low.value
 	elif bits == '64bit':
+		# Works on x86_64
+		restype = ctypes.c_uint64
+		argtypes = ()
+		get_ticks_x86_64, address = asm_func(restype, argtypes,
+			[
+			b"\x48",         # dec ax
+			b"\x31\xC0",     # xor ax,ax
+			b"\x0F\xA2",     # cpuid
+			b"\x0F\x31",     # rdtsc
+			b"\x48",         # dec ax
+			b"\xC1\xE2\x20", # shl dx,byte 0x20
+			b"\x48",         # dec ax
+			b"\x09\xD0",     # or ax,dx
+			b"\xC3",         # ret
+			]
+		)
 		retval = get_ticks_x86_64()
 
 	return retval
@@ -563,6 +562,11 @@ def get_ticks_hz():
 
 	ticks = (end - start)
 
+	return to_friendly_hz(ticks)
+
+def to_friendly_hz(ticks):
+	ticks = float(ticks)
+
 	hz_map = [
 		{'GHz' : 1000000000.0}, 
 		{'MHz' : 1000000.0}, 
@@ -575,40 +579,67 @@ def get_ticks_hz():
 			if ticks >= place:
 				return '{0:.4f} {1}'.format(ticks / place, symbol)
 
-'''
-real_flags = os.popen('cat /proc/cpuinfo').read().split('flags')[1].split('\n')[0].split()
-real_flags.sort()
-flags = get_flags()
-print('Flags not in py-cpuinfo, but in /proc/cpuinfo ----------------------')
-for flag in real_flags:
-	if not flag in flags:
-		print(flag)
+def get_cpu_info_from_cpuid():
+	max_extension_support = get_max_extension_support()
+	cache_info = get_cache(max_extension_support)
+	info = get_info()
 
-print('Flags not in /proc/cpuinfo, but in py-cpuinfo ------------------')
-for flag in flags:
-	if not flag in real_flags:
-		print(flag)
+	return {
+	'vendor_id' : get_vendor_id(), 
+	'processor_brand' : get_processor_brand(max_extension_support), 
+	'processor_hz' : get_ticks_hz(), 
 
-exit()
-'''
-max_extension_support = get_max_extension_support()
-print('vendor_id', get_vendor_id())
-print('processor_brand', get_processor_brand(max_extension_support))
+	'l2_cache_size:' : cache_info['size_kb'], 
+	'l2_cache_line_size' : cache_info['line_size_b'], 
+	'l2_cache_associativity' : hex(cache_info['associativity']), 
 
-print('processor_hz', get_ticks_hz())
+	'stepping' : info['stepping'], 
+	'model' : info['model'], 
+	'family' : info['family'], 
+	'processor_type' : info['processor_type'], 
+	'extended_model' : info['extended_model'], 
+	'extended_family' : info['extended_family'], 
+	'flags' : get_flags(max_extension_support)
+	}
 
-cache_info = get_cache(max_extension_support)
-print('L2 Cache Size KB:', cache_info['size_kb'])
-print('L2 Cache Line Size B:', cache_info['line_size_b'])
-print('L2 Cache Associativity: ', hex(cache_info['associativity']))
+def get_cpu_info_from_proc_cpuinfo():
+	# Just return None if there is no cpuinfo
+	if not os.path.exists('/proc/cpuinfo'):
+		return None
 
-info = get_info()
-print('stepping', info['stepping'])
-print('model', info['model'])
-print('family', info['family'])
-print('processor_type', info['processor_type'])
-print('extended_model', info['extended_model'])
-print('extended_family', info['extended_family'])
-print(get_flags(max_extension_support))
+	output = os.popen('cat /proc/cpuinfo').read()
+
+	flags = output.split('flags		: ')[1].split('\n')[0].split()
+	flags.sort()
+
+	vendor_id = output.split('vendor_id	: ')[1].split('\n')[0]
+	processor_brand = output.split('model name	: ')[1].split('\n')[0]
+	processor_hz = to_friendly_hz(output.split('cpu MHz		: ')[1].split('\n')[0])
+	cache_size = output.split('cache size	: ')[1].split('\n')[0]
+	stepping = output.split('stepping	: ')[1].split('\n')[0]
+	model = output.split('model		: ')[1].split('\n')[0]
+	family = output.split('cpu family	: ')[1].split('\n')[0]
+
+	return {
+	'vendor_id' : vendor_id, 
+	'processor_brand' : processor_brand, 
+	'processor_hz' : processor_hz, 
+
+	'l2_cache_size:' : cache_size, 
+	'l2_cache_line_size' : 0, 
+	'l2_cache_associativity' : 0, 
+
+	'stepping' : stepping, 
+	'model' : model, 
+	'family' : family, 
+	'processor_type' : 0, 
+	'extended_model' : 0, 
+	'extended_family' : 0, 
+	'flags' : flags
+	}
+
+
+print(get_cpu_info_from_cpuid())
+print(get_cpu_info_from_proc_cpuinfo())
 
 
