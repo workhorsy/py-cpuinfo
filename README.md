@@ -11,6 +11,33 @@ These approaches are used for getting info:
 2. Querying x86 CPUID register
 3. Windows Registry
 
+Example
+-----
+
+    import cpuinfo
+
+    # Have the library pick the best method for getting your CPU info
+    info = cpuinfo.get_cpu_info()
+
+    # Or use /proc/cpuinfo
+    info = cpuinfo.get_cpu_info_from_proc_cpuinfo()
+
+    # Or use the Windows registry
+    info = cpuinfo.get_cpu_info_from_registry()
+
+    # Or use CPU CPUID register
+    info = cpuinfo.get_cpu_info_from_cpuid()
+
+    # Print some CPU values
+    print('Vendor ID', info['vendor_id'])
+    print('Brand', info['processor_brand'])
+    print('Hz', info['processor_hz'])
+    print('Arch', info['processor_arch'])
+    print('Bits', info['processor_bits'])
+    print('Count', info['processor_count'])
+    print('Flags:', info['flags'])
+
+
 Prereq
 -----
 

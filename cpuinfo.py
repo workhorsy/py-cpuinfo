@@ -607,7 +607,7 @@ def get_cpu_info_from_cpuid():
 	'''
 	Returns the CPU info gathered by querying the X86 cpuid register.
 	Returns None of non X86 cpus.
-	Returns None if SELinux is enforcing mode.
+	Returns None if SELinux is in enforcing mode.
 	'''
 	# Get the CPU arch and bits
 	raw_arch_string = platform.machine()
