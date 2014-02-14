@@ -106,23 +106,21 @@ def is_bit_set(reg, bit):
 
 class CPUID(object):
 	def __init__(self):
-		self.has_checked_for_selinux = False
-		self.has_selinux = False
+		# Figure out if SE Linux is on and in enforcing mode
+		self.is_selinux_enforcing = False
+
+		# Just return if the SE Linux Status Tool is not installed
+		if not program_paths('sestatus'):
+			return
+
+		# Figure out if we can execute heap and execute memory
+		can_selinux_exec_heap = os.popen("sestatus -b | grep -i \"allow_execheap\"").read().strip().lower().endswith('on')
+		can_selinux_exec_memory = os.popen("sestatus -b | grep -i \"allow_execmem\"").read().strip().lower().endswith('on')
+		self.is_selinux_enforcing = (not can_selinux_exec_heap or not can_selinux_exec_memory)
 
 	def _asm_func(self, restype=None, argtypes=(), byte_code=[]):
 		global is_windows
 		byte_code = bytes.join(b'', byte_code)
-
-		# Check for SE Linux
-		if not self.has_checked_for_selinux:
-			can_selinux_exec_heap, can_selinux_exec_memory = True, True
-			if program_paths('sestatus'):
-				can_selinux_exec_heap = os.popen("sestatus -b | grep -i \"allow_execheap\"").read().strip().lower().endswith('on')
-				can_selinux_exec_memory = os.popen("sestatus -b | grep -i \"allow_execmem\"").read().strip().lower().endswith('on')
-
-			self.has_selinux = (not can_selinux_exec_heap or not can_selinux_exec_memory)
-			self.has_checked_for_selinux = True
-
 		address = None
 
 		if is_windows:
@@ -146,7 +144,7 @@ class CPUID(object):
 				raise Exception("Failed to valloc")
 
 			# Mark the memory segment as safe for code execution
-			if not self.has_selinux:
+			if not self.is_selinux_enforcing:
 				READ_WRITE_EXECUTE = 0x1 | 0x2 | 0x4
 				if ctypes.pythonapi.mprotect(address, size, READ_WRITE_EXECUTE) < 0:
 					raise Exception("Failed to mprotect")
@@ -608,17 +606,26 @@ class CPUID(object):
 def get_cpu_info_from_cpuid():
 	'''
 	Returns the CPU info gathered by querying the X86 cpuid register.
-	Caution: Will only work on X86 CPUs.
-	Caution: Will crash python if running under SELinux in enforcing mode.
+	Returns None of non X86 cpus.
+	Returns None if SELinux is enforcing mode.
 	'''
-	cpuid = CPUID()
-	max_extension_support = cpuid.get_max_extension_support()
-	cache_info = cpuid.get_cache(max_extension_support)
-	info = cpuid.get_info()
-
 	# Get the CPU arch and bits
 	raw_arch_string = platform.machine()
 	arch, bits = parse_arch(raw_arch_string)
+
+	# Return none if this is not an X86 CPU
+	if not arch in ['x86_32', 'x86_64']:
+		return None
+
+	# Return none if SE Linux is in enforcing mode
+	cpuid = CPUID()
+	if cpuid.is_selinux_enforcing:
+		return None
+
+	# Get the cpu info from the CPUID register
+	max_extension_support = cpuid.get_max_extension_support()
+	cache_info = cpuid.get_cache(max_extension_support)
+	info = cpuid.get_info()
 
 	return {
 	'vendor_id' : cpuid.get_vendor_id(), 
