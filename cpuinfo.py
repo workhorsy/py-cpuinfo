@@ -703,6 +703,8 @@ def get_cpu_info_from_registry():
 	key = _winreg.OpenKey(_winreg.HKEY_LOCAL_MACHINE, r"Hardware\Description\System\CentralProcessor\0")
 	processor_hz = _winreg.QueryValueEx(key, "~Mhz")[0]
 	_winreg.CloseKey(key)
+	processor_hz = float(processor_hz) * 1000000.0
+	processor_hz = to_friendly_hz(processor_hz)
 
 	# Get the CPU name
 	key = _winreg.OpenKey(_winreg.HKEY_LOCAL_MACHINE, r"Hardware\Description\System\CentralProcessor\0")
