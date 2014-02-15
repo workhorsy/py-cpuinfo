@@ -88,13 +88,40 @@ def to_friendly_hz(ticks):
 
 def parse_arch(raw_arch_string):
 	arch, bits = None, None
+	raw_arch_string =  raw_arch_string.lower()
 
-	if re.match('^i\d86$|^x86$|^x86_32$|^i86pc$', raw_arch_string):
-		arch = 'x86_32'
+	# X86
+	if re.match('^i\d86$|^x86$|^x86_32$|^i86pc$|^ia32$|^ia-32$|^bepc$', raw_arch_string):
+		arch = 'X86_32'
 		bits = '32'
-	elif re.match('^x64$|^x86_64$|^amd64$', raw_arch_string):
-		arch = 'x86_64'
+	elif re.match('^x64$|^x86_64$|^x86_64t$|^i686-64$|^amd64$|^ia64$|^ia-64$', raw_arch_string):
+		arch = 'X86_64'
 		bits = '64'
+	# ARM
+	elif re.match('^armv8-a$', raw_arch_string):
+		arch = 'ARM_8'
+		bits = '64'
+	elif re.match('^armv7$|^armv7[a-z]$|^armv7-[a-z]$', raw_arch_string):
+		arch = 'ARM_7'
+		bits = '32'
+	elif re.match('^armv8$|^armv8[a-z]$|^armv8-[a-z]$', raw_arch_string):
+		arch = 'ARM_8'
+		bits = '32'
+	# PPC
+	elif re.match('^ppc32$|^prep$|^pmac$|^powermac$', raw_arch_string):
+		arch = 'PPC_32'
+		bits = '32'
+	elif re.match('^powerpc$|^ppc64$', raw_arch_string):
+		arch = 'PPC_64'
+		bits = '64'
+	# SPARC
+	elif re.match('^sparc32$|^sparc$', raw_arch_string):
+		arch = 'SPARC_32'
+		bits = '32'
+	elif re.match('^sparc64$|^sun4u$|^sun4v$', raw_arch_string):
+		arch = 'SPARC_64'
+		bits = '64'
+
 
 	return (arch, bits)
 
@@ -614,7 +641,7 @@ def get_cpu_info_from_cpuid():
 	arch, bits = parse_arch(raw_arch_string)
 
 	# Return none if this is not an X86 CPU
-	if not arch in ['x86_32', 'x86_64']:
+	if not arch in ['X86_32', 'X86_64']:
 		return None
 
 	# Return none if SE Linux is in enforcing mode
