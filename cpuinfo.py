@@ -629,12 +629,12 @@ def get_cpu_info_from_cpuid():
 
 	return {
 	'vendor_id' : cpuid.get_vendor_id(), 
-	'processor_brand' : cpuid.get_processor_brand(max_extension_support), 
-	'processor_hz' : cpuid.get_hz(), 
-	'processor_arch' : arch, 
-	'processor_bits' : bits, 
-	'processor_count' : multiprocessing.cpu_count(), 
-	'processor_raw_arch_string' : raw_arch_string, 
+	'brand' : cpuid.get_processor_brand(max_extension_support), 
+	'hz' : cpuid.get_hz(), 
+	'arch' : arch, 
+	'bits' : bits, 
+	'count' : multiprocessing.cpu_count(), 
+	'raw_arch_string' : raw_arch_string, 
 
 	'l2_cache_size:' : cache_info['size_kb'], 
 	'l2_cache_line_size' : cache_info['line_size_b'], 
@@ -681,12 +681,12 @@ def get_cpu_info_from_proc_cpuinfo():
 
 	return {
 	'vendor_id' : vendor_id, 
-	'processor_brand' : processor_brand, 
-	'processor_hz' : processor_hz, 
-	'processor_arch' : arch, 
-	'processor_bits' : bits, 
-	'processor_count' : multiprocessing.cpu_count(), 
-	'processor_raw_arch_string' : raw_arch_string, 
+	'brand' : processor_brand, 
+	'hz' : processor_hz, 
+	'arch' : arch, 
+	'bits' : bits, 
+	'count' : multiprocessing.cpu_count(), 
+	'raw_arch_string' : raw_arch_string, 
 
 	'l2_cache_size:' : cache_size, 
 	'l2_cache_line_size' : 0, 
@@ -792,12 +792,12 @@ def get_cpu_info_from_registry():
 
 	return {
 	'vendor_id' : vendor_id, 
-	'processor_brand' : processor_brand, 
-	'processor_hz' : processor_hz, 
-	'processor_arch' : arch, 
-	'processor_bits' : bits, 
-	'processor_count' : multiprocessing.cpu_count(), 
-	'processor_raw_arch_string' : raw_arch_string, 
+	'brand' : processor_brand, 
+	'hz' : processor_hz, 
+	'arch' : arch, 
+	'bits' : bits, 
+	'count' : multiprocessing.cpu_count(), 
+	'raw_arch_string' : raw_arch_string, 
 
 	'l2_cache_size:' : 0, 
 	'l2_cache_line_size' : 0, 
@@ -832,11 +832,24 @@ def get_cpu_info():
 if __name__ == '__main__':
 	info = get_cpu_info()
 	print('Vendor ID', info['vendor_id'])
-	print('Brand', info['processor_brand'])
-	print('Hz', info['processor_hz'])
-	print('Arch', info['processor_arch'])
-	print('Bits', info['processor_bits'])
-	print('Count', info['processor_count'])
+	print('Brand', info['brand'])
+	print('Hz', info['hz'])
+	print('Arch', info['arch'])
+	print('Bits', info['bits'])
+	print('Count', info['count'])
+
+	print('Raw Arch String', info['raw_arch_string'])
+
+	print('L2 Cache Size', info['l2_cache_size:'])
+	print('L2 Cache Line Size', info['l2_cache_line_size'])
+	print('L2 Cache Associativity', info['l2_cache_associativity'])
+
+	print('Stepping', info['stepping'])
+	print('Model', info['model'])
+	print('Family', info['family'])
+	print('Processor Type', info['processor_type'])
+	print('Extended Model', info['extended_model'])
+	print('Extended Family', info['extended_family'])
 	print('Flags:', info['flags'])
 
 

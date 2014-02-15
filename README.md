@@ -30,11 +30,11 @@ Example
 
     # Print some CPU values
     print('Vendor ID', info['vendor_id'])
-    print('Brand', info['processor_brand'])
-    print('Hz', info['processor_hz'])
-    print('Arch', info['processor_arch'])
-    print('Bits', info['processor_bits'])
-    print('Count', info['processor_count'])
+    print('Brand', info['brand'])
+    print('Hz', info['hz'])
+    print('Arch', info['arch'])
+    print('Bits', info['bits'])
+    print('Count', info['count'])
     print('Flags:', info['flags'])
 
 
