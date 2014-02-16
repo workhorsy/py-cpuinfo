@@ -676,6 +676,18 @@ def get_cpu_info_from_cpuid():
 	'flags' : cpuid.get_flags(max_extension_support)
 	}
 
+def _get_field(raw_string, *field_names):
+	
+	for field_name in field_names:
+		if field_name in raw_string:
+			raw_field = raw_string.split(field_name)[1] # Everything after the field name
+			raw_field = raw_field.split(':')[1] # Everything after the :
+			raw_field = raw_field.split('\n')[0] # Everything before the \n
+			raw_field = raw_field.strip() # Strip any extra white space
+			return raw_field
+
+	return None
+
 def get_cpu_info_from_proc_cpuinfo():
 	'''
 	Returns the CPU info gathered from /proc/cpuinfo. Will return None if
@@ -686,19 +698,24 @@ def get_cpu_info_from_proc_cpuinfo():
 		return None
 
 	output = os.popen('cat /proc/cpuinfo').read()
+	# FIXME: See for how lscpu parses /proc/cpuinfo
+	# http://git.kernel.org/cgit/utils/util-linux/util-linux.git/tree/sys-utils/lscpu.c
 
-	flags = output.split('flags		: ')[1].split('\n')[0].split()
+	# Various fields
+	vendor_id = _get_field(output, 'vendor_id', 'vendor id', 'vendor')
+	processor_brand = _get_field(output, 'model name','cpu')
+	cache_size = _get_field(output, 'cache size')
+	stepping = _get_field(output, 'stepping')
+	model = _get_field(output, 'model')
+	family = _get_field(output, 'cpu family')
+
+	# Flags
+	flags = _get_field(output, 'flags', 'Features').split()
 	flags.sort()
 
-	vendor_id = output.split('vendor_id	: ')[1].split('\n')[0]
-	processor_brand = output.split('model name	: ')[1].split('\n')[0]
-	cache_size = output.split('cache size	: ')[1].split('\n')[0]
-	stepping = output.split('stepping	: ')[1].split('\n')[0]
-	model = output.split('model		: ')[1].split('\n')[0]
-	family = output.split('cpu family	: ')[1].split('\n')[0]
-
 	# Convert from MHz string to Hz
-	processor_hz = output.split('cpu MHz		: ')[1].split('\n')[0]
+	processor_hz = _get_field(output, 'cpu MHz', 'cpu speed', 'clock')
+	processor_hz = processor_hz.lower().rstrip('mhz').strip()
 	processor_hz = float(processor_hz) * 1000000.0
 	processor_hz = to_friendly_hz(processor_hz)
 
