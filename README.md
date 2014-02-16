@@ -1,15 +1,25 @@
 py-cpuinfo
 ==========
 
-Py-cpuinfo gets CPU info. Py-cpuinfo will work on any vanilla OS without any 
-thrid party programs or libraries. Py-cpuinfo is only a Python script. It does 
-not use any C/C++ or assembly code.
+Py-cpuinfo gets CPU info with pure Python. Py-cpuinfo should work without any 
+extra programs or libraries, beyond what your OS provides. It does not require 
+any compilation(C/C++, assembly, et cetera) to use.
 
 These approaches are used for getting info:
 
 1. /proc/cpuinfo
 2. Querying x86 CPUID register
 3. Windows Registry
+
+
+Prereq
+-----
+
+Requires Python 2.6 to 3.x
+
+Runs on Linux, FreeBSD, and Windows x86_32 and x86_64.
+
+Only tested on X86 CPUs.
 
 Example
 -----
@@ -20,13 +30,13 @@ Example
     info = cpuinfo.get_cpu_info()
 
     # Or use /proc/cpuinfo
-    info = cpuinfo.get_cpu_info_from_proc_cpuinfo()
+    #info = cpuinfo.get_cpu_info_from_proc_cpuinfo()
 
     # Or use the Windows registry
-    info = cpuinfo.get_cpu_info_from_registry()
+    #info = cpuinfo.get_cpu_info_from_registry()
 
     # Or use CPU CPUID register
-    info = cpuinfo.get_cpu_info_from_cpuid()
+    #info = cpuinfo.get_cpu_info_from_cpuid()
 
     # Print some CPU values
     print('Vendor ID', info['vendor_id'])
@@ -36,15 +46,6 @@ Example
     print('Bits', info['bits'])
     print('Count', info['count'])
     print('Flags:', info['flags'])
-
-
-Prereq
------
-
-Requires Python 2.6 to 3.x
-
-Runs on Linux, FreeBSD, and Windows x86_32 and x86_64.
-
 
 
 Alternate libraries, and how they differ from py-cpuinfo
