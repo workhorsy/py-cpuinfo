@@ -757,35 +757,38 @@ def get_cpu_info_from_registry():
 	if not is_windows:
 		return None
 
-	import _winreg
+	try:
+		import _winreg as winreg
+	except ImportError as err:
+		import winreg
 
 	# Get the CPU arch and bits
-	key = _winreg.OpenKey(_winreg.HKEY_LOCAL_MACHINE, r"SYSTEM\CurrentControlSet\Control\Session Manager\Environment")
-	raw_arch_string = _winreg.QueryValueEx(key, "PROCESSOR_ARCHITECTURE")[0]
-	_winreg.CloseKey(key)
+	key = winreg.OpenKey(winreg.HKEY_LOCAL_MACHINE, r"SYSTEM\CurrentControlSet\Control\Session Manager\Environment")
+	raw_arch_string = winreg.QueryValueEx(key, "PROCESSOR_ARCHITECTURE")[0]
+	winreg.CloseKey(key)
 	arch, bits = parse_arch(raw_arch_string)
 
 	# Get the CPU MHz
-	key = _winreg.OpenKey(_winreg.HKEY_LOCAL_MACHINE, r"Hardware\Description\System\CentralProcessor\0")
-	processor_hz = _winreg.QueryValueEx(key, "~Mhz")[0]
-	_winreg.CloseKey(key)
+	key = winreg.OpenKey(winreg.HKEY_LOCAL_MACHINE, r"Hardware\Description\System\CentralProcessor\0")
+	processor_hz = winreg.QueryValueEx(key, "~Mhz")[0]
+	winreg.CloseKey(key)
 	processor_hz = float(processor_hz) * 1000000.0
 	processor_hz = to_friendly_hz(processor_hz)
 
 	# Get the CPU name
-	key = _winreg.OpenKey(_winreg.HKEY_LOCAL_MACHINE, r"Hardware\Description\System\CentralProcessor\0")
-	processor_brand = _winreg.QueryValueEx(key, "ProcessorNameString")[0]
-	_winreg.CloseKey(key)
+	key = winreg.OpenKey(winreg.HKEY_LOCAL_MACHINE, r"Hardware\Description\System\CentralProcessor\0")
+	processor_brand = winreg.QueryValueEx(key, "ProcessorNameString")[0]
+	winreg.CloseKey(key)
 
 	# Get the CPU vendor id
-	key = _winreg.OpenKey(_winreg.HKEY_LOCAL_MACHINE, r"Hardware\Description\System\CentralProcessor\0")
-	vendor_id = _winreg.QueryValueEx(key, "VendorIdentifier")[0]
-	_winreg.CloseKey(key)
+	key = winreg.OpenKey(winreg.HKEY_LOCAL_MACHINE, r"Hardware\Description\System\CentralProcessor\0")
+	vendor_id = winreg.QueryValueEx(key, "VendorIdentifier")[0]
+	winreg.CloseKey(key)
 
 	# Get the CPU features
-	key = _winreg.OpenKey(_winreg.HKEY_LOCAL_MACHINE, r"Hardware\Description\System\CentralProcessor\0")
-	feature_bits = _winreg.QueryValueEx(key, "FeatureSet")[0]
-	_winreg.CloseKey(key)
+	key = winreg.OpenKey(winreg.HKEY_LOCAL_MACHINE, r"Hardware\Description\System\CentralProcessor\0")
+	feature_bits = winreg.QueryValueEx(key, "FeatureSet")[0]
+	winreg.CloseKey(key)
 
 	def is_set(bit):
 		mask = 0x80000000 >> bit
