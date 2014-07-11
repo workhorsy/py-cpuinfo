@@ -9,7 +9,8 @@ These approaches are used for getting info:
 
 1. /proc/cpuinfo
 2. Querying x86 CPUID register
-3. Windows Registry
+3. sysctl
+4. Windows Registry
 
 
 Prereq
@@ -17,7 +18,7 @@ Prereq
 
 Requires Python 2.6 to 3.x
 
-Runs on Linux, FreeBSD, and Windows x86_32 and x86_64.
+Runs on Linux, FreeBSD, OSX, and Windows x86_32 and x86_64.
 
 Only tested on X86 CPUs.
 
@@ -34,6 +35,9 @@ Example
 
     # Or use the Windows registry
     #info = cpuinfo.get_cpu_info_from_registry()
+
+    # Or use sysctl
+    #info = cpuinfo.get_cpu_info_from_sysctl()
 
     # Or use CPU CPUID register
     #info = cpuinfo.get_cpu_info_from_cpuid()
