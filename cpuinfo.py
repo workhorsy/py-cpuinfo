@@ -52,10 +52,109 @@ import time
 import platform
 import multiprocessing
 import ctypes
+import subprocess
 
 bits = platform.architecture()[0]
 is_windows = platform.system().lower() == 'windows'
 
+def chomp(s):
+	for sep in ['\r\n', '\n', '\r']:
+		if s.endswith(sep):
+			return s[:-len(sep)]
+
+	return s
+
+class ProcessRunner(object):
+	def __init__(self, command):
+		self._command = command
+		self._process = None
+		self._return_code = None
+		self._stdout = None
+		self._stderr = None
+
+	def run(self):
+		self._stdout = b''
+		self._stderr = b''
+
+		# Start the process and save the output
+		self._process = subprocess.Popen(
+			self._command, 
+			stderr = subprocess.PIPE, 
+			stdout = subprocess.PIPE, 
+			shell = True
+		)
+
+	def wait(self):
+		# Wait for the process to actually exit
+		self._process.wait()
+
+		# Get the return code
+		rc = self._process.returncode
+		if hasattr(os, 'WIFEXITED') and os.WIFEXITED(rc):
+			rc = os.WEXITSTATUS(rc)
+		self._return_code = rc
+
+		# Get the standard out and error in the correct format
+		try:
+			self._stderr = str(self._stderr, 'UTF-8')
+		except Exception as err:
+			pass
+		try:
+			self._stdout = str(self._stdout, 'UTF-8')
+		except Exception as err:
+			pass
+
+		# Chomp the terminating newline off the ends of output
+		self._stdout = chomp(self._stdout)
+		self._stderr = chomp(self._stderr)
+
+	def get_is_done(self):
+		# You have to poll a process to update the retval. Even if it has stopped already
+		if self._process.returncode == None:
+			self._process.poll()
+
+		# Read the output from the buffer
+		sout, serr = self._process.communicate()
+		self._stdout += sout
+		self._stderr += serr
+
+		# Return true if there is a return code
+		return self._process.returncode != None
+	is_done = property(get_is_done)
+
+	def get_stderr(self):
+		self._require_wait()
+		return self._stderr
+	stderr = property(get_stderr)
+
+	def get_stdout(self):
+		self._require_wait()
+		return self._stdout
+	stdout = property(get_stdout)
+
+	def get_stdall(self):
+		self._require_wait()
+		return self._stdout + '\n' + self._stderr
+	stdall = property(get_stdall)
+
+	def get_is_success(self):
+		self._require_wait()
+		return self._return_code == 0
+	is_success = property(get_is_success)
+
+	def _require_wait(self):
+		if self._return_code == None:
+			raise Exception("Wait needs to be called before any info on the process can be gotten.")
+
+def run_and_get_stdout(command):
+	runner = ProcessRunner(command)
+	runner.run()
+	runner.is_done
+	runner.wait()
+	if runner.is_success:
+		return runner.stdout
+	else:
+		return None
 
 def program_paths(program_name):
 	paths = []
@@ -745,6 +844,70 @@ def get_cpu_info_from_proc_cpuinfo():
 	'flags' : flags
 	}
 
+def get_cpu_info_from_sysctl():
+	'''
+	Returns the CPU info gathered from sysctl. Will return None if
+	sysctl is not found.
+	'''
+	# Just return None if there is no sysctl
+	if not program_paths('sysctl'):
+		return None
+
+	# If sysctl fails return None
+	output = run_and_get_stdout('sysctl machdep.cpu')
+	if output == None:
+		return None
+
+	# Various fields
+	vendor_id = _get_field(output, 'machdep.cpu.vendor')
+	processor_brand = _get_field(output, 'machdep.cpu.brand_string')
+	cache_size = _get_field(output, 'machdep.cpu.cache.size')
+	stepping = _get_field(output, 'machdep.cpu.stepping')
+	model = _get_field(output, 'machdep.cpu.model')
+	family = _get_field(output, 'machdep.cpu.family')
+
+	# Flags
+	flags = _get_field(output, 'machdep.cpu.features').lower().split()
+	flags.sort()
+
+	# Convert from GHz/MHz string to Hz
+	scale = 1
+	if processor_brand.lower().endswith('mhz'):
+		scale = 1000000.0
+	elif processor_brand.lower().endswith('ghz'):
+		scale = 1000000000.0
+	processor_hz = processor_brand.lower()
+	processor_hz = processor_hz.split('@')[1]
+	processor_hz = processor_hz.rstrip('mhz').rstrip('ghz').strip()
+	processor_hz = float(processor_hz) * scale
+	processor_hz = to_friendly_hz(processor_hz)
+
+	# Get the CPU arch and bits
+	raw_arch_string = platform.machine()
+	arch, bits = parse_arch(raw_arch_string)
+
+	return {
+	'vendor_id' : vendor_id, 
+	'brand' : processor_brand, 
+	'hz' : processor_hz, 
+	'arch' : arch, 
+	'bits' : bits, 
+	'count' : multiprocessing.cpu_count(), 
+	'raw_arch_string' : raw_arch_string, 
+
+	'l2_cache_size:' : cache_size, 
+	'l2_cache_line_size' : 0, 
+	'l2_cache_associativity' : 0, 
+
+	'stepping' : stepping, 
+	'model' : model, 
+	'family' : family, 
+	'processor_type' : 0, 
+	'extended_model' : 0, 
+	'extended_family' : 0, 
+	'flags' : flags
+	}
+
 def get_cpu_info_from_registry():
 	'''
 	FIXME: Is missing many of the newer CPU flags like sse3
@@ -869,6 +1032,10 @@ def get_cpu_info():
 	# Try /proc/cpuinfo
 	if not info:
 		info = get_cpu_info_from_proc_cpuinfo()
+
+	# Try sysctl
+	if not info:
+		info = get_cpu_info_from_sysctl()
 
 	# Try querying the CPU cpuid register
 	if not info:
