@@ -65,7 +65,7 @@ Run as a library
     print('Arch: {0}'.format(info['arch']))
     print('Bits: {0}'.format(info['bits']))
     print('Count: {0}'.format(info['count']))
-    print('Flags:: {0}'.format(', '.join(info['flags'])))
+    print('Flags: {0}'.format(', '.join(info['flags'])))
 
 
 Alternate libraries, and how they differ from py-cpuinfo
