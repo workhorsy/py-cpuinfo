@@ -12,17 +12,33 @@ These approaches are used for getting info:
 3. sysctl
 4. Windows Registry
 
-
-Prereq
+Run as a script
 -----
 
-Requires Python 2.6 to 3.x
+    $ python cpuinfo.py
+    python cpuinfo.py 
+    Vendor ID: GenuineIntel
+    Brand: Genuine Intel(R) CPU           T2050  @ 1.60GHz
+    Hz: 1.6000 GHz
+    Arch: X86_32
+    Bits: 32
+    Count: 2
+    Raw Arch String: i686
+    L2 Cache Size: 2048 KB
+    L2 Cache Line Size: 0
+    L2 Cache Associativity: 0
+    Stepping: 8
+    Model: 14
+    Family: 6
+    Processor Type: 0
+    Extended Model: 0
+    Extended Family: 0
+    Flags: acpi, aperfmperf, apic, arch_perfmon, bts, clflush, cmov, 
+    constant_tsc, cx8, de, dtherm, dts, est, fpu, fxsr, ht, mca, mce, mmx, 
+    monitor, msr, mtrr, nx, pae, pbe, pdcm, pge, pni, pse, sep, ss, sse, sse2, 
+    tm, tm2, tsc, vme, xtpr
 
-Runs on Linux, FreeBSD, OSX, and Windows x86_32 and x86_64.
-
-Only tested on X86 CPUs.
-
-Example
+Run as a library
 -----
 
     import cpuinfo
@@ -43,13 +59,13 @@ Example
     #info = cpuinfo.get_cpu_info_from_cpuid()
 
     # Print some CPU values
-    print('Vendor ID', info['vendor_id'])
-    print('Brand', info['brand'])
-    print('Hz', info['hz'])
-    print('Arch', info['arch'])
-    print('Bits', info['bits'])
-    print('Count', info['count'])
-    print('Flags:', info['flags'])
+    print('Vendor ID: {0}'.format(info['vendor_id']))
+    print('Brand: {0}'.format(info['brand']))
+    print('Hz: {0}'.format(info['hz']))
+    print('Arch: {0}'.format(info['arch']))
+    print('Bits: {0}'.format(info['bits']))
+    print('Count: {0}'.format(info['count']))
+    print('Flags:: {0}'.format(', '.join(info['flags'])))
 
 
 Alternate libraries, and how they differ from py-cpuinfo

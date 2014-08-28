@@ -1045,25 +1045,25 @@ def get_cpu_info():
 
 if __name__ == '__main__':
 	info = get_cpu_info()
-	print('Vendor ID', info['vendor_id'])
-	print('Brand', info['brand'])
-	print('Hz', info['hz'])
-	print('Arch', info['arch'])
-	print('Bits', info['bits'])
-	print('Count', info['count'])
+	print('Vendor ID: {0}'.format(info['vendor_id']))
+	print('Brand: {0}'.format(info['brand']))
+	print('Hz: {0}'.format(info['hz']))
+	print('Arch: {0}'.format(info['arch']))
+	print('Bits: {0}'.format(info['bits']))
+	print('Count: {0}'.format(info['count']))
 
-	print('Raw Arch String', info['raw_arch_string'])
+	print('Raw Arch String: {0}'.format(info['raw_arch_string']))
 
-	print('L2 Cache Size', info['l2_cache_size:'])
-	print('L2 Cache Line Size', info['l2_cache_line_size'])
-	print('L2 Cache Associativity', info['l2_cache_associativity'])
+	print('L2 Cache Size: {0}'.format(info['l2_cache_size:']))
+	print('L2 Cache Line Size: {0}'.format(info['l2_cache_line_size']))
+	print('L2 Cache Associativity: {0}'.format(info['l2_cache_associativity']))
 
-	print('Stepping', info['stepping'])
-	print('Model', info['model'])
-	print('Family', info['family'])
-	print('Processor Type', info['processor_type'])
-	print('Extended Model', info['extended_model'])
-	print('Extended Family', info['extended_family'])
-	print('Flags:', info['flags'])
+	print('Stepping: {0}'.format(info['stepping']))
+	print('Model: {0}'.format(info['model']))
+	print('Family: {0}'.format(info['family']))
+	print('Processor Type: {0}'.format(info['processor_type']))
+	print('Extended Model: {0}'.format(info['extended_model']))
+	print('Extended Family: {0}'.format(info['extended_family']))
+	print('Flags: {0}'.format(', '.join(info['flags'])))
 
 
