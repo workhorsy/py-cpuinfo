@@ -762,7 +762,7 @@ def get_cpu_info_from_cpuid():
 	'count' : multiprocessing.cpu_count(), 
 	'raw_arch_string' : raw_arch_string, 
 
-	'l2_cache_size:' : cache_info['size_kb'], 
+	'l2_cache_size' : cache_info['size_kb'], 
 	'l2_cache_line_size' : cache_info['line_size_b'], 
 	'l2_cache_associativity' : hex(cache_info['associativity']), 
 
@@ -831,7 +831,7 @@ def get_cpu_info_from_proc_cpuinfo():
 	'count' : multiprocessing.cpu_count(), 
 	'raw_arch_string' : raw_arch_string, 
 
-	'l2_cache_size:' : cache_size, 
+	'l2_cache_size' : cache_size, 
 	'l2_cache_line_size' : 0, 
 	'l2_cache_associativity' : 0, 
 
@@ -895,7 +895,7 @@ def get_cpu_info_from_sysctl():
 	'count' : multiprocessing.cpu_count(), 
 	'raw_arch_string' : raw_arch_string, 
 
-	'l2_cache_size:' : cache_size, 
+	'l2_cache_size' : cache_size, 
 	'l2_cache_line_size' : 0, 
 	'l2_cache_associativity' : 0, 
 
@@ -1009,7 +1009,7 @@ def get_cpu_info_from_registry():
 	'count' : multiprocessing.cpu_count(), 
 	'raw_arch_string' : raw_arch_string, 
 
-	'l2_cache_size:' : 0, 
+	'l2_cache_size' : 0, 
 	'l2_cache_line_size' : 0, 
 	'l2_cache_associativity' : 0, 
 
@@ -1054,7 +1054,7 @@ if __name__ == '__main__':
 
 	print('Raw Arch String: {0}'.format(info['raw_arch_string']))
 
-	print('L2 Cache Size: {0}'.format(info['l2_cache_size:']))
+	print('L2 Cache Size: {0}'.format(info['l2_cache_size']))
 	print('L2 Cache Line Size: {0}'.format(info['l2_cache_line_size']))
 	print('L2 Cache Associativity: {0}'.format(info['l2_cache_associativity']))
 
