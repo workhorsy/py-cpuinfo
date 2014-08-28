@@ -369,7 +369,7 @@ class CPUID(object):
 		for reg in [ebx, edx, ecx]:
 			for n in [0, 8, 16, 24]:
 				vendor_id.append(chr((reg >> n) & 0xFF))
-		vendor_id = str.join('', vendor_id)
+		vendor_id = ''.join(vendor_id)
 
 		return vendor_id
 
