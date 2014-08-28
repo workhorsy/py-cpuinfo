@@ -717,7 +717,7 @@ class CPUID(object):
 
 		return retval
 
-	def get_hz(self):
+	def get_raw_hz(self):
 		start = self.get_ticks()
 
 		time.sleep(1)
@@ -726,7 +726,10 @@ class CPUID(object):
 
 		ticks = (end - start)
 
-		return to_friendly_hz(ticks)
+		return float(ticks)
+
+	def get_hz(self):
+		return to_friendly_hz(self.get_raw_hz())
 
 
 def get_cpu_info_from_cpuid():
@@ -757,6 +760,7 @@ def get_cpu_info_from_cpuid():
 	'vendor_id' : cpuid.get_vendor_id(), 
 	'brand' : cpuid.get_processor_brand(max_extension_support), 
 	'hz' : cpuid.get_hz(), 
+	'raw_hz' : cpuid.get_raw_hz(), 
 	'arch' : arch, 
 	'bits' : bits, 
 	'count' : multiprocessing.cpu_count(), 
@@ -816,7 +820,6 @@ def get_cpu_info_from_proc_cpuinfo():
 	processor_hz = _get_field(output, 'cpu MHz', 'cpu speed', 'clock')
 	processor_hz = processor_hz.lower().rstrip('mhz').strip()
 	processor_hz = float(processor_hz) * 1000000.0
-	processor_hz = to_friendly_hz(processor_hz)
 
 	# Get the CPU arch and bits
 	raw_arch_string = platform.machine()
@@ -825,7 +828,8 @@ def get_cpu_info_from_proc_cpuinfo():
 	return {
 	'vendor_id' : vendor_id, 
 	'brand' : processor_brand, 
-	'hz' : processor_hz, 
+	'hz' : to_friendly_hz(processor_hz), 
+	'raw_hz' : processor_hz, 
 	'arch' : arch, 
 	'bits' : bits, 
 	'count' : multiprocessing.cpu_count(), 
@@ -880,7 +884,6 @@ def get_cpu_info_from_sysctl():
 	processor_hz = processor_hz.split('@')[1]
 	processor_hz = processor_hz.rstrip('mhz').rstrip('ghz').strip()
 	processor_hz = float(processor_hz) * scale
-	processor_hz = to_friendly_hz(processor_hz)
 
 	# Get the CPU arch and bits
 	raw_arch_string = platform.machine()
@@ -889,7 +892,8 @@ def get_cpu_info_from_sysctl():
 	return {
 	'vendor_id' : vendor_id, 
 	'brand' : processor_brand, 
-	'hz' : processor_hz, 
+	'hz' : to_friendly_hz(processor_hz), 
+	'raw_hz' : processor_hz, 
 	'arch' : arch, 
 	'bits' : bits, 
 	'count' : multiprocessing.cpu_count(), 
@@ -936,7 +940,6 @@ def get_cpu_info_from_registry():
 	processor_hz = winreg.QueryValueEx(key, "~Mhz")[0]
 	winreg.CloseKey(key)
 	processor_hz = float(processor_hz) * 1000000.0
-	processor_hz = to_friendly_hz(processor_hz)
 
 	# Get the CPU name
 	key = winreg.OpenKey(winreg.HKEY_LOCAL_MACHINE, r"Hardware\Description\System\CentralProcessor\0")
@@ -1003,7 +1006,8 @@ def get_cpu_info_from_registry():
 	return {
 	'vendor_id' : vendor_id, 
 	'brand' : processor_brand, 
-	'hz' : processor_hz, 
+	'hz' : to_friendly_hz(processor_hz), 
+	'raw_hz' : processor_hz, 
 	'arch' : arch, 
 	'bits' : bits, 
 	'count' : multiprocessing.cpu_count(), 
@@ -1048,6 +1052,7 @@ if __name__ == '__main__':
 	print('Vendor ID: {0}'.format(info['vendor_id']))
 	print('Brand: {0}'.format(info['brand']))
 	print('Hz: {0}'.format(info['hz']))
+	print('Raw Hz: {0}'.format(info['raw_hz']))
 	print('Arch: {0}'.format(info['arch']))
 	print('Bits: {0}'.format(info['bits']))
 	print('Count: {0}'.format(info['count']))

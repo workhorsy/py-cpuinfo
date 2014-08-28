@@ -62,6 +62,7 @@ Run as a library
     print('Vendor ID: {0}'.format(info['vendor_id']))
     print('Brand: {0}'.format(info['brand']))
     print('Hz: {0}'.format(info['hz']))
+    print('Raw Hz: {0}'.format(info['raw_hz']))
     print('Arch: {0}'.format(info['arch']))
     print('Bits: {0}'.format(info['bits']))
     print('Count: {0}'.format(info['count']))
