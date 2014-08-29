@@ -189,6 +189,13 @@ def to_raw_hz(ticks, scale):
 	if right: right = int(right) * scale
 	return (left, right)
 
+def to_hz_string(ticks):
+	ticks = '{0}'.format(ticks)
+	if not '.' in ticks:
+		ticks = '{0}.0'.format(ticks)
+
+	return ticks
+
 def parse_arch(raw_arch_string):
 	arch, bits = None, None
 	raw_arch_string =  raw_arch_string.lower()
@@ -729,9 +736,6 @@ class CPUID(object):
 		end = self.get_ticks()
 
 		ticks = (end - start)
-		ticks = '{0}'.format(ticks)
-		if not '.' in ticks:
-			ticks = '{0}.0'.format(ticks)
 
 		return ticks
 
@@ -761,6 +765,7 @@ def get_cpu_info_from_cpuid():
 	info = cpuid.get_info()
 
 	processor_hz = cpuid.get_raw_hz()
+	processor_hz = to_hz_string(processor_hz)
 
 	return {
 	'vendor_id' : cpuid.get_vendor_id(), 
@@ -825,6 +830,7 @@ def get_cpu_info_from_proc_cpuinfo():
 	# Convert from MHz string to Hz
 	processor_hz = _get_field(output, 'cpu MHz', 'cpu speed', 'clock')
 	processor_hz = processor_hz.lower().rstrip('mhz').strip()
+	processor_hz = to_hz_string(processor_hz)
 
 	# Get the CPU arch and bits
 	raw_arch_string = platform.machine()
@@ -888,6 +894,7 @@ def get_cpu_info_from_sysctl():
 	processor_hz = processor_brand.lower()
 	processor_hz = processor_hz.split('@')[1]
 	processor_hz = processor_hz.rstrip('mhz').rstrip('ghz').strip()
+	processor_hz = to_hz_string(processor_hz)
 
 	# Get the CPU arch and bits
 	raw_arch_string = platform.machine()
@@ -943,7 +950,7 @@ def get_cpu_info_from_registry():
 	key = winreg.OpenKey(winreg.HKEY_LOCAL_MACHINE, r"Hardware\Description\System\CentralProcessor\0")
 	processor_hz = winreg.QueryValueEx(key, "~Mhz")[0]
 	winreg.CloseKey(key)
-	processor_hz = float(processor_hz) * 1000000.0
+	processor_hz = to_hz_string(processor_hz)
 
 	# Get the CPU name
 	key = winreg.OpenKey(winreg.HKEY_LOCAL_MACHINE, r"Hardware\Description\System\CentralProcessor\0")
@@ -1010,8 +1017,8 @@ def get_cpu_info_from_registry():
 	return {
 	'vendor_id' : vendor_id, 
 	'brand' : processor_brand, 
-	'hz' : to_friendly_hz(processor_hz, 1), 
-	'raw_hz' : to_raw_hz(processor_hz, 1), 
+	'hz' : to_friendly_hz(processor_hz, 1000000), 
+	'raw_hz' : to_raw_hz(processor_hz, 1000000), 
 	'arch' : arch, 
 	'bits' : bits, 
 	'count' : multiprocessing.cpu_count(), 
