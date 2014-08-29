@@ -212,34 +212,34 @@ def parse_arch(raw_arch_string):
 	# X86
 	if re.match('^i\d86$|^x86$|^x86_32$|^i86pc$|^ia32$|^ia-32$|^bepc$', raw_arch_string):
 		arch = 'X86_32'
-		bits = '32'
+		bits = 32
 	elif re.match('^x64$|^x86_64$|^x86_64t$|^i686-64$|^amd64$|^ia64$|^ia-64$', raw_arch_string):
 		arch = 'X86_64'
-		bits = '64'
+		bits = 64
 	# ARM
 	elif re.match('^armv8-a$', raw_arch_string):
 		arch = 'ARM_8'
-		bits = '64'
+		bits = 64
 	elif re.match('^armv7$|^armv7[a-z]$|^armv7-[a-z]$', raw_arch_string):
 		arch = 'ARM_7'
-		bits = '32'
+		bits = 32
 	elif re.match('^armv8$|^armv8[a-z]$|^armv8-[a-z]$', raw_arch_string):
 		arch = 'ARM_8'
-		bits = '32'
+		bits = 32
 	# PPC
 	elif re.match('^ppc32$|^prep$|^pmac$|^powermac$', raw_arch_string):
 		arch = 'PPC_32'
-		bits = '32'
+		bits = 32
 	elif re.match('^powerpc$|^ppc64$', raw_arch_string):
 		arch = 'PPC_64'
-		bits = '64'
+		bits = 64
 	# SPARC
 	elif re.match('^sparc32$|^sparc$', raw_arch_string):
 		arch = 'SPARC_32'
-		bits = '32'
+		bits = 32
 	elif re.match('^sparc64$|^sun4u$|^sun4v$', raw_arch_string):
 		arch = 'SPARC_64'
-		bits = '64'
+		bits = 64
 
 
 	return (arch, bits)
@@ -830,9 +830,9 @@ def get_cpu_info_from_proc_cpuinfo():
 	vendor_id = _get_field(output, 'vendor_id', 'vendor id', 'vendor')
 	processor_brand = _get_field(output, 'model name','cpu')
 	cache_size = _get_field(output, 'cache size')
-	stepping = _get_field(output, 'stepping')
-	model = _get_field(output, 'model')
-	family = _get_field(output, 'cpu family')
+	stepping = int(_get_field(output, 'stepping'))
+	model = int(_get_field(output, 'model'))
+	family = int(_get_field(output, 'cpu family'))
 
 	# Flags
 	flags = _get_field(output, 'flags', 'Features').split()
@@ -887,9 +887,9 @@ def get_cpu_info_from_sysctl():
 	vendor_id = _get_field(output, 'machdep.cpu.vendor')
 	processor_brand = _get_field(output, 'machdep.cpu.brand_string')
 	cache_size = _get_field(output, 'machdep.cpu.cache.size')
-	stepping = _get_field(output, 'machdep.cpu.stepping')
-	model = _get_field(output, 'machdep.cpu.model')
-	family = _get_field(output, 'machdep.cpu.family')
+	stepping = int(_get_field(output, 'machdep.cpu.stepping'))
+	model = int(_get_field(output, 'machdep.cpu.model'))
+	family = int(_get_field(output, 'machdep.cpu.family'))
 
 	# Flags
 	flags = _get_field(output, 'machdep.cpu.features').lower().split()
@@ -1069,6 +1069,7 @@ def get_cpu_info():
 
 if __name__ == '__main__':
 	info = get_cpu_info()
+
 	print('Vendor ID: {0}'.format(info['vendor_id']))
 	print('Brand: {0}'.format(info['brand']))
 	print('Hz: {0}'.format(info['hz']))
