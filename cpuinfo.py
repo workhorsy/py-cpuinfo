@@ -30,22 +30,6 @@
 # FIXME: Check how this compares to numpy. How does numpy get MHz and sse3 detection when the registry
 # does not have this info, and there is no /proc/cpuinfo ? Does it use win32 __cpuinfo ?
 
-# Assembly code can be assembled and disassembled like this:
-'''
-; cpuid.asm
-; clear && nasm -o out -f bin cpuid.asm && ndisasm out
-BITS 32
-section .data
-section .text
-global main
-
-main:
-	mov ax, 1
-	cpuid
-	mov ax, bx
-	ret
-'''
-
 import os
 import re
 import time
