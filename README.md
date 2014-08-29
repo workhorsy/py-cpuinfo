@@ -20,6 +20,7 @@ Run as a script
     Vendor ID: GenuineIntel
     Brand: Genuine Intel(R) CPU           T2050  @ 1.60GHz
     Hz: 1.6000 GHz
+    Raw Hz: (1600000000, 0)
     Arch: X86_32
     Bits: 32
     Count: 2
