@@ -155,43 +155,53 @@ def program_paths(program_name):
 	return paths
 
 def to_friendly_hz(ticks, scale):
-	# Get the number on the left and right side of the decimal
-	left, right = ticks.split('.')
+	left, right = to_raw_hz(ticks, scale)
+	ticks = '{0}.{1}'.format(left, right)
 
-	# Scale the numbers
-	if left: left = int(left) * scale
-	if right: right = int(right) * scale
+	symbol = None
+	if scale == 9:
+		symbol = "GHz"
+	elif scale == 6:
+		symbol = "MHz"
+	elif scale == 3:
+		symbol = "KHz"
+	elif scale == 1:
+		symbol = "Hz"
+	else:
+		return None
 
-	hz = 0
-	if left: hz += left
-	if right: hz += right
+	print(ticks, symbol)
+	exit()
 
-	hz_map = [
-		{'GHz' : 1000000000.0}, 
-		{'MHz' : 1000000.0}, 
-		{'KHz' : 1000.0}, 
-		{'Hz' : 1.0}
-	]
-
-	for pair in hz_map:
-		for symbol, place in pair.items():
-			if hz >= place:
-				return '{0:.4f} {1}'.format(hz / place, symbol)
-
-	return None
+	return '{0} {1}'.format(ticks, symbol)
 
 def to_raw_hz(ticks, scale):
-	# Get the number on the left and right side of the decimal
-	left, right = ticks.split('.')
-
 	# Scale the numbers
-	if left: left = int(left) * scale
-	if right: right = int(right) * scale
+	print(ticks)
+	ticks = ticks.strip('0')
+	print(ticks)
+	ticks = ticks.replace('.', '')
+	print(ticks)
+	ticks = ticks.ljust(scale + 1, '0')
+	print(ticks)
+	ticks = ticks[:scale+1] + '.' + ticks[scale+1:]
+
+	left, right = ticks.split('.')
 	return (left, right)
 
 def to_hz_string(ticks):
+	# Convert to string
 	ticks = '{0}'.format(ticks)
+
+	# Add decimal if missing
 	if not '.' in ticks:
+		ticks = '{0}.0'.format(ticks)
+
+	# Remove trailing zeros
+	ticks = ticks.rstrip('0')
+
+	# Add one trailing zero for empty right side
+	if ticks.endswith('.'):
 		ticks = '{0}.0'.format(ticks)
 
 	return ticks
@@ -770,8 +780,8 @@ def get_cpu_info_from_cpuid():
 	return {
 	'vendor_id' : cpuid.get_vendor_id(), 
 	'brand' : cpuid.get_processor_brand(max_extension_support), 
-	'hz' : to_friendly_hz(processor_hz, 1), 
-	'raw_hz' : to_raw_hz(processor_hz, 1), 
+	'hz' : to_friendly_hz(processor_hz, 0), 
+	'raw_hz' : to_raw_hz(processor_hz, 0), 
 	'arch' : arch, 
 	'bits' : bits, 
 	'count' : multiprocessing.cpu_count(), 
@@ -830,6 +840,7 @@ def get_cpu_info_from_proc_cpuinfo():
 	# Convert from MHz string to Hz
 	processor_hz = _get_field(output, 'cpu MHz', 'cpu speed', 'clock')
 	processor_hz = processor_hz.lower().rstrip('mhz').strip()
+	processor_hz = '01612.0'
 	processor_hz = to_hz_string(processor_hz)
 
 	# Get the CPU arch and bits
@@ -839,8 +850,8 @@ def get_cpu_info_from_proc_cpuinfo():
 	return {
 	'vendor_id' : vendor_id, 
 	'brand' : processor_brand, 
-	'hz' : to_friendly_hz(processor_hz, 1000000), 
-	'raw_hz' : to_raw_hz(processor_hz, 1000000), 
+	'hz' : to_friendly_hz(processor_hz, 6), 
+	'raw_hz' : to_raw_hz(processor_hz, 6), 
 	'arch' : arch, 
 	'bits' : bits, 
 	'count' : multiprocessing.cpu_count(), 
@@ -888,9 +899,9 @@ def get_cpu_info_from_sysctl():
 	# Convert from GHz/MHz string to Hz
 	scale = 1
 	if processor_brand.lower().endswith('mhz'):
-		scale = 1000000
+		scale = 6
 	elif processor_brand.lower().endswith('ghz'):
-		scale = 1000000000
+		scale = 9
 	processor_hz = processor_brand.lower()
 	processor_hz = processor_hz.split('@')[1]
 	processor_hz = processor_hz.rstrip('mhz').rstrip('ghz').strip()
@@ -1017,8 +1028,8 @@ def get_cpu_info_from_registry():
 	return {
 	'vendor_id' : vendor_id, 
 	'brand' : processor_brand, 
-	'hz' : to_friendly_hz(processor_hz, 1000000), 
-	'raw_hz' : to_raw_hz(processor_hz, 1000000), 
+	'hz' : to_friendly_hz(processor_hz, 6), 
+	'raw_hz' : to_raw_hz(processor_hz, 6), 
 	'arch' : arch, 
 	'bits' : bits, 
 	'count' : multiprocessing.cpu_count(), 
