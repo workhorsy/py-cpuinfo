@@ -155,38 +155,47 @@ def program_paths(program_name):
 	return paths
 
 def to_friendly_hz(ticks, scale):
+	# Get the raw Hz as a string
 	left, right = to_raw_hz(ticks, scale)
 	ticks = '{0}.{1}'.format(left, right)
 
-	symbol = None
-	if scale == 9:
+	# Get the location of the dot, and remove said dot
+	dot_index = ticks.index('.')
+	ticks = ticks.replace('.', '')
+
+	# Get the Hz symbol and scale
+	symbol = "Hz"
+	scale = 0
+	if dot_index > 9:
 		symbol = "GHz"
-	elif scale == 6:
+		scale = 9
+	elif dot_index > 6:
 		symbol = "MHz"
-	elif scale == 3:
+		scale = 6
+	elif dot_index > 3:
 		symbol = "KHz"
-	elif scale == 1:
-		symbol = "Hz"
-	else:
-		return None
+		scale = 3
 
-	print(ticks, symbol)
-	exit()
+	# Get the Hz with the dot at the new scaled point
+	ticks = '{0}.{1}'.format(ticks[:-scale-1], ticks[-scale-1:])
 
-	return '{0} {1}'.format(ticks, symbol)
+	# Format the ticks to have 4 numbers after the decimal
+	# and remove any superfluous zeroes.
+	ticks = '{0:.4f} {1}'.format(float(ticks), symbol)
+	ticks = ticks.rstrip('0')
+	
+	return ticks
 
 def to_raw_hz(ticks, scale):
 	# Scale the numbers
-	print(ticks)
-	ticks = ticks.strip('0')
-	print(ticks)
+	ticks = ticks.lstrip('0')
+	old_index = ticks.index('.')
 	ticks = ticks.replace('.', '')
-	print(ticks)
-	ticks = ticks.ljust(scale + 1, '0')
-	print(ticks)
-	ticks = ticks[:scale+1] + '.' + ticks[scale+1:]
-
+	ticks = ticks.ljust(scale + old_index+1, '0')
+	new_index = old_index + scale
+	ticks = '{0}.{1}'.format(ticks[:new_index], ticks[new_index:])
 	left, right = ticks.split('.')
+	left, right = int(left), int(right)
 	return (left, right)
 
 def to_hz_string(ticks):
@@ -202,7 +211,7 @@ def to_hz_string(ticks):
 
 	# Add one trailing zero for empty right side
 	if ticks.endswith('.'):
-		ticks = '{0}.0'.format(ticks)
+		ticks = '{0}0'.format(ticks)
 
 	return ticks
 
@@ -774,6 +783,7 @@ def get_cpu_info_from_cpuid():
 	cache_info = cpuid.get_cache(max_extension_support)
 	info = cpuid.get_info()
 
+	# Get the Hz and scale
 	processor_hz = cpuid.get_raw_hz()
 	processor_hz = to_hz_string(processor_hz)
 
