@@ -299,15 +299,21 @@ class CPUID(object):
 			if not address:
 				raise Exception("Failed to valloc")
 
-			# Mark the memory segment as safe for code execution
+			# Mark the memory segment as writeable only
 			if not self.is_selinux_enforcing:
-				READ_WRITE_EXECUTE = 0x1 | 0x2 | 0x4
-				if ctypes.pythonapi.mprotect(address, size, READ_WRITE_EXECUTE) < 0:
+				WRITE = 0x2
+				if ctypes.pythonapi.mprotect(address, size, WRITE) < 0:
 					raise Exception("Failed to mprotect")
-				
+
 			# Copy the byte code into the memory segment
 			if ctypes.pythonapi.memmove(address, byte_code, size) < 0:
 				raise Exception("Failed to memmove")
+
+			# Mark the memory segment as writeable and executable only
+			if not self.is_selinux_enforcing:
+				WRITE_EXECUTE = 0x2 | 0x4
+				if ctypes.pythonapi.mprotect(address, size, WRITE_EXECUTE) < 0:
+					raise Exception("Failed to mprotect")
 
 		# Cast the memory segment into a function
 		functype = ctypes.CFUNCTYPE(restype, *argtypes)
@@ -330,13 +336,18 @@ class CPUID(object):
 		# Call the byte code like a function
 		retval = func()
 
+		size = ctypes.c_size_t(len(byte_code))
+
 		# Free the function memory segment
-		# FIXME: This should set the memory as non executable before freeing
 		if is_windows:
-			size = ctypes.c_size_t(len(byte_code))
 			MEM_RELEASE = ctypes.c_ulong(0x8000)
 			ctypes.windll.kernel32.VirtualFree(address, size, MEM_RELEASE)
 		else:
+			# Remove the executable tag on the memory
+			READ_WRITE = 0x1 | 0x2
+			if ctypes.pythonapi.mprotect(address, size, READ_WRITE) < 0:
+				raise Exception("Failed to mprotect")
+
 			ctypes.pythonapi.free(address)
 
 		return retval
