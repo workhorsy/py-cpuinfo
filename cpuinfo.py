@@ -532,11 +532,11 @@ class CPUID(object):
 		# Get the Extended CPU flags
 		extended_flags = {}
 		if max_extension_support >= 0x80000001:
-			# EDX
-			edx = self._run_asm(
+			# EBX
+			ebx = self._run_asm(
 				b"\xB8\x01\x00\x00\x80" # mov ax,0x80000001
 				b"\x0f\xa2"         # cpuid
-				b"\x89\xD0"         # mov ax,dx
+				b"\x89\xD8"         # mov ax,bx
 				b"\xC3"             # ret
 			)
 
@@ -550,38 +550,38 @@ class CPUID(object):
 
 			# Get the extended CPU flags
 			extended_flags = {
-				'fpu' : is_bit_set(edx, 0),
-				'vme' : is_bit_set(edx, 1),
-				'de' : is_bit_set(edx, 2),
-				'pse' : is_bit_set(edx, 3),
-				'tsc' : is_bit_set(edx, 4),
-				'msr' : is_bit_set(edx, 5),
-				'pae' : is_bit_set(edx, 6),
-				'mce' : is_bit_set(edx, 7),
-				'cx8' : is_bit_set(edx, 8),
-				'apic' : is_bit_set(edx, 9),
-				#'reserved' : is_bit_set(edx, 10),
-				'syscall' : is_bit_set(edx, 11),
-				'mtrr' : is_bit_set(edx, 12),
-				'pge' : is_bit_set(edx, 13),
-				'mca' : is_bit_set(edx, 14),
-				'cmov' : is_bit_set(edx, 15),
-				'pat' : is_bit_set(edx, 16),
-				'pse36' : is_bit_set(edx, 17),
-				#'reserved' : is_bit_set(edx, 18),
-				'mp' : is_bit_set(edx, 19),
-				'nx' : is_bit_set(edx, 20),
-				#'reserved' : is_bit_set(edx, 21),
-				'mmxext' : is_bit_set(edx, 22),
-				'mmx' : is_bit_set(edx, 23),
-				'fxsr' : is_bit_set(edx, 24),
-				'fxsr_opt' : is_bit_set(edx, 25),
-				'pdpe1gp' : is_bit_set(edx, 26),
-				'rdtscp' : is_bit_set(edx, 27),
-				#'reserved' : is_bit_set(edx, 28),
-				'lm' : is_bit_set(edx, 29),
-				'3dnowext' : is_bit_set(edx, 30),
-				'3dnow' : is_bit_set(edx, 31),
+				'fpu' : is_bit_set(ebx, 0),
+				'vme' : is_bit_set(ebx, 1),
+				'de' : is_bit_set(ebx, 2),
+				'pse' : is_bit_set(ebx, 3),
+				'tsc' : is_bit_set(ebx, 4),
+				'msr' : is_bit_set(ebx, 5),
+				'pae' : is_bit_set(ebx, 6),
+				'mce' : is_bit_set(ebx, 7),
+				'cx8' : is_bit_set(ebx, 8),
+				'apic' : is_bit_set(ebx, 9),
+				#'reserved' : is_bit_set(ebx, 10),
+				'syscall' : is_bit_set(ebx, 11),
+				'mtrr' : is_bit_set(ebx, 12),
+				'pge' : is_bit_set(ebx, 13),
+				'mca' : is_bit_set(ebx, 14),
+				'cmov' : is_bit_set(ebx, 15),
+				'pat' : is_bit_set(ebx, 16),
+				'pse36' : is_bit_set(ebx, 17),
+				#'reserved' : is_bit_set(ebx, 18),
+				'mp' : is_bit_set(ebx, 19),
+				'nx' : is_bit_set(ebx, 20),
+				#'reserved' : is_bit_set(ebx, 21),
+				'mmxext' : is_bit_set(ebx, 22),
+				'mmx' : is_bit_set(ebx, 23),
+				'fxsr' : is_bit_set(ebx, 24),
+				'fxsr_opt' : is_bit_set(ebx, 25),
+				'pdpe1gp' : is_bit_set(ebx, 26),
+				'rdtscp' : is_bit_set(ebx, 27),
+				#'reserved' : is_bit_set(ebx, 28),
+				'lm' : is_bit_set(ebx, 29),
+				'3dnowext' : is_bit_set(ebx, 30),
+				'3dnow' : is_bit_set(ebx, 31),
 
 				'lahf_lm' : is_bit_set(ecx, 0),
 				'cmp_legacy' : is_bit_set(ecx, 1),
@@ -609,9 +609,9 @@ class CPUID(object):
 				'perfctr_core' : is_bit_set(ecx, 23),
 				'perfctr_nb' : is_bit_set(ecx, 24),
 				#'reserved' : is_bit_set(ecx, 25),
-				#'reserved' : is_bit_set(ecx, 26),
-				#'reserved' : is_bit_set(ecx, 27),
-				#'reserved' : is_bit_set(ecx, 28),
+				'dbx' : is_bit_set(ecx, 26),
+				'perftsc' : is_bit_set(ecx, 27),
+				'pci_l2i' : is_bit_set(ecx, 28),
 				#'reserved' : is_bit_set(ecx, 29),
 				#'reserved' : is_bit_set(ecx, 30),
 				#'reserved' : is_bit_set(ecx, 31)
