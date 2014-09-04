@@ -1069,6 +1069,77 @@ def get_cpu_info_from_registry():
 	'flags' : flags
 	}
 
+def get_cpu_info_from_solaris():
+	'''
+	Returns the CPU info gathered from isainfo and psrinfo. Will 
+	return None if isainfo or psrinfo are not found.
+	'''
+	# Just return None if there is no isainfo or psrinfo
+	if not program_paths('isainfo') or not program_paths('psrinfo'):
+		return None
+
+	# If isainfo fails return None
+	flag_output = run_and_get_stdout('isainfo -vb')
+	if flag_output == None:
+		return None
+
+	# If psrinfo fails return None
+	output = run_and_get_stdout('psrinfo -v')
+	if output == None:
+		return None
+
+	# Various fields
+	vendor_id = 'unknown'
+	processor_brand = 'unknown'
+	cache_size = 0
+	stepping = 0
+	model = 0
+	family = 0
+
+	# Flags
+	flags = flag_output.split('\n')[1].strip().lower().split()
+	flags.sort()
+
+	speed = output.split('\n')[2]
+	speed = speed.split(' at ')[1].split(',')[0].strip()
+	speed = speed.strip()
+	# Convert from GHz/MHz string to Hz
+	scale = 1
+	if speed.lower().endswith('mhz'):
+		scale = 6
+	elif speed.lower().endswith('ghz'):
+		scale = 9
+	processor_hz = speed
+	processor_hz = processor_hz.lower().rstrip('mhz').rstrip('ghz').strip()
+	processor_hz = to_hz_string(processor_hz)
+
+	# Get the CPU arch and bits
+	raw_arch_string = platform.machine()
+	arch, bits = parse_arch(raw_arch_string)
+
+	return {
+	'vendor_id' : vendor_id, 
+	'brand' : processor_brand, 
+	'hz' : to_friendly_hz(processor_hz, scale), 
+	'raw_hz' : to_raw_hz(processor_hz, scale), 
+	'arch' : arch, 
+	'bits' : bits, 
+	'count' : multiprocessing.cpu_count(), 
+	'raw_arch_string' : raw_arch_string, 
+
+	'l2_cache_size' : cache_size, 
+	'l2_cache_line_size' : 0, 
+	'l2_cache_associativity' : 0, 
+
+	'stepping' : stepping, 
+	'model' : model, 
+	'family' : family, 
+	'processor_type' : 0, 
+	'extended_model' : 0, 
+	'extended_family' : 0, 
+	'flags' : flags
+	}
+
 def get_cpu_info():
 	info = None
 
@@ -1083,6 +1154,10 @@ def get_cpu_info():
 	# Try sysctl
 	if not info:
 		info = get_cpu_info_from_sysctl()
+
+	# Try solaris
+	if not info:
+		info = get_cpu_info_from_solaris()
 
 	# Try querying the CPU cpuid register
 	if not info:
