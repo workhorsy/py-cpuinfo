@@ -900,9 +900,9 @@ def get_cpu_info_from_dmesg():
 	if not program_paths('dmesg'):
 		return None
 
-	# If dmesg fails to have vendor id, return None
-	vendor_id = run_and_get_stdout('dmesg -a | grep "CPU:"')
-	if vendor_id == None:
+	# If dmesg fails to have processor brand, return None
+	processor_brand = run_and_get_stdout('dmesg -a | grep "CPU:"')
+	if processor_brand == None:
 		return None
 
 	# If dmesg fails to have fields, return None
@@ -915,20 +915,21 @@ def get_cpu_info_from_dmesg():
 	if flags == None:
 		return None
 
-	# Vendor id
-	vendor_id = vendor_id.split('(')[0]
-	vendor_id = vendor_id.strip()
+	# Processor Brand
+	processor_brand = processor_brand.rsplit('(', 1)[0]
+	processor_brand = processor_brand.strip()
 
 	# Various fields
 	fields = fields.split('  ')
-	processor_brand = None
+	vendor_id = None
 	stepping = None
 	model = None
 	family = None
-	for name, value in fields.split(' = '):
+	for field in fields:
+		name, value = field.split(' = '):
 		name = name.lower()
 		if name == 'origin':
-			processor_brand = value.strip('"')
+			vendor_id = value.strip('"')
 		elif name == 'stepping':
 			stepping = int(value)
 		elif name == 'model':
