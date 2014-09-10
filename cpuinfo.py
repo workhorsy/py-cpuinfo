@@ -891,6 +891,95 @@ def get_cpu_info_from_proc_cpuinfo():
 	'flags' : flags
 	}
 
+def get_cpu_info_from_dmesg():
+	'''
+	Returns the CPU info gathered from dmesg. Will return None if
+	dmesg is not found or does not have the desired info.
+	'''
+	# Just return None if there is no dmesg
+	if not program_paths('dmesg'):
+		return None
+
+	# If dmesg fails to have vendor id, return None
+	vendor_id = run_and_get_stdout('dmesg -a | grep "CPU:"')
+	if vendor_id == None:
+		return None
+
+	# If dmesg fails to have fields, return None
+	fields = run_and_get_stdout('dmesg -a | grep "Origin ="')
+	if fields == None:
+		return None
+
+	# If dmesg fails to have flags, return None
+	flags = run_and_get_stdout('dmesg -a | grep "Features="')
+	if flags == None:
+		return None
+
+	# Vendor id
+	vendor_id = vendor_id.split('(')[0]
+	vendor_id = vendor_id.strip()
+
+	# Various fields
+	fields = fields.split('  ')
+	processor_brand = None
+	stepping = None
+	model = None
+	family = None
+	for name, value in fields.split(' = '):
+		name = name.lower()
+		if name == 'origin':
+			processor_brand = value.strip('"')
+		elif name == 'stepping':
+			stepping = int(value)
+		elif name == 'model':
+			model = int(value, 16)
+		elif name == 'family':
+			family = int(value, 16)
+
+	# Flags
+	flags = flags.strip().lower()
+	flags = flags.split('<')[1].split('>')[0]
+	flags = flags.split(',')
+	flags.sort()
+
+	# Convert from GHz/MHz string to Hz
+	scale = 1
+	if processor_brand.lower().endswith('mhz'):
+		scale = 6
+	elif processor_brand.lower().endswith('ghz'):
+		scale = 9
+	processor_hz = processor_brand.lower()
+	processor_hz = processor_hz.split('@')[1]
+	processor_hz = processor_hz.rstrip('mhz').rstrip('ghz').strip()
+	processor_hz = to_hz_string(processor_hz)
+
+	# Get the CPU arch and bits
+	raw_arch_string = platform.machine()
+	arch, bits = parse_arch(raw_arch_string)
+
+	return {
+	'vendor_id' : vendor_id, 
+	'brand' : processor_brand, 
+	'hz' : to_friendly_hz(processor_hz, scale), 
+	'raw_hz' : to_raw_hz(processor_hz, scale), 
+	'arch' : arch, 
+	'bits' : bits, 
+	'count' : multiprocessing.cpu_count(), 
+	'raw_arch_string' : raw_arch_string, 
+
+	'l2_cache_size' : 0, 
+	'l2_cache_line_size' : 0, 
+	'l2_cache_associativity' : 0, 
+
+	'stepping' : stepping, 
+	'model' : model, 
+	'family' : family, 
+	'processor_type' : 0, 
+	'extended_model' : 0, 
+	'extended_family' : 0, 
+	'flags' : flags
+	}
+
 def get_cpu_info_from_sysctl():
 	'''
 	Returns the CPU info gathered from sysctl. Will return None if
@@ -1158,6 +1247,10 @@ def get_cpu_info():
 	# Try solaris
 	if not info:
 		info = get_cpu_info_from_solaris()
+
+	# Try dmesg
+	if not info:
+		info = get_cpu_info_from_dmesg()
 
 	# Try querying the CPU cpuid register
 	if not info:
