@@ -920,13 +920,13 @@ def get_cpu_info_from_dmesg():
 	processor_brand = processor_brand.strip()
 
 	# Various fields
-	fields = fields.split('  ')
+	fields = fields.strip().split('  ')
 	vendor_id = None
 	stepping = None
 	model = None
 	family = None
 	for field in fields:
-		name, value = field.split(' = '):
+		name, value = field.split(' = ')
 		name = name.lower()
 		if name == 'origin':
 			vendor_id = value.strip('"')
