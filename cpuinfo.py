@@ -5,7 +5,7 @@
 # Py-cpuinfo is a Python module to show the cpuinfo of a processor
 # It uses a MIT style license
 # It is hosted at: https://github.com/workhorsy/py-cpuinfo
-# 
+#
 # Permission is hereby granted, free of charge, to any person obtaining
 # a copy of this software and associated documentation files (the
 # "Software"), to deal in the Software without restriction, including
@@ -13,10 +13,10 @@
 # distribute, sublicense, and/or sell copies of the Software, and to
 # permit persons to whom the Software is furnished to do so, subject to
 # the following conditions:
-# 
+#
 # The above copyright notice and this permission notice shall be included
 # in all copies or substantial portions of the Software.
-# 
+#
 # THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
 # EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
 # MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
@@ -64,9 +64,9 @@ class ProcessRunner(object):
 
 		# Start the process and save the output
 		self._process = subprocess.Popen(
-			self._command, 
-			stderr = subprocess.PIPE, 
-			stdout = subprocess.PIPE, 
+			self._command,
+			stderr = subprocess.PIPE,
+			stdout = subprocess.PIPE,
 			shell = True
 		)
 
@@ -187,7 +187,7 @@ def to_friendly_hz(ticks, scale):
 	# and remove any superfluous zeroes.
 	ticks = '{0:.4f} {1}'.format(float(ticks), symbol)
 	ticks = ticks.rstrip('0')
-	
+
 	return ticks
 
 def to_raw_hz(ticks, scale):
@@ -207,7 +207,7 @@ def to_hz_string(ticks):
 	ticks = '{0}'.format(ticks)
 
 	# Add decimal if missing
-	if not '.' in ticks:
+	if '.' not in ticks:
 		ticks = '{0}.0'.format(ticks)
 
 	# Remove trailing zeros
@@ -221,7 +221,7 @@ def to_hz_string(ticks):
 
 def parse_arch(raw_arch_string):
 	arch, bits = None, None
-	raw_arch_string =  raw_arch_string.lower()
+	raw_arch_string = raw_arch_string.lower()
 
 	# X86
 	if re.match('^i\d86$|^x86$|^x86_32$|^i86pc$|^ia32$|^ia-32$|^bepc$', raw_arch_string):
@@ -254,7 +254,6 @@ def parse_arch(raw_arch_string):
 	elif re.match('^sparc64$|^sun4u$|^sun4v$', raw_arch_string):
 		arch = 'SPARC_64'
 		bits = 64
-
 
 	return (arch, bits)
 
@@ -356,7 +355,7 @@ class CPUID(object):
 
 		return retval
 
-	# FIXME: We should not have to use different instructions to 
+	# FIXME: We should not have to use different instructions to
 	# set eax to 0 or 1, on 32bit and 64bit machines.
 	def _zero_eax(self):
 		global bits
@@ -436,8 +435,8 @@ class CPUID(object):
 		extended_family = (eax >> 20) & 0xFF # 8 bits
 
 		return {
-			'stepping' : stepping, 
-			'model' : model, 
+			'stepping' : stepping,
+			'model' : model,
 			'family' : family,
 			'processor_type' : processor_type,
 			'extended_model' : extended_model,
@@ -803,25 +802,25 @@ def get_cpu_info_from_cpuid():
 	processor_hz = to_hz_string(processor_hz)
 
 	return {
-	'vendor_id' : cpuid.get_vendor_id(), 
-	'brand' : cpuid.get_processor_brand(max_extension_support), 
-	'hz' : to_friendly_hz(processor_hz, 0), 
-	'raw_hz' : to_raw_hz(processor_hz, 0), 
-	'arch' : arch, 
-	'bits' : bits, 
-	'count' : multiprocessing.cpu_count(), 
-	'raw_arch_string' : raw_arch_string, 
+	'vendor_id' : cpuid.get_vendor_id(),
+	'brand' : cpuid.get_processor_brand(max_extension_support),
+	'hz' : to_friendly_hz(processor_hz, 0),
+	'raw_hz' : to_raw_hz(processor_hz, 0),
+	'arch' : arch,
+	'bits' : bits,
+	'count' : multiprocessing.cpu_count(),
+	'raw_arch_string' : raw_arch_string,
 
-	'l2_cache_size' : cache_info['size_kb'], 
-	'l2_cache_line_size' : cache_info['line_size_b'], 
-	'l2_cache_associativity' : hex(cache_info['associativity']), 
+	'l2_cache_size' : cache_info['size_kb'],
+	'l2_cache_line_size' : cache_info['line_size_b'],
+	'l2_cache_associativity' : hex(cache_info['associativity']),
 
-	'stepping' : info['stepping'], 
-	'model' : info['model'], 
-	'family' : info['family'], 
-	'processor_type' : info['processor_type'], 
-	'extended_model' : info['extended_model'], 
-	'extended_family' : info['extended_family'], 
+	'stepping' : info['stepping'],
+	'model' : info['model'],
+	'family' : info['family'],
+	'processor_type' : info['processor_type'],
+	'extended_model' : info['extended_model'],
+	'extended_family' : info['extended_family'],
 	'flags' : cpuid.get_flags(max_extension_support)
 	}
 
@@ -873,25 +872,25 @@ def get_cpu_info_from_proc_cpuinfo():
 	arch, bits = parse_arch(raw_arch_string)
 
 	return {
-	'vendor_id' : vendor_id, 
-	'brand' : processor_brand, 
-	'hz' : to_friendly_hz(processor_hz, 6), 
-	'raw_hz' : to_raw_hz(processor_hz, 6), 
-	'arch' : arch, 
-	'bits' : bits, 
-	'count' : multiprocessing.cpu_count(), 
-	'raw_arch_string' : raw_arch_string, 
+	'vendor_id' : vendor_id,
+	'brand' : processor_brand,
+	'hz' : to_friendly_hz(processor_hz, 6),
+	'raw_hz' : to_raw_hz(processor_hz, 6),
+	'arch' : arch,
+	'bits' : bits,
+	'count' : multiprocessing.cpu_count(),
+	'raw_arch_string' : raw_arch_string,
 
-	'l2_cache_size' : cache_size, 
-	'l2_cache_line_size' : 0, 
-	'l2_cache_associativity' : 0, 
+	'l2_cache_size' : cache_size,
+	'l2_cache_line_size' : 0,
+	'l2_cache_associativity' : 0,
 
-	'stepping' : stepping, 
-	'model' : model, 
-	'family' : family, 
-	'processor_type' : 0, 
-	'extended_model' : 0, 
-	'extended_family' : 0, 
+	'stepping' : stepping,
+	'model' : model,
+	'family' : family,
+	'processor_type' : 0,
+	'extended_model' : 0,
+	'extended_family' : 0,
 	'flags' : flags
 	}
 
@@ -963,25 +962,25 @@ def get_cpu_info_from_dmesg():
 	arch, bits = parse_arch(raw_arch_string)
 
 	return {
-	'vendor_id' : vendor_id, 
-	'brand' : processor_brand, 
-	'hz' : to_friendly_hz(processor_hz, scale), 
-	'raw_hz' : to_raw_hz(processor_hz, scale), 
-	'arch' : arch, 
-	'bits' : bits, 
-	'count' : multiprocessing.cpu_count(), 
-	'raw_arch_string' : raw_arch_string, 
+	'vendor_id' : vendor_id,
+	'brand' : processor_brand,
+	'hz' : to_friendly_hz(processor_hz, scale),
+	'raw_hz' : to_raw_hz(processor_hz, scale),
+	'arch' : arch,
+	'bits' : bits,
+	'count' : multiprocessing.cpu_count(),
+	'raw_arch_string' : raw_arch_string,
 
-	'l2_cache_size' : 0, 
-	'l2_cache_line_size' : 0, 
-	'l2_cache_associativity' : 0, 
+	'l2_cache_size' : 0,
+	'l2_cache_line_size' : 0,
+	'l2_cache_associativity' : 0,
 
-	'stepping' : stepping, 
-	'model' : model, 
-	'family' : family, 
-	'processor_type' : 0, 
-	'extended_model' : 0, 
-	'extended_family' : 0, 
+	'stepping' : stepping,
+	'model' : model,
+	'family' : family,
+	'processor_type' : 0,
+	'extended_model' : 0,
+	'extended_family' : 0,
 	'flags' : flags
 	}
 
@@ -1027,25 +1026,25 @@ def get_cpu_info_from_sysctl():
 	arch, bits = parse_arch(raw_arch_string)
 
 	return {
-	'vendor_id' : vendor_id, 
-	'brand' : processor_brand, 
-	'hz' : to_friendly_hz(processor_hz, scale), 
-	'raw_hz' : to_raw_hz(processor_hz, scale), 
-	'arch' : arch, 
-	'bits' : bits, 
-	'count' : multiprocessing.cpu_count(), 
-	'raw_arch_string' : raw_arch_string, 
+	'vendor_id' : vendor_id,
+	'brand' : processor_brand,
+	'hz' : to_friendly_hz(processor_hz, scale),
+	'raw_hz' : to_raw_hz(processor_hz, scale),
+	'arch' : arch,
+	'bits' : bits,
+	'count' : multiprocessing.cpu_count(),
+	'raw_arch_string' : raw_arch_string,
 
-	'l2_cache_size' : cache_size, 
-	'l2_cache_line_size' : 0, 
-	'l2_cache_associativity' : 0, 
+	'l2_cache_size' : cache_size,
+	'l2_cache_line_size' : 0,
+	'l2_cache_associativity' : 0,
 
-	'stepping' : stepping, 
-	'model' : model, 
-	'family' : family, 
-	'processor_type' : 0, 
-	'extended_model' : 0, 
-	'extended_family' : 0, 
+	'stepping' : stepping,
+	'model' : model,
+	'family' : family,
+	'processor_type' : 0,
+	'extended_model' : 0,
+	'extended_family' : 0,
 	'flags' : flags
 	}
 
@@ -1141,25 +1140,25 @@ def get_cpu_info_from_registry():
 	flags.sort()
 
 	return {
-	'vendor_id' : vendor_id, 
-	'brand' : processor_brand, 
-	'hz' : to_friendly_hz(processor_hz, 6), 
-	'raw_hz' : to_raw_hz(processor_hz, 6), 
-	'arch' : arch, 
-	'bits' : bits, 
-	'count' : multiprocessing.cpu_count(), 
-	'raw_arch_string' : raw_arch_string, 
+	'vendor_id' : vendor_id,
+	'brand' : processor_brand,
+	'hz' : to_friendly_hz(processor_hz, 6),
+	'raw_hz' : to_raw_hz(processor_hz, 6),
+	'arch' : arch,
+	'bits' : bits,
+	'count' : multiprocessing.cpu_count(),
+	'raw_arch_string' : raw_arch_string,
 
-	'l2_cache_size' : 0, 
-	'l2_cache_line_size' : 0, 
-	'l2_cache_associativity' : 0, 
+	'l2_cache_size' : 0,
+	'l2_cache_line_size' : 0,
+	'l2_cache_associativity' : 0,
 
-	'stepping' : 0, 
-	'model' : 0, 
-	'family' : 0, 
-	'processor_type' : 0, 
-	'extended_model' : 0, 
-	'extended_family' : 0, 
+	'stepping' : 0,
+	'model' : 0,
+	'family' : 0,
+	'processor_type' : 0,
+	'extended_model' : 0,
+	'extended_family' : 0,
 	'flags' : flags
 	}
 
@@ -1212,25 +1211,25 @@ def get_cpu_info_from_solaris():
 	arch, bits = parse_arch(raw_arch_string)
 
 	return {
-	'vendor_id' : vendor_id, 
-	'brand' : processor_brand, 
-	'hz' : to_friendly_hz(processor_hz, scale), 
-	'raw_hz' : to_raw_hz(processor_hz, scale), 
-	'arch' : arch, 
-	'bits' : bits, 
-	'count' : multiprocessing.cpu_count(), 
-	'raw_arch_string' : raw_arch_string, 
+	'vendor_id' : vendor_id,
+	'brand' : processor_brand,
+	'hz' : to_friendly_hz(processor_hz, scale),
+	'raw_hz' : to_raw_hz(processor_hz, scale),
+	'arch' : arch,
+	'bits' : bits,
+	'count' : multiprocessing.cpu_count(),
+	'raw_arch_string' : raw_arch_string,
 
-	'l2_cache_size' : cache_size, 
-	'l2_cache_line_size' : 0, 
-	'l2_cache_associativity' : 0, 
+	'l2_cache_size' : cache_size,
+	'l2_cache_line_size' : 0,
+	'l2_cache_associativity' : 0,
 
-	'stepping' : stepping, 
-	'model' : model, 
-	'family' : family, 
-	'processor_type' : 0, 
-	'extended_model' : 0, 
-	'extended_family' : 0, 
+	'stepping' : stepping,
+	'model' : model,
+	'family' : family,
+	'processor_type' : 0,
+	'extended_model' : 0,
+	'extended_family' : 0,
 	'flags' : flags
 	}
 
