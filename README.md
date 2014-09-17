@@ -5,7 +5,8 @@ A module for getting CPU info with Python 2 & 3
 
 Py-cpuinfo gets CPU info with pure Python. Py-cpuinfo should work without any 
 extra programs or libraries, beyond what your OS provides. It does not require 
-any compilation(C/C++, assembly, et cetera) to use.
+any compilation(C/C++, assembly, et cetera) to use. Works on Linux, OS X, 
+Windows, BSD, Solaris, Cygwin, and Haiku.
 
 These approaches are used for getting info:
 
