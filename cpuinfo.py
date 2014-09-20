@@ -864,7 +864,6 @@ def get_cpu_info_from_proc_cpuinfo():
 	# Convert from MHz string to Hz
 	processor_hz = _get_field(output, 'cpu MHz', 'cpu speed', 'clock')
 	processor_hz = processor_hz.lower().rstrip('mhz').strip()
-	processor_hz = '01612.0'
 	processor_hz = to_hz_string(processor_hz)
 
 	# Get the CPU arch and bits
