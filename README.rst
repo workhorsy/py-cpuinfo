@@ -1,16 +1,12 @@
 py-cpuinfo
 ==========
 
-[![Downloads](https://pypip.in/d/py-cpuinfo/badge.png?period=month)](https://pypi.python.org/pypi/py-cpuinfo/)
-[![Latest Version](https://pypip.in/v/py-cpuinfo/badge.png)](https://pypi.python.org/pypi/py-cpuinfo/)
-[![License](https://pypip.in/license/py-cpuinfo/badge.png)](https://pypi.python.org/pypi/py-cpuinfo/)
-
 A module for getting CPU info with Python 2 & 3
 
-Py-cpuinfo gets CPU info with pure Python. Py-cpuinfo should work without any 
-extra programs or libraries, beyond what your OS provides. It does not require 
-any compilation(C/C++, assembly, et cetera) to use. Works on Linux, OS X, 
-Windows, BSD, Solaris, Cygwin, and Haiku.
+Py-cpuinfo gets CPU info with pure Python. Py-cpuinfo should work
+without any extra programs or libraries, beyond what your OS provides.
+It does not require any compilation(C/C++, assembly, et cetera) to use.
+Works on Linux, OS X, Windows, BSD, Solaris, Cygwin, and Haiku.
 
 These approaches are used for getting info:
 
@@ -22,7 +18,9 @@ These approaches are used for getting info:
 6. Querying x86 CPUID register
 
 Run as a script
------
+---------------
+
+::
 
     $ python cpuinfo.py
     python cpuinfo.py 
@@ -49,7 +47,9 @@ Run as a script
     tm, tm2, tsc, vme, xtpr
 
 Run as a library
------
+----------------
+
+::
 
     import cpuinfo
 
@@ -78,31 +78,26 @@ Run as a library
     print('Count: {0}'.format(info['count']))
     print('Flags: {0}'.format(', '.join(info['flags'])))
 
-
 Alternate libraries, and how they differ from py-cpuinfo
------
+--------------------------------------------------------
 
-__Numpy__: Great, but just wraps /proc/cpuinfo on unix, and the registry on Windows.
-Does not return flags on Windows. The results are different depending on the OS.
-Requires all of Numpy to be installed to use. Is missing new CPU flags like sse4
-http://www.numpy.org/
+**Numpy**: Great, but just wraps /proc/cpuinfo on unix, and the registry
+on Windows. Does not return flags on Windows. The results are different
+depending on the OS. Requires all of Numpy to be installed to use. Is
+missing new CPU flags like sse4 http://www.numpy.org/
 
-__PyCPUID__:
-Elegant. But is missing many common CPU flags like 3dnow, ht, et cetera. Uses a 
-C library that must be compiled. Is missing features like CPU MHz. Not Python 3 
-compatible.
+**PyCPUID**: Elegant. But is missing many common CPU flags like 3dnow,
+ht, et cetera. Uses a C library that must be compiled. Is missing
+features like CPU MHz. Not Python 3 compatible.
 https://github.com/FlightDataServices/PyCPUID
 
-__cpuidpy__: Written completly in C++. Requires a compile. Missing CPU flags and 
-MHz.
-http://code.google.com/p/cpuidpy/
+**cpuidpy**: Written completly in C++. Requires a compile. Missing CPU
+flags and MHz. http://code.google.com/p/cpuidpy/
 
-__PyCPU__: Uses a C library. Requires a compile. Not Python 3 compatible.
-http://screeniqsys.com/blog/utilities/pycpu/
-
+**PyCPU**: Uses a C library. Requires a compile. Not Python 3
+compatible. http://screeniqsys.com/blog/utilities/pycpu/
 
 Bugs and Corrections
------
+--------------------
 
 Please report a Bug if you suspect any of this information is wrong.
-
