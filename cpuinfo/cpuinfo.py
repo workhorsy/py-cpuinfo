@@ -932,8 +932,8 @@ def get_cpu_info_from_dmesg():
 		return None
 
 	# If dmesg fails to have processor brand, return None
-	processor_brand = run_and_get_stdout('dmesg -a | grep "CPU:"')
-	if processor_brand == None:
+	long_brand = run_and_get_stdout('dmesg -a | grep "CPU:"')
+	if long_brand == None:
 		return None
 
 	# If dmesg fails to have fields, return None
@@ -946,8 +946,17 @@ def get_cpu_info_from_dmesg():
 	if flags == None:
 		return None
 
+	scale = 0
+	hz_actual = long_brand.rsplit('(', 1)[1].split(' ')[0].lower()
+	if hz_actual.endswith('mhz'):
+		scale = 6
+	elif hz_actual.endswith('ghz'):
+		scale = 9
+	hz_actual = hz_actual.split('-')[0]
+	hz_actual = to_hz_string(hz_actual)
+
 	# Processor Brand
-	processor_brand = processor_brand.rsplit('(', 1)[0]
+	processor_brand = long_brand.rsplit('(', 1)[0]
 	processor_brand = processor_brand.strip()
 
 	# Various fields
@@ -975,7 +984,7 @@ def get_cpu_info_from_dmesg():
 	flags.sort()
 
 	# Convert from GHz/MHz string to Hz
-	scale, processor_hz = _get_hz_string_from_brand(processor_brand)
+	scale, hz_advertised = _get_hz_string_from_brand(processor_brand)
 
 	# Get the CPU arch and bits
 	raw_arch_string = platform.machine()
@@ -984,8 +993,12 @@ def get_cpu_info_from_dmesg():
 	return {
 	'vendor_id' : vendor_id,
 	'brand' : processor_brand,
-	'hz' : to_friendly_hz(processor_hz, scale),
-	'raw_hz' : to_raw_hz(processor_hz, scale),
+
+	'hz_advertised' : to_friendly_hz(hz_advertised, scale),
+	'hz_actual' : to_friendly_hz(hz_actual, 6),
+	'hz_advertised_raw' : to_raw_hz(hz_advertised, scale),
+	'hz_actual_raw' : to_raw_hz(hz_actual, 6),
+
 	'arch' : arch,
 	'bits' : bits,
 	'count' : multiprocessing.cpu_count(),
@@ -1307,4 +1320,3 @@ if __name__ == '__main__':
 	print('Extended Model: {0}'.format(info['extended_model']))
 	print('Extended Family: {0}'.format(info['extended_family']))
 	print('Flags: {0}'.format(', '.join(info['flags'])))
-
