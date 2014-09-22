@@ -810,15 +810,24 @@ def get_cpu_info_from_cpuid():
 	cache_info = cpuid.get_cache(max_extension_support)
 	info = cpuid.get_info()
 
+	processor_brand = cpuid.get_processor_brand(max_extension_support)
+
 	# Get the Hz and scale
-	processor_hz = cpuid.get_raw_hz()
-	processor_hz = to_hz_string(processor_hz)
+	hz_actual = cpuid.get_raw_hz()
+	hz_actual = to_hz_string(hz_actual)
+
+	# Get the Hz and scale
+	scale, hz_advertised = _get_hz_string_from_brand(processor_brand)
 
 	return {
 	'vendor_id' : cpuid.get_vendor_id(),
-	'brand' : cpuid.get_processor_brand(max_extension_support),
-	'hz' : to_friendly_hz(processor_hz, 0),
-	'raw_hz' : to_raw_hz(processor_hz, 0),
+	'brand' : processor_brand,
+
+	'hz_advertised' : to_friendly_hz(hz_advertised, scale),
+	'hz_actual' : to_friendly_hz(hz_actual, 6),
+	'hz_advertised_raw' : to_raw_hz(hz_advertised, scale),
+	'hz_actual_raw' : to_raw_hz(hz_actual, 6),
+
 	'arch' : arch,
 	'bits' : bits,
 	'count' : multiprocessing.cpu_count(),
