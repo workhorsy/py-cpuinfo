@@ -1077,18 +1077,6 @@ def get_cpu_info_from_registry():
 	except ImportError as err:
 		import winreg
 
-	# Get the CPU arch and bits
-	key = winreg.OpenKey(winreg.HKEY_LOCAL_MACHINE, r"SYSTEM\CurrentControlSet\Control\Session Manager\Environment")
-	raw_arch_string = winreg.QueryValueEx(key, "PROCESSOR_ARCHITECTURE")[0]
-	winreg.CloseKey(key)
-	arch, bits = parse_arch(raw_arch_string)
-
-	# Get the CPU MHz
-	key = winreg.OpenKey(winreg.HKEY_LOCAL_MACHINE, r"Hardware\Description\System\CentralProcessor\0")
-	processor_hz = winreg.QueryValueEx(key, "~Mhz")[0]
-	winreg.CloseKey(key)
-	processor_hz = to_hz_string(processor_hz)
-
 	# Get the CPU name
 	key = winreg.OpenKey(winreg.HKEY_LOCAL_MACHINE, r"Hardware\Description\System\CentralProcessor\0")
 	processor_brand = winreg.QueryValueEx(key, "ProcessorNameString")[0]
@@ -1098,6 +1086,21 @@ def get_cpu_info_from_registry():
 	key = winreg.OpenKey(winreg.HKEY_LOCAL_MACHINE, r"Hardware\Description\System\CentralProcessor\0")
 	vendor_id = winreg.QueryValueEx(key, "VendorIdentifier")[0]
 	winreg.CloseKey(key)
+
+	# Get the CPU arch and bits
+	key = winreg.OpenKey(winreg.HKEY_LOCAL_MACHINE, r"SYSTEM\CurrentControlSet\Control\Session Manager\Environment")
+	raw_arch_string = winreg.QueryValueEx(key, "PROCESSOR_ARCHITECTURE")[0]
+	winreg.CloseKey(key)
+	arch, bits = parse_arch(raw_arch_string)
+
+	# Get the actual CPU Hz
+	key = winreg.OpenKey(winreg.HKEY_LOCAL_MACHINE, r"Hardware\Description\System\CentralProcessor\0")
+	hz_actual = winreg.QueryValueEx(key, "~Mhz")[0]
+	winreg.CloseKey(key)
+	hz_actual = to_hz_string(hz_actual)
+
+	# Get the advertised CPU Hz
+	scale, hz_advertised = _get_hz_string_from_brand(processor_brand)
 
 	# Get the CPU features
 	key = winreg.OpenKey(winreg.HKEY_LOCAL_MACHINE, r"Hardware\Description\System\CentralProcessor\0")
@@ -1154,8 +1157,12 @@ def get_cpu_info_from_registry():
 	return {
 	'vendor_id' : vendor_id,
 	'brand' : processor_brand,
-	'hz' : to_friendly_hz(processor_hz, 6),
-	'raw_hz' : to_raw_hz(processor_hz, 6),
+
+	'hz_advertised' : to_friendly_hz(hz_advertised, scale),
+	'hz_actual' : to_friendly_hz(hz_actual, 6),
+	'hz_advertised_raw' : to_raw_hz(hz_advertised, scale),
+	'hz_actual_raw' : to_raw_hz(hz_actual, 6),
+
 	'arch' : arch,
 	'bits' : bits,
 	'count' : multiprocessing.cpu_count(),
