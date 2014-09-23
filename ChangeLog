@@ -1,3 +1,2 @@
-* Release 0.1.0
-
-
+* Release 0.1.1
+	Fixed Bug #3: It is not obvious if Hz Raw is the current Hz, or the advertised Hz
