@@ -1027,7 +1027,7 @@ def get_cpu_info_from_sysctl():
 		return None
 
 	# If sysctl fails return None
-	output = run_and_get_stdout('sysctl machdep.cpu')
+	output = run_and_get_stdout('sysctl machdep.cpu hw.cpufrequency')
 	if output == None:
 		return None
 
@@ -1044,7 +1044,9 @@ def get_cpu_info_from_sysctl():
 	flags.sort()
 
 	# Convert from GHz/MHz string to Hz
-	scale, processor_hz = _get_hz_string_from_brand(processor_brand)
+	scale, hz_advertised = _get_hz_string_from_brand(processor_brand)
+	hz_actual = _get_field(output, 'hw.cpufrequency')
+	hz_actual = to_hz_string(hz_actual)
 
 	# Get the CPU arch and bits
 	raw_arch_string = platform.machine()
@@ -1053,8 +1055,12 @@ def get_cpu_info_from_sysctl():
 	return {
 	'vendor_id' : vendor_id,
 	'brand' : processor_brand,
-	'hz' : to_friendly_hz(processor_hz, scale),
-	'raw_hz' : to_raw_hz(processor_hz, scale),
+
+	'hz_advertised' : to_friendly_hz(hz_advertised, scale),
+	'hz_actual' : to_friendly_hz(hz_actual, 0),
+	'hz_advertised_raw' : to_raw_hz(hz_advertised, scale),
+	'hz_actual_raw' : to_raw_hz(hz_actual, 0),
+
 	'arch' : arch,
 	'bits' : bits,
 	'count' : multiprocessing.cpu_count(),
