@@ -16,7 +16,7 @@ These approaches are used for getting info:
 2. /proc/cpuinfo
 3. sysctl
 4. dmesg
-5. isainfo and psrinfo
+5. isainfo and kstat
 6. Querying x86 CPUID register
 
 Run as a script
