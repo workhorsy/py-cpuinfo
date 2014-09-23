@@ -24,34 +24,35 @@ These approaches are used for getting info:
 Run as a script
 -----
 
-    $ python cpuinfo.py
-    python cpuinfo.py 
+    $ python cpuinfo/cpuinfo.py 
     Vendor ID: GenuineIntel
-    Brand: Genuine Intel(R) CPU           T2050  @ 1.60GHz
-    Hz: 1.6000 GHz
-    Raw Hz: (1600000000, 0)
-    Arch: X86_32
-    Bits: 32
-    Count: 2
-    Raw Arch String: i686
-    L2 Cache Size: 2048 KB
+    Brand: Intel(R) Core(TM) i5-4440 CPU @ 3.10GHz
+    Hz Advertised: 3.1000 GHz
+    Hz Actual: 3.0794 GHz
+    Hz Advertised Raw: (3100000000, 0)
+    Hz Actual Raw: (3079444000, 0)
+    Arch: X86_64
+    Bits: 64
+    Count: 4
+    Raw Arch String: x86_64
+    L2 Cache Size: 6144 KB
     L2 Cache Line Size: 0
     L2 Cache Associativity: 0
-    Stepping: 8
-    Model: 14
+    Stepping: 3
+    Model: 60
     Family: 6
     Processor Type: 0
     Extended Model: 0
     Extended Family: 0
-    Flags: acpi, aperfmperf, apic, arch_perfmon, bts, clflush, cmov, 
-    constant_tsc, cx8, de, dtherm, dts, est, fpu, fxsr, ht, mca, mce, mmx, 
-    monitor, msr, mtrr, nx, pae, pbe, pdcm, pge, pni, pse, sep, ss, sse, sse2, 
-    tm, tm2, tsc, vme, xtpr
+    Flags: apic, clflush, cmov, constant_tsc, cx8, de, fpu, fxsr, ht, lahf_lm, 
+    lm, mca, mce, mmx, msr, mtrr, nopl, nx, pae, pat, pge, pni, pse, pse36, 
+    rdtscp, rep_good, sep, sse, sse2, ssse3, syscall, tsc, vme
 
 Run as a library
 -----
 
-    import cpuinfo
+    from cpuinfo import cpuinfo # from installed with pip
+    #import cpuinfo # from path
 
     # Have the library pick the best method for getting your CPU info
     info = cpuinfo.get_cpu_info()
@@ -71,8 +72,10 @@ Run as a library
     # Print some CPU values
     print('Vendor ID: {0}'.format(info['vendor_id']))
     print('Brand: {0}'.format(info['brand']))
-    print('Hz: {0}'.format(info['hz']))
-    print('Raw Hz: {0}'.format(info['raw_hz']))
+    print('Hz Advertised: {0}'.format(info['hz_advertised']))
+    print('Hz Actual: {0}'.format(info['hz_actual']))
+    print('Hz Advertised Raw: {0}'.format(info['hz_advertised_raw']))
+    print('Hz Actual Raw: {0}'.format(info['hz_actual_raw']))
     print('Arch: {0}'.format(info['arch']))
     print('Bits: {0}'.format(info['bits']))
     print('Count: {0}'.format(info['count']))

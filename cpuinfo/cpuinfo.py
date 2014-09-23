@@ -158,6 +158,19 @@ def program_paths(program_name):
 				paths.append(pext)
 	return paths
 
+def _get_hz_string_from_brand(processor_brand):
+	scale = 1
+	if processor_brand.lower().endswith('mhz'):
+		scale = 6
+	elif processor_brand.lower().endswith('ghz'):
+		scale = 9
+	hz_brand = processor_brand.lower()
+	hz_brand = hz_brand.split('@')[1]
+	hz_brand = hz_brand.rstrip('mhz').rstrip('ghz').strip()
+	hz_brand = to_hz_string(hz_brand)
+
+	return (scale, hz_brand)
+
 def to_friendly_hz(ticks, scale):
 	# Get the raw Hz as a string
 	left, right = to_raw_hz(ticks, scale)
@@ -797,15 +810,24 @@ def get_cpu_info_from_cpuid():
 	cache_info = cpuid.get_cache(max_extension_support)
 	info = cpuid.get_info()
 
+	processor_brand = cpuid.get_processor_brand(max_extension_support)
+
 	# Get the Hz and scale
-	processor_hz = cpuid.get_raw_hz()
-	processor_hz = to_hz_string(processor_hz)
+	hz_actual = cpuid.get_raw_hz()
+	hz_actual = to_hz_string(hz_actual)
+
+	# Get the Hz and scale
+	scale, hz_advertised = _get_hz_string_from_brand(processor_brand)
 
 	return {
 	'vendor_id' : cpuid.get_vendor_id(),
-	'brand' : cpuid.get_processor_brand(max_extension_support),
-	'hz' : to_friendly_hz(processor_hz, 0),
-	'raw_hz' : to_raw_hz(processor_hz, 0),
+	'brand' : processor_brand,
+
+	'hz_advertised' : to_friendly_hz(hz_advertised, scale),
+	'hz_actual' : to_friendly_hz(hz_actual, 6),
+	'hz_advertised_raw' : to_raw_hz(hz_advertised, scale),
+	'hz_actual_raw' : to_raw_hz(hz_actual, 6),
+
 	'arch' : arch,
 	'bits' : bits,
 	'count' : multiprocessing.cpu_count(),
@@ -862,9 +884,12 @@ def get_cpu_info_from_proc_cpuinfo():
 	flags.sort()
 
 	# Convert from MHz string to Hz
-	processor_hz = _get_field(output, 'cpu MHz', 'cpu speed', 'clock')
-	processor_hz = processor_hz.lower().rstrip('mhz').strip()
-	processor_hz = to_hz_string(processor_hz)
+	hz_actual = _get_field(output, 'cpu MHz', 'cpu speed', 'clock')
+	hz_actual = hz_actual.lower().rstrip('mhz').strip()
+	hz_actual = to_hz_string(hz_actual)
+
+	# Convert from GHz/MHz string to Hz
+	scale, hz_advertised = _get_hz_string_from_brand(processor_brand)
 
 	# Get the CPU arch and bits
 	raw_arch_string = platform.machine()
@@ -873,8 +898,12 @@ def get_cpu_info_from_proc_cpuinfo():
 	return {
 	'vendor_id' : vendor_id,
 	'brand' : processor_brand,
-	'hz' : to_friendly_hz(processor_hz, 6),
-	'raw_hz' : to_raw_hz(processor_hz, 6),
+
+	'hz_advertised' : to_friendly_hz(hz_advertised, scale),
+	'hz_actual' : to_friendly_hz(hz_actual, 6),
+	'hz_advertised_raw' : to_raw_hz(hz_advertised, scale),
+	'hz_actual_raw' : to_raw_hz(hz_actual, 6),
+
 	'arch' : arch,
 	'bits' : bits,
 	'count' : multiprocessing.cpu_count(),
@@ -903,8 +932,8 @@ def get_cpu_info_from_dmesg():
 		return None
 
 	# If dmesg fails to have processor brand, return None
-	processor_brand = run_and_get_stdout('dmesg -a | grep "CPU:"')
-	if processor_brand == None:
+	long_brand = run_and_get_stdout('dmesg -a | grep "CPU:"')
+	if long_brand == None:
 		return None
 
 	# If dmesg fails to have fields, return None
@@ -917,8 +946,17 @@ def get_cpu_info_from_dmesg():
 	if flags == None:
 		return None
 
+	scale = 0
+	hz_actual = long_brand.rsplit('(', 1)[1].split(' ')[0].lower()
+	if hz_actual.endswith('mhz'):
+		scale = 6
+	elif hz_actual.endswith('ghz'):
+		scale = 9
+	hz_actual = hz_actual.split('-')[0]
+	hz_actual = to_hz_string(hz_actual)
+
 	# Processor Brand
-	processor_brand = processor_brand.rsplit('(', 1)[0]
+	processor_brand = long_brand.rsplit('(', 1)[0]
 	processor_brand = processor_brand.strip()
 
 	# Various fields
@@ -946,15 +984,7 @@ def get_cpu_info_from_dmesg():
 	flags.sort()
 
 	# Convert from GHz/MHz string to Hz
-	scale = 1
-	if processor_brand.lower().endswith('mhz'):
-		scale = 6
-	elif processor_brand.lower().endswith('ghz'):
-		scale = 9
-	processor_hz = processor_brand.lower()
-	processor_hz = processor_hz.split('@')[1]
-	processor_hz = processor_hz.rstrip('mhz').rstrip('ghz').strip()
-	processor_hz = to_hz_string(processor_hz)
+	scale, hz_advertised = _get_hz_string_from_brand(processor_brand)
 
 	# Get the CPU arch and bits
 	raw_arch_string = platform.machine()
@@ -963,8 +993,12 @@ def get_cpu_info_from_dmesg():
 	return {
 	'vendor_id' : vendor_id,
 	'brand' : processor_brand,
-	'hz' : to_friendly_hz(processor_hz, scale),
-	'raw_hz' : to_raw_hz(processor_hz, scale),
+
+	'hz_advertised' : to_friendly_hz(hz_advertised, scale),
+	'hz_actual' : to_friendly_hz(hz_actual, 6),
+	'hz_advertised_raw' : to_raw_hz(hz_advertised, scale),
+	'hz_actual_raw' : to_raw_hz(hz_actual, 6),
+
 	'arch' : arch,
 	'bits' : bits,
 	'count' : multiprocessing.cpu_count(),
@@ -993,7 +1027,7 @@ def get_cpu_info_from_sysctl():
 		return None
 
 	# If sysctl fails return None
-	output = run_and_get_stdout('sysctl machdep.cpu')
+	output = run_and_get_stdout('sysctl machdep.cpu hw.cpufrequency')
 	if output == None:
 		return None
 
@@ -1010,15 +1044,9 @@ def get_cpu_info_from_sysctl():
 	flags.sort()
 
 	# Convert from GHz/MHz string to Hz
-	scale = 1
-	if processor_brand.lower().endswith('mhz'):
-		scale = 6
-	elif processor_brand.lower().endswith('ghz'):
-		scale = 9
-	processor_hz = processor_brand.lower()
-	processor_hz = processor_hz.split('@')[1]
-	processor_hz = processor_hz.rstrip('mhz').rstrip('ghz').strip()
-	processor_hz = to_hz_string(processor_hz)
+	scale, hz_advertised = _get_hz_string_from_brand(processor_brand)
+	hz_actual = _get_field(output, 'hw.cpufrequency')
+	hz_actual = to_hz_string(hz_actual)
 
 	# Get the CPU arch and bits
 	raw_arch_string = platform.machine()
@@ -1027,8 +1055,12 @@ def get_cpu_info_from_sysctl():
 	return {
 	'vendor_id' : vendor_id,
 	'brand' : processor_brand,
-	'hz' : to_friendly_hz(processor_hz, scale),
-	'raw_hz' : to_raw_hz(processor_hz, scale),
+
+	'hz_advertised' : to_friendly_hz(hz_advertised, scale),
+	'hz_actual' : to_friendly_hz(hz_actual, 0),
+	'hz_advertised_raw' : to_raw_hz(hz_advertised, scale),
+	'hz_actual_raw' : to_raw_hz(hz_actual, 0),
+
 	'arch' : arch,
 	'bits' : bits,
 	'count' : multiprocessing.cpu_count(),
@@ -1064,18 +1096,6 @@ def get_cpu_info_from_registry():
 	except ImportError as err:
 		import winreg
 
-	# Get the CPU arch and bits
-	key = winreg.OpenKey(winreg.HKEY_LOCAL_MACHINE, r"SYSTEM\CurrentControlSet\Control\Session Manager\Environment")
-	raw_arch_string = winreg.QueryValueEx(key, "PROCESSOR_ARCHITECTURE")[0]
-	winreg.CloseKey(key)
-	arch, bits = parse_arch(raw_arch_string)
-
-	# Get the CPU MHz
-	key = winreg.OpenKey(winreg.HKEY_LOCAL_MACHINE, r"Hardware\Description\System\CentralProcessor\0")
-	processor_hz = winreg.QueryValueEx(key, "~Mhz")[0]
-	winreg.CloseKey(key)
-	processor_hz = to_hz_string(processor_hz)
-
 	# Get the CPU name
 	key = winreg.OpenKey(winreg.HKEY_LOCAL_MACHINE, r"Hardware\Description\System\CentralProcessor\0")
 	processor_brand = winreg.QueryValueEx(key, "ProcessorNameString")[0]
@@ -1085,6 +1105,21 @@ def get_cpu_info_from_registry():
 	key = winreg.OpenKey(winreg.HKEY_LOCAL_MACHINE, r"Hardware\Description\System\CentralProcessor\0")
 	vendor_id = winreg.QueryValueEx(key, "VendorIdentifier")[0]
 	winreg.CloseKey(key)
+
+	# Get the CPU arch and bits
+	key = winreg.OpenKey(winreg.HKEY_LOCAL_MACHINE, r"SYSTEM\CurrentControlSet\Control\Session Manager\Environment")
+	raw_arch_string = winreg.QueryValueEx(key, "PROCESSOR_ARCHITECTURE")[0]
+	winreg.CloseKey(key)
+	arch, bits = parse_arch(raw_arch_string)
+
+	# Get the actual CPU Hz
+	key = winreg.OpenKey(winreg.HKEY_LOCAL_MACHINE, r"Hardware\Description\System\CentralProcessor\0")
+	hz_actual = winreg.QueryValueEx(key, "~Mhz")[0]
+	winreg.CloseKey(key)
+	hz_actual = to_hz_string(hz_actual)
+
+	# Get the advertised CPU Hz
+	scale, hz_advertised = _get_hz_string_from_brand(processor_brand)
 
 	# Get the CPU features
 	key = winreg.OpenKey(winreg.HKEY_LOCAL_MACHINE, r"Hardware\Description\System\CentralProcessor\0")
@@ -1141,8 +1176,12 @@ def get_cpu_info_from_registry():
 	return {
 	'vendor_id' : vendor_id,
 	'brand' : processor_brand,
-	'hz' : to_friendly_hz(processor_hz, 6),
-	'raw_hz' : to_raw_hz(processor_hz, 6),
+
+	'hz_advertised' : to_friendly_hz(hz_advertised, scale),
+	'hz_actual' : to_friendly_hz(hz_actual, 6),
+	'hz_advertised_raw' : to_raw_hz(hz_advertised, scale),
+	'hz_actual_raw' : to_raw_hz(hz_actual, 6),
+
 	'arch' : arch,
 	'bits' : bits,
 	'count' : multiprocessing.cpu_count(),
@@ -1161,13 +1200,13 @@ def get_cpu_info_from_registry():
 	'flags' : flags
 	}
 
-def get_cpu_info_from_solaris():
+def get_cpu_info_from_kstat():
 	'''
-	Returns the CPU info gathered from isainfo and psrinfo. Will 
-	return None if isainfo or psrinfo are not found.
+	Returns the CPU info gathered from isainfo and kstat. Will 
+	return None if isainfo or kstat are not found.
 	'''
-	# Just return None if there is no isainfo or psrinfo
-	if not program_paths('isainfo') or not program_paths('psrinfo'):
+	# Just return None if there is no isainfo or kstat
+	if not program_paths('isainfo') or not program_paths('kstat'):
 		return None
 
 	# If isainfo fails return None
@@ -1175,35 +1214,31 @@ def get_cpu_info_from_solaris():
 	if flag_output == None:
 		return None
 
-	# If psrinfo fails return None
-	output = run_and_get_stdout('psrinfo -v')
-	if output == None:
+	# If kstat fails return None
+	kstat = run_and_get_stdout('kstat -m cpu_info')
+	if kstat == None:
 		return None
 
 	# Various fields
-	vendor_id = 'unknown'
-	processor_brand = 'unknown'
+	vendor_id = kstat.split('\tvendor_id ')[1].split('\n')[0].strip()
+	processor_brand = kstat.split('\tbrand ')[1].split('\n')[0].strip()
 	cache_size = 0
-	stepping = 0
-	model = 0
-	family = 0
+	stepping = kstat.split('\tstepping ')[1].split('\n')[0].strip()
+	model = kstat.split('\tmodel ')[1].split('\n')[0].strip()
+	family = kstat.split('\tfamily ')[1].split('\n')[0].strip()
 
 	# Flags
 	flags = flag_output.split('\n')[1].strip().lower().split()
 	flags.sort()
 
-	speed = output.split('\n')[2]
-	speed = speed.split(' at ')[1].split(',')[0].strip()
-	speed = speed.strip()
 	# Convert from GHz/MHz string to Hz
-	scale = 1
-	if speed.lower().endswith('mhz'):
-		scale = 6
-	elif speed.lower().endswith('ghz'):
-		scale = 9
-	processor_hz = speed
-	processor_hz = processor_hz.lower().rstrip('mhz').rstrip('ghz').strip()
-	processor_hz = to_hz_string(processor_hz)
+	scale = 6
+	hz_advertised = kstat.split('\tclock_MHz ')[1].split('\n')[0].strip()
+	hz_advertised = to_hz_string(hz_advertised)
+
+	# Convert from GHz/MHz string to Hz
+	hz_actual = kstat.split('\tcurrent_clock_Hz ')[1].split('\n')[0].strip()
+	hz_actual = to_hz_string(hz_actual)
 
 	# Get the CPU arch and bits
 	raw_arch_string = platform.machine()
@@ -1212,8 +1247,12 @@ def get_cpu_info_from_solaris():
 	return {
 	'vendor_id' : vendor_id,
 	'brand' : processor_brand,
-	'hz' : to_friendly_hz(processor_hz, scale),
-	'raw_hz' : to_raw_hz(processor_hz, scale),
+
+	'hz_advertised' : to_friendly_hz(hz_advertised, scale),
+	'hz_actual' : to_friendly_hz(hz_actual, 0),
+	'hz_advertised_raw' : to_raw_hz(hz_advertised, scale),
+	'hz_actual_raw' : to_raw_hz(hz_actual, 0),
+
 	'arch' : arch,
 	'bits' : bits,
 	'count' : multiprocessing.cpu_count(),
@@ -1247,9 +1286,9 @@ def get_cpu_info():
 	if not info:
 		info = get_cpu_info_from_sysctl()
 
-	# Try solaris
+	# Try kstat
 	if not info:
-		info = get_cpu_info_from_solaris()
+		info = get_cpu_info_from_kstat()
 
 	# Try dmesg
 	if not info:
@@ -1266,8 +1305,10 @@ if __name__ == '__main__':
 
 	print('Vendor ID: {0}'.format(info['vendor_id']))
 	print('Brand: {0}'.format(info['brand']))
-	print('Hz: {0}'.format(info['hz']))
-	print('Raw Hz: {0}'.format(info['raw_hz']))
+	print('Hz Advertised: {0}'.format(info['hz_advertised']))
+	print('Hz Actual: {0}'.format(info['hz_actual']))
+	print('Hz Advertised Raw: {0}'.format(info['hz_advertised_raw']))
+	print('Hz Actual Raw: {0}'.format(info['hz_actual_raw']))
 	print('Arch: {0}'.format(info['arch']))
 	print('Bits: {0}'.format(info['bits']))
 	print('Count: {0}'.format(info['count']))
@@ -1285,5 +1326,3 @@ if __name__ == '__main__':
 	print('Extended Model: {0}'.format(info['extended_model']))
 	print('Extended Family: {0}'.format(info['extended_family']))
 	print('Flags: {0}'.format(', '.join(info['flags'])))
-
-
