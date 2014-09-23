@@ -13,7 +13,7 @@ setup(
     version = "0.1.0",
     author = "Matthew Brennan Jones",
     author_email = "matthew.brennan.jones@gmail.com",
-    description = "A module for getting CPU info with Python 2 & 3",
+    description = "Get CPU info with pure Python 2 & 3",
     long_description=readme_content,
     license = "MIT",
     url = "https://github.com/workhorsy/py-cpuinfo",
@@ -22,6 +22,8 @@ setup(
         "Development Status :: 4 - Beta",
         "Topic :: Utilities",
         "License :: OSI Approved :: MIT License",
+        "Programming Language :: Python :: 2.6",
+        "Programming Language :: Python :: 3"
     ],
 )
 
