@@ -25,10 +25,6 @@
 # TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-# FIXME: Figure out how /proc/cpuinfo simulates cpuinfo on non x86 cpus
-# FIXME: See if running this in a multiprocessing process will stop it from segfaulting when it breaks
-# FIXME: Check how this compares to numpy. How does numpy get MHz and sse3 detection when the registry
-# does not have this info, and there is no /proc/cpuinfo ? Does it use win32 __cpuinfo ?
 
 import os, sys
 import re
@@ -868,8 +864,6 @@ def get_cpu_info_from_proc_cpuinfo():
 		return None
 
 	output = os.popen('cat /proc/cpuinfo').read()
-	# FIXME: See for how lscpu parses /proc/cpuinfo
-	# http://git.kernel.org/cgit/utils/util-linux/util-linux.git/tree/sys-utils/lscpu.c
 
 	# Various fields
 	vendor_id = _get_field(output, 'vendor_id', 'vendor id', 'vendor')
