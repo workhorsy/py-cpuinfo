@@ -12,10 +12,12 @@ clean:
 	rm -f -rf dist
 	rm -f -rf py-cpuinfo-$(VERSION)
 	rm -f -rf py-cpuinfo-$(VERSION).tar.gz
+	rm -f -rf py-cpuinfo-$(VERSION).zip
 
 build: clean
-	python setup.py sdist
+	python setup.py sdist --formats=gztar,zip
 	mv dist/py-cpuinfo-$(VERSION).tar.gz py-cpuinfo-$(VERSION).tar.gz
+	mv dist/py-cpuinfo-$(VERSION).zip py-cpuinfo-$(VERSION).zip
 	rm -f -rf py_cpuinfo.egg-info
 	rm -f -rf dist
 
