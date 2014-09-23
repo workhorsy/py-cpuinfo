@@ -1,2 +1,3 @@
 * Release 0.1.1
 	Fixed Bug #3: It is not obvious if Hz Raw is the current Hz, or the advertised Hz
+	Fixed Bug #2: Wrong CPU frequency in get_cpu_info_from_proc_cpuinfo()
