@@ -39,106 +39,18 @@ PY2 = sys.version_info[0] == 2
 bits = platform.architecture()[0]
 is_windows = platform.system().lower() == 'windows'
 
-def chomp(s):
-	for sep in ['\r\n', '\n', '\r']:
-		if s.endswith(sep):
-			return s[:-len(sep)]
 
-	return s
-
-class ProcessRunner(object):
-	def __init__(self, command):
-		self._command = command
-		self._process = None
-		self._return_code = None
-		self._stdout = None
-		self._stderr = None
-
-	def run(self):
-		self._stdout = []
-		self._stderr = []
-
-		# Start the process and save the output
-		self._process = subprocess.Popen(
-			self._command,
-			stderr = subprocess.PIPE,
-			stdout = subprocess.PIPE,
-			shell = True
-		)
-
-	def wait(self):
-		# Wait for the process to actually exit
-		self._process.wait()
-
-		# Get the return code
-		rc = self._process.returncode
-		if hasattr(os, 'WIFEXITED') and os.WIFEXITED(rc):
-			rc = os.WEXITSTATUS(rc)
-		self._return_code = rc
-
-		# Get strerr and stdout into byte strings
-		self._stderr = b''.join(self._stderr)
-		self._stdout = b''.join(self._stdout)
-
-		# Convert strerr and stdout into unicode
-		if PY2:
-			self._stderr = unicode(self._stderr, 'UTF-8')
-			self._stdout = unicode(self._stdout, 'UTF-8')
-		else:
-			self._stderr = str(self._stderr, 'UTF-8')
-			self._stdout = str(self._stdout, 'UTF-8')
-
-		# Chomp the terminating newline off the ends of output
-		self._stdout = chomp(self._stdout)
-		self._stderr = chomp(self._stderr)
-
-	def get_is_done(self):
-		# You have to poll a process to update the retval. Even if it has stopped already
-		if self._process.returncode == None:
-			self._process.poll()
-
-		# Read the output from the buffer
-		sout, serr = self._process.communicate()
-		self._stdout.append(sout)
-		self._stderr.append(serr)
-
-		# Return true if there is a return code
-		return self._process.returncode != None
-	is_done = property(get_is_done)
-
-	def get_stderr(self):
-		self._require_wait()
-		return self._stderr
-	stderr = property(get_stderr)
-
-	def get_stdout(self):
-		self._require_wait()
-		return self._stdout
-	stdout = property(get_stdout)
-
-	def get_stdall(self):
-		self._require_wait()
-		return self._stdout + '\n' + self._stderr
-	stdall = property(get_stdall)
-
-	def get_is_success(self):
-		self._require_wait()
-		return self._return_code == 0
-	is_success = property(get_is_success)
-
-	def _require_wait(self):
-		if self._return_code == None:
-			raise Exception("Wait needs to be called before any info on the process can be gotten.")
-
-def run_and_get_stdout(command):
-	runner = ProcessRunner(command)
-	runner.run()
-	runner.is_done
-	runner.wait()
-	if runner.is_success:
-		return runner.stdout
+def run_and_get_stdout(command, pipe_command=None):
+	if not pipe_command:
+		p1 = subprocess.Popen(command, stdout=subprocess.PIPE)
+		return p1.stdout.read()
 	else:
-		return None
+		p1 = subprocess.Popen(command, stdout=subprocess.PIPE)
+		p2 = subprocess.Popen(pipe_command, stdin=p1.stdout, stdout=subprocess.PIPE)
+		p1.stdout.close()
+		output = p2.communicate()[0]
+		return output
+
 
 def program_paths(program_name):
 	paths = []
@@ -282,8 +194,8 @@ class CPUID(object):
 			return
 
 		# Figure out if we can execute heap and execute memory
-		can_selinux_exec_heap = run_and_get_stdout("sestatus -b | grep -i \"allow_execheap\"").strip().lower().endswith('on')
-		can_selinux_exec_memory = run_and_get_stdout("sestatus -b | grep -i \"allow_execmem\"").strip().lower().endswith('on')
+		can_selinux_exec_heap = run_and_get_stdout(['sestatus', '-b'], ['grep', '-i', '"allow_execheap"']).strip().lower().endswith('on')
+		can_selinux_exec_memory = run_and_get_stdout(['sestatus', '-b'], ['grep', '-i', '"allow_execmem"']).strip().lower().endswith('on')
 		self.is_selinux_enforcing = (not can_selinux_exec_heap or not can_selinux_exec_memory)
 
 	def _asm_func(self, restype=None, argtypes=(), byte_code=[]):
@@ -863,7 +775,7 @@ def get_cpu_info_from_proc_cpuinfo():
 	if not os.path.exists('/proc/cpuinfo'):
 		return None
 
-	output = run_and_get_stdout('cat /proc/cpuinfo')
+	output = run_and_get_stdout(['cat', '/proc/cpuinfo'])
 
 	# Various fields
 	vendor_id = _get_field(output, 'vendor_id', 'vendor id', 'vendor')
@@ -926,17 +838,17 @@ def get_cpu_info_from_dmesg():
 		return None
 
 	# If dmesg fails to have processor brand, return None
-	long_brand = run_and_get_stdout('dmesg -a | grep "CPU:"')
+	long_brand = run_and_get_stdout(['dmesg', '-a'], ['grep', '"CPU:"'])
 	if long_brand == None:
 		return None
 
 	# If dmesg fails to have fields, return None
-	fields = run_and_get_stdout('dmesg -a | grep "Origin ="')
+	fields = run_and_get_stdout(['dmesg', '-a'], ['grep', '"Origin ="'])
 	if fields == None:
 		return None
 
 	# If dmesg fails to have flags, return None
-	flags = run_and_get_stdout('dmesg -a | grep "Features="')
+	flags = run_and_get_stdout(['dmesg', '-a'], ['grep', '"Features="'])
 	if flags == None:
 		return None
 
@@ -1021,7 +933,7 @@ def get_cpu_info_from_sysctl():
 		return None
 
 	# If sysctl fails return None
-	output = run_and_get_stdout('sysctl machdep.cpu hw.cpufrequency')
+	output = run_and_get_stdout(['sysctl', 'machdep.cpu', 'hw.cpufrequency'])
 	if output == None:
 		return None
 
@@ -1204,12 +1116,12 @@ def get_cpu_info_from_kstat():
 		return None
 
 	# If isainfo fails return None
-	flag_output = run_and_get_stdout('isainfo -vb')
+	flag_output = run_and_get_stdout(['isainfo', '-vb'])
 	if flag_output == None:
 		return None
 
 	# If kstat fails return None
-	kstat = run_and_get_stdout('kstat -m cpu_info')
+	kstat = run_and_get_stdout(['kstat', '-m', 'cpu_info'])
 	if kstat == None:
 		return None
 
