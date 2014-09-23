@@ -282,8 +282,8 @@ class CPUID(object):
 			return
 
 		# Figure out if we can execute heap and execute memory
-		can_selinux_exec_heap = os.popen("sestatus -b | grep -i \"allow_execheap\"").read().strip().lower().endswith('on')
-		can_selinux_exec_memory = os.popen("sestatus -b | grep -i \"allow_execmem\"").read().strip().lower().endswith('on')
+		can_selinux_exec_heap = run_and_get_stdout("sestatus -b | grep -i \"allow_execheap\"").strip().lower().endswith('on')
+		can_selinux_exec_memory = run_and_get_stdout("sestatus -b | grep -i \"allow_execmem\"").strip().lower().endswith('on')
 		self.is_selinux_enforcing = (not can_selinux_exec_heap or not can_selinux_exec_memory)
 
 	def _asm_func(self, restype=None, argtypes=(), byte_code=[]):
@@ -863,7 +863,7 @@ def get_cpu_info_from_proc_cpuinfo():
 	if not os.path.exists('/proc/cpuinfo'):
 		return None
 
-	output = os.popen('cat /proc/cpuinfo').read()
+	output = run_and_get_stdout('cat /proc/cpuinfo')
 
 	# Various fields
 	vendor_id = _get_field(output, 'vendor_id', 'vendor id', 'vendor')
@@ -1320,3 +1320,5 @@ if __name__ == '__main__':
 	print('Extended Model: {0}'.format(info['extended_model']))
 	print('Extended Family: {0}'.format(info['extended_family']))
 	print('Flags: {0}'.format(', '.join(info['flags'])))
+
+
