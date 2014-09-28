@@ -1206,7 +1206,7 @@ def get_cpu_info():
 
 	return info
 
-if __name__ == '__main__':
+def main():
 	info = get_cpu_info()
 
 	print('Vendor ID: {0}'.format(info['vendor_id']))
@@ -1233,4 +1233,5 @@ if __name__ == '__main__':
 	print('Extended Family: {0}'.format(info['extended_family']))
 	print('Flags: {0}'.format(', '.join(info['flags'])))
 
-
+if __name__ == '__main__':
+    main()
