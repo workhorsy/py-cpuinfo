@@ -1,3 +1,7 @@
-* Release 0.1.1
-	Fixed Bug #3: It is not obvious if Hz Raw is the current Hz, or the advertised Hz
-	Fixed Bug #2: Wrong CPU frequency in get_cpu_info_from_proc_cpuinfo()
+09/30/2014 Release 0.1.2
+	* Added support for installing to binary path.
+	* Fixed issue with crashing in python 3.
+
+09/23/2014 Release 0.1.1
+	* Fixed Bug #3: It is not obvious if Hz Raw is the current Hz, or the advertised Hz
+	* Fixed Bug #2: Wrong CPU frequency in get_cpu_info_from_proc_cpuinfo()
