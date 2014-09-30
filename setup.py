@@ -1,8 +1,10 @@
-
+# Copyright (c) 2014, Matthew Brennan Jones <matthew.brennan.jones@gmail.com>
+# Py-cpuinfo is a Python module to show the cpuinfo of a processor
+# It uses a MIT style license
+# It is hosted at: https://github.com/workhorsy/py-cpuinfo
 
 import os
 from setuptools import setup
-
 
 with open(os.path.join(os.getcwd(), 'README.rst'), 'r') as f:
     readme_content = f.read()
@@ -17,6 +19,9 @@ setup(
     license = "MIT",
     url = "https://github.com/workhorsy/py-cpuinfo",
     packages=['cpuinfo'],
+    entry_points = {
+        'console_scripts': ['cpuinfo = cpuinfo.cpuinfo:main'],
+    },
     classifiers=[
         "Development Status :: 5 - Production/Stable",
         "Topic :: Utilities",
@@ -26,5 +31,4 @@ setup(
         "Programming Language :: Python :: 3"
     ],
 )
-
 
