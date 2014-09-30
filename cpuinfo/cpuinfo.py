@@ -43,12 +43,17 @@ is_windows = platform.system().lower() == 'windows'
 def run_and_get_stdout(command, pipe_command=None):
 	if not pipe_command:
 		p1 = subprocess.Popen(command, stdout=subprocess.PIPE)
-		return p1.stdout.read()
+		output = p1.stdout.read()
+		if not PY2:
+			output = output.decode(encoding='UTF-8')
+		return output
 	else:
 		p1 = subprocess.Popen(command, stdout=subprocess.PIPE)
 		p2 = subprocess.Popen(pipe_command, stdin=p1.stdout, stdout=subprocess.PIPE)
 		p1.stdout.close()
 		output = p2.communicate()[0]
+		if not PY2:
+			output = output.decode(encoding='UTF-8')
 		return output
 
 
@@ -1235,3 +1240,4 @@ def main():
 
 if __name__ == '__main__':
     main()
+
