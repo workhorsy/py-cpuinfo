@@ -72,13 +72,16 @@ def program_paths(program_name):
 	return paths
 
 def _get_hz_string_from_brand(processor_brand):
-	scale = 1
-	if processor_brand.lower().endswith('mhz'):
-		scale = 6
-	elif processor_brand.lower().endswith('ghz'):
-		scale = 9
 	hz_brand = processor_brand.lower()
-	hz_brand = hz_brand.split('@')[1]
+	scale = 1
+	if hz_brand.endswith('mhz'):
+		scale = 6
+	elif hz_brand.endswith('ghz'):
+		scale = 9
+	if '@' in hz_brand:
+		hz_brand = hz_brand.split('@')[1]
+	else:
+		hz_brand = hz_brand.rsplit(None, 1)[1]
 	hz_brand = hz_brand.rstrip('mhz').rstrip('ghz').strip()
 	hz_brand = to_hz_string(hz_brand)
 
