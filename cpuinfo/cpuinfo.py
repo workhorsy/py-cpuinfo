@@ -72,8 +72,13 @@ def program_paths(program_name):
 	return paths
 
 def _get_hz_string_from_brand(processor_brand):
+	# Just return 0 if the processor brand does not have the Hz
+	if not 'hz' in processor_brand.lower():
+		return (1, '0.0')
+
 	hz_brand = processor_brand.lower()
 	scale = 1
+
 	if hz_brand.endswith('mhz'):
 		scale = 6
 	elif hz_brand.endswith('ghz'):
