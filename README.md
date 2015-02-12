@@ -21,7 +21,7 @@ These approaches are used for getting info:
 
 Run as a script
 -----
-
+~~~bash
     $ python cpuinfo/cpuinfo.py 
     Vendor ID: GenuineIntel
     Brand: Intel(R) Core(TM) i5-4440 CPU @ 3.10GHz
@@ -45,10 +45,11 @@ Run as a script
     Flags: apic, clflush, cmov, constant_tsc, cx8, de, fpu, fxsr, ht, lahf_lm, 
     lm, mca, mce, mmx, msr, mtrr, nopl, nx, pae, pat, pge, pni, pse, pse36, 
     rdtscp, rep_good, sep, sse, sse2, ssse3, syscall, tsc, vme
+~~~
 
 Run as a library
 -----
-
+~~~python
     from cpuinfo import cpuinfo # from installed with pip
     #import cpuinfo # from path
 
@@ -78,7 +79,7 @@ Run as a library
     print('Bits: {0}'.format(info['bits']))
     print('Count: {0}'.format(info['count']))
     print('Flags: {0}'.format(', '.join(info['flags'])))
-
+~~~
 
 Bugs and Corrections
 -----

@@ -18,7 +18,7 @@ These approaches are used for getting info:
 Run as a script
 ---------------
 
-::
+.. code-block:: bash
 
     $ python cpuinfo/cpuinfo.py 
     Vendor ID: GenuineIntel
@@ -47,7 +47,7 @@ Run as a script
 Run as a library
 ----------------
 
-::
+.. code-block:: python
 
     from cpuinfo import cpuinfo # from installed with pip
     #import cpuinfo # from path
