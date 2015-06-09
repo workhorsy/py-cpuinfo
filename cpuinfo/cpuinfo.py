@@ -767,23 +767,37 @@ def get_cpu_info_from_cpuid():
 	'flags' : cpuid.get_flags(max_extension_support)
 	}
 
-def _get_field(raw_string, *field_names):
-	
+def _get_field(raw_string, convert_to, default_value, *field_names):
+	retval = None
+
 	for field_name in field_names:
 		if field_name in raw_string:
 			raw_field = raw_string.split(field_name)[1] # Everything after the field name
 			raw_field = raw_field.split(':')[1] # Everything after the :
 			raw_field = raw_field.split('\n')[0] # Everything before the \n
 			raw_field = raw_field.strip() # Strip any extra white space
-			return raw_field
+			retval = raw_field
+			break
 
-	return None
+	# Convert the return value
+	if retval and convert_to:
+		try:
+			retval = convert_to(retval)
+		except:
+			retval = default_value
+
+	# Return the default if there is no return value
+	if retval is None:
+		retval = default_value
+
+	return retval
 
 def get_cpu_info_from_proc_cpuinfo():
 	'''
 	Returns the CPU info gathered from /proc/cpuinfo. Will return None if
 	/proc/cpuinfo is not found.
 	'''
+
 	# Just return None if there is no cpuinfo
 	if not os.path.exists('/proc/cpuinfo'):
 		return None
@@ -791,19 +805,19 @@ def get_cpu_info_from_proc_cpuinfo():
 	output = run_and_get_stdout(['cat', '/proc/cpuinfo'])
 
 	# Various fields
-	vendor_id = _get_field(output, 'vendor_id', 'vendor id', 'vendor')
-	processor_brand = _get_field(output, 'model name','cpu')
-	cache_size = _get_field(output, 'cache size')
-	stepping = int(_get_field(output, 'stepping') or '0')
-	model = int(_get_field(output, 'model') or '0')
-	family = int(_get_field(output, 'cpu family') or '0')
+	vendor_id = _get_field(output, None, None, 'vendor_id', 'vendor id', 'vendor')
+	processor_brand = _get_field(output, None, None, 'model name','cpu')
+	cache_size = _get_field(output, None, None, 'cache size')
+	stepping = _get_field(output, int, 0, 'stepping')
+	model = _get_field(output, int, 0, 'model')
+	family = _get_field(output, int, 0, 'cpu family')
 
 	# Flags
-	flags = _get_field(output, 'flags', 'Features').split()
+	flags = _get_field(output, None, None, 'flags', 'Features').split()
 	flags.sort()
 
 	# Convert from MHz string to Hz
-	hz_actual = _get_field(output, 'cpu MHz', 'cpu speed', 'clock')
+	hz_actual = _get_field(output, None, '', 'cpu MHz', 'cpu speed', 'clock')
 	hz_actual = hz_actual.lower().rstrip('mhz').strip()
 	hz_actual = to_hz_string(hz_actual)
 
@@ -812,6 +826,7 @@ def get_cpu_info_from_proc_cpuinfo():
 
 	# Get the CPU arch and bits
 	raw_arch_string = platform.machine()
+	raw_arch_string = 'armv7'
 	arch, bits = parse_arch(raw_arch_string)
 
 	return {
@@ -951,20 +966,20 @@ def get_cpu_info_from_sysctl():
 		return None
 
 	# Various fields
-	vendor_id = _get_field(output, 'machdep.cpu.vendor')
-	processor_brand = _get_field(output, 'machdep.cpu.brand_string')
-	cache_size = _get_field(output, 'machdep.cpu.cache.size')
-	stepping = int(_get_field(output, 'machdep.cpu.stepping') or '0')
-	model = int(_get_field(output, 'machdep.cpu.model') or '0')
-	family = int(_get_field(output, 'machdep.cpu.family') or '0')
+	vendor_id = _get_field(output, None, None, 'machdep.cpu.vendor')
+	processor_brand = _get_field(output, None, None, 'machdep.cpu.brand_string')
+	cache_size = _get_field(output, None, None, 'machdep.cpu.cache.size')
+	stepping = _get_field(output, int, 0, 'machdep.cpu.stepping')
+	model = _get_field(output, int, 0, 'machdep.cpu.model')
+	family = _get_field(output, int, 0, 'machdep.cpu.family')
 
 	# Flags
-	flags = _get_field(output, 'machdep.cpu.features').lower().split()
+	flags = _get_field(output, None, None, 'machdep.cpu.features').lower().split()
 	flags.sort()
 
 	# Convert from GHz/MHz string to Hz
 	scale, hz_advertised = _get_hz_string_from_brand(processor_brand)
-	hz_actual = _get_field(output, 'hw.cpufrequency')
+	hz_actual = _get_field(output, None, None, 'hw.cpufrequency')
 	hz_actual = to_hz_string(hz_actual)
 
 	# Get the CPU arch and bits
