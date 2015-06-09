@@ -826,7 +826,6 @@ def get_cpu_info_from_proc_cpuinfo():
 
 	# Get the CPU arch and bits
 	raw_arch_string = platform.machine()
-	raw_arch_string = 'armv7'
 	arch, bits = parse_arch(raw_arch_string)
 
 	return {
