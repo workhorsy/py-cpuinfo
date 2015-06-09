@@ -794,9 +794,9 @@ def get_cpu_info_from_proc_cpuinfo():
 	vendor_id = _get_field(output, 'vendor_id', 'vendor id', 'vendor')
 	processor_brand = _get_field(output, 'model name','cpu')
 	cache_size = _get_field(output, 'cache size')
-	stepping = int(_get_field(output, 'stepping'))
-	model = int(_get_field(output, 'model'))
-	family = int(_get_field(output, 'cpu family'))
+	stepping = int(_get_field(output, 'stepping') or '0')
+	model = int(_get_field(output, 'model') or '0')
+	family = int(_get_field(output, 'cpu family') or '0')
 
 	# Flags
 	flags = _get_field(output, 'flags', 'Features').split()
@@ -954,9 +954,9 @@ def get_cpu_info_from_sysctl():
 	vendor_id = _get_field(output, 'machdep.cpu.vendor')
 	processor_brand = _get_field(output, 'machdep.cpu.brand_string')
 	cache_size = _get_field(output, 'machdep.cpu.cache.size')
-	stepping = int(_get_field(output, 'machdep.cpu.stepping'))
-	model = int(_get_field(output, 'machdep.cpu.model'))
-	family = int(_get_field(output, 'machdep.cpu.family'))
+	stepping = int(_get_field(output, 'machdep.cpu.stepping') or '0')
+	model = int(_get_field(output, 'machdep.cpu.model') or '0')
+	family = int(_get_field(output, 'machdep.cpu.family') or '0')
 
 	# Flags
 	flags = _get_field(output, 'machdep.cpu.features').lower().split()
