@@ -39,7 +39,7 @@ PY2 = sys.version_info[0] == 2
 bits = platform.architecture()[0]
 is_windows = platform.system().lower() == 'windows'
 g_raw_arch_string = platform.machine()
-g_raw_arch_string = 'armv7'
+g_raw_arch_string = 'armv7l'
 
 
 def run_and_get_stdout(command, pipe_command=None):
@@ -853,9 +853,9 @@ Serial          : 00000000be6d9ba0
 '''
 
 	# Various fields
-	vendor_id = _get_field(output, None, None, 'vendor_id', 'vendor id', 'vendor')
+	vendor_id = _get_field(output, None, '', 'vendor_id', 'vendor id', 'vendor')
 	processor_brand = _get_field(output, None, None, 'model name','cpu')
-	cache_size = _get_field(output, None, None, 'cache size')
+	cache_size = _get_field(output, None, '', 'cache size')
 	stepping = _get_field(output, int, 0, 'stepping')
 	model = _get_field(output, int, 0, 'model')
 	family = _get_field(output, int, 0, 'cpu family')
@@ -872,6 +872,7 @@ Serial          : 00000000be6d9ba0
 	# Convert from GHz/MHz string to Hz
 	scale, hz_advertised = _get_hz_string_from_brand(processor_brand)
 
+	# Try getting the Hz for a BeagleBone
 	if hz_advertised == '0.0':
 		scale, hz_advertised = _get_hz_string_from_beagle_bone()
 		hz_actual = hz_advertised
