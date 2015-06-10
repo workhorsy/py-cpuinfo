@@ -1309,8 +1309,8 @@ def main():
 
 
 arch, bits = parse_arch(g_raw_arch_string)
-if not arch in ['X86_32', 'X86_64']:
-	sys.stderr.write("py-cpuinfo currently only works on X86 CPUs.")
+if not arch in ['X86_32', 'X86_64', 'ARM_7', 'ARM_8']:
+	sys.stderr.write("py-cpuinfo currently only works on X86 and ARM CPUs.\n")
 	sys.exit(1)
 
 if __name__ == '__main__':
