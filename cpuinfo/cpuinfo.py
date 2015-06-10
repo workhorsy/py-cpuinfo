@@ -1260,6 +1260,12 @@ def main():
 	print('Extended Family: {0}'.format(info['extended_family']))
 	print('Flags: {0}'.format(', '.join(info['flags'])))
 
+raw_arch_string = platform.machine()
+arch, bits = parse_arch(raw_arch_string)
+if not arch in ['X86_32', 'X86_64']:
+	sys.stderr.write("py-cpuinfo currently only works on X86 CPUs.")
+	sys.exit(1)
+
 if __name__ == '__main__':
     main()
 
