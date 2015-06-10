@@ -17,7 +17,8 @@ These approaches are used for getting info:
 3. sysctl
 4. dmesg
 5. isainfo and kstat
-6. Querying x86 CPUID register
+6. cpufreq-info for BeagleBoard
+7. Querying x86 CPUID register
 
 Run as a script
 -----
