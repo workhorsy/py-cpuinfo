@@ -38,6 +38,8 @@ PY2 = sys.version_info[0] == 2
 
 bits = platform.architecture()[0]
 is_windows = platform.system().lower() == 'windows'
+g_raw_arch_string = platform.machine()
+g_raw_arch_string = 'armv7'
 
 
 def run_and_get_stdout(command, pipe_command=None):
@@ -749,8 +751,7 @@ def get_cpu_info_from_cpuid():
 	Returns None if SELinux is in enforcing mode.
 	'''
 	# Get the CPU arch and bits
-	raw_arch_string = platform.machine()
-	arch, bits = parse_arch(raw_arch_string)
+	arch, bits = parse_arch(g_raw_arch_string)
 
 	# Return none if this is not an X86 CPU
 	if not arch in ['X86_32', 'X86_64']:
@@ -787,7 +788,7 @@ def get_cpu_info_from_cpuid():
 	'arch' : arch,
 	'bits' : bits,
 	'count' : multiprocessing.cpu_count(),
-	'raw_arch_string' : raw_arch_string,
+	'raw_arch_string' : g_raw_arch_string,
 
 	'l2_cache_size' : cache_info['size_kb'],
 	'l2_cache_line_size' : cache_info['line_size_b'],
@@ -875,9 +876,7 @@ Serial          : 00000000be6d9ba0
 		scale, hz_advertised = _get_hz_string_from_beagle_bone()
 
 	# Get the CPU arch and bits
-	raw_arch_string = platform.machine()
-	raw_arch_string = 'armv7'
-	arch, bits = parse_arch(raw_arch_string)
+	arch, bits = parse_arch(g_raw_arch_string)
 
 	return {
 	'vendor_id' : vendor_id,
@@ -891,7 +890,7 @@ Serial          : 00000000be6d9ba0
 	'arch' : arch,
 	'bits' : bits,
 	'count' : multiprocessing.cpu_count(),
-	'raw_arch_string' : raw_arch_string,
+	'raw_arch_string' : g_raw_arch_string,
 
 	'l2_cache_size' : cache_size,
 	'l2_cache_line_size' : 0,
@@ -971,8 +970,7 @@ def get_cpu_info_from_dmesg():
 	scale, hz_advertised = _get_hz_string_from_brand(processor_brand)
 
 	# Get the CPU arch and bits
-	raw_arch_string = platform.machine()
-	arch, bits = parse_arch(raw_arch_string)
+	arch, bits = parse_arch(g_raw_arch_string)
 
 	return {
 	'vendor_id' : vendor_id,
@@ -986,7 +984,7 @@ def get_cpu_info_from_dmesg():
 	'arch' : arch,
 	'bits' : bits,
 	'count' : multiprocessing.cpu_count(),
-	'raw_arch_string' : raw_arch_string,
+	'raw_arch_string' : g_raw_arch_string,
 
 	'l2_cache_size' : 0,
 	'l2_cache_line_size' : 0,
@@ -1033,8 +1031,7 @@ def get_cpu_info_from_sysctl():
 	hz_actual = to_hz_string(hz_actual)
 
 	# Get the CPU arch and bits
-	raw_arch_string = platform.machine()
-	arch, bits = parse_arch(raw_arch_string)
+	arch, bits = parse_arch(g_raw_arch_string)
 
 	return {
 	'vendor_id' : vendor_id,
@@ -1048,7 +1045,7 @@ def get_cpu_info_from_sysctl():
 	'arch' : arch,
 	'bits' : bits,
 	'count' : multiprocessing.cpu_count(),
-	'raw_arch_string' : raw_arch_string,
+	'raw_arch_string' : g_raw_arch_string,
 
 	'l2_cache_size' : cache_size,
 	'l2_cache_line_size' : 0,
@@ -1225,8 +1222,7 @@ def get_cpu_info_from_kstat():
 	hz_actual = to_hz_string(hz_actual)
 
 	# Get the CPU arch and bits
-	raw_arch_string = platform.machine()
-	arch, bits = parse_arch(raw_arch_string)
+	arch, bits = parse_arch(g_raw_arch_string)
 
 	return {
 	'vendor_id' : vendor_id,
@@ -1240,7 +1236,7 @@ def get_cpu_info_from_kstat():
 	'arch' : arch,
 	'bits' : bits,
 	'count' : multiprocessing.cpu_count(),
-	'raw_arch_string' : raw_arch_string,
+	'raw_arch_string' : g_raw_arch_string,
 
 	'l2_cache_size' : cache_size,
 	'l2_cache_line_size' : 0,
@@ -1311,8 +1307,8 @@ def main():
 	print('Extended Family: {0}'.format(info['extended_family']))
 	print('Flags: {0}'.format(', '.join(info['flags'])))
 
-raw_arch_string = platform.machine()
-arch, bits = parse_arch(raw_arch_string)
+
+arch, bits = parse_arch(g_raw_arch_string)
 if not arch in ['X86_32', 'X86_64']:
 	sys.stderr.write("py-cpuinfo currently only works on X86 CPUs.")
 	sys.exit(1)
