@@ -37,6 +37,7 @@ import subprocess
 PY2 = sys.version_info[0] == 2
 
 bits = platform.architecture()[0]
+g_cpu_count = multiprocessing.cpu_count()
 is_windows = platform.system().lower() == 'windows'
 g_raw_arch_string = platform.machine()
 g_raw_arch_string = 'armv7l'
@@ -812,7 +813,7 @@ def get_cpu_info_from_cpuid():
 
 	'arch' : arch,
 	'bits' : bits,
-	'count' : multiprocessing.cpu_count(),
+	'count' : g_cpu_count,
 	'raw_arch_string' : g_raw_arch_string,
 
 	'l2_cache_size' : cache_info['size_kb'],
@@ -891,7 +892,7 @@ Serial          : 00000000be6d9ba0
 
 	'arch' : arch,
 	'bits' : bits,
-	'count' : multiprocessing.cpu_count(),
+	'count' : g_cpu_count,
 	'raw_arch_string' : g_raw_arch_string,
 
 	'l2_cache_size' : cache_size,
@@ -985,7 +986,7 @@ def get_cpu_info_from_dmesg():
 
 	'arch' : arch,
 	'bits' : bits,
-	'count' : multiprocessing.cpu_count(),
+	'count' : g_cpu_count,
 	'raw_arch_string' : g_raw_arch_string,
 
 	'l2_cache_size' : 0,
@@ -1046,7 +1047,7 @@ def get_cpu_info_from_sysctl():
 
 	'arch' : arch,
 	'bits' : bits,
-	'count' : multiprocessing.cpu_count(),
+	'count' : g_cpu_count,
 	'raw_arch_string' : g_raw_arch_string,
 
 	'l2_cache_size' : cache_size,
@@ -1167,7 +1168,7 @@ def get_cpu_info_from_registry():
 
 	'arch' : arch,
 	'bits' : bits,
-	'count' : multiprocessing.cpu_count(),
+	'count' : g_cpu_count,
 	'raw_arch_string' : raw_arch_string,
 
 	'l2_cache_size' : 0,
@@ -1237,7 +1238,7 @@ def get_cpu_info_from_kstat():
 
 	'arch' : arch,
 	'bits' : bits,
-	'count' : multiprocessing.cpu_count(),
+	'count' : g_cpu_count,
 	'raw_arch_string' : g_raw_arch_string,
 
 	'l2_cache_size' : cache_size,
