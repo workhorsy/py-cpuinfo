@@ -1314,5 +1314,5 @@ if not arch in ['X86_32', 'X86_64', 'ARM_7', 'ARM_8']:
 	sys.exit(1)
 
 if __name__ == '__main__':
-    main()
+	main()
 
