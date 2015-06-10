@@ -73,6 +73,31 @@ def program_paths(program_name):
 				paths.append(pext)
 	return paths
 
+def _get_field(raw_string, convert_to, default_value, *field_names):
+	retval = None
+
+	for field_name in field_names:
+		if field_name in raw_string:
+			raw_field = raw_string.split(field_name)[1] # Everything after the field name
+			raw_field = raw_field.split(':')[1] # Everything after the :
+			raw_field = raw_field.split('\n')[0] # Everything before the \n
+			raw_field = raw_field.strip() # Strip any extra white space
+			retval = raw_field
+			break
+
+	# Convert the return value
+	if retval and convert_to:
+		try:
+			retval = convert_to(retval)
+		except:
+			retval = default_value
+
+	# Return the default if there is no return value
+	if retval is None:
+		retval = default_value
+
+	return retval
+
 def _get_hz_string_from_brand(processor_brand):
 	# Just return 0 if the processor brand does not have the Hz
 	if not 'hz' in processor_brand.lower():
@@ -802,31 +827,6 @@ def get_cpu_info_from_cpuid():
 	'extended_family' : info['extended_family'],
 	'flags' : cpuid.get_flags(max_extension_support)
 	}
-
-def _get_field(raw_string, convert_to, default_value, *field_names):
-	retval = None
-
-	for field_name in field_names:
-		if field_name in raw_string:
-			raw_field = raw_string.split(field_name)[1] # Everything after the field name
-			raw_field = raw_field.split(':')[1] # Everything after the :
-			raw_field = raw_field.split('\n')[0] # Everything before the \n
-			raw_field = raw_field.strip() # Strip any extra white space
-			retval = raw_field
-			break
-
-	# Convert the return value
-	if retval and convert_to:
-		try:
-			retval = convert_to(retval)
-		except:
-			retval = default_value
-
-	# Return the default if there is no return value
-	if retval is None:
-		retval = default_value
-
-	return retval
 
 def get_cpu_info_from_proc_cpuinfo():
 	'''
