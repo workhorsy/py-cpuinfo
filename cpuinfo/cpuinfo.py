@@ -832,7 +832,6 @@ def get_cpu_info_from_proc_cpuinfo():
 	Returns the CPU info gathered from /proc/cpuinfo. Will return None if
 	/proc/cpuinfo is not found.
 	'''
-
 	# Just return None if there is no cpuinfo
 	if not os.path.exists('/proc/cpuinfo'):
 		return None
