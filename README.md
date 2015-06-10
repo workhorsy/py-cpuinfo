@@ -12,13 +12,13 @@ Windows, BSD, Solaris, Cygwin, and Haiku.
 
 These approaches are used for getting info:
 
-1. Windows Registry
-2. /proc/cpuinfo
-3. sysctl
-4. dmesg
-5. isainfo and kstat
+1. Windows Registry for Window XP, Vista, 7, 8, 10, et cetera
+2. /proc/cpuinfo for Linux, Haiku, and Solaris
+3. sysctl for BSD
+4. dmesg for Unix, Linux
+5. isainfo and kstat for OS X
 6. cpufreq-info for BeagleBoard
-7. Querying x86 CPUID register
+7. Querying the CPUID register for Intel X86 CPUs
 
 Run as a script
 -----
