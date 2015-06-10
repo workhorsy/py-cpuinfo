@@ -40,7 +40,6 @@ bits = platform.architecture()[0]
 g_cpu_count = multiprocessing.cpu_count()
 is_windows = platform.system().lower() == 'windows'
 g_raw_arch_string = platform.machine()
-g_raw_arch_string = 'armv7l'
 
 
 def run_and_get_stdout(command, pipe_command=None):
@@ -123,27 +122,10 @@ def _get_hz_string_from_brand(processor_brand):
 def _get_hz_string_from_beagle_bone():
 	scale, hz_brand = 1, '0.0'
 
-	#if not program_paths('cpufreq-info'):
-	#	return scale, hz_brand
+	if not program_paths('cpufreq-info'):
+		return scale, hz_brand
 
-	#output = run_and_get_stdout(['cpufreq-info'])
-	output = '''
-cpufrequtils 008: cpufreq-info (C) Dominik Brodowski 2004-2009
-Report errors and bugs to cpufreq@vger.kernel.org, please.
-analyzing CPU 0:
-driver: generic_cpu0
-CPUs which run at the same hardware frequency: 0
-CPUs which need to have their frequency coordinated by software: 0
-maximum transition latency: 300 us.
-hardware limits: 300 MHz - 1000 MHz
-available frequency steps: 300 MHz, 600 MHz, 800 MHz, 1000 MHz
-available cpufreq governors: conservative, ondemand, userspace, powersave, performance
-current policy: frequency should be within 300 MHz and 1000 MHz.
-The governor "performance" may decide which speed to use
-within this range.
-current CPU frequency is 1000 MHz.
-cpufreq stats: 300 MHz:0.00%, 600 MHz:0.00%, 800 MHz:0.00%, 1000 MHz:100.00%
-'''
+	output = run_and_get_stdout(['cpufreq-info'])
 	hz_brand = output.split('current CPU frequency is')[1].split('.')[0].lower()
 
 	if hz_brand.endswith('mhz'):
@@ -839,19 +821,6 @@ def get_cpu_info_from_proc_cpuinfo():
 		return None
 
 	output = run_and_get_stdout(['cat', '/proc/cpuinfo'])
-	output = '''processor       : 0
-model name      : ARMv6-compatible processor rev 7 (v6l)
-Features        : swp half thumb fastmult vfp edsp java tls 
-CPU implementer : 0x41
-CPU architecture: 7
-CPU variant     : 0x0
-CPU part        : 0xb76
-CPU revision    : 7
-
-Hardware        : BCM2708
-Revision        : 0010
-Serial          : 00000000be6d9ba0
-'''
 
 	# Various fields
 	vendor_id = _get_field(output, None, '', 'vendor_id', 'vendor id', 'vendor')
