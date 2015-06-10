@@ -874,6 +874,7 @@ Serial          : 00000000be6d9ba0
 
 	if hz_advertised == '0.0':
 		scale, hz_advertised = _get_hz_string_from_beagle_bone()
+		hz_actual = hz_advertised
 
 	# Get the CPU arch and bits
 	arch, bits = parse_arch(g_raw_arch_string)
