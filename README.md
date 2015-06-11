@@ -24,7 +24,7 @@ These approaches are used for getting info:
 Run as a script
 -----
 ~~~bash
-    $ python cpuinfo/cpuinfo.py 
+    $ python cpuinfo/cpuinfo.py
     Vendor ID: GenuineIntel
     Hardware Raw:
     Brand: Intel(R) Core(TM) i5-4440 CPU @ 3.10GHz
