@@ -829,6 +829,7 @@ def get_cpu_info_from_proc_cpuinfo():
 	stepping = _get_field(output, int, 0, 'stepping')
 	model = _get_field(output, int, 0, 'model')
 	family = _get_field(output, int, 0, 'cpu family')
+	hardware = _get_field(output, None, '', 'Hardware')
 
 	# Flags
 	flags = _get_field(output, None, None, 'flags', 'Features').split()
@@ -852,6 +853,7 @@ def get_cpu_info_from_proc_cpuinfo():
 
 	return {
 	'vendor_id' : vendor_id,
+	'hardware' : hardware,
 	'brand' : processor_brand,
 
 	'hz_advertised' : to_friendly_hz(hz_advertised, scale),
@@ -1256,6 +1258,7 @@ def main():
 	info = get_cpu_info()
 
 	print('Vendor ID: {0}'.format(info['vendor_id']))
+	print('Hardware Raw: {0}'.format(info.get('hardware', '')))
 	print('Brand: {0}'.format(info['brand']))
 	print('Hz Advertised: {0}'.format(info['hz_advertised']))
 	print('Hz Actual: {0}'.format(info['hz_actual']))

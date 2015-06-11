@@ -1,6 +1,7 @@
 py-cpuinfo
 ==========
 
+
 Py-cpuinfo gets CPU info with pure Python. Py-cpuinfo should work
 without any extra programs or libraries, beyond what your OS provides.
 It does not require any compilation(C/C++, assembly, et cetera) to use.
@@ -24,6 +25,7 @@ Run as a script
 
         $ python cpuinfo/cpuinfo.py 
         Vendor ID: GenuineIntel
+        Hardware Raw:
         Brand: Intel(R) Core(TM) i5-4440 CPU @ 3.10GHz
         Hz Advertised: 3.1000 GHz
         Hz Actual: 3.0794 GHz
