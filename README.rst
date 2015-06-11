@@ -1,21 +1,21 @@
 py-cpuinfo
 ==========
 
-
 Py-cpuinfo gets CPU info with pure Python. Py-cpuinfo should work
 without any extra programs or libraries, beyond what your OS provides.
 It does not require any compilation(C/C++, assembly, et cetera) to use.
-Works on Linux, OS X, Windows, BSD, Solaris, Cygwin, and Haiku.
+It works on Linux, OS X, Windows, BSD, Solaris, Cygwin, Haiku, and
+BeagleBone. It currently only works on X86 and some ARM CPUs.
 
 These approaches are used for getting info:
 
-1. Windows Registry for Window XP, Vista, 7, 8, 10, et cetera
-2. /proc/cpuinfo for Linux, Haiku, and Solaris
-3. sysctl for BSD
-4. dmesg for Unix, Linux
-5. isainfo and kstat for OS X
-6. cpufreq-info for BeagleBoard
-7. Querying the CPUID register for Intel X86 CPUs
+1. Windows Registry (Window)
+2. /proc/cpuinfo (Unix/Linux/Haiku)
+3. sysctl (BSD)
+4. dmesg (Unix/Linux)
+5. isainfo and kstat (OS X)
+6. cpufreq-info (BeagleBone)
+7. Querying the CPUID register (Intel X86 CPUs)
 
 Run as a script
 ---------------
