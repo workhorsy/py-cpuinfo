@@ -1,3 +1,7 @@
+* Release 0.1.5
+	* Make it work on a BeagleBone
+	* Stepping parse TypeError on ARM
+
 02/11/2015 Release 0.1.4
 	* New release to get around the brokenness of pypi
 
