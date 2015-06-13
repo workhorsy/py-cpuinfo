@@ -74,35 +74,31 @@ print('platform.machine: {0}\n\n'.format(platform.machine()))
 
 if program_paths('cpufreq-info'):
 	output = run_and_get_stdout(['cpufreq-info'])
-	print('cpufreq-info: {0}\n\n'.format(output))
+	print('cpufreq-info: \n=====================================================================\n{0}\n\n'.format(output))
 
 if program_paths('sestatus'):
-	output = run_and_get_stdout(['sestatus -b'])
-	print('sestatus -b: {0}\n\n'.format(output))
-
+	output = run_and_get_stdout(['sestatus', '-b'])
+	print('sestatus -b: \n=====================================================================\n{0}\n\n'.format(output))
+'''
 if program_paths('dmesg'):
-	output = run_and_get_stdout(['dmesg -a'])
-	print('dmesg -a: {0}\n\n'.format(output))
-
-if program_paths('dmesg'):
-	output = run_and_get_stdout(['dmesg -a'])
-	print('dmesg -a: {0}\n\n'.format(output))
-
+	output = run_and_get_stdout(['dmesg', '-a'])
+	print('dmesg -a: \n=====================================================================\n{0}\n\n'.format(output))
+'''
 if os.path.exists('/proc/cpuinfo'):
-	output = run_and_get_stdout(['cat /proc/cpuinfo'])
-	print('cat /proc/cpuinfo: {0}\n\n'.format(output))
+	output = run_and_get_stdout(['cat', '/proc/cpuinfo'])
+	print('cat /proc/cpuinfo: \n=====================================================================\n{0}\n\n'.format(output))
 
 if program_paths('sysctl'):
-	output = run_and_get_stdout(['sysctl machdep.cpu'])
-	print('sysctl machdep.cpu: {0}\n\n'.format(output))
+	output = run_and_get_stdout(['sysctl', 'machdep.cpu'])
+	print('sysctl machdep.cpu: \n=====================================================================\n{0}\n\n'.format(output))
 
 if program_paths('isainfo'):
-	output = run_and_get_stdout(['isainfo -vb'])
-	print('isainfo -vb: {0}\n\n'.format(output))
+	output = run_and_get_stdout(['isainfo', '-vb'])
+	print('isainfo -vb: \n=====================================================================\n{0}\n\n'.format(output))
 
 if program_paths('kstat'):
-	output = run_and_get_stdout(['kstat -m cpu_info'])
-	print('kstat -m cpu_info: {0}\n\n'.format(output))
+	output = run_and_get_stdout(['kstat', '-m', 'cpu_info'])
+	print('kstat -m cpu_info: \n=====================================================================\n{0}\n\n'.format(output))
 
 
 
