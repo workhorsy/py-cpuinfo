@@ -36,10 +36,10 @@ PY2 = sys.version_info[0] == 2
 def run_and_get_stdout(command, pipe_command=None):
 	if not pipe_command:
 		p1 = subprocess.Popen(command, stdout=subprocess.PIPE)
-		output = p1.stdout.read()
+		output = p1.communicate()[0]
 		if not PY2:
 			output = output.decode(encoding='UTF-8')
-		return output
+		return p1.returncode, output
 	else:
 		p1 = subprocess.Popen(command, stdout=subprocess.PIPE)
 		p2 = subprocess.Popen(pipe_command, stdin=p1.stdout, stdout=subprocess.PIPE)
@@ -47,7 +47,7 @@ def run_and_get_stdout(command, pipe_command=None):
 		output = p2.communicate()[0]
 		if not PY2:
 			output = output.decode(encoding='UTF-8')
-		return output
+		return p2.returncode, output
 
 
 def program_paths(program_name):
@@ -73,31 +73,33 @@ print('platform.machine: {0}\n\n'.format(platform.machine()))
 
 
 if program_paths('cpufreq-info'):
-	output = run_and_get_stdout(['cpufreq-info'])
+	returncode, output = run_and_get_stdout(['cpufreq-info'])
 	print('cpufreq-info: \n=====================================================================\n{0}\n\n'.format(output))
 
 if program_paths('sestatus'):
-	output = run_and_get_stdout(['sestatus', '-b'])
+	returncode, output = run_and_get_stdout(['sestatus', '-b'])
 	print('sestatus -b: \n=====================================================================\n{0}\n\n'.format(output))
-'''
+
 if program_paths('dmesg'):
-	output = run_and_get_stdout(['dmesg', '-a'])
-	print('dmesg -a: \n=====================================================================\n{0}\n\n'.format(output))
-'''
+	returncode, output = run_and_get_stdout(['dmesg', '-a'])
+	if returncode != 0:
+		returncode, output = run_and_get_stdout(['dmesg'])
+	print('dmesg: \n=====================================================================\n{0}\n\n'.format(output))
+
 if os.path.exists('/proc/cpuinfo'):
-	output = run_and_get_stdout(['cat', '/proc/cpuinfo'])
+	returncode, output = run_and_get_stdout(['cat', '/proc/cpuinfo'])
 	print('cat /proc/cpuinfo: \n=====================================================================\n{0}\n\n'.format(output))
 
 if program_paths('sysctl'):
-	output = run_and_get_stdout(['sysctl', 'machdep.cpu'])
+	returncode, output = run_and_get_stdout(['sysctl', 'machdep.cpu'])
 	print('sysctl machdep.cpu: \n=====================================================================\n{0}\n\n'.format(output))
 
 if program_paths('isainfo'):
-	output = run_and_get_stdout(['isainfo', '-vb'])
+	returncode, output = run_and_get_stdout(['isainfo', '-vb'])
 	print('isainfo -vb: \n=====================================================================\n{0}\n\n'.format(output))
 
 if program_paths('kstat'):
-	output = run_and_get_stdout(['kstat', '-m', 'cpu_info'])
+	returncode, output = run_and_get_stdout(['kstat', '-m', 'cpu_info'])
 	print('kstat -m cpu_info: \n=====================================================================\n{0}\n\n'.format(output))
 
 
