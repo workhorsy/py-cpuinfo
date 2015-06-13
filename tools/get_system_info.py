@@ -35,14 +35,14 @@ PY2 = sys.version_info[0] == 2
 
 def run_and_get_stdout(command, pipe_command=None):
 	if not pipe_command:
-		p1 = subprocess.Popen(command, stdout=subprocess.PIPE)
+		p1 = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 		output = p1.communicate()[0]
 		if not PY2:
 			output = output.decode(encoding='UTF-8')
 		return p1.returncode, output
 	else:
-		p1 = subprocess.Popen(command, stdout=subprocess.PIPE)
-		p2 = subprocess.Popen(pipe_command, stdin=p1.stdout, stdout=subprocess.PIPE)
+		p1 = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+		p2 = subprocess.Popen(pipe_command, stdin=p1.stdout, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 		p1.stdout.close()
 		output = p2.communicate()[0]
 		if not PY2:
@@ -101,6 +101,10 @@ if program_paths('isainfo'):
 if program_paths('kstat'):
 	returncode, output = run_and_get_stdout(['kstat', '-m', 'cpu_info'])
 	print('kstat -m cpu_info: \n=====================================================================\n{0}\n\n'.format(output))
+
+
+
+
 
 
 
