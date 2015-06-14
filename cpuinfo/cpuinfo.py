@@ -48,7 +48,7 @@ def run_and_get_stdout(command, pipe_command=None):
 		output = p1.communicate()[0]
 		if not PY2:
 			output = output.decode(encoding='UTF-8')
-		return output
+		return p1.returncode, output
 	else:
 		p1 = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 		p2 = subprocess.Popen(pipe_command, stdin=p1.stdout, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
@@ -56,7 +56,7 @@ def run_and_get_stdout(command, pipe_command=None):
 		output = p2.communicate()[0]
 		if not PY2:
 			output = output.decode(encoding='UTF-8')
-		return output
+		return p2.returncode, output
 
 
 def program_paths(program_name):
@@ -125,7 +125,7 @@ def _get_hz_string_from_beagle_bone():
 	if not program_paths('cpufreq-info'):
 		return scale, hz_brand
 
-	output = run_and_get_stdout(['cpufreq-info'])
+	returncode, output = run_and_get_stdout(['cpufreq-info'])
 	hz_brand = output.split('current CPU frequency is')[1].split('.')[0].lower()
 
 	if hz_brand.endswith('mhz'):
@@ -252,8 +252,8 @@ class CPUID(object):
 			return
 
 		# Figure out if we can execute heap and execute memory
-		can_selinux_exec_heap = run_and_get_stdout(['sestatus', '-b'], ['grep', '-i', '"allow_execheap"']).strip().lower().endswith('on')
-		can_selinux_exec_memory = run_and_get_stdout(['sestatus', '-b'], ['grep', '-i', '"allow_execmem"']).strip().lower().endswith('on')
+		can_selinux_exec_heap = run_and_get_stdout(['sestatus', '-b'], ['grep', '-i', '"allow_execheap"'])[1].strip().lower().endswith('on')
+		can_selinux_exec_memory = run_and_get_stdout(['sestatus', '-b'], ['grep', '-i', '"allow_execmem"'])[1].strip().lower().endswith('on')
 		self.is_selinux_enforcing = (not can_selinux_exec_heap or not can_selinux_exec_memory)
 
 	def _asm_func(self, restype=None, argtypes=(), byte_code=[]):
@@ -820,7 +820,7 @@ def get_cpu_info_from_proc_cpuinfo():
 	if not os.path.exists('/proc/cpuinfo'):
 		return None
 
-	output = run_and_get_stdout(['cat', '/proc/cpuinfo'])
+	returncode, output = run_and_get_stdout(['cat', '/proc/cpuinfo'])
 
 	# Various fields
 	vendor_id = _get_field(output, None, '', 'vendor_id', 'vendor id', 'vendor')
@@ -889,18 +889,18 @@ def get_cpu_info_from_dmesg():
 		return None
 
 	# If dmesg fails to have processor brand, return None
-	long_brand = run_and_get_stdout(['dmesg', '-a'], ['grep', '"CPU:"'])
-	if long_brand == None:
+	returncode, long_brand = run_and_get_stdout(['dmesg', '-a'], ['grep', '"CPU:"'])
+	if long_brand == None or returncode != 0:
 		return None
 
 	# If dmesg fails to have fields, return None
-	fields = run_and_get_stdout(['dmesg', '-a'], ['grep', '"Origin ="'])
-	if fields == None:
+	returncode, fields = run_and_get_stdout(['dmesg', '-a'], ['grep', '"Origin ="'])
+	if fields == None or returncode != 0:
 		return None
 
 	# If dmesg fails to have flags, return None
-	flags = run_and_get_stdout(['dmesg', '-a'], ['grep', '"Features="'])
-	if flags == None:
+	returncode, flags = run_and_get_stdout(['dmesg', '-a'], ['grep', '"Features="'])
+	if flags == None or returncode != 0:
 		return None
 
 	scale = 0
@@ -983,7 +983,7 @@ def get_cpu_info_from_sysctl():
 		return None
 
 	# If sysctl fails return None
-	output = run_and_get_stdout(['sysctl', 'machdep.cpu', 'hw.cpufrequency'])
+	returncode, output = run_and_get_stdout(['sysctl', 'machdep.cpu', 'hw.cpufrequency'])
 	if output == None:
 		return None
 
@@ -1165,12 +1165,12 @@ def get_cpu_info_from_kstat():
 		return None
 
 	# If isainfo fails return None
-	flag_output = run_and_get_stdout(['isainfo', '-vb'])
+	returncode, flag_output = run_and_get_stdout(['isainfo', '-vb'])
 	if flag_output == None:
 		return None
 
 	# If kstat fails return None
-	kstat = run_and_get_stdout(['kstat', '-m', 'cpu_info'])
+	returncode, kstat = run_and_get_stdout(['kstat', '-m', 'cpu_info'])
 	if kstat == None:
 		return None
 

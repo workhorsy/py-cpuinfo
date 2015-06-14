@@ -1,4 +1,5 @@
 * Release 0.1.5
+	* Getting CPU info from dmesg fails on Linux but not BSD
 	* Subprocess stderr is sometimes printed to console
 	* Make it work on a BeagleBone
 	* Stepping parse TypeError on ARM
