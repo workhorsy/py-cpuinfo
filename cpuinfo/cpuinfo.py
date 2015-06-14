@@ -44,14 +44,14 @@ g_raw_arch_string = platform.machine()
 
 def run_and_get_stdout(command, pipe_command=None):
 	if not pipe_command:
-		p1 = subprocess.Popen(command, stdout=subprocess.PIPE)
-		output = p1.stdout.read()
+		p1 = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+		output = p1.communicate()[0]
 		if not PY2:
 			output = output.decode(encoding='UTF-8')
 		return output
 	else:
-		p1 = subprocess.Popen(command, stdout=subprocess.PIPE)
-		p2 = subprocess.Popen(pipe_command, stdin=p1.stdout, stdout=subprocess.PIPE)
+		p1 = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+		p2 = subprocess.Popen(pipe_command, stdin=p1.stdout, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 		p1.stdout.close()
 		output = p2.communicate()[0]
 		if not PY2:
