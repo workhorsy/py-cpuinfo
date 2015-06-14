@@ -64,6 +64,9 @@ def program_paths(program_name):
 				paths.append(pext)
 	return paths
 
+def print_output(name, output):
+	print('{0}: \n=====================================================================\n{1}\n\n'.format(name, output))
+
 print('sys.version_info: {0}\n\n'.format(sys.version_info))
 print('multiprocessing.cpu_count: {0}\n\n'.format(multiprocessing.cpu_count()))
 print('platform.uname: {0}\n\n'.format(platform.uname()))
@@ -74,34 +77,33 @@ print('platform.machine: {0}\n\n'.format(platform.machine()))
 
 if program_paths('cpufreq-info'):
 	returncode, output = run_and_get_stdout(['cpufreq-info'])
-	print('cpufreq-info: \n=====================================================================\n{0}\n\n'.format(output))
+	print_output('cpufreq-info', output)
 
 if program_paths('sestatus'):
 	returncode, output = run_and_get_stdout(['sestatus', '-b'])
-	print('sestatus -b: \n=====================================================================\n{0}\n\n'.format(output))
+	print_output('sestatus', output)
+
+if os.path.exists('/proc/cpuinfo'):
+	returncode, output = run_and_get_stdout(['cat', '/proc/cpuinfo'])
+	print_output('cat /proc/cpuinfo', output)
+
+if program_paths('sysctl'):
+	returncode, output = run_and_get_stdout(['sysctl', 'machdep.cpu'])
+	print_output('sysctl machdep.cpu', output)
+
+if program_paths('isainfo'):
+	returncode, output = run_and_get_stdout(['isainfo', '-vb'])
+	print_output('isainfo -vb', output)
+
+if program_paths('kstat'):
+	returncode, output = run_and_get_stdout(['kstat', '-m', 'cpu_info'])
+	print_output('kstat -m cpu_info', output)
 
 if program_paths('dmesg'):
 	returncode, output = run_and_get_stdout(['dmesg', '-a'])
 	if returncode != 0:
 		returncode, output = run_and_get_stdout(['dmesg'])
-	print('dmesg: \n=====================================================================\n{0}\n\n'.format(output))
-
-if os.path.exists('/proc/cpuinfo'):
-	returncode, output = run_and_get_stdout(['cat', '/proc/cpuinfo'])
-	print('cat /proc/cpuinfo: \n=====================================================================\n{0}\n\n'.format(output))
-
-if program_paths('sysctl'):
-	returncode, output = run_and_get_stdout(['sysctl', 'machdep.cpu'])
-	print('sysctl machdep.cpu: \n=====================================================================\n{0}\n\n'.format(output))
-
-if program_paths('isainfo'):
-	returncode, output = run_and_get_stdout(['isainfo', '-vb'])
-	print('isainfo -vb: \n=====================================================================\n{0}\n\n'.format(output))
-
-if program_paths('kstat'):
-	returncode, output = run_and_get_stdout(['kstat', '-m', 'cpu_info'])
-	print('kstat -m cpu_info: \n=====================================================================\n{0}\n\n'.format(output))
-
+	print_output('dmesg', output)
 
 
 
