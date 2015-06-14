@@ -99,6 +99,10 @@ if program_paths('kstat'):
 	returncode, output = run_and_get_stdout(['kstat', '-m', 'cpu_info'])
 	print_output('kstat -m cpu_info', output)
 
+if program_paths('lscpu'):
+	returncode, output = run_and_get_stdout(['lscpu'])
+	print_output('lscpu', output)
+
 if program_paths('dmesg'):
 	returncode, output = run_and_get_stdout(['dmesg', '-a'])
 	if returncode != 0:
