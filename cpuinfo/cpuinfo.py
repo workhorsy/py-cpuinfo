@@ -36,29 +36,12 @@ import subprocess
 
 PY2 = sys.version_info[0] == 2
 
-g_bits = None
-g_cpu_count = None
-g_is_windows = None
-g_raw_arch_string = None
 
-
-def init():
-	global g_bits
-	global g_cpu_count
-	global g_is_windows
-	global g_raw_arch_string
-
-	# Get the global values for this system
-	g_bits = platform.architecture()[0]
-	g_cpu_count = multiprocessing.cpu_count()
-	g_is_windows = platform.system().lower() == 'windows'
-	g_raw_arch_string = platform.machine()
-
-	# Make sure we are running on a supported system
-	arch, bits = parse_arch(g_raw_arch_string)
-	if not arch in ['X86_32', 'X86_64', 'ARM_7', 'ARM_8']:
-		sys.stderr.write("py-cpuinfo currently only works on X86 and ARM CPUs.\n")
-		sys.exit(1)
+class DataSource(object):
+	bits = platform.architecture()[0]
+	cpu_count = multiprocessing.cpu_count()
+	is_windows = platform.system().lower() == 'windows'
+	raw_arch_string = platform.machine()
 
 
 def run_and_get_stdout(command, pipe_command=None):
@@ -277,11 +260,10 @@ class CPUID(object):
 		self.is_selinux_enforcing = (not can_selinux_exec_heap or not can_selinux_exec_memory)
 
 	def _asm_func(self, restype=None, argtypes=(), byte_code=[]):
-		global g_is_windows
 		byte_code = bytes.join(b'', byte_code)
 		address = None
 
-		if g_is_windows:
+		if DataSource.is_windows:
 			# Allocate a memory segment the size of the byte code, and make it executable
 			size = len(byte_code)
 			MEM_COMMIT = ctypes.c_ulong(0x1000)
@@ -323,12 +305,9 @@ class CPUID(object):
 		return fun, address
 
 	def _run_asm(self, *byte_code):
-		global g_is_windows
-		global g_bits
-
 		# Convert the byte code into a function that returns an int
 		restype = None
-		if g_bits == '64bit':
+		if DataSource.bits == '64bit':
 			restype = ctypes.c_uint64
 		else:
 			restype = ctypes.c_uint32
@@ -341,7 +320,7 @@ class CPUID(object):
 		size = ctypes.c_size_t(len(byte_code))
 
 		# Free the function memory segment
-		if g_is_windows:
+		if DataSource.is_windows:
 			MEM_RELEASE = ctypes.c_ulong(0x8000)
 			ctypes.windll.kernel32.VirtualFree(address, size, MEM_RELEASE)
 		else:
@@ -357,9 +336,7 @@ class CPUID(object):
 	# FIXME: We should not have to use different instructions to
 	# set eax to 0 or 1, on 32bit and 64bit machines.
 	def _zero_eax(self):
-		global g_bits
-
-		if g_bits == '64bit':
+		if DataSource.bits == '64bit':
 			return (
 				b"\x66\xB8\x00\x00" # mov eax,0x0"
 			)
@@ -369,9 +346,7 @@ class CPUID(object):
 			)
 
 	def _one_eax(self):
-		global g_bits
-
-		if g_bits == '64bit':
+		if DataSource.bits == '64bit':
 			return (
 				b"\x66\xB8\x01\x00" # mov eax,0x1"
 			)
@@ -714,10 +689,9 @@ class CPUID(object):
 		return cache_info
 
 	def get_ticks(self):
-		global g_bits
 		retval = None
 
-		if g_bits == '32bit':
+		if DataSource.bits == '32bit':
 			# Works on x86_32
 			restype = None
 			argtypes = (ctypes.POINTER(ctypes.c_uint), ctypes.POINTER(ctypes.c_uint))
@@ -742,7 +716,7 @@ class CPUID(object):
 
 			get_ticks_x86_32(ctypes.byref(high), ctypes.byref(low))
 			retval = ((high.value << 32) & 0xFFFFFFFF00000000) | low.value
-		elif g_bits == '64bit':
+		elif DataSource.bits == '64bit':
 			# Works on x86_64
 			restype = ctypes.c_uint64
 			argtypes = ()
@@ -782,7 +756,7 @@ def get_cpu_info_from_cpuid():
 	Returns None if SELinux is in enforcing mode.
 	'''
 	# Get the CPU arch and bits
-	arch, bits = parse_arch(g_raw_arch_string)
+	arch, bits = parse_arch(DataSource.raw_arch_string)
 
 	# Return none if this is not an X86 CPU
 	if not arch in ['X86_32', 'X86_64']:
@@ -818,8 +792,8 @@ def get_cpu_info_from_cpuid():
 
 	'arch' : arch,
 	'bits' : bits,
-	'count' : g_cpu_count,
-	'raw_arch_string' : g_raw_arch_string,
+	'count' : DataSource.cpu_count,
+	'raw_arch_string' : DataSource.raw_arch_string,
 
 	'l2_cache_size' : cache_info['size_kb'],
 	'l2_cache_line_size' : cache_info['line_size_b'],
@@ -872,7 +846,7 @@ def get_cpu_info_from_proc_cpuinfo():
 		hz_actual = hz_advertised
 
 	# Get the CPU arch and bits
-	arch, bits = parse_arch(g_raw_arch_string)
+	arch, bits = parse_arch(DataSource.raw_arch_string)
 
 	return {
 	'vendor_id' : vendor_id,
@@ -886,8 +860,8 @@ def get_cpu_info_from_proc_cpuinfo():
 
 	'arch' : arch,
 	'bits' : bits,
-	'count' : g_cpu_count,
-	'raw_arch_string' : g_raw_arch_string,
+	'count' : DataSource.cpu_count,
+	'raw_arch_string' : DataSource.raw_arch_string,
 
 	'l2_cache_size' : cache_size,
 	'l2_cache_line_size' : 0,
@@ -967,7 +941,7 @@ def get_cpu_info_from_dmesg():
 	scale, hz_advertised = _get_hz_string_from_brand(processor_brand)
 
 	# Get the CPU arch and bits
-	arch, bits = parse_arch(g_raw_arch_string)
+	arch, bits = parse_arch(DataSource.raw_arch_string)
 
 	return {
 	'vendor_id' : vendor_id,
@@ -980,8 +954,8 @@ def get_cpu_info_from_dmesg():
 
 	'arch' : arch,
 	'bits' : bits,
-	'count' : g_cpu_count,
-	'raw_arch_string' : g_raw_arch_string,
+	'count' : DataSource.cpu_count,
+	'raw_arch_string' : DataSource.raw_arch_string,
 
 	'l2_cache_size' : 0,
 	'l2_cache_line_size' : 0,
@@ -1028,7 +1002,7 @@ def get_cpu_info_from_sysctl():
 	hz_actual = to_hz_string(hz_actual)
 
 	# Get the CPU arch and bits
-	arch, bits = parse_arch(g_raw_arch_string)
+	arch, bits = parse_arch(DataSource.raw_arch_string)
 
 	return {
 	'vendor_id' : vendor_id,
@@ -1041,8 +1015,8 @@ def get_cpu_info_from_sysctl():
 
 	'arch' : arch,
 	'bits' : bits,
-	'count' : g_cpu_count,
-	'raw_arch_string' : g_raw_arch_string,
+	'count' : DataSource.cpu_count,
+	'raw_arch_string' : DataSource.raw_arch_string,
 
 	'l2_cache_size' : cache_size,
 	'l2_cache_line_size' : 0,
@@ -1063,10 +1037,8 @@ def get_cpu_info_from_registry():
 	Returns the CPU info gathered from the Windows Registry. Will return None if
 	not on Windows.
 	'''
-	global g_is_windows
-
 	# Just return None if not on Windows
-	if not g_is_windows:
+	if not DataSource.is_windows:
 		return None
 
 	try:
@@ -1162,7 +1134,7 @@ def get_cpu_info_from_registry():
 
 	'arch' : arch,
 	'bits' : bits,
-	'count' : g_cpu_count,
+	'count' : DataSource.cpu_count,
 	'raw_arch_string' : raw_arch_string,
 
 	'l2_cache_size' : 0,
@@ -1219,7 +1191,7 @@ def get_cpu_info_from_kstat():
 	hz_actual = to_hz_string(hz_actual)
 
 	# Get the CPU arch and bits
-	arch, bits = parse_arch(g_raw_arch_string)
+	arch, bits = parse_arch(DataSource.raw_arch_string)
 
 	return {
 	'vendor_id' : vendor_id,
@@ -1232,8 +1204,8 @@ def get_cpu_info_from_kstat():
 
 	'arch' : arch,
 	'bits' : bits,
-	'count' : g_cpu_count,
-	'raw_arch_string' : g_raw_arch_string,
+	'count' : DataSource.cpu_count,
+	'raw_arch_string' : DataSource.raw_arch_string,
 
 	'l2_cache_size' : cache_size,
 	'l2_cache_line_size' : 0,
@@ -1305,8 +1277,15 @@ def main():
 	print('Extended Family: {0}'.format(info['extended_family']))
 	print('Flags: {0}'.format(', '.join(info['flags'])))
 
-init()
+
+# Make sure we are running on a supported system
+arch, bits = parse_arch(DataSource.raw_arch_string)
+if not arch in ['X86_32', 'X86_64', 'ARM_7', 'ARM_8']:
+	sys.stderr.write("py-cpuinfo currently only works on X86 and ARM CPUs.\n")
+	sys.exit(1)
 
 if __name__ == '__main__':
 	main()
+
+
 
