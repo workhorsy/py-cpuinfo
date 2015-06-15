@@ -1,5 +1,6 @@
 
 
+import unittest
 from cpuinfo import cpuinfo
 
 
@@ -11,7 +12,7 @@ class DataSource(object):
 
 	@staticmethod
 	def has_proc_cpuinfo():
-		return True
+		return False
 
 	@staticmethod
 	def cat_proc_cpuinfo():
@@ -53,8 +54,27 @@ class DataSource(object):
 	def kstat_m_cpu_info():
 		return 1, None
 
-cpuinfo.DataSource = DataSource
 
 
-print(cpuinfo.get_cpu_info())
+
+class TestExample(unittest.TestCase):
+	def test_all(self):
+		cpuinfo.DataSource = DataSource
+
+		self.assertEqual(None, cpuinfo.get_cpu_info_from_registry())
+
+		self.assertEqual(None, cpuinfo.get_cpu_info_from_proc_cpuinfo())
+
+		self.assertEqual(None, cpuinfo.get_cpu_info_from_sysctl())
+
+		self.assertEqual(None, cpuinfo.get_cpu_info_from_kstat())
+
+		self.assertEqual(None, cpuinfo.get_cpu_info_from_dmesg())
+
+		#self.assertEqual(None, cpuinfo.get_cpu_info_from_cpuid())
+
+		#self.assertEqual(None, cpuinfo.get_cpu_info())
+
+
+
 
