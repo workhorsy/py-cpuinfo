@@ -666,7 +666,12 @@ class CPUID(object):
 					for n in [0, 8, 16, 24]:
 						processor_brand += chr((reg >> n) & 0xFF)
 
-		return processor_brand[:-1]
+		# Strip off any trailing NULL white space
+		while ord(processor_brand[-1]) == 0:
+			processor_brand = processor_brand[:-1]
+		processor_brand = processor_brand.strip()
+
+		return processor_brand
 
 	def get_cache(self, max_extension_support):
 		cache_info = {}
