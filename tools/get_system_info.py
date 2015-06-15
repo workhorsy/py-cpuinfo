@@ -67,12 +67,17 @@ def program_paths(program_name):
 def print_output(name, output):
 	print('{0}: \n=====================================================================\n{1}\n\n'.format(name, output))
 
-print('sys.version_info: {0}\n\n'.format(sys.version_info))
-print('multiprocessing.cpu_count: {0}\n\n'.format(multiprocessing.cpu_count()))
-print('platform.uname: {0}\n\n'.format(platform.uname()))
-print('platform.architecture: {0}\n\n'.format(platform.architecture()))
-print('platform.system: {0}\n\n'.format(platform.system()))
-print('platform.machine: {0}\n\n'.format(platform.machine()))
+print_output('sys.version_info', sys.version_info)
+
+print_output('multiprocessing.cpu_count', multiprocessing.cpu_count())
+
+print_output('platform.uname', platform.uname())
+
+print_output('platform.architecture', platform.architecture())
+
+print_output('platform.system', platform.system())
+
+print_output('platform.machine', platform.machine())
 
 
 if program_paths('cpufreq-info'):
