@@ -666,10 +666,8 @@ class CPUID(object):
 					for n in [0, 8, 16, 24]:
 						processor_brand += chr((reg >> n) & 0xFF)
 
-		# Strip off any trailing NULL white space
-		while ord(processor_brand[-1]) == 0:
-			processor_brand = processor_brand[:-1]
-		processor_brand = processor_brand.strip()
+		# Strip off any trailing NULL terminators and white space
+		processor_brand = processor_brand.strip("\0").strip()
 
 		return processor_brand
 
