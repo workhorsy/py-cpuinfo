@@ -43,6 +43,50 @@ class DataSource(object):
 	is_windows = platform.system().lower() == 'windows'
 	raw_arch_string = platform.machine()
 
+	@staticmethod
+	def has_proc_cpuinfo():
+		return os.path.exists('/proc/cpuinfo')
+
+	@staticmethod
+	def cat_proc_cpuinfo():
+		return run_and_get_stdout(['cat', '/proc/cpuinfo'])
+
+	@staticmethod
+	def cpufreq_info():
+		return run_and_get_stdout(['cpufreq-info'])
+
+	@staticmethod
+	def sestatus_allow_execheap():
+		return run_and_get_stdout(['sestatus', '-b'], ['grep', '-i', '"allow_execheap"'])[1].strip().lower().endswith('on')
+
+	@staticmethod
+	def sestatus_allow_execmem():
+		return run_and_get_stdout(['sestatus', '-b'], ['grep', '-i', '"allow_execmem"'])[1].strip().lower().endswith('on')
+
+	@staticmethod
+	def dmesg_a_grep_cpu():
+		return run_and_get_stdout(['dmesg', '-a'], ['grep', '"CPU:"'])
+
+	@staticmethod
+	def dmesg_a_grep_origin():
+		return run_and_get_stdout(['dmesg', '-a'], ['grep', '"Origin ="'])
+
+	@staticmethod
+	def dmesg_a_grep_features():
+		return run_and_get_stdout(['dmesg', '-a'], ['grep', '"Features="'])
+
+	@staticmethod
+	def sysctl_machdep_cpu_hw_cpufrequency():
+		return run_and_get_stdout(['sysctl', 'machdep.cpu', 'hw.cpufrequency'])
+
+	@staticmethod
+	def isainfo_vb():
+		return run_and_get_stdout(['isainfo', '-vb'])
+
+	@staticmethod
+	def kstat_m_cpu_info():
+		return run_and_get_stdout(['kstat', '-m', 'cpu_info'])
+
 
 def run_and_get_stdout(command, pipe_command=None):
 	if not pipe_command:
@@ -128,7 +172,7 @@ def _get_hz_string_from_beagle_bone():
 	if not program_paths('cpufreq-info'):
 		return scale, hz_brand
 
-	returncode, output = run_and_get_stdout(['cpufreq-info'])
+	returncode, output = DataSource.cpufreq_info()
 	hz_brand = output.split('current CPU frequency is')[1].split('.')[0].lower()
 
 	if hz_brand.endswith('mhz'):
@@ -255,8 +299,8 @@ class CPUID(object):
 			return
 
 		# Figure out if we can execute heap and execute memory
-		can_selinux_exec_heap = run_and_get_stdout(['sestatus', '-b'], ['grep', '-i', '"allow_execheap"'])[1].strip().lower().endswith('on')
-		can_selinux_exec_memory = run_and_get_stdout(['sestatus', '-b'], ['grep', '-i', '"allow_execmem"'])[1].strip().lower().endswith('on')
+		can_selinux_exec_heap = DataSource.sestatus_allow_execheap()
+		can_selinux_exec_memory = DataSource.sestatus_allow_execmem()
 		self.is_selinux_enforcing = (not can_selinux_exec_heap or not can_selinux_exec_memory)
 
 	def _asm_func(self, restype=None, argtypes=(), byte_code=[]):
@@ -814,10 +858,10 @@ def get_cpu_info_from_proc_cpuinfo():
 	/proc/cpuinfo is not found.
 	'''
 	# Just return None if there is no cpuinfo
-	if not os.path.exists('/proc/cpuinfo'):
+	if not DataSource.has_proc_cpuinfo():
 		return None
 
-	returncode, output = run_and_get_stdout(['cat', '/proc/cpuinfo'])
+	returncode, output = DataSource.cat_proc_cpuinfo()
 
 	# Various fields
 	vendor_id = _get_field(output, None, '', 'vendor_id', 'vendor id', 'vendor')
@@ -886,17 +930,17 @@ def get_cpu_info_from_dmesg():
 		return None
 
 	# If dmesg fails to have processor brand, return None
-	returncode, long_brand = run_and_get_stdout(['dmesg', '-a'], ['grep', '"CPU:"'])
+	returncode, long_brand = DataSource.dmesg_a_grep_cpu()
 	if long_brand == None or returncode != 0:
 		return None
 
 	# If dmesg fails to have fields, return None
-	returncode, fields = run_and_get_stdout(['dmesg', '-a'], ['grep', '"Origin ="'])
+	returncode, fields = DataSource.dmesg_a_grep_origin()
 	if fields == None or returncode != 0:
 		return None
 
 	# If dmesg fails to have flags, return None
-	returncode, flags = run_and_get_stdout(['dmesg', '-a'], ['grep', '"Features="'])
+	returncode, flags = DataSource.dmesg_a_grep_features()
 	if flags == None or returncode != 0:
 		return None
 
@@ -980,7 +1024,7 @@ def get_cpu_info_from_sysctl():
 		return None
 
 	# If sysctl fails return None
-	returncode, output = run_and_get_stdout(['sysctl', 'machdep.cpu', 'hw.cpufrequency'])
+	returncode, output = DataSource.sysctl_machdep_cpu_hw_cpufrequency()
 	if output == None:
 		return None
 
@@ -1160,12 +1204,12 @@ def get_cpu_info_from_kstat():
 		return None
 
 	# If isainfo fails return None
-	returncode, flag_output = run_and_get_stdout(['isainfo', '-vb'])
+	returncode, flag_output = DataSource.isainfo_vb()
 	if flag_output == None:
 		return None
 
 	# If kstat fails return None
-	returncode, kstat = run_and_get_stdout(['kstat', '-m', 'cpu_info'])
+	returncode, kstat = DataSource.kstat_m_cpu_info()
 	if kstat == None:
 		return None
 
