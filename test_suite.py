@@ -1,7 +1,11 @@
 
 
-
+import os, sys
 import unittest
+
+# Import the unit tests
+sys.path.append(os.path.realpath('tests'))
+
 from test_example import TestExample
 from test_debian_8_x86_64 import TestDebian
 
