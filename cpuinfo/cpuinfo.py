@@ -36,10 +36,29 @@ import subprocess
 
 PY2 = sys.version_info[0] == 2
 
-g_bits = platform.architecture()[0]
-g_cpu_count = multiprocessing.cpu_count()
-is_windows = platform.system().lower() == 'windows'
-g_raw_arch_string = platform.machine()
+g_bits = None
+g_cpu_count = None
+is_windows = None
+g_raw_arch_string = None
+
+
+def init():
+	global g_bits
+	global g_cpu_count
+	global is_windows
+	global g_raw_arch_string
+
+	# Get the global values for this system
+	g_bits = platform.architecture()[0]
+	g_cpu_count = multiprocessing.cpu_count()
+	is_windows = platform.system().lower() == 'windows'
+	g_raw_arch_string = platform.machine()
+
+	# Make sure we are running on a supported system
+	arch, bits = parse_arch(g_raw_arch_string)
+	if not arch in ['X86_32', 'X86_64', 'ARM_7', 'ARM_8']:
+		sys.stderr.write("py-cpuinfo currently only works on X86 and ARM CPUs.\n")
+		sys.exit(1)
 
 
 def run_and_get_stdout(command, pipe_command=None):
@@ -1286,11 +1305,7 @@ def main():
 	print('Extended Family: {0}'.format(info['extended_family']))
 	print('Flags: {0}'.format(', '.join(info['flags'])))
 
-
-arch, bits = parse_arch(g_raw_arch_string)
-if not arch in ['X86_32', 'X86_64', 'ARM_7', 'ARM_8']:
-	sys.stderr.write("py-cpuinfo currently only works on X86 and ARM CPUs.\n")
-	sys.exit(1)
+init()
 
 if __name__ == '__main__':
 	main()
