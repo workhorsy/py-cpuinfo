@@ -112,6 +112,8 @@ if program_paths('dmesg'):
 	returncode, output = run_and_get_stdout(['dmesg', '-a'])
 	if returncode != 0:
 		returncode, output = run_and_get_stdout(['dmesg'])
+	if len(output) > 20480:
+		output = output[0 : 20480]
 	print_output('dmesg', output)
 
 
