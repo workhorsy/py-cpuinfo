@@ -36,7 +36,7 @@ import subprocess
 
 PY2 = sys.version_info[0] == 2
 
-bits = platform.architecture()[0]
+g_bits = platform.architecture()[0]
 g_cpu_count = multiprocessing.cpu_count()
 is_windows = platform.system().lower() == 'windows'
 g_raw_arch_string = platform.machine()
@@ -114,6 +114,7 @@ def _get_hz_string_from_brand(processor_brand):
 		hz_brand = hz_brand.split('@')[1]
 	else:
 		hz_brand = hz_brand.rsplit(None, 1)[1]
+
 	hz_brand = hz_brand.rstrip('mhz').rstrip('ghz').strip()
 	hz_brand = to_hz_string(hz_brand)
 
@@ -304,11 +305,11 @@ class CPUID(object):
 
 	def _run_asm(self, *byte_code):
 		global is_windows
-		global bits
+		global g_bits
 
 		# Convert the byte code into a function that returns an int
 		restype = None
-		if bits == '64bit':
+		if g_bits == '64bit':
 			restype = ctypes.c_uint64
 		else:
 			restype = ctypes.c_uint32
@@ -337,9 +338,9 @@ class CPUID(object):
 	# FIXME: We should not have to use different instructions to
 	# set eax to 0 or 1, on 32bit and 64bit machines.
 	def _zero_eax(self):
-		global bits
+		global g_bits
 
-		if bits == '64bit':
+		if g_bits == '64bit':
 			return (
 				b"\x66\xB8\x00\x00" # mov eax,0x0"
 			)
@@ -349,9 +350,9 @@ class CPUID(object):
 			)
 
 	def _one_eax(self):
-		global bits
+		global g_bits
 
-		if bits == '64bit':
+		if g_bits == '64bit':
 			return (
 				b"\x66\xB8\x01\x00" # mov eax,0x1"
 			)
@@ -691,10 +692,10 @@ class CPUID(object):
 		return cache_info
 
 	def get_ticks(self):
-		global bits
+		global g_bits
 		retval = None
 
-		if bits == '32bit':
+		if g_bits == '32bit':
 			# Works on x86_32
 			restype = None
 			argtypes = (ctypes.POINTER(ctypes.c_uint), ctypes.POINTER(ctypes.c_uint))
@@ -719,7 +720,7 @@ class CPUID(object):
 
 			get_ticks_x86_32(ctypes.byref(high), ctypes.byref(low))
 			retval = ((high.value << 32) & 0xFFFFFFFF00000000) | low.value
-		elif bits == '64bit':
+		elif g_bits == '64bit':
 			# Works on x86_64
 			restype = ctypes.c_uint64
 			argtypes = ()
