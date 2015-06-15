@@ -33,6 +33,9 @@ import subprocess
 
 PY2 = sys.version_info[0] == 2
 
+out_file_name = 'system_info.txt'
+out_file = open(out_file_name, 'w')
+
 def run_and_get_stdout(command, pipe_command=None):
 	if not pipe_command:
 		p1 = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
@@ -65,7 +68,8 @@ def program_paths(program_name):
 	return paths
 
 def print_output(name, output):
-	print('{0}: \n=====================================================================\n{1}\n\n'.format(name, output))
+	line = "=" * 79
+	out_file.write('{0}:\n{1}\n{2}\n\n\n\n'.format(name, line, output))
 
 print_output('sys.version_info', sys.version_info)
 
@@ -117,7 +121,7 @@ if program_paths('dmesg'):
 	print_output('dmesg', output)
 
 
-
-
+out_file.close()
+print('System info written to "{0}"'.format(out_file_name))
 
 

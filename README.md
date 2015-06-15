@@ -89,3 +89,12 @@ Bugs and Corrections
 
 Please report a Bug if you suspect any of this information is wrong.
 
+If py-cpuinfo does not work on your machine, run the script:
+
+~~~bash
+python tools/get_system_info.py
+~~~
+
+and create bug report with the generated "system_info.txt" file.
+
+
