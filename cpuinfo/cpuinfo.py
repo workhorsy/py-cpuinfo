@@ -38,20 +38,20 @@ PY2 = sys.version_info[0] == 2
 
 g_bits = None
 g_cpu_count = None
-is_windows = None
+g_is_windows = None
 g_raw_arch_string = None
 
 
 def init():
 	global g_bits
 	global g_cpu_count
-	global is_windows
+	global g_is_windows
 	global g_raw_arch_string
 
 	# Get the global values for this system
 	g_bits = platform.architecture()[0]
 	g_cpu_count = multiprocessing.cpu_count()
-	is_windows = platform.system().lower() == 'windows'
+	g_is_windows = platform.system().lower() == 'windows'
 	g_raw_arch_string = platform.machine()
 
 	# Make sure we are running on a supported system
@@ -277,11 +277,11 @@ class CPUID(object):
 		self.is_selinux_enforcing = (not can_selinux_exec_heap or not can_selinux_exec_memory)
 
 	def _asm_func(self, restype=None, argtypes=(), byte_code=[]):
-		global is_windows
+		global g_is_windows
 		byte_code = bytes.join(b'', byte_code)
 		address = None
 
-		if is_windows:
+		if g_is_windows:
 			# Allocate a memory segment the size of the byte code, and make it executable
 			size = len(byte_code)
 			MEM_COMMIT = ctypes.c_ulong(0x1000)
@@ -323,7 +323,7 @@ class CPUID(object):
 		return fun, address
 
 	def _run_asm(self, *byte_code):
-		global is_windows
+		global g_is_windows
 		global g_bits
 
 		# Convert the byte code into a function that returns an int
@@ -341,7 +341,7 @@ class CPUID(object):
 		size = ctypes.c_size_t(len(byte_code))
 
 		# Free the function memory segment
-		if is_windows:
+		if g_is_windows:
 			MEM_RELEASE = ctypes.c_ulong(0x8000)
 			ctypes.windll.kernel32.VirtualFree(address, size, MEM_RELEASE)
 		else:
@@ -1063,10 +1063,10 @@ def get_cpu_info_from_registry():
 	Returns the CPU info gathered from the Windows Registry. Will return None if
 	not on Windows.
 	'''
-	global is_windows
+	global g_is_windows
 
 	# Just return None if not on Windows
-	if not is_windows:
+	if not g_is_windows:
 		return None
 
 	try:
