@@ -11,28 +11,8 @@ class DataSource(object):
 	raw_arch_string = 'amd64'
 
 	@staticmethod
-	def has_proc_cpuinfo():
-		return False
-
-	@staticmethod
 	def has_dmesg():
 		return True
-
-	@staticmethod
-	def cat_proc_cpuinfo():
-		return 1, None
-
-	@staticmethod
-	def cpufreq_info():
-		return 1, None
-
-	@staticmethod
-	def sestatus_allow_execheap():
-		return False
-
-	@staticmethod
-	def sestatus_allow_execmem():
-		return False
 
 	@staticmethod
 	def dmesg_a_grep_cpu():
@@ -51,18 +31,6 @@ class DataSource(object):
 		retcode = 0
 		output = '  Features=0x78bfbff<FPU,VME,DE,PSE,TSC,MSR,PAE,MCE,CX8,APIC,SEP,MTRR,PGE,MCA,CMOV,PAT,PSE36,CLFLUSH,MMX,FXSR,SSE,SSE2>'
 		return retcode, output
-
-	@staticmethod
-	def sysctl_machdep_cpu_hw_cpufrequency():
-		return 1, None
-
-	@staticmethod
-	def isainfo_vb():
-		return 1, None
-
-	@staticmethod
-	def kstat_m_cpu_info():
-		return 1, None
 
 
 

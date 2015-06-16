@@ -19,6 +19,26 @@ class DataSource(object):
 		return False
 
 	@staticmethod
+	def has_cpufreq_info():
+		return False
+
+	@staticmethod
+	def has_sestatus():
+		return False
+
+	@staticmethod
+	def has_sysctl():
+		return False
+
+	@staticmethod
+	def has_isainfo():
+		return False
+
+	@staticmethod
+	def has_kstat():
+		return False
+
+	@staticmethod
 	def cat_proc_cpuinfo():
 		return 1, None
 

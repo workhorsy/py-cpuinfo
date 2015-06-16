@@ -48,6 +48,30 @@ class DataSource(object):
 		return os.path.exists('/proc/cpuinfo')
 
 	@staticmethod
+	def has_dmesg():
+		return len(program_paths('dmesg')) > 0
+
+	@staticmethod
+	def has_cpufreq_info():
+		return len(program_paths('cpufreq-info')) > 0
+
+	@staticmethod
+	def has_sestatus():
+		return len(program_paths('sestatus')) > 0
+
+	@staticmethod
+	def has_sysctl():
+		return len(program_paths('sysctl')) > 0
+
+	@staticmethod
+	def has_isainfo():
+		return len(program_paths('isainfo')) > 0
+
+	@staticmethod
+	def has_kstat():
+		return len(program_paths('kstat')) > 0
+
+	@staticmethod
 	def cat_proc_cpuinfo():
 		return run_and_get_stdout(['cat', '/proc/cpuinfo'])
 
@@ -169,7 +193,7 @@ def _get_hz_string_from_brand(processor_brand):
 def _get_hz_string_from_beagle_bone():
 	scale, hz_brand = 1, '0.0'
 
-	if not program_paths('cpufreq-info'):
+	if not DataSource.has_cpufreq_info():
 		return scale, hz_brand
 
 	returncode, output = DataSource.cpufreq_info()
@@ -295,7 +319,7 @@ class CPUID(object):
 		self.is_selinux_enforcing = False
 
 		# Just return if the SE Linux Status Tool is not installed
-		if not program_paths('sestatus'):
+		if not DataSource.has_sestatus():
 			return
 
 		# Figure out if we can execute heap and execute memory
@@ -1020,7 +1044,7 @@ def get_cpu_info_from_sysctl():
 	sysctl is not found.
 	'''
 	# Just return None if there is no sysctl
-	if not program_paths('sysctl'):
+	if not DataSource.has_sysctl():
 		return None
 
 	# If sysctl fails return None
@@ -1200,7 +1224,7 @@ def get_cpu_info_from_kstat():
 	return None if isainfo or kstat are not found.
 	'''
 	# Just return None if there is no isainfo or kstat
-	if not program_paths('isainfo') or not program_paths('kstat'):
+	if not DataSource.has_isainfo() or not DataSource.has_kstat():
 		return None
 
 	# If isainfo fails return None
