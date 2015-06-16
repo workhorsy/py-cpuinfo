@@ -926,7 +926,7 @@ def get_cpu_info_from_dmesg():
 	dmesg is not found or does not have the desired info.
 	'''
 	# Just return None if there is no dmesg
-	if not program_paths('dmesg'):
+	if not DataSource.has_dmesg():
 		return None
 
 	# If dmesg fails to have processor brand, return None

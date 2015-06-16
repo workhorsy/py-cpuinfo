@@ -15,6 +15,10 @@ class DataSource(object):
 		return False
 
 	@staticmethod
+	def has_dmesg():
+		return False
+
+	@staticmethod
 	def cat_proc_cpuinfo():
 		return 1, None
 
