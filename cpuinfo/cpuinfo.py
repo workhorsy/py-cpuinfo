@@ -197,6 +197,9 @@ def _get_hz_string_from_beagle_bone():
 		return scale, hz_brand
 
 	returncode, output = DataSource.cpufreq_info()
+	if returncode != 0:
+		return (scale, hz_brand)
+
 	hz_brand = output.split('current CPU frequency is')[1].split('.')[0].lower()
 
 	if hz_brand.endswith('mhz'):
@@ -886,6 +889,8 @@ def get_cpu_info_from_proc_cpuinfo():
 		return None
 
 	returncode, output = DataSource.cat_proc_cpuinfo()
+	if returncode != 0:
+		return None
 
 	# Various fields
 	vendor_id = _get_field(output, None, '', 'vendor_id', 'vendor id', 'vendor')
@@ -1049,7 +1054,7 @@ def get_cpu_info_from_sysctl():
 
 	# If sysctl fails return None
 	returncode, output = DataSource.sysctl_machdep_cpu_hw_cpufrequency()
-	if output == None:
+	if output == None or returncode != 0:
 		return None
 
 	# Various fields
@@ -1229,12 +1234,12 @@ def get_cpu_info_from_kstat():
 
 	# If isainfo fails return None
 	returncode, flag_output = DataSource.isainfo_vb()
-	if flag_output == None:
+	if flag_output == None or returncode != 0:
 		return None
 
 	# If kstat fails return None
 	returncode, kstat = DataSource.kstat_m_cpu_info()
-	if kstat == None:
+	if kstat == None or returncode != 0:
 		return None
 
 	# Various fields
