@@ -97,8 +97,8 @@ if os.path.exists('/proc/cpuinfo'):
 	print_output('cat /proc/cpuinfo', output)
 
 if program_paths('sysctl'):
-	returncode, output = run_and_get_stdout(['sysctl', 'machdep.cpu'])
-	print_output('sysctl machdep.cpu', output)
+	returncode, output = run_and_get_stdout(['sysctl', 'machdep.cpu', 'hw.cpufrequency'])
+	print_output('sysctl machdep.cpu hw.cpufrequency', output)
 
 if program_paths('isainfo'):
 	returncode, output = run_and_get_stdout(['isainfo', '-vb'])
