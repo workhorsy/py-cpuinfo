@@ -15,9 +15,9 @@ These approaches are used for getting info:
 
 1. Windows Registry (Window)
 2. /proc/cpuinfo (Unix/Linux/Haiku)
-3. sysctl (BSD)
+3. sysctl (OS X)
 4. dmesg (Unix/Linux)
-5. isainfo and kstat (OS X)
+5. isainfo and kstat (Solaris)
 6. cpufreq-info (BeagleBone)
 7. Querying the CPUID register (Intel X86 CPUs)
 
