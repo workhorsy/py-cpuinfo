@@ -90,7 +90,6 @@ class TestOSX(unittest.TestCase):
 		self.assertEqual(0, info['processor_type'])
 		self.assertEqual(0, info['extended_model'])
 		self.assertEqual(0, info['extended_family'])
-		print(info['flags'])
 		self.assertEqual(
 			['apic', 'clfsh', 'cmov', 'cx8', 'de', 'fpu', 'fxsr', 'htt', 
 			'mca', 'mce', 'mmx', 'msr', 'mtrr', 'pae', 'pat', 'pge', 'pse', 
