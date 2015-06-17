@@ -974,6 +974,7 @@ def get_cpu_info_from_dmesg():
 		return None
 
 	scale = 0
+	long_brand = long_brand.split('CPU: ')[1]
 	hz_actual = long_brand.rsplit('(', 1)[1].split(' ')[0].lower()
 	if hz_actual.endswith('mhz'):
 		scale = 6
