@@ -11,6 +11,7 @@ from test_debian_8_x86_64 import TestDebian
 from test_pcbsd_10_x86_64 import TestPCBSD
 from test_osx_13_x86_64 import TestOSX
 from test_beagle_bone_arm import TestBeagleBone
+from test_windows_8_x86_64 import TestWindows8
 
 
 if __name__ == '__main__':
@@ -20,6 +21,7 @@ if __name__ == '__main__':
 	suite.addTest(unittest.makeSuite(TestPCBSD))
 	suite.addTest(unittest.makeSuite(TestOSX))
 	suite.addTest(unittest.makeSuite(TestBeagleBone))
+	suite.addTest(unittest.makeSuite(TestWindows8))
 
 	runner = unittest.TextTestRunner()
 	runner.run(suite)

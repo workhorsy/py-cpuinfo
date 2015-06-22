@@ -111,6 +111,67 @@ class DataSource(object):
 	def kstat_m_cpu_info():
 		return run_and_get_stdout(['kstat', '-m', 'cpu_info'])
 
+	@staticmethod
+	def winreg_processor_brand():
+		try:
+			import _winreg as winreg
+		except ImportError as err:
+			import winreg
+
+		key = winreg.OpenKey(winreg.HKEY_LOCAL_MACHINE, r"Hardware\Description\System\CentralProcessor\0")
+		processor_brand = winreg.QueryValueEx(key, "ProcessorNameString")[0]
+		winreg.CloseKey(key)
+		return processor_brand
+
+	@staticmethod
+	def winreg_vendor_id():
+		try:
+			import _winreg as winreg
+		except ImportError as err:
+			import winreg
+
+		key = winreg.OpenKey(winreg.HKEY_LOCAL_MACHINE, r"Hardware\Description\System\CentralProcessor\0")
+		vendor_id = winreg.QueryValueEx(key, "VendorIdentifier")[0]
+		winreg.CloseKey(key)
+		return vendor_id
+
+	@staticmethod
+	def winreg_raw_arch_string():
+		try:
+			import _winreg as winreg
+		except ImportError as err:
+			import winreg
+
+		key = winreg.OpenKey(winreg.HKEY_LOCAL_MACHINE, r"SYSTEM\CurrentControlSet\Control\Session Manager\Environment")
+		raw_arch_string = winreg.QueryValueEx(key, "PROCESSOR_ARCHITECTURE")[0]
+		winreg.CloseKey(key)
+		return raw_arch_string
+
+	@staticmethod
+	def winreg_hz_actual():
+		try:
+			import _winreg as winreg
+		except ImportError as err:
+			import winreg
+
+		key = winreg.OpenKey(winreg.HKEY_LOCAL_MACHINE, r"Hardware\Description\System\CentralProcessor\0")
+		hz_actual = winreg.QueryValueEx(key, "~Mhz")[0]
+		winreg.CloseKey(key)
+		hz_actual = to_hz_string(hz_actual)
+		return hz_actual
+
+	@staticmethod
+	def winreg_feature_bits():
+		try:
+			import _winreg as winreg
+		except ImportError as err:
+			import winreg
+
+		key = winreg.OpenKey(winreg.HKEY_LOCAL_MACHINE, r"Hardware\Description\System\CentralProcessor\0")
+		feature_bits = winreg.QueryValueEx(key, "FeatureSet")[0]
+		winreg.CloseKey(key)
+		return feature_bits
+
 
 def run_and_get_stdout(command, pipe_command=None):
 	if not pipe_command:
@@ -1115,40 +1176,25 @@ def get_cpu_info_from_registry():
 	if not DataSource.is_windows:
 		return None
 
-	try:
-		import _winreg as winreg
-	except ImportError as err:
-		import winreg
-
 	# Get the CPU name
-	key = winreg.OpenKey(winreg.HKEY_LOCAL_MACHINE, r"Hardware\Description\System\CentralProcessor\0")
-	processor_brand = winreg.QueryValueEx(key, "ProcessorNameString")[0]
-	winreg.CloseKey(key)
+	processor_brand = DataSource.winreg_processor_brand()
 
 	# Get the CPU vendor id
-	key = winreg.OpenKey(winreg.HKEY_LOCAL_MACHINE, r"Hardware\Description\System\CentralProcessor\0")
-	vendor_id = winreg.QueryValueEx(key, "VendorIdentifier")[0]
-	winreg.CloseKey(key)
+	vendor_id = DataSource.winreg_vendor_id()
 
 	# Get the CPU arch and bits
-	key = winreg.OpenKey(winreg.HKEY_LOCAL_MACHINE, r"SYSTEM\CurrentControlSet\Control\Session Manager\Environment")
-	raw_arch_string = winreg.QueryValueEx(key, "PROCESSOR_ARCHITECTURE")[0]
-	winreg.CloseKey(key)
+	raw_arch_string = DataSource.winreg_raw_arch_string()
 	arch, bits = parse_arch(raw_arch_string)
 
 	# Get the actual CPU Hz
-	key = winreg.OpenKey(winreg.HKEY_LOCAL_MACHINE, r"Hardware\Description\System\CentralProcessor\0")
-	hz_actual = winreg.QueryValueEx(key, "~Mhz")[0]
-	winreg.CloseKey(key)
+	hz_actual = DataSource.winreg_hz_actual()
 	hz_actual = to_hz_string(hz_actual)
 
 	# Get the advertised CPU Hz
 	scale, hz_advertised = _get_hz_string_from_brand(processor_brand)
 
 	# Get the CPU features
-	key = winreg.OpenKey(winreg.HKEY_LOCAL_MACHINE, r"Hardware\Description\System\CentralProcessor\0")
-	feature_bits = winreg.QueryValueEx(key, "FeatureSet")[0]
-	winreg.CloseKey(key)
+	feature_bits = DataSource.winreg_feature_bits()
 
 	def is_set(bit):
 		mask = 0x80000000 >> bit
@@ -1300,7 +1346,7 @@ def get_cpu_info():
 	# Try the Windows registry
 	if not info:
 		info = get_cpu_info_from_registry()
-
+	'''
 	# Try /proc/cpuinfo
 	if not info:
 		info = get_cpu_info_from_proc_cpuinfo()
@@ -1320,7 +1366,7 @@ def get_cpu_info():
 	# Try querying the CPU cpuid register
 	if not info:
 		info = get_cpu_info_from_cpuid()
-
+	'''
 	return info
 
 def main():
