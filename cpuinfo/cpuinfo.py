@@ -1329,7 +1329,7 @@ def get_cpu_info():
 	# Try the Windows registry
 	if not info:
 		info = get_cpu_info_from_registry()
-	'''
+
 	# Try /proc/cpuinfo
 	if not info:
 		info = get_cpu_info_from_proc_cpuinfo()
@@ -1349,7 +1349,7 @@ def get_cpu_info():
 	# Try querying the CPU cpuid register
 	if not info:
 		info = get_cpu_info_from_cpuid()
-	'''
+
 	return info
 
 def main():
