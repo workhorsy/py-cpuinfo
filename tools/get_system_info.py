@@ -34,7 +34,10 @@ import subprocess
 try:
 	import _winreg as winreg
 except ImportError as err:
-	import winreg
+	try:
+		import winreg
+	except ImportError as err:
+		pass
 
 PY2 = sys.version_info[0] == 2
 

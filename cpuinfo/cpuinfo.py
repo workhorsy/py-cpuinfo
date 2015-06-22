@@ -34,6 +34,14 @@ import multiprocessing
 import ctypes
 import subprocess
 
+try:
+	import _winreg as winreg
+except ImportError as err:
+	try:
+		import winreg
+	except ImportError as err:
+		pass
+
 PY2 = sys.version_info[0] == 2
 
 
@@ -113,11 +121,6 @@ class DataSource(object):
 
 	@staticmethod
 	def winreg_processor_brand():
-		try:
-			import _winreg as winreg
-		except ImportError as err:
-			import winreg
-
 		key = winreg.OpenKey(winreg.HKEY_LOCAL_MACHINE, r"Hardware\Description\System\CentralProcessor\0")
 		processor_brand = winreg.QueryValueEx(key, "ProcessorNameString")[0]
 		winreg.CloseKey(key)
@@ -125,11 +128,6 @@ class DataSource(object):
 
 	@staticmethod
 	def winreg_vendor_id():
-		try:
-			import _winreg as winreg
-		except ImportError as err:
-			import winreg
-
 		key = winreg.OpenKey(winreg.HKEY_LOCAL_MACHINE, r"Hardware\Description\System\CentralProcessor\0")
 		vendor_id = winreg.QueryValueEx(key, "VendorIdentifier")[0]
 		winreg.CloseKey(key)
@@ -137,11 +135,6 @@ class DataSource(object):
 
 	@staticmethod
 	def winreg_raw_arch_string():
-		try:
-			import _winreg as winreg
-		except ImportError as err:
-			import winreg
-
 		key = winreg.OpenKey(winreg.HKEY_LOCAL_MACHINE, r"SYSTEM\CurrentControlSet\Control\Session Manager\Environment")
 		raw_arch_string = winreg.QueryValueEx(key, "PROCESSOR_ARCHITECTURE")[0]
 		winreg.CloseKey(key)
@@ -149,11 +142,6 @@ class DataSource(object):
 
 	@staticmethod
 	def winreg_hz_actual():
-		try:
-			import _winreg as winreg
-		except ImportError as err:
-			import winreg
-
 		key = winreg.OpenKey(winreg.HKEY_LOCAL_MACHINE, r"Hardware\Description\System\CentralProcessor\0")
 		hz_actual = winreg.QueryValueEx(key, "~Mhz")[0]
 		winreg.CloseKey(key)
@@ -162,11 +150,6 @@ class DataSource(object):
 
 	@staticmethod
 	def winreg_feature_bits():
-		try:
-			import _winreg as winreg
-		except ImportError as err:
-			import winreg
-
 		key = winreg.OpenKey(winreg.HKEY_LOCAL_MACHINE, r"Hardware\Description\System\CentralProcessor\0")
 		feature_bits = winreg.QueryValueEx(key, "FeatureSet")[0]
 		winreg.CloseKey(key)
