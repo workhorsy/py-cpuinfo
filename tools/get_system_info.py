@@ -31,6 +31,11 @@ import platform
 import multiprocessing
 import subprocess
 
+try:
+	import _winreg as winreg
+except ImportError as err:
+	import winreg
+
 PY2 = sys.version_info[0] == 2
 
 out_file_name = 'system_info.txt'
@@ -120,6 +125,31 @@ if program_paths('dmesg'):
 		output = output[0 : 20480]
 	print_output('dmesg', output)
 
+if 'winreg' in sys.modules:
+	key = winreg.OpenKey(winreg.HKEY_LOCAL_MACHINE, r"Hardware\Description\System\CentralProcessor\0")
+	processor_brand = winreg.QueryValueEx(key, "ProcessorNameString")[0]
+	winreg.CloseKey(key)
+	print_output('winreg processor_brand', processor_brand)
+
+	key = winreg.OpenKey(winreg.HKEY_LOCAL_MACHINE, r"Hardware\Description\System\CentralProcessor\0")
+	vendor_id = winreg.QueryValueEx(key, "VendorIdentifier")[0]
+	winreg.CloseKey(key)
+	print_output('winreg vendor_id', vendor_id)
+
+	key = winreg.OpenKey(winreg.HKEY_LOCAL_MACHINE, r"SYSTEM\CurrentControlSet\Control\Session Manager\Environment")
+	raw_arch_string = winreg.QueryValueEx(key, "PROCESSOR_ARCHITECTURE")[0]
+	winreg.CloseKey(key)
+	print_output('winreg raw_arch_string', raw_arch_string)
+
+	key = winreg.OpenKey(winreg.HKEY_LOCAL_MACHINE, r"Hardware\Description\System\CentralProcessor\0")
+	hz_actual = winreg.QueryValueEx(key, "~Mhz")[0]
+	winreg.CloseKey(key)
+	print_output('winreg hz_actual', hz_actual)
+
+	key = winreg.OpenKey(winreg.HKEY_LOCAL_MACHINE, r"Hardware\Description\System\CentralProcessor\0")
+	feature_bits = winreg.QueryValueEx(key, "FeatureSet")[0]
+	winreg.CloseKey(key)
+	print_output('winreg feature_bits', feature_bits)
 
 out_file.close()
 print('System info written to "{0}"'.format(out_file_name))
