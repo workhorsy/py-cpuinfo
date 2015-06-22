@@ -14,6 +14,7 @@ from test_beagle_bone_arm import TestBeagleBone
 from test_windows_8_x86_64 import TestWindows8
 
 
+# FIXME: Add tests for Haiku and SmartOS(Solaris)
 if __name__ == '__main__':
 	suite = unittest.TestSuite()
 	suite.addTest(unittest.makeSuite(TestExample))
