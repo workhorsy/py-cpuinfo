@@ -78,7 +78,25 @@ class DataSource(object):
 	def kstat_m_cpu_info():
 		return 1, None
 
+	@staticmethod
+	def winreg_processor_brand():
+		return None
 
+	@staticmethod
+	def winreg_vendor_id():
+		return None
+
+	@staticmethod
+	def winreg_raw_arch_string():
+		return None
+
+	@staticmethod
+	def winreg_hz_actual():
+		return None
+
+	@staticmethod
+	def winreg_feature_bits():
+		return None
 
 
 class TestExample(unittest.TestCase):
