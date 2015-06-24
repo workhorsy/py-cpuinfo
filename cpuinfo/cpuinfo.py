@@ -1276,12 +1276,12 @@ def get_cpu_info_from_kstat():
 	vendor_id = kstat.split('\tvendor_id ')[1].split('\n')[0].strip()
 	processor_brand = kstat.split('\tbrand ')[1].split('\n')[0].strip()
 	cache_size = 0
-	stepping = kstat.split('\tstepping ')[1].split('\n')[0].strip()
-	model = kstat.split('\tmodel ')[1].split('\n')[0].strip()
-	family = kstat.split('\tfamily ')[1].split('\n')[0].strip()
+	stepping = int(kstat.split('\tstepping ')[1].split('\n')[0].strip())
+	model = int(kstat.split('\tmodel ')[1].split('\n')[0].strip())
+	family = int(kstat.split('\tfamily ')[1].split('\n')[0].strip())
 
 	# Flags
-	flags = flag_output.split('\n')[1].strip().lower().split()
+	flags = flag_output.strip().split('\n')[-1].strip().lower().split()
 	flags.sort()
 
 	# Convert from GHz/MHz string to Hz

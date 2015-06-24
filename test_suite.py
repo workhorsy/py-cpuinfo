@@ -12,9 +12,10 @@ from test_pcbsd_10_x86_64 import TestPCBSD
 from test_osx_13_x86_64 import TestOSX
 from test_beagle_bone_arm import TestBeagleBone
 from test_windows_8_x86_64 import TestWindows8
+from test_solaris_11_x86_32 import TestSolaris
 
 
-# FIXME: Add tests for Haiku and SmartOS(Solaris)
+# FIXME: Add tests for Haiku
 if __name__ == '__main__':
 	suite = unittest.TestSuite()
 	suite.addTest(unittest.makeSuite(TestExample))
@@ -23,6 +24,7 @@ if __name__ == '__main__':
 	suite.addTest(unittest.makeSuite(TestOSX))
 	suite.addTest(unittest.makeSuite(TestBeagleBone))
 	suite.addTest(unittest.makeSuite(TestWindows8))
+	suite.addTest(unittest.makeSuite(TestSolaris))
 
 	runner = unittest.TextTestRunner()
 	runner.run(suite)
