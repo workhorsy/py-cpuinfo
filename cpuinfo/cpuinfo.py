@@ -898,6 +898,7 @@ def get_cpu_info_from_cpuid():
 
 	return {
 	'vendor_id' : cpuid.get_vendor_id(),
+	'hardware' : '',
 	'brand' : processor_brand,
 
 	'hz_advertised' : to_friendly_hz(hz_advertised, scale),
@@ -1063,6 +1064,7 @@ def get_cpu_info_from_dmesg():
 
 	return {
 	'vendor_id' : vendor_id,
+	'hardware' : '',
 	'brand' : processor_brand,
 
 	'hz_advertised' : to_friendly_hz(hz_advertised, scale),
@@ -1124,6 +1126,7 @@ def get_cpu_info_from_sysctl():
 
 	return {
 	'vendor_id' : vendor_id,
+	'hardware' : '',
 	'brand' : processor_brand,
 
 	'hz_advertised' : to_friendly_hz(hz_advertised, scale),
@@ -1228,6 +1231,7 @@ def get_cpu_info_from_registry():
 
 	return {
 	'vendor_id' : vendor_id,
+	'hardware' : '',
 	'brand' : processor_brand,
 
 	'hz_advertised' : to_friendly_hz(hz_advertised, scale),
@@ -1298,6 +1302,7 @@ def get_cpu_info_from_kstat():
 
 	return {
 	'vendor_id' : vendor_id,
+	'hardware' : '',
 	'brand' : processor_brand,
 
 	'hz_advertised' : to_friendly_hz(hz_advertised, scale),

@@ -84,7 +84,7 @@ class TestSolaris(unittest.TestCase):
 		info = cpuinfo.get_cpu_info_from_kstat()
 
 		self.assertEqual('GenuineIntel', info['vendor_id'])
-		#self.assertEqual('', info['hardware'])
+		self.assertEqual('', info['hardware'])
 		self.assertEqual('Intel(r) Core(tm) i7 CPU         870  @ 2.93GHz', info['brand'])
 		self.assertEqual('2.9310 GHz', info['hz_advertised'])
 		#self.assertEqual('2.9283 GHz', info['hz_actual'])

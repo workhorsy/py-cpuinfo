@@ -42,7 +42,7 @@ class TestPCBSD(unittest.TestCase):
 		info = cpuinfo.get_cpu_info_from_dmesg()
 
 		self.assertEqual('GenuineIntel', info['vendor_id'])
-		#self.assertEqual('', info['hardware'])
+		self.assertEqual('', info['hardware'])
 		self.assertEqual('Intel(R) Core(TM) i5-4440 CPU @ 3.10GHz', info['brand'])
 		self.assertEqual('3.1000 GHz', info['hz_advertised'])
 		self.assertEqual('2.9934 GHz', info['hz_actual'])

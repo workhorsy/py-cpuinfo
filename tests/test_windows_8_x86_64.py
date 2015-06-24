@@ -40,7 +40,7 @@ class TestWindows8(unittest.TestCase):
 		info = cpuinfo.get_cpu_info_from_registry()
 
 		self.assertEqual('GenuineIntel', info['vendor_id'])
-		#self.assertEqual('', info['hardware'])
+		self.assertEqual('', info['hardware'])
 		self.assertEqual('Intel(R) Core(TM) i7 CPU         870  @ 2.93GHz', info['brand'])
 		self.assertEqual('2.9300 GHz', info['hz_advertised'])
 		self.assertEqual('2.9330 GHz', info['hz_actual'])
