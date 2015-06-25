@@ -14,7 +14,7 @@ on X86 and some ARM CPUs.
 These approaches are used for getting info:
 
 1. Windows Registry (Window)
-2. /proc/cpuinfo (Unix/Linux/Haiku)
+2. /proc/cpuinfo (Linux)
 3. sysctl (OS X)
 4. dmesg (Unix/Linux)
 5. isainfo and kstat (Solaris)
