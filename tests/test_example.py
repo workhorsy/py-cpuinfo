@@ -39,6 +39,10 @@ class DataSource(object):
 		return False
 
 	@staticmethod
+	def has_sysinfo():
+		return False
+
+	@staticmethod
 	def cat_proc_cpuinfo():
 		return 1, None
 
@@ -79,6 +83,10 @@ class DataSource(object):
 		return 1, None
 
 	@staticmethod
+	def sysinfo_cpu():
+		return 1, None
+
+	@staticmethod
 	def winreg_processor_brand():
 		return None
 
@@ -112,6 +120,8 @@ class TestExample(unittest.TestCase):
 		self.assertEqual(None, cpuinfo.get_cpu_info_from_kstat())
 
 		self.assertEqual(None, cpuinfo.get_cpu_info_from_dmesg())
+
+		self.assertEqual(None, cpuinfo.get_cpu_info_from_sysinfo())
 
 		#self.assertEqual(None, cpuinfo.get_cpu_info_from_cpuid())
 
