@@ -128,6 +128,10 @@ if program_paths('dmesg'):
 		output = output[0 : 20480]
 	print_output('dmesg', output)
 
+if program_paths('sysinfo'):
+	returncode, output = run_and_get_stdout(['sysinfo', '-cpu'])
+	print_output('sysinfo -cpu', output)
+
 if 'winreg' in sys.modules:
 	key = winreg.OpenKey(winreg.HKEY_LOCAL_MACHINE, r"Hardware\Description\System\CentralProcessor\0")
 	processor_brand = winreg.QueryValueEx(key, "ProcessorNameString")[0]
