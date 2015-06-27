@@ -1,4 +1,5 @@
 * Release 0.1.6
+	* dmesg is missing extra Features in flags
 	* Add a test suite
 	* CPUID breaks on brands with many NULL terminators
 
