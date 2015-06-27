@@ -1012,11 +1012,12 @@ def get_cpu_info_from_dmesg():
 		if output == None or returncode != 0:
 			return None
 
-		# Get the fields
+		# Processor Brand
 		long_brand = output.split('CPU: ')[1].split('\n')[0]
-		fields = output.split('CPU: ')[1].split('\n')[1].split('\n')[0].strip()
-		flags = output.split('  Features=')[1].split('\n')[0]
+		processor_brand = long_brand.rsplit('(', 1)[0]
+		processor_brand = processor_brand.strip()
 
+		# Hz
 		scale = 0
 		hz_actual = long_brand.rsplit('(', 1)[1].split(' ')[0].lower()
 		if hz_actual.endswith('mhz'):
@@ -1026,12 +1027,8 @@ def get_cpu_info_from_dmesg():
 		hz_actual = hz_actual.split('-')[0]
 		hz_actual = to_hz_string(hz_actual)
 
-		# Processor Brand
-		processor_brand = long_brand.rsplit('(', 1)[0]
-		processor_brand = processor_brand.strip()
-
 		# Various fields
-		fields = fields.strip().split('  ')
+		fields = output.split('CPU: ')[1].split('\n')[1].split('\n')[0].strip().split('  ')
 		vendor_id = None
 		stepping = None
 		model = None
@@ -1049,9 +1046,16 @@ def get_cpu_info_from_dmesg():
 				family = int(value, 16)
 
 		# Flags
-		flags = flags.strip().lower()
-		flags = flags.split('<')[1].split('>')[0]
-		flags = flags.split(',')
+		flag_lines = []
+		for category in ['  Features=', '  Features2=', '  AMD Features=', '  AMD Features2=']:
+			if category in output:
+				flag_lines.append(output.split(category)[1].split('\n')[0])
+
+		flags = []
+		for line in flag_lines:
+			line = line.split('<')[1].split('>')[0].lower()
+			for flag in line.split(','):
+				flags.append(flag)
 		flags.sort()
 
 		# Convert from GHz/MHz string to Hz

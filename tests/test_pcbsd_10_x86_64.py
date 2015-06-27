@@ -67,9 +67,10 @@ class TestPCBSD(unittest.TestCase):
 		self.assertEqual(0, info['extended_model'])
 		self.assertEqual(0, info['extended_family'])
 		self.assertEqual(
-			['apic', 'clflush', 'cmov', 'cx8', 'de', 'fpu', 'fxsr', 'mca', 
-			'mce', 'mmx', 'msr', 'mtrr', 'pae', 'pat', 'pge', 'pse', 'pse36', 
-			'sep', 'sse', 'sse2', 'tsc', 'vme']
+			['apic', 'clflush', 'cmov', 'cx8', 'de', 'fpu', 'fxsr', 'lahf',
+			'lm', 'mca', 'mce', 'mmx', 'mon', 'msr', 'mtrr', 'nx', 'pae',
+			'pat', 'pge', 'pse', 'pse36', 'rdtscp', 'sep', 'sse', 'sse2',
+			'sse3', 'ssse3', 'syscall', 'tsc', 'vme']
 			,
 			info['flags']
 		)
