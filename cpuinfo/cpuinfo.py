@@ -100,16 +100,8 @@ class DataSource(object):
 		return run_and_get_stdout(['sestatus', '-b'], ['grep', '-i', '"allow_execmem"'])[1].strip().lower().endswith('on')
 
 	@staticmethod
-	def dmesg_a_grep_cpu():
-		return run_and_get_stdout(['dmesg', '-a'], ['grep', '"CPU:"'])
-
-	@staticmethod
-	def dmesg_a_grep_origin():
-		return run_and_get_stdout(['dmesg', '-a'], ['grep', '"Origin ="'])
-
-	@staticmethod
-	def dmesg_a_grep_features():
-		return run_and_get_stdout(['dmesg', '-a'], ['grep', '"Features="'])
+	def dmesg_a():
+		return run_and_get_stdout(['dmesg', '-a'])
 
 	@staticmethod
 	def sysctl_machdep_cpu_hw_cpufrequency():
@@ -1015,23 +1007,17 @@ def get_cpu_info_from_dmesg():
 		if not DataSource.has_dmesg():
 			return None
 
-		# If dmesg fails to have processor brand, return None
-		returncode, long_brand = DataSource.dmesg_a_grep_cpu()
-		if long_brand == None or returncode != 0:
+		# If dmesg fails return None
+		returncode, output = DataSource.dmesg_a()
+		if output == None or returncode != 0:
 			return None
 
-		# If dmesg fails to have fields, return None
-		returncode, fields = DataSource.dmesg_a_grep_origin()
-		if fields == None or returncode != 0:
-			return None
-
-		# If dmesg fails to have flags, return None
-		returncode, flags = DataSource.dmesg_a_grep_features()
-		if flags == None or returncode != 0:
-			return None
+		# Get the fields
+		long_brand = output.split('CPU: ')[1].split('\n')[0]
+		fields = output.split('CPU: ')[1].split('\n')[1].split('\n')[0].strip()
+		flags = output.split('  Features=')[1].split('\n')[0]
 
 		scale = 0
-		long_brand = long_brand.split('CPU: ')[1]
 		hz_actual = long_brand.rsplit('(', 1)[1].split(' ')[0].lower()
 		if hz_actual.endswith('mhz'):
 			scale = 6

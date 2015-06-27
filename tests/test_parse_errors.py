@@ -59,15 +59,7 @@ class DataSource(object):
 		return True
 
 	@staticmethod
-	def dmesg_a_grep_cpu():
-		return 0, ""
-
-	@staticmethod
-	def dmesg_a_grep_origin():
-		return 0, ""
-
-	@staticmethod
-	def dmesg_a_grep_features():
+	def dmesg_a():
 		return 0, ""
 
 	@staticmethod

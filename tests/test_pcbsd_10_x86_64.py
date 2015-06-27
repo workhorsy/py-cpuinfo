@@ -15,23 +15,25 @@ class DataSource(object):
 		return True
 
 	@staticmethod
-	def dmesg_a_grep_cpu():
+	def dmesg_a():
 		retcode = 0
-		output = "CPU: Intel(R) Core(TM) i5-4440 CPU @ 3.10GHz (2993.39-MHz K8-class CPU)"
-		return retcode, output
+		output = '''Copyright (c) 1992-2014 The FreeBSD Project.
+Copyright (c) 1979, 1980, 1983, 1986, 1988, 1989, 1991, 1992, 1993, 1994
+    The Regents of the University of California. All rights reserved.
+FreeBSD is a registered trademark of The FreeBSD Foundation.
+FreeBSD 10.0-RELEASE-p17 #0: Tue Sep 16 14:33:46 UTC 2014
+    root@amd64-builder.pcbsd.org:/usr/obj/usr/src/sys/GENERIC amd64
+FreeBSD clang version 3.3 (tags/RELEASE_33/final 183502) 20130610
+CPU: Intel(R) Core(TM) i5-4440 CPU @ 3.10GHz (2993.39-MHz K8-class CPU)
+  Origin = "GenuineIntel"  Id = 0x306c3  Family = 0x6  Model = 0x3c  Stepping = 3
+  Features=0x78bfbff<FPU,VME,DE,PSE,TSC,MSR,PAE,MCE,CX8,APIC,SEP,MTRR,PGE,MCA,CMOV,PAT,PSE36,CLFLUSH,MMX,FXSR,SSE,SSE2>
+  Features2=0x209<SSE3,MON,SSSE3>
+  AMD Features=0x28100800<SYSCALL,NX,RDTSCP,LM>
+  AMD Features2=0x1<LAHF>
+  TSC: P-state invariant
 
-	@staticmethod
-	def dmesg_a_grep_origin():
-		retcode = 0
-		output = '  Origin = "GenuineIntel"  Id = 0x306c3  Family = 0x6  Model = 0x3c  Stepping = 3'
+ '''
 		return retcode, output
-
-	@staticmethod
-	def dmesg_a_grep_features():
-		retcode = 0
-		output = '  Features=0x78bfbff<FPU,VME,DE,PSE,TSC,MSR,PAE,MCE,CX8,APIC,SEP,MTRR,PGE,MCA,CMOV,PAT,PSE36,CLFLUSH,MMX,FXSR,SSE,SSE2>'
-		return retcode, output
-
 
 
 
