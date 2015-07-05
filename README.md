@@ -1,9 +1,10 @@
 py-cpuinfo
 ==========
 
-[![Downloads](https://pypip.in/d/py-cpuinfo/badge.png?period=month)](https://pypi.python.org/pypi/py-cpuinfo/)
-[![Latest Version](https://pypip.in/v/py-cpuinfo/badge.png)](https://pypi.python.org/pypi/py-cpuinfo/)
-[![License](https://pypip.in/license/py-cpuinfo/badge.png)](https://pypi.python.org/pypi/py-cpuinfo/)
+[![Downloads](https://img.shields.io/pypi/dm/py-cpuinfo.svg)](https://pypi.python.org/pypi/py-cpuinfo/)
+[![Latest Version](https://img.shields.io/pypi/v/py-cpuinfo.svg)](https://pypi.python.org/pypi/py-cpuinfo/)
+[![License](https://img.shields.io/pypi/l/py-cpuinfo.svg)](https://pypi.python.org/pypi/py-cpuinfo/)
+[![License](https://img.shields.io/pypi/pyversions/py-cpuinfo.svg)](https://pypi.python.org/pypi/py-cpuinfo/)
 
 Py-cpuinfo gets CPU info with pure Python. Py-cpuinfo should work without any 
 extra programs or libraries, beyond what your OS provides. It does not require 
