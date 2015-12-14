@@ -1482,7 +1482,19 @@ def get_cpu_info():
 
 	return info
 
+# Make sure we are running on a supported system
+def _check_arch():
+	arch, bits = parse_arch(DataSource.raw_arch_string)
+	if not arch in ['X86_32', 'X86_64', 'ARM_7', 'ARM_8']:
+		raise Exception("py-cpuinfo currently only works on X86 and some ARM CPUs.")
+
 def main():
+	try:
+		_check_arch()
+	except Exception as err:
+		sys.stderr.write(str(err) + "\n")
+		sys.exit(1)
+
 	info = get_cpu_info()
 
 	print('Vendor ID: {0}'.format(info.get('vendor_id', '')))
@@ -1511,14 +1523,9 @@ def main():
 	print('Flags: {0}'.format(', '.join(info.get('flags', ''))))
 
 
-# Make sure we are running on a supported system
-arch, bits = parse_arch(DataSource.raw_arch_string)
-if not arch in ['X86_32', 'X86_64', 'ARM_7', 'ARM_8']:
-	sys.stderr.write("py-cpuinfo currently only works on X86 and some ARM CPUs.\n")
-	sys.exit(1)
-
 if __name__ == '__main__':
 	main()
-
+else:
+	_check_arch()
 
 
