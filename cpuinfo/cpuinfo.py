@@ -187,16 +187,14 @@ def program_paths(program_name):
 				paths.append(pext)
 	return paths
 
-def fuck(cant_be_number, raw_string, field_names):
+def _get_field_actual(cant_be_number, raw_string, field_names):
 	for line in raw_string.splitlines():
 		for field_name in field_names:
 			field_name = field_name.lower()
-			#print('field_name', field_name, line)
 			if ':' in line:
 				left, right = line.split(':')
 				left = left.strip().lower()
 				right = right.strip()
-				#print('    left', left)
 				if left == field_name and len(right) > 0:
 					if cant_be_number:
 						if not right.isdigit():
@@ -207,7 +205,7 @@ def fuck(cant_be_number, raw_string, field_names):
 	return None
 
 def _get_field(cant_be_number, raw_string, convert_to, default_value, *field_names):
-	retval = fuck(cant_be_number, raw_string, field_names)
+	retval = _get_field_actual(cant_be_number, raw_string, field_names)
 
 	# Convert the return value
 	if retval and convert_to:
@@ -948,13 +946,6 @@ def get_cpu_info_from_proc_cpuinfo():
 		if returncode != 0:
 			return None
 
-		#output = output.replace('\t', '    ')
-		#print(returncode)
-		#print(output)
-		#processor_brand = _get_field(True, output, None, None, 'model name','cpu', 'processor')
-		#print('processor_brand', processor_brand)
-		#sys.exit(1)
-
 		# Various fields
 		vendor_id = _get_field(False, output, None, '', 'vendor_id', 'vendor id', 'vendor')
 		processor_brand = _get_field(True, output, None, None, 'model name','cpu', 'processor')
@@ -963,14 +954,6 @@ def get_cpu_info_from_proc_cpuinfo():
 		model = _get_field(False, output, int, 0, 'model')
 		family = _get_field(False, output, int, 0, 'cpu family')
 		hardware = _get_field(False, output, None, '', 'Hardware')
-		#print('vendor_id', vendor_id)
-		#print('processor_brand', processor_brand)
-		#print('cache_size', cache_size)
-		#print('stepping', stepping)
-		#print('model', model)
-		#print('family', family)
-		#print('hardware', hardware)
-
 		# Flags
 		flags = _get_field(False, output, None, None, 'flags', 'Features').split()
 		flags.sort()
