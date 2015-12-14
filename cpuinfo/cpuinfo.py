@@ -192,7 +192,7 @@ def _get_field_actual(cant_be_number, raw_string, field_names):
 		for field_name in field_names:
 			field_name = field_name.lower()
 			if ':' in line:
-				left, right = line.split(':')
+				left, right = line.split(':', 1)
 				left = left.strip().lower()
 				right = right.strip()
 				if left == field_name and len(right) > 0:
