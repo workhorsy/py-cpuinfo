@@ -20,8 +20,9 @@ These approaches are used for getting info:
 4. dmesg (Unix/Linux)
 5. isainfo and kstat (Solaris)
 6. cpufreq-info (BeagleBone)
-7. sysinfo (Haiku)
-8. Querying the CPUID register (Intel X86 CPUs)
+7. lscpu (Unix/Linux)
+8. sysinfo (Haiku)
+9. Querying the CPUID register (Intel X86 CPUs)
 
 Run as a script
 -----
