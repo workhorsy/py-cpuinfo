@@ -84,6 +84,10 @@ class DataSource(object):
 		return len(program_paths('sysinfo')) > 0
 
 	@staticmethod
+	def has_lscpu():
+		return len(program_paths('lscpu')) > 0
+
+	@staticmethod
 	def cat_proc_cpuinfo():
 		return run_and_get_stdout(['cat', '/proc/cpuinfo'])
 
@@ -118,6 +122,10 @@ class DataSource(object):
 	@staticmethod
 	def sysinfo_cpu():
 		return run_and_get_stdout(['sysinfo', '-cpu'])
+
+	@staticmethod
+	def lscpu():
+		return run_and_get_stdout(['lscpu'])
 
 	@staticmethod
 	def winreg_processor_brand():
@@ -263,6 +271,25 @@ def _get_hz_string_from_beagle_bone():
 
 	return (scale, hz_brand)
 
+def _get_hz_string_from_lscpu():
+	scale, hz_brand = 1, '0.0'
+
+	if not DataSource.has_lscpu():
+		return scale, hz_brand
+
+	returncode, output = DataSource.lscpu()
+	if returncode != 0:
+		return (scale, hz_brand)
+
+	new_hz = _get_field(False, output, None, None, 'CPU max MHz', 'CPU MHz')
+	if new_hz == None:
+		return (scale, hz_brand)
+
+	new_hz = to_hz_string(new_hz)
+	scale = 6
+
+	return (scale, new_hz)
+
 def to_friendly_hz(ticks, scale):
 	# Get the raw Hz as a string
 	left, right = to_raw_hz(ticks, scale)
@@ -339,7 +366,7 @@ def parse_arch(raw_arch_string):
 	elif re.match('^armv8-a$', raw_arch_string):
 		arch = 'ARM_8'
 		bits = 64
-	elif re.match('^armv7$|^armv7[a-z]$|^armv7-[a-z]$', raw_arch_string):
+	elif re.match('^armv7$|^armv7[a-z]$|^armv7-[a-z]$|^armv6[a-z]$', raw_arch_string):
 		arch = 'ARM_7'
 		bits = 32
 	elif re.match('^armv8$|^armv8[a-z]$|^armv8-[a-z]$', raw_arch_string):
@@ -969,6 +996,11 @@ def get_cpu_info_from_proc_cpuinfo():
 		# Try getting the Hz for a BeagleBone
 		if hz_advertised == '0.0':
 			scale, hz_advertised = _get_hz_string_from_beagle_bone()
+			hz_actual = hz_advertised
+
+		# Try getting the Hz for a lscpu
+		if hz_advertised == '0.0':
+			scale, hz_advertised = _get_hz_string_from_lscpu()
 			hz_actual = hz_advertised
 
 		# Get the CPU arch and bits

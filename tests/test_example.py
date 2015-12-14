@@ -43,6 +43,10 @@ class DataSource(object):
 		return False
 
 	@staticmethod
+	def has_lscpu():
+		return False
+
+	@staticmethod
 	def cat_proc_cpuinfo():
 		return 1, None
 
