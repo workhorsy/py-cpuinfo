@@ -79,6 +79,10 @@ class DataSource(object):
 		return 1, None
 
 	@staticmethod
+	def lscpu():
+		return 1, None
+
+	@staticmethod
 	def sysinfo_cpu():
 		return 1, None
 
