@@ -32,6 +32,7 @@ import time
 import platform
 import multiprocessing
 import ctypes
+import pickle
 import subprocess
 
 try:
@@ -421,7 +422,7 @@ class CPUID(object):
 			address = ctypes.windll.kernel32.VirtualAlloc(ctypes.c_int(0), ctypes.c_size_t(size), MEM_COMMIT, PAGE_EXECUTE_READWRITE)
 			if not address:
 				raise Exception("Failed to VirtualAlloc")
-				
+
 			# Copy the byte code into the memory segment
 			memmove = ctypes.CFUNCTYPE(ctypes.c_void_p, ctypes.c_void_p, ctypes.c_void_p, ctypes.c_size_t)(ctypes._memmove_addr)
 			if memmove(address, byte_code, size) < 0:
@@ -898,8 +899,15 @@ class CPUID(object):
 
 		return ticks
 
-
 def get_cpu_info_from_cpuid():
+	returncode, output = run_and_get_stdout([sys.executable, "-c", "from cpuinfo import cpuinfo; print(cpuinfo._get_cpu_info_from_cpuid())"])
+	if returncode != 0:
+		return None
+
+	info = pickle.loads(output)
+	return info
+
+def _get_cpu_info_from_cpuid():
 	'''
 	Returns the CPU info gathered by querying the X86 cpuid register.
 	Returns None of non X86 cpus.
@@ -931,7 +939,7 @@ def get_cpu_info_from_cpuid():
 	# Get the Hz and scale
 	scale, hz_advertised = _get_hz_string_from_brand(processor_brand)
 
-	return {
+	info = {
 	'vendor_id' : cpuid.get_vendor_id(),
 	'hardware' : '',
 	'brand' : processor_brand,
@@ -958,6 +966,7 @@ def get_cpu_info_from_cpuid():
 	'extended_family' : info['extended_family'],
 	'flags' : cpuid.get_flags(max_extension_support)
 	}
+	return pickle.dumps(info)
 
 def get_cpu_info_from_proc_cpuinfo():
 	'''
@@ -1377,7 +1386,7 @@ def get_cpu_info_from_registry():
 
 def get_cpu_info_from_kstat():
 	'''
-	Returns the CPU info gathered from isainfo and kstat. Will 
+	Returns the CPU info gathered from isainfo and kstat. Will
 	return None if isainfo or kstat are not found.
 	'''
 	try:
@@ -1496,36 +1505,37 @@ def main():
 		sys.exit(1)
 
 	info = get_cpu_info()
+	if info:
+		print('Vendor ID: {0}'.format(info.get('vendor_id', '')))
+		print('Hardware Raw: {0}'.format(info.get('hardware', '')))
+		print('Brand: {0}'.format(info.get('brand', '')))
+		print('Hz Advertised: {0}'.format(info.get('hz_advertised', '')))
+		print('Hz Actual: {0}'.format(info.get('hz_actual', '')))
+		print('Hz Advertised Raw: {0}'.format(info.get('hz_advertised_raw', '')))
+		print('Hz Actual Raw: {0}'.format(info.get('hz_actual_raw', '')))
+		print('Arch: {0}'.format(info.get('arch', '')))
+		print('Bits: {0}'.format(info.get('bits', '')))
+		print('Count: {0}'.format(info.get('count', '')))
 
-	print('Vendor ID: {0}'.format(info.get('vendor_id', '')))
-	print('Hardware Raw: {0}'.format(info.get('hardware', '')))
-	print('Brand: {0}'.format(info.get('brand', '')))
-	print('Hz Advertised: {0}'.format(info.get('hz_advertised', '')))
-	print('Hz Actual: {0}'.format(info.get('hz_actual', '')))
-	print('Hz Advertised Raw: {0}'.format(info.get('hz_advertised_raw', '')))
-	print('Hz Actual Raw: {0}'.format(info.get('hz_actual_raw', '')))
-	print('Arch: {0}'.format(info.get('arch', '')))
-	print('Bits: {0}'.format(info.get('bits', '')))
-	print('Count: {0}'.format(info.get('count', '')))
+		print('Raw Arch String: {0}'.format(info.get('raw_arch_string', '')))
 
-	print('Raw Arch String: {0}'.format(info.get('raw_arch_string', '')))
+		print('L2 Cache Size: {0}'.format(info.get('l2_cache_size', '')))
+		print('L2 Cache Line Size: {0}'.format(info.get('l2_cache_line_size', '')))
+		print('L2 Cache Associativity: {0}'.format(info.get('l2_cache_associativity', '')))
 
-	print('L2 Cache Size: {0}'.format(info.get('l2_cache_size', '')))
-	print('L2 Cache Line Size: {0}'.format(info.get('l2_cache_line_size', '')))
-	print('L2 Cache Associativity: {0}'.format(info.get('l2_cache_associativity', '')))
-
-	print('Stepping: {0}'.format(info.get('stepping', '')))
-	print('Model: {0}'.format(info.get('model', '')))
-	print('Family: {0}'.format(info.get('family', '')))
-	print('Processor Type: {0}'.format(info.get('processor_type', '')))
-	print('Extended Model: {0}'.format(info.get('extended_model', '')))
-	print('Extended Family: {0}'.format(info.get('extended_family', '')))
-	print('Flags: {0}'.format(', '.join(info.get('flags', ''))))
+		print('Stepping: {0}'.format(info.get('stepping', '')))
+		print('Model: {0}'.format(info.get('model', '')))
+		print('Family: {0}'.format(info.get('family', '')))
+		print('Processor Type: {0}'.format(info.get('processor_type', '')))
+		print('Extended Model: {0}'.format(info.get('extended_model', '')))
+		print('Extended Family: {0}'.format(info.get('extended_family', '')))
+		print('Flags: {0}'.format(', '.join(info.get('flags', ''))))
+	else:
+		sys.stderr.write("Failed to find cpu info\n")
+		sys.exit(1)
 
 
 if __name__ == '__main__':
 	main()
 else:
 	_check_arch()
-
-
