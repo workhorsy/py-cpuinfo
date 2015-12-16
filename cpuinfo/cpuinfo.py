@@ -1083,8 +1083,9 @@ def get_cpu_info_from_dmesg():
 		model = None
 		family = None
 		for field in fields:
-			name, value = field.split(' = ')
-			name = name.lower()
+			name, value = field.split('=')
+			name = name.strip().lower()
+			value = value.strip()
 			if name == 'origin':
 				vendor_id = value.strip('"')
 			elif name == 'stepping':
