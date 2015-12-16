@@ -1,5 +1,6 @@
 * Release 0.1.7
 	* CPUID failure segfaults Python
+	* Make it work on Raspberry Pi
 	* System exit called if CPU is not supported
 
 07/07/20115 Release 0.1.6
