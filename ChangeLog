@@ -2,28 +2,28 @@
 	* New release to get around the brokenness of pypi
 
 12/16/2015 Release 0.1.7
-	* CPUID failure segfaults Python
-	* Make it work on Raspberry Pi
-	* System exit called if CPU is not supported
+	* Fixed Bug #23: CPUID failure segfaults Python
+	* Fixed Bug #16: Make it work on Raspberry Pi
+	* FIxed Bug #27: System exit called if CPU is not supported
 
 07/07/2015 Release 0.1.6
-	* dmesg is missing extra Features in flags
-	* Add a test suite
-	* CPUID breaks on brands with many NULL terminators
+	* Fixed Bug #25: dmesg is missing extra Features in flags
+	* Fixed Bug #19: Add a test suite
+	* Fixed Bug #24: CPUID breaks on brands with many NULL terminators
 
 06/14/2015 Release 0.1.5
-	* Make a script for easy gathering of CPU info
-	* Getting CPU info from dmesg fails on Linux but not BSD
-	* Subprocess stderr is sometimes printed to console
-	* Make it work on a BeagleBone
-	* Stepping parse TypeError on ARM
+	* Fixed Bug #17: Make a script for easy gathering of CPU info
+	* Fixed Bug #21: Getting CPU info from dmesg fails on Linux but not BSD
+	* Fixed Bug #20: Subprocess stderr is sometimes printed to console
+	* Fixed Bug #15: Make it work on a BeagleBone
+	* Fixed Bug #10: Stepping parse TypeError on ARM
 
 02/11/2015 Release 0.1.4
 	* New release to get around the brokenness of pypi
 
 02/11/2015 Release 0.1.3
-	* Fixed issue with supporting cpu strings that do not have @ in them.
-	* Fixed issue with supporting cpu strings that do not have Hz in them.
+	* Fixed Bug #11: Support cpu strings that do not have @ in them
+	* Fixed Bug #13: Support cpu strings that do not have Hz in them
 
 09/30/2014 Release 0.1.2
 	* Added support for installing to binary path.
