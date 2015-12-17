@@ -3,7 +3,7 @@
 	* Make it work on Raspberry Pi
 	* System exit called if CPU is not supported
 
-07/07/20115 Release 0.1.6
+07/07/2015 Release 0.1.6
 	* dmesg is missing extra Features in flags
 	* Add a test suite
 	* CPUID breaks on brands with many NULL terminators
