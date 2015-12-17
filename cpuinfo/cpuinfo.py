@@ -900,6 +900,11 @@ class CPUID(object):
 		return ticks
 
 def get_cpu_info_from_cpuid():
+	'''
+	Returns the CPU info gathered by querying the X86 cpuid register in a new process.
+	Returns None of non X86 cpus.
+	Returns None if SELinux is in enforcing mode.
+	'''
 	returncode, output = run_and_get_stdout([sys.executable, "-c", "from cpuinfo import cpuinfo; print(cpuinfo._get_cpu_info_from_cpuid())"])
 	if returncode != 0:
 		return None
@@ -908,11 +913,6 @@ def get_cpu_info_from_cpuid():
 	return info
 
 def _get_cpu_info_from_cpuid():
-	'''
-	Returns the CPU info gathered by querying the X86 cpuid register.
-	Returns None of non X86 cpus.
-	Returns None if SELinux is in enforcing mode.
-	'''
 	# Get the CPU arch and bits
 	arch, bits = parse_arch(DataSource.raw_arch_string)
 

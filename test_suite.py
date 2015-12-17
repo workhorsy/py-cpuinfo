@@ -3,9 +3,10 @@
 import os, sys
 import unittest
 
-# Import the unit tests
+# Add the path of all the tests to this path
 sys.path.append(os.path.realpath('tests'))
 
+# Import all the test files
 from test_example import TestExample
 from test_parse_errors import TestParseErrors
 from test_invalid_cpu import TestInvalidCPU
