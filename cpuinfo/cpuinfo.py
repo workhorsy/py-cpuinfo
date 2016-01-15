@@ -671,6 +671,7 @@ class CPUID(object):
 
 		# Get the Extended CPU flags
 		extended_flags = {}
+		# https://en.wikipedia.org/wiki/CPUID#EAX.3D80000001h:_Extended_Processor_Info_and_Feature_Bits
 		if max_extension_support >= 0x80000001:
 			# EBX
 			ebx = self._run_asm(
