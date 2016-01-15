@@ -674,6 +674,7 @@ class CPUID(object):
 
 		# https://en.wikipedia.org/wiki/CPUID#EAX.3D7.2C_ECX.3D0:_Extended_Features
 		if max_extension_support == 7:
+			pass
 			# FIXME: Are we missing all these flags too?
 			# avx2 et cetera ...
 
