@@ -568,6 +568,7 @@ class CPUID(object):
 			'extended_family' : extended_family
 		}
 
+	# https://en.wikipedia.org/wiki/CPUID#EAX.3D80000000h:_Get_Highest_Extended_Function_Supported
 	def get_max_extension_support(self):
 		# Check for extension support
 		max_extension_support = self._run_asm(
@@ -816,6 +817,7 @@ class CPUID(object):
 
 		return processor_brand
 
+	# https://en.wikipedia.org/wiki/CPUID#EAX.3D80000006h:_Extended_L2_Cache_Features
 	def get_cache(self, max_extension_support):
 		cache_info = {}
 
