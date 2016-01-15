@@ -764,6 +764,7 @@ class CPUID(object):
 		flags.sort()
 		return flags
 
+	# https://en.wikipedia.org/wiki/CPUID#EAX.3D80000002h.2C80000003h.2C80000004h:_Processor_Brand_String
 	def get_processor_brand(self, max_extension_support):
 		processor_brand = ""
 
