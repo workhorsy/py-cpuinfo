@@ -671,9 +671,15 @@ class CPUID(object):
 
 		# Get the Extended CPU flags
 		extended_flags = {}
+
+		# https://en.wikipedia.org/wiki/CPUID#EAX.3D7.2C_ECX.3D0:_Extended_Features
+		if max_extension_support == 7:
+			# FIXME: Are we missing all these flags too?
+			# avx2 et cetera ...
+
 		# https://en.wikipedia.org/wiki/CPUID#EAX.3D80000001h:_Extended_Processor_Info_and_Feature_Bits
 		if max_extension_support >= 0x80000001:
-			# EBX
+			# EBX # FIXME: This may need to be EDX instead
 			ebx = self._run_asm(
 				b"\xB8\x01\x00\x00\x80" # mov ax,0x80000001
 				b"\x0f\xa2"         # cpuid
