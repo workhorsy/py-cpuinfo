@@ -1,7 +1,8 @@
 
 
 import unittest
-from cpuinfo import cpuinfo
+import cpuinfo
+import helpers
 
 
 class DataSource(object):
@@ -19,7 +20,7 @@ class TestInvalidCPU(unittest.TestCase):
 		self.assertEqual(None, bits)
 
 	def test_check_arch_exception(self):
-		cpuinfo.DataSource = DataSource
+		helpers.monkey_patch_data_source(cpuinfo, DataSource)
 
 		# If the arch is unknown, it should raise and exception
 		try:

@@ -916,7 +916,7 @@ def get_cpu_info_from_cpuid():
 	Returns None of non X86 cpus.
 	Returns None if SELinux is in enforcing mode.
 	'''
-	returncode, output = run_and_get_stdout([sys.executable, "-c", "from cpuinfo import cpuinfo; print(cpuinfo._get_cpu_info_from_cpuid())"])
+	returncode, output = run_and_get_stdout([sys.executable, "-c", "import cpuinfo; print(cpuinfo._get_cpu_info_from_cpuid())"])
 	if returncode != 0:
 		return None
 

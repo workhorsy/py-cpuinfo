@@ -1,7 +1,8 @@
 
 
 import unittest
-from cpuinfo import cpuinfo
+import cpuinfo
+import helpers
 
 
 class DataSource(object):
@@ -39,7 +40,7 @@ CPU: Intel(R) Core(TM) i5-4440 CPU @ 3.10GHz (2993.39-MHz K8-class CPU)
 
 class TestPCBSD(unittest.TestCase):
 	def test_all(self):
-		cpuinfo.DataSource = DataSource
+		helpers.monkey_patch_data_source(cpuinfo, DataSource)
 
 		info = cpuinfo.get_cpu_info_from_dmesg()
 
@@ -74,7 +75,3 @@ class TestPCBSD(unittest.TestCase):
 			,
 			info['flags']
 		)
-
-
-
-

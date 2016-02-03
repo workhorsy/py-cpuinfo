@@ -6,6 +6,8 @@ import unittest
 # Add the path of all the tests to this path
 sys.path.append(os.path.realpath('tests'))
 
+
+
 # Import all the test files
 from test_example import TestExample
 from test_parse_errors import TestParseErrors
@@ -19,10 +21,8 @@ from test_windows_8_x86_64 import TestWindows8
 from test_solaris_11_x86_32 import TestSolaris
 from test_haiku_x86_32 import TestHaiku
 
-
 if __name__ == '__main__':
 	suite = unittest.TestSuite()
-
 	suite.addTest(unittest.makeSuite(TestExample))
 	suite.addTest(unittest.makeSuite(TestParseErrors))
 	suite.addTest(unittest.makeSuite(TestInvalidCPU))

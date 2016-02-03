@@ -1,7 +1,8 @@
 
 
 import unittest
-from cpuinfo import cpuinfo
+import cpuinfo
+import helpers
 
 
 class DataSource(object):
@@ -51,7 +52,7 @@ CPU #0: "Intel(R) Core(TM) i7 CPU         870  @ 2.93GHz"
 
 class TestHaiku(unittest.TestCase):
 	def test_all(self):
-		cpuinfo.DataSource = DataSource
+		helpers.monkey_patch_data_source(cpuinfo, DataSource)
 
 		info = cpuinfo.get_cpu_info_from_sysinfo()
 
@@ -80,13 +81,9 @@ class TestHaiku(unittest.TestCase):
 		self.assertEqual(0, info['extended_model'])
 		self.assertEqual(0, info['extended_family'])
 		self.assertEqual(
-			['apic', 'cflush', 'cmov', 'cx8', 'de', 'fpu', 'fxstr', 'htt', 
-			'mca', 'mce', 'mmx', 'msr', 'mtrr', 'pat', 'pge', 'pse', 'pse36', 
+			['apic', 'cflush', 'cmov', 'cx8', 'de', 'fpu', 'fxstr', 'htt',
+			'mca', 'mce', 'mmx', 'msr', 'mtrr', 'pat', 'pge', 'pse', 'pse36',
 			'rdtscp', 'sep', 'sse', 'sse2', 'sse3', 'ssse3', 'tsc', 'vme']
 			,
 			info['flags']
 		)
-
-
-
-

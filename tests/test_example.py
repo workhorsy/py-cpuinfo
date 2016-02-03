@@ -1,7 +1,8 @@
 
 
 import unittest
-from cpuinfo import cpuinfo
+import cpuinfo
+import helpers
 
 
 class DataSource(object):
@@ -109,7 +110,7 @@ class DataSource(object):
 
 class TestExample(unittest.TestCase):
 	def test_all(self):
-		cpuinfo.DataSource = DataSource
+		helpers.monkey_patch_data_source(cpuinfo, DataSource)
 
 		self.assertEqual(None, cpuinfo.get_cpu_info_from_registry())
 
@@ -126,7 +127,3 @@ class TestExample(unittest.TestCase):
 		#self.assertEqual(None, cpuinfo.get_cpu_info_from_cpuid())
 
 		#self.assertEqual(None, cpuinfo.get_cpu_info())
-
-
-
-

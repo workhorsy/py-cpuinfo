@@ -6,10 +6,10 @@ py-cpuinfo
 [![License](https://img.shields.io/pypi/l/py-cpuinfo.svg)](https://pypi.python.org/pypi/py-cpuinfo/)
 [![License](https://img.shields.io/pypi/pyversions/py-cpuinfo.svg)](https://pypi.python.org/pypi/py-cpuinfo/)
 
-Py-cpuinfo gets CPU info with pure Python. Py-cpuinfo should work without any 
-extra programs or libraries, beyond what your OS provides. It does not require 
-any compilation(C/C++, assembly, et cetera) to use. It works on Linux, OS X, 
-Windows, BSD, Solaris, Cygwin, Haiku, and BeagleBone. It currently only works 
+Py-cpuinfo gets CPU info with pure Python. Py-cpuinfo should work without any
+extra programs or libraries, beyond what your OS provides. It does not require
+any compilation(C/C++, assembly, et cetera) to use. It works on Linux, OS X,
+Windows, BSD, Solaris, Cygwin, Haiku, and BeagleBone. It currently only works
 on X86 and some ARM CPUs.
 
 These approaches are used for getting info:
@@ -48,16 +48,15 @@ Run as a script
     Processor Type: 0
     Extended Model: 0
     Extended Family: 0
-    Flags: apic, clflush, cmov, constant_tsc, cx8, de, fpu, fxsr, ht, lahf_lm, 
-    lm, mca, mce, mmx, msr, mtrr, nopl, nx, pae, pat, pge, pni, pse, pse36, 
+    Flags: apic, clflush, cmov, constant_tsc, cx8, de, fpu, fxsr, ht, lahf_lm,
+    lm, mca, mce, mmx, msr, mtrr, nopl, nx, pae, pat, pge, pni, pse, pse36,
     rdtscp, rep_good, sep, sse, sse2, ssse3, syscall, tsc, vme
 ~~~
 
 Run as a library
 -----
 ~~~python
-    from cpuinfo import cpuinfo # from installed with pip
-    #import cpuinfo # from path
+    import cpuinfo
 
     # Have the library pick the best method for getting your CPU info
     info = cpuinfo.get_cpu_info()
@@ -99,5 +98,3 @@ python tools/get_system_info.py
 ~~~
 
 and create bug report with the generated "system_info.txt" file.
-
-

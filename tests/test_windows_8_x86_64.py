@@ -1,7 +1,8 @@
 
 
 import unittest
-from cpuinfo import cpuinfo
+import cpuinfo
+import helpers
 
 
 class DataSource(object):
@@ -35,7 +36,7 @@ class DataSource(object):
 
 class TestWindows8(unittest.TestCase):
 	def test_all(self):
-		cpuinfo.DataSource = DataSource
+		helpers.monkey_patch_data_source(cpuinfo, DataSource)
 
 		info = cpuinfo.get_cpu_info_from_registry()
 
@@ -64,13 +65,9 @@ class TestWindows8(unittest.TestCase):
 		self.assertEqual(0, info['extended_family'])
 		 # FIXME: Missing flags such as sse3 and sse4
 		self.assertEqual(
-			['acpi', 'clflush', 'cmov', 'de', 'dts', 'fxsr', 'ia64', 
-			'mce', 'mmx', 'msr', 'mtrr', 'sep', 'serial', 'ss', 
+			['acpi', 'clflush', 'cmov', 'de', 'dts', 'fxsr', 'ia64',
+			'mce', 'mmx', 'msr', 'mtrr', 'sep', 'serial', 'ss',
 			'sse', 'sse2', 'tm', 'tsc']
 			,
 			info['flags']
 		)
-
-
-
-

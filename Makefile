@@ -26,7 +26,7 @@ install: remove
 	cd py-cpuinfo-$(VERSION)/ && sudo python setup.py install
 	rm -f -rf py-cpuinfo-$(VERSION)
 
-	@echo now try "from cpuinfo import cpuinfo"
+	@echo now try "import cpuinfo"
 	@echo "cpuinfo.get_cpu_info()"
 
 remove:
@@ -35,6 +35,3 @@ remove:
 rst:
 	rm -f -rf README.rst
 	pandoc --from=markdown --to=rst --output=README.rst README.md
-
-
-
