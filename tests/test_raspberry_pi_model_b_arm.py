@@ -1,7 +1,8 @@
 
 
 import unittest
-from cpuinfo import cpuinfo
+import cpuinfo
+import helpers
 
 
 class DataSource(object):
@@ -28,7 +29,7 @@ class DataSource(object):
 		output = '''
 Processor	: ARMv6-compatible processor rev 7 (v6l)
 BogoMIPS	: 697.95
-Features	: swp half thumb fastmult vfp edsp java tls 
+Features	: swp half thumb fastmult vfp edsp java tls
 CPU implementer	: 0x41
 CPU architecture: 7
 CPU variant	: 0x0
@@ -63,7 +64,7 @@ CPU min MHz:           700.0000
 
 class TestRaspberryPiModelB(unittest.TestCase):
 	def test_all(self):
-		cpuinfo.DataSource = DataSource
+		helpers.monkey_patch_data_source(cpuinfo, DataSource)
 
 		info = cpuinfo.get_cpu_info_from_proc_cpuinfo()
 
@@ -95,7 +96,3 @@ class TestRaspberryPiModelB(unittest.TestCase):
 			,
 			info['flags']
 		)
-
-
-
-

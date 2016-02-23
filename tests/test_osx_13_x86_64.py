@@ -1,7 +1,8 @@
 
 
 import unittest
-from cpuinfo import cpuinfo
+import cpuinfo
+import helpers
 
 
 class DataSource(object):
@@ -63,7 +64,7 @@ hw.cpufrequency: 2890000000
 
 class TestOSX(unittest.TestCase):
 	def test_all(self):
-		cpuinfo.DataSource = DataSource
+		helpers.monkey_patch_data_source(cpuinfo, DataSource)
 
 		info = cpuinfo.get_cpu_info_from_sysctl()
 
@@ -91,14 +92,10 @@ class TestOSX(unittest.TestCase):
 		self.assertEqual(0, info['extended_model'])
 		self.assertEqual(0, info['extended_family'])
 		self.assertEqual(
-			['apic', 'clfsh', 'cmov', 'cx8', 'de', 'fpu', 'fxsr', 'htt', 
-			'mca', 'mce', 'mmx', 'msr', 'mtrr', 'pae', 'pat', 'pge', 'pse', 
-			'pse36', 'sep', 'sse', 'sse2', 'sse3', 'ssse3', 'tsc', 'vme', 
+			['apic', 'clfsh', 'cmov', 'cx8', 'de', 'fpu', 'fxsr', 'htt',
+			'mca', 'mce', 'mmx', 'msr', 'mtrr', 'pae', 'pat', 'pge', 'pse',
+			'pse36', 'sep', 'sse', 'sse2', 'sse3', 'ssse3', 'tsc', 'vme',
 			'vmm']
 			,
 			info['flags']
 		)
-
-
-
-

@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: UTF-8 -*-
 
-# Copyright (c) 2014-2015, Matthew Brennan Jones <matthew.brennan.jones@gmail.com>
+# Copyright (c) 2014-2016, Matthew Brennan Jones <matthew.brennan.jones@gmail.com>
 # Py-cpuinfo is a Python module to show the cpuinfo of a processor
 # It uses a MIT style license
 # It is hosted at: https://github.com/workhorsy/py-cpuinfo
@@ -916,7 +916,7 @@ def get_cpu_info_from_cpuid():
 	Returns None of non X86 cpus.
 	Returns None if SELinux is in enforcing mode.
 	'''
-	returncode, output = run_and_get_stdout([sys.executable, "-c", "from cpuinfo import cpuinfo; print(cpuinfo._get_cpu_info_from_cpuid())"])
+	returncode, output = run_and_get_stdout([sys.executable, "-c", "import cpuinfo; print(cpuinfo._get_cpu_info_from_cpuid())"])
 	if returncode != 0:
 		return None
 

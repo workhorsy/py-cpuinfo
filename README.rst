@@ -46,8 +46,8 @@ Run as a script
         Processor Type: 0
         Extended Model: 0
         Extended Family: 0
-        Flags: apic, clflush, cmov, constant_tsc, cx8, de, fpu, fxsr, ht, lahf_lm, 
-        lm, mca, mce, mmx, msr, mtrr, nopl, nx, pae, pat, pge, pni, pse, pse36, 
+        Flags: apic, clflush, cmov, constant_tsc, cx8, de, fpu, fxsr, ht, lahf_lm,
+        lm, mca, mce, mmx, msr, mtrr, nopl, nx, pae, pat, pge, pni, pse, pse36,
         rdtscp, rep_good, sep, sse, sse2, ssse3, syscall, tsc, vme
 
 Run as a library
@@ -55,8 +55,7 @@ Run as a library
 
 .. code:: python
 
-        from cpuinfo import cpuinfo # from installed with pip
-        #import cpuinfo # from path
+        import cpuinfo
 
         # Have the library pick the best method for getting your CPU info
         info = cpuinfo.get_cpu_info()
@@ -97,5 +96,3 @@ If py-cpuinfo does not work on your machine, run the script:
     python tools/get_system_info.py
 
 and create bug report with the generated "system\_info.txt" file.
-
-

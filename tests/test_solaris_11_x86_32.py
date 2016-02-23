@@ -1,7 +1,8 @@
 
 
 import unittest
-from cpuinfo import cpuinfo
+import cpuinfo
+import helpers
 
 
 class DataSource(object):
@@ -23,7 +24,7 @@ class DataSource(object):
 		returncode = 0
 		output = '''
 64-bit amd64 applications
-	ssse3 tscp ahf sse3 sse2 sse fxsr mmx cmov amd_sysc cx8 tsc fpu 
+	ssse3 tscp ahf sse3 sse2 sse fxsr mmx cmov amd_sysc cx8 tsc fpu
 
 '''
 		return returncode, output
@@ -32,7 +33,7 @@ class DataSource(object):
 	def kstat_m_cpu_info():
 		returncode = 0
 		output = '''
-module: cpu_info                        instance: 0     
+module: cpu_info                        instance: 0
 name:   cpu_info0                       class:    misc
 	brand                           Intel(r) Core(tm) i7 CPU         870  @ 2.93GHz
 	cache_id                        0
@@ -79,7 +80,7 @@ name:   cpu_info0                       class:    misc
 
 class TestSolaris(unittest.TestCase):
 	def test_all(self):
-		cpuinfo.DataSource = DataSource
+		helpers.monkey_patch_data_source(cpuinfo, DataSource)
 
 		info = cpuinfo.get_cpu_info_from_kstat()
 
@@ -111,8 +112,3 @@ class TestSolaris(unittest.TestCase):
 			,
 			info['flags']
 		)
-
-
-
-
-

@@ -1,7 +1,8 @@
 
 
 import unittest
-from cpuinfo import cpuinfo
+import cpuinfo
+import helpers
 
 
 class DataSource(object):
@@ -52,7 +53,7 @@ power management:
 
 class TestDebian(unittest.TestCase):
 	def test_proc_cpuinfo(self):
-		cpuinfo.DataSource = DataSource
+		helpers.monkey_patch_data_source(cpuinfo, DataSource)
 
 		info = cpuinfo.get_cpu_info_from_proc_cpuinfo()
 
@@ -80,15 +81,10 @@ class TestDebian(unittest.TestCase):
 		self.assertEqual(0, info['extended_model'])
 		self.assertEqual(0, info['extended_family'])
 		self.assertEqual(
-			['apic', 'clflush', 'cmov', 'constant_tsc', 'cx8', 'de', 'fpu', 
-			'fxsr', 'ht', 'lahf_lm', 'lm', 'mca', 'mce', 'mmx', 'msr', 'mtrr', 
-			'nopl', 'nx', 'pae', 'pat', 'pge', 'pni', 'pse', 'pse36', 'rdtscp', 
+			['apic', 'clflush', 'cmov', 'constant_tsc', 'cx8', 'de', 'fpu',
+			'fxsr', 'ht', 'lahf_lm', 'lm', 'mca', 'mce', 'mmx', 'msr', 'mtrr',
+			'nopl', 'nx', 'pae', 'pat', 'pge', 'pni', 'pse', 'pse36', 'rdtscp',
 			'rep_good', 'sep', 'sse', 'sse2', 'ssse3', 'syscall', 'tsc', 'vme']
 			,
 			info['flags']
 		)
-
-
-
-
-

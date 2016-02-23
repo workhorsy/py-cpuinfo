@@ -20,7 +20,7 @@ setup(
     url = "https://github.com/workhorsy/py-cpuinfo",
     packages=['cpuinfo'],
     entry_points = {
-        'console_scripts': ['cpuinfo = cpuinfo.cpuinfo:main'],
+        'console_scripts': ['cpuinfo = cpuinfo:main'],
     },
     classifiers=[
         "Development Status :: 5 - Production/Stable",

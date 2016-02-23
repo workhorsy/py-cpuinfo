@@ -1,7 +1,8 @@
 
 
 import unittest
-from cpuinfo import cpuinfo
+import cpuinfo
+import helpers
 
 
 class DataSource(object):
@@ -24,7 +25,7 @@ class DataSource(object):
 		output = '''
 processor       : 0
 model name      : ARMv6-compatible processor rev 7 (v6l)
-Features        : swp half thumb fastmult vfp edsp java tls 
+Features        : swp half thumb fastmult vfp edsp java tls
 CPU implementer : 0x41
 CPU architecture: 7
 CPU variant     : 0x0
@@ -65,7 +66,7 @@ cpufreq stats: 300 MHz:0.00%, 600 MHz:0.00%, 800 MHz:0.00%, 1000 MHz:100.00%
 
 class TestBeagleBone(unittest.TestCase):
 	def test_all(self):
-		cpuinfo.DataSource = DataSource
+		helpers.monkey_patch_data_source(cpuinfo, DataSource)
 
 		info = cpuinfo.get_cpu_info_from_proc_cpuinfo()
 
@@ -97,8 +98,3 @@ class TestBeagleBone(unittest.TestCase):
 			,
 			info['flags']
 		)
-
-
-
-
-
