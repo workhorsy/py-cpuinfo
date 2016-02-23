@@ -1,3 +1,5 @@
-from cpuinfo.cpuinfo import main
 
-main()
+import cpuinfo
+
+cpuinfo.main()
+
