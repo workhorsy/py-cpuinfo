@@ -24,7 +24,7 @@ class TestInvalidCPU(unittest.TestCase):
 
 		# If the arch is unknown, it should raise and exception
 		try:
-			cpuinfo._check_arch()
+			cpuinfo.cpuinfo._check_arch()
 			self.fail('Failed to raise Exception')
 		except Exception as err:
 			self.assertEqual('py-cpuinfo currently only works on X86 and some ARM CPUs.', err.args[0])
