@@ -6,6 +6,7 @@ all:
 	@echo install: Installs python source dist package
 	@echo clean: Removes any generated files
 	@echo rst: uses pandoc to generate the README.rst file from README.md
+	@echo test: Runs the unit tests
 
 clean:
 	rm -f *.pyc
@@ -35,6 +36,9 @@ install: remove
 remove:
 	sudo rm -f -rf /usr/local/lib/python2.7/dist-packages/py_cpuinfo-$(VERSION)-py2.7.egg
 	rm -f /usr/local/bin/cpuinfo
+
+test:
+	python setup.py test
 
 rst:
 	rm -f -rf README.rst
