@@ -27,14 +27,14 @@ build: clean
 
 install: remove
 	tar xzf py-cpuinfo-$(VERSION).tar.gz
-	cd py-cpuinfo-$(VERSION)/ && sudo python setup.py install
+	cd py-cpuinfo-$(VERSION)/ && python setup.py install
 	rm -f -rf py-cpuinfo-$(VERSION)
 
 	@echo now try "import cpuinfo"
 	@echo "cpuinfo.get_cpu_info()"
 
 remove:
-	sudo rm -f -rf /usr/local/lib/python2.7/dist-packages/py_cpuinfo-$(VERSION)-py2.7.egg
+	rm -f -rf /usr/local/lib/python2.7/dist-packages/py_cpuinfo-$(VERSION)-py2.7.egg
 	rm -f /usr/local/bin/cpuinfo
 
 test:
