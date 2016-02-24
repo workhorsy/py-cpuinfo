@@ -1,3 +1,6 @@
+02/23/2016 Release 0.2.2
+	* Same as previous release. Pypi bug broke uploaded files.
+
 02/23/2016 Release 0.2.0
 	* Fixed Bug #32: Please ship tests to pypi
 	* Fixed Bug #31:  Make "python -m cpuinfo" possible
