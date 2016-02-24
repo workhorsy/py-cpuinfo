@@ -1,7 +1,7 @@
 * Release 0.2.0
 	* Fixed Bug #32: Please ship tests to pypi
-	* Fixed issue #31:  Make "python -m cpuinfo" possible
-	* Fixed issue #5: Importing is different depending on install method
+	* Fixed Bug #31:  Make "python -m cpuinfo" possible
+	* Fixed Bug #5: Importing is different depending on install method
 
 12/16/2015 Release 0.1.8
 	* New release to get around the brokenness of pypi
