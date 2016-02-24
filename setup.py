@@ -19,6 +19,7 @@ setup(
     license = "MIT",
     url = "https://github.com/workhorsy/py-cpuinfo",
     packages=['cpuinfo'],
+    test_suite="test_suite",
     entry_points = {
         'console_scripts': ['cpuinfo = cpuinfo:main'],
     },

@@ -8,6 +8,9 @@ all:
 	@echo rst: uses pandoc to generate the README.rst file from README.md
 
 clean:
+	rm -f *.pyc
+	rm -f cpuinfo/*.pyc
+	rm -f tests/*.pyc
 	rm -f -rf py_cpuinfo.egg-info
 	rm -f -rf dist
 	rm -f -rf py-cpuinfo-$(VERSION)
@@ -31,6 +34,7 @@ install: remove
 
 remove:
 	sudo rm -f -rf /usr/local/lib/python2.7/dist-packages/py_cpuinfo-$(VERSION)-py2.7.egg
+	rm -f /usr/local/bin/cpuinfo
 
 rst:
 	rm -f -rf README.rst
