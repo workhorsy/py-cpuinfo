@@ -1,3 +1,6 @@
+02/23/2016 Release 0.2.3
+	* Fixed Bug #34: Fixed issue with imports breaking in python3
+
 02/23/2016 Release 0.2.2
 	* Same as previous release. Pypi bug broke uploaded files.
 
