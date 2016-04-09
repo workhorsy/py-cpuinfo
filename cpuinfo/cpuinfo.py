@@ -33,6 +33,7 @@ import platform
 import multiprocessing
 import ctypes
 import pickle
+import base64
 import subprocess
 
 try:
@@ -164,6 +165,17 @@ class DataSource(object):
 		winreg.CloseKey(key)
 		return feature_bits
 
+def obj_to_b64(thing):
+	a = thing
+	b = pickle.dumps(a)
+	c = base64.b64encode(b)
+	d = c.decode('utf8')
+	return d
+
+def b64_to_obj(thing):
+	a = base64.b64decode(thing)
+	b = pickle.loads(a)
+	return b
 
 def run_and_get_stdout(command, pipe_command=None):
 	if not pipe_command:
@@ -916,14 +928,14 @@ def get_cpu_info_from_cpuid():
 	Returns None of non X86 cpus.
 	Returns None if SELinux is in enforcing mode.
 	'''
-	returncode, output = run_and_get_stdout([sys.executable, "-c", "import cpuinfo; print(cpuinfo._get_cpu_info_from_cpuid())"])
+
+	returncode, output = run_and_get_stdout([sys.executable, "-c", "import cpuinfo; print(cpuinfo.actual_get_cpu_info_from_cpuid())"])
 	if returncode != 0:
 		return None
-
-	info = pickle.loads(output)
+	info = b64_to_obj(output)
 	return info
 
-def _get_cpu_info_from_cpuid():
+def actual_get_cpu_info_from_cpuid():
 	# Get the CPU arch and bits
 	arch, bits = parse_arch(DataSource.raw_arch_string)
 
@@ -977,7 +989,7 @@ def _get_cpu_info_from_cpuid():
 	'extended_family' : info['extended_family'],
 	'flags' : cpuid.get_flags(max_extension_support)
 	}
-	return pickle.dumps(info)
+	return obj_to_b64(info)
 
 def get_cpu_info_from_proc_cpuinfo():
 	'''

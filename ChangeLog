@@ -1,3 +1,6 @@
+* Release 0.2.4
+	* Fixed Bug #38: get_cpu_info_from_cpuid breaks with Python3
+
 02/23/2016 Release 0.2.3
 	* Fixed Bug #34: Fixed issue with imports breaking in python3
 
