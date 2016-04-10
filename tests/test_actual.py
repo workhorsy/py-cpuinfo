@@ -3,30 +3,7 @@
 import unittest
 import cpuinfo
 import helpers
-import platform
 
-
-def get_os_type():
-	os_type = 'Unknown'
-
-	# Figure out the general OS type
-	uname = platform.system().strip().strip('"').strip("'").strip().lower()
-	if 'beos' in uname or 'haiku' in uname:
-		os_type = 'BeOS'
-	elif 'bsd' in uname or 'gnu/kfreebsd' in uname:
-		os_type = 'BSD'
-	elif 'cygwin' in uname:
-		os_type = 'Cygwin'
-	elif 'darwin' in uname:
-		os_type = 'MacOS'
-	elif 'linux' in uname:
-		os_type = 'Linux'
-	elif 'solaris' in uname or 'sunos' in uname:
-		os_type = 'Solaris'
-	elif 'windows' in uname:
-		os_type = 'Windows'
-
-	return os_type
 
 class TestHasResult(object):
 	def assertHasResult(self, result):
@@ -38,7 +15,7 @@ class TestHasResult(object):
 
 class TestActual(unittest.TestCase, TestHasResult):
 	def test_all(self):
-		os_type = get_os_type()
+		os_type = helpers.get_os_type()
 
 		if os_type == 'BeOS':
 			self.assertEqual(None, cpuinfo.get_cpu_info_from_registry())
