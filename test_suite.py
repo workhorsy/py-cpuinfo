@@ -24,7 +24,7 @@ from test_actual import TestActual
 
 if __name__ == '__main__':
 	suite = unittest.TestSuite()
-	'''
+	suite.addTest(unittest.makeSuite(TestActual))
 	suite.addTest(unittest.makeSuite(TestExample))
 	suite.addTest(unittest.makeSuite(TestParseErrors))
 	suite.addTest(unittest.makeSuite(TestInvalidCPU))
@@ -36,8 +36,6 @@ if __name__ == '__main__':
 	suite.addTest(unittest.makeSuite(TestWindows8))
 	suite.addTest(unittest.makeSuite(TestSolaris))
 	suite.addTest(unittest.makeSuite(TestHaiku))
-	'''
-	suite.addTest(unittest.makeSuite(TestActual))
 
 	runner = unittest.TextTestRunner()
 	runner.run(suite)
