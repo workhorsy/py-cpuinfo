@@ -36,6 +36,16 @@ class TestActual(unittest.TestCase, TestHasResult):
 			# FIXME: This fails by segfaulting for some reason
 			self.assertEqual(None, cpuinfo.get_cpu_info_from_cpuid())
 			self.assertNotEqual(None, cpuinfo.get_cpu_info())
+		elif os_type == 'Cygwin':
+			self.assertEqual(None, cpuinfo.get_cpu_info_from_registry())
+			self.assertHasResult(cpuinfo.get_cpu_info_from_proc_cpuinfo())
+			self.assertEqual(None, cpuinfo.get_cpu_info_from_sysctl())
+			self.assertEqual(None, cpuinfo.get_cpu_info_from_kstat())
+			self.assertEqual(None, cpuinfo.get_cpu_info_from_dmesg())
+			self.assertEqual(None, cpuinfo.get_cpu_info_from_sysinfo())
+			# FIXME: This fails by segfaulting for some reason
+			self.assertEqual(None, cpuinfo.get_cpu_info_from_cpuid())
+			self.assertHasResult(cpuinfo.get_cpu_info())
 		elif os_type == 'Linux':
 			self.assertEqual(None, cpuinfo.get_cpu_info_from_registry())
 			self.assertHasResult(cpuinfo.get_cpu_info_from_proc_cpuinfo())
