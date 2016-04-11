@@ -46,6 +46,15 @@ class TestActual(unittest.TestCase, TestHasResult):
 			# FIXME: This fails by segfaulting for some reason
 			self.assertEqual(None, cpuinfo.get_cpu_info_from_cpuid())
 			self.assertHasResult(cpuinfo.get_cpu_info())
+		elif os_type == 'MacOS':
+			self.assertEqual(None, cpuinfo.get_cpu_info_from_registry())
+			self.assertEqual(None, cpuinfo.get_cpu_info_from_proc_cpuinfo())
+			self.assertHasResult(cpuinfo.get_cpu_info_from_sysctl())
+			self.assertEqual(None, cpuinfo.get_cpu_info_from_kstat())
+			self.assertEqual(None, cpuinfo.get_cpu_info_from_dmesg())
+			self.assertEqual(None, cpuinfo.get_cpu_info_from_sysinfo())
+			self.assertHasResult(cpuinfo.get_cpu_info_from_cpuid())
+			self.assertHasResult(cpuinfo.get_cpu_info())
 		elif os_type == 'Linux':
 			self.assertEqual(None, cpuinfo.get_cpu_info_from_registry())
 			self.assertHasResult(cpuinfo.get_cpu_info_from_proc_cpuinfo())
