@@ -1,4 +1,5 @@
 * Release 0.2.4
+	* Fixed Bug #36: Make test suite test real functions too
 	* Fixed Bug #38: get_cpu_info_from_cpuid breaks with Python3
 
 02/23/2016 Release 0.2.3

@@ -20,9 +20,11 @@ from test_raspberry_pi_model_b_arm import TestRaspberryPiModelB
 from test_windows_8_x86_64 import TestWindows8
 from test_solaris_11_x86_32 import TestSolaris
 from test_haiku_x86_32 import TestHaiku
+from test_actual import TestActual
 
 if __name__ == '__main__':
 	suite = unittest.TestSuite()
+	suite.addTest(unittest.makeSuite(TestActual))
 	suite.addTest(unittest.makeSuite(TestExample))
 	suite.addTest(unittest.makeSuite(TestParseErrors))
 	suite.addTest(unittest.makeSuite(TestInvalidCPU))

@@ -1,5 +1,31 @@
 
 
+import platform
+
+
+def get_os_type():
+	os_type = 'Unknown'
+
+	# Figure out the general OS type
+	uname = platform.system().strip().strip('"').strip("'").strip().lower()
+	if 'beos' in uname or 'haiku' in uname:
+		os_type = 'BeOS'
+	elif 'bsd' in uname or 'gnu/kfreebsd' in uname:
+		os_type = 'BSD'
+	elif 'cygwin' in uname:
+		os_type = 'Cygwin'
+	elif 'darwin' in uname:
+		os_type = 'MacOS'
+	elif 'linux' in uname:
+		os_type = 'Linux'
+	elif 'solaris' in uname or 'sunos' in uname:
+		os_type = 'Solaris'
+	elif 'windows' in uname:
+		os_type = 'Windows'
+
+	return os_type
+
+
 def monkey_patch_data_source(cpuinfo, DataSource):
 	if hasattr(DataSource, 'bits'):
 		cpuinfo.DataSource.bits = DataSource.bits
