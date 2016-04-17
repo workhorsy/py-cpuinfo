@@ -37,36 +37,57 @@ Returns the CPU info by using the best source of information for your OS.
 This is the recommended function for getting CPU info.
 Returns None if nothing is found.
 '''
+~~~
+
+~~~python
 get_cpu_info_from_registry()
 '''
 Returns the CPU info gathered from the Windows Registry.
 Returns None if not on Windows.
 '''
+~~~
+
+~~~python
 get_cpu_info_from_proc_cpuinfo()
 '''
 Returns the CPU info gathered from /proc/cpuinfo.
 Returns None if /proc/cpuinfo is not found.
 '''
+~~~
+
+~~~python
 get_cpu_info_from_sysctl()
 '''
 Returns the CPU info gathered from sysctl.
 Returns None if sysctl is not found.
 '''
+~~~
+
+~~~python
 get_cpu_info_from_kstat()
 '''
 Returns the CPU info gathered from isainfo and kstat.
 Returns None if isainfo or kstat are not found.
 '''
+~~~
+
+~~~python
 get_cpu_info_from_dmesg()
 '''
 Returns the CPU info gathered from dmesg.
 Returns None if dmesg is not found or does not have the desired info.
 '''
+~~~
+
+~~~python
 get_cpu_info_from_sysinfo()
 '''
 Returns the CPU info gathered from sysinfo.
 Returns None if sysinfo is not found.
 '''
+~~~
+
+~~~python
 get_cpu_info_from_cpuid()
 '''
 Returns the CPU info gathered by querying the X86 cpuid register in a new process.
