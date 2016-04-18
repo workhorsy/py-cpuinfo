@@ -5,10 +5,106 @@ py-cpuinfo
 Py-cpuinfo gets CPU info with pure Python. Py-cpuinfo should work
 without any extra programs or libraries, beyond what your OS provides.
 It does not require any compilation(C/C++, assembly, et cetera) to use.
-It works on Linux, OS X, Windows, BSD, Solaris, Cygwin, Haiku, and
-BeagleBone. It currently only works on X86 and some ARM CPUs.
+It works with Python 2 and 3.
+
+OS Support
+----------
+
++-----------+----------------------------------------------------------+-------------------+
+| OS        | Tested                                                   | Untested          |
++===========+==========================================================+===================+
+| BSD       | FreeBSD, PC-BSD                                          | OpenBSD, NetBSD   |
++-----------+----------------------------------------------------------+-------------------+
+| Cygwin    |                                                          |                   |
++-----------+----------------------------------------------------------+-------------------+
+| Haiku     | Haiku Alpha 4.1, and Nightly April, 10 2016              | BeOS              |
++-----------+----------------------------------------------------------+-------------------+
+| Linux     | Arch, Centos, Debian, Fedora, Gentoo, OpenSuse, Ubuntu   |                   |
++-----------+----------------------------------------------------------+-------------------+
+| OS X      | 10.9, 10.10, 10.11                                       |                   |
++-----------+----------------------------------------------------------+-------------------+
+| Solaris   | Oracle, OpenIndiana                                      |                   |
++-----------+----------------------------------------------------------+-------------------+
+| Windows   | XP, Vista, 7, 8, 10                                      |                   |
++-----------+----------------------------------------------------------+-------------------+
+
+CPU Support
+-----------
+
+-  X86 32bit and 64bit
+-  Some ARM CPUs (tested on BeagleBone armv7l)
+
+API
+---
+
+.. code:: python
+
+    get_cpu_info()
+    '''
+    Returns the CPU info by using the best source of information for your OS.
+    This is the recommended function for getting CPU info.
+    Returns None if nothing is found.
+    '''
+
+.. code:: python
+
+    get_cpu_info_from_registry()
+    '''
+    Returns the CPU info gathered from the Windows Registry.
+    Returns None if not on Windows.
+    '''
+
+.. code:: python
+
+    get_cpu_info_from_proc_cpuinfo()
+    '''
+    Returns the CPU info gathered from /proc/cpuinfo.
+    Returns None if /proc/cpuinfo is not found.
+    '''
+
+.. code:: python
+
+    get_cpu_info_from_sysctl()
+    '''
+    Returns the CPU info gathered from sysctl.
+    Returns None if sysctl is not found.
+    '''
+
+.. code:: python
+
+    get_cpu_info_from_kstat()
+    '''
+    Returns the CPU info gathered from isainfo and kstat.
+    Returns None if isainfo or kstat are not found.
+    '''
+
+.. code:: python
+
+    get_cpu_info_from_dmesg()
+    '''
+    Returns the CPU info gathered from dmesg.
+    Returns None if dmesg is not found or does not have the desired info.
+    '''
+
+.. code:: python
+
+    get_cpu_info_from_sysinfo()
+    '''
+    Returns the CPU info gathered from sysinfo.
+    Returns None if sysinfo is not found.
+    '''
+
+.. code:: python
+
+    get_cpu_info_from_cpuid()
+    '''
+    Returns the CPU info gathered by querying the X86 cpuid register in a new process.
+    Returns None on non X86 cpus.
+    Returns None if SELinux is in enforcing mode.
+    '''
 
 These approaches are used for getting info:
+-------------------------------------------
 
 1. Windows Registry (Windows)
 2. /proc/cpuinfo (Linux)
@@ -25,64 +121,23 @@ Run as a script
 
 .. code:: bash
 
-        $ python cpuinfo/cpuinfo.py
-        Vendor ID: GenuineIntel
-        Hardware Raw:
-        Brand: Intel(R) Core(TM) i5-4440 CPU @ 3.10GHz
-        Hz Advertised: 3.1000 GHz
-        Hz Actual: 3.0794 GHz
-        Hz Advertised Raw: (3100000000, 0)
-        Hz Actual Raw: (3079444000, 0)
-        Arch: X86_64
-        Bits: 64
-        Count: 4
-        Raw Arch String: x86_64
-        L2 Cache Size: 6144 KB
-        L2 Cache Line Size: 0
-        L2 Cache Associativity: 0
-        Stepping: 3
-        Model: 60
-        Family: 6
-        Processor Type: 0
-        Extended Model: 0
-        Extended Family: 0
-        Flags: apic, clflush, cmov, constant_tsc, cx8, de, fpu, fxsr, ht, lahf_lm,
-        lm, mca, mce, mmx, msr, mtrr, nopl, nx, pae, pat, pge, pni, pse, pse36,
-        rdtscp, rep_good, sep, sse, sse2, ssse3, syscall, tsc, vme
+    $ python cpuinfo/cpuinfo.py
+
+Run as a module
+---------------
+
+.. code:: bash
+
+    $ python -m cpuinfo
 
 Run as a library
 ----------------
 
 .. code:: python
 
-        import cpuinfo
-
-        # Have the library pick the best method for getting your CPU info
-        info = cpuinfo.get_cpu_info()
-
-        # Or use /proc/cpuinfo
-        #info = cpuinfo.get_cpu_info_from_proc_cpuinfo()
-
-        # Or use the Windows registry
-        #info = cpuinfo.get_cpu_info_from_registry()
-
-        # Or use sysctl
-        #info = cpuinfo.get_cpu_info_from_sysctl()
-
-        # Or use CPU CPUID register
-        #info = cpuinfo.get_cpu_info_from_cpuid()
-
-        # Print some CPU values
-        print('Vendor ID: {0}'.format(info['vendor_id']))
-        print('Brand: {0}'.format(info['brand']))
-        print('Hz Advertised: {0}'.format(info['hz_advertised']))
-        print('Hz Actual: {0}'.format(info['hz_actual']))
-        print('Hz Advertised Raw: {0}'.format(info['hz_advertised_raw']))
-        print('Hz Actual Raw: {0}'.format(info['hz_actual_raw']))
-        print('Arch: {0}'.format(info['arch']))
-        print('Bits: {0}'.format(info['bits']))
-        print('Count: {0}'.format(info['count']))
-        print('Flags: {0}'.format(', '.join(info['flags'])))
+    import cpuinfo
+    info = cpuinfo.get_cpu_info()
+    print(info)
 
 Bugs and Corrections
 --------------------
