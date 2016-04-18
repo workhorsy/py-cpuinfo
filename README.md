@@ -91,7 +91,7 @@ Returns None if sysinfo is not found.
 get_cpu_info_from_cpuid()
 '''
 Returns the CPU info gathered by querying the X86 cpuid register in a new process.
-Returns None of non X86 cpus.
+Returns None on non X86 cpus.
 Returns None if SELinux is in enforcing mode.
 '''
 ~~~
