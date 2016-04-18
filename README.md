@@ -13,11 +13,11 @@ and 3.
 
 OS Support
 -----
-* BSD
+* BSD (Tested on FreeBSD, PC-BSD)
 * Cygwin
-* Haiku (Tested on Haiku)
-* Linux (Tested on Arch, Centos, Debian, Gentoo, Fedora, OpenSuse, Ubuntu)
-* OS X (Tested on 10.11)
+* Haiku (Tested on Haiku, not yet on BeOS)
+* Linux (Tested on Arch, Centos, Debian, Fedora, Gentoo, OpenSuse, Ubuntu)
+* OS X (Tested on 10.9, 10.10, 10.11)
 * Solaris (Tested on Oracle, OpenIndiana)
 * Windows (Tested on XP, Vista, 7, 8, 10)
 
