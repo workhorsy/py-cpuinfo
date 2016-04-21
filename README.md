@@ -99,6 +99,34 @@ Returns None if SELinux is in enforcing mode.
 '''
 ~~~
 
+
+Output
+-----
+| key                    | Example value   |
+| :--------------------- | :-------------- |
+| vendor_id              | "GenuineIntel"    |
+| hardware               | "BCM2708" |
+| brand                  | "Intel(R) Core(TM) i7 CPU         870  @ 2.93GHz" |
+| hz_advertised          | "2.9300 GHz" |
+| hz_actual              | "1.7330 GHz" |
+| hz_advertised_raw      | (2930000000, 0)|
+| hz_actual_raw          | (1733000000, 0) |
+| arch                   | "X86_64" |
+| bits                   | 64 |
+| count                  | 4 |
+| raw_arch_string        | "x86_64" |
+| l2_cache_size          | "8192 KB" |
+| l2_cache_line_size     | 0 |
+| l2_cache_associativity | 0  |
+| stepping               | 5 |
+| model                  | 30 |
+| family                 | 6 |
+| processor_type         | 0 |
+| extended_model         | 0 |
+| extended_family        | 0 |
+| flags                  | ['acpi', 'aperfmperf', 'apic', 'arch_perfmon', 'bts', 'clflush', 'cmov', 'constant_tsc', 'cx16', 'cx8', 'de', 'ds_cpl', 'dtes64', 'dtherm', 'dts', 'ept', 'est', 'flexpriority', 'fpu', 'fxsr', 'ht', 'ida', 'lahf_lm', 'lm', 'mca', 'mce', 'mmx', 'monitor', 'msr', 'mtrr', 'nonstop_tsc', 'nopl', 'nx', 'pae', 'pat', 'pbe', 'pdcm', 'pebs', 'pge', 'pni', 'popcnt', 'pse', 'pse36', 'rdtscp', 'rep_good', 'sep', 'smx', 'ss', 'sse', 'sse2', 'sse4_1', 'sse4_2', 'ssse3', 'syscall', 'tm', 'tm2', 'tpr_shadow', 'tsc', 'vme', 'vmx', 'vnmi', 'vpid', 'xtopology', 'xtpr'] |
+
+
 These approaches are used for getting info:
 -----
 1. Windows Registry (Windows)
