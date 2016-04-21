@@ -15,6 +15,7 @@ OS Support
 -----
 | OS            | Tested and works                                       | Untested        |
 | :------------ | :----------------------------------------------------- | :-------------- |
+| Android       |                                                        | Everything      |
 | BSD           | FreeBSD, PC-BSD                                        | OpenBSD, NetBSD |
 | Cygwin        | Windows                                                |                 |
 | Haiku         | Haiku Nightly                                          | BeOS            |
