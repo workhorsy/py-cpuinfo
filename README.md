@@ -13,15 +13,15 @@ and 3.
 
 OS Support
 -----
-| OS            | Tested        | Untested  |
-| :------------ |:--------------| :-----|
-| BSD           | FreeBSD, PC-BSD | OpenBSD, NetBSD |
-| Cygwin        |       |    |
-| Haiku         | Haiku Alpha 4.1, and Nightly April, 10 2016     |    BeOS |
-| Linux         | Arch, Centos, Debian, Fedora, Gentoo, OpenSuse, Ubuntu |     |
-| OS X          | 10.9, 10.10, 10.11 |     |
-| Solaris       | Oracle, OpenIndiana |     |
-| Windows       | XP, Vista, 7, 8, 10 |     |
+| OS            | Tested and works                                       | Untested        |
+| :------------ | :----------------------------------------------------- | :-------------- |
+| BSD           | FreeBSD, PC-BSD                                        | OpenBSD, NetBSD |
+| Cygwin        | Windows                                                |                 |
+| Haiku         | Haiku Nightly                                          | BeOS            |
+| Linux         | Arch, Centos, Debian, Fedora, Gentoo, OpenSuse, Ubuntu |                 |
+| OS X          | 10.8, 10.9, 10.10                                      | 10.11           |
+| Solaris       | Oracle Solaris, OpenIndiana                            |                 |
+| Windows       | XP, Vista, 7, 8, 10                                    | RT              |
 
 
 CPU Support
