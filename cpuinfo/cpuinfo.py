@@ -936,6 +936,11 @@ def get_cpu_info_from_cpuid():
 	return info
 
 def actual_get_cpu_info_from_cpuid():
+	'''
+	Warning! This function has the potential to crash the Python runtime.
+	Do not call it directly. Use the get_cpu_info_from_cpuid function instead.
+	It will safely call this function in another process.
+	'''
 	# Get the CPU arch and bits
 	arch, bits = parse_arch(DataSource.raw_arch_string)
 
