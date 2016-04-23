@@ -580,7 +580,7 @@ class CPUID(object):
 			'extended_family' : extended_family
 		}
 
-	# https://en.wikipedia.org/wiki/CPUID#EAX.3D80000000h:_Get_Highest_Extended_Function_Supported
+	# http://en.wikipedia.org/wiki/CPUID#EAX.3D80000000h:_Get_Highest_Extended_Function_Supported
 	def get_max_extension_support(self):
 		# Check for extension support
 		max_extension_support = self._run_asm(
@@ -684,13 +684,13 @@ class CPUID(object):
 		# Get the Extended CPU flags
 		extended_flags = {}
 
-		# https://en.wikipedia.org/wiki/CPUID#EAX.3D7.2C_ECX.3D0:_Extended_Features
+		# http://en.wikipedia.org/wiki/CPUID#EAX.3D7.2C_ECX.3D0:_Extended_Features
 		if max_extension_support == 7:
 			pass
 			# FIXME: Are we missing all these flags too?
 			# avx2 et cetera ...
 
-		# https://en.wikipedia.org/wiki/CPUID#EAX.3D80000001h:_Extended_Processor_Info_and_Feature_Bits
+		# http://en.wikipedia.org/wiki/CPUID#EAX.3D80000001h:_Extended_Processor_Info_and_Feature_Bits
 		if max_extension_support >= 0x80000001:
 			# EBX # FIXME: This may need to be EDX instead
 			ebx = self._run_asm(
@@ -784,7 +784,7 @@ class CPUID(object):
 		flags.sort()
 		return flags
 
-	# https://en.wikipedia.org/wiki/CPUID#EAX.3D80000002h.2C80000003h.2C80000004h:_Processor_Brand_String
+	# http://en.wikipedia.org/wiki/CPUID#EAX.3D80000002h.2C80000003h.2C80000004h:_Processor_Brand_String
 	def get_processor_brand(self, max_extension_support):
 		processor_brand = ""
 
@@ -838,7 +838,7 @@ class CPUID(object):
 
 		return processor_brand
 
-	# https://en.wikipedia.org/wiki/CPUID#EAX.3D80000006h:_Extended_L2_Cache_Features
+	# http://en.wikipedia.org/wiki/CPUID#EAX.3D80000006h:_Extended_L2_Cache_Features
 	def get_cache(self, max_extension_support):
 		cache_info = {}
 
