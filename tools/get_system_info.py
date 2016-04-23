@@ -79,6 +79,8 @@ def print_output(name, output):
 	line = "=" * 79
 	out_file.write('{0}:\n{1}\n{2}\n\n\n\n'.format(name, line, output))
 
+print_output('sys.executable', sys.executable)
+
 print_output('sys.version_info', sys.version_info)
 
 print_output('multiprocessing.cpu_count', multiprocessing.cpu_count())
@@ -160,5 +162,3 @@ if 'winreg' in sys.modules:
 
 out_file.close()
 print('System info written to "{0}"'.format(out_file_name))
-
-
