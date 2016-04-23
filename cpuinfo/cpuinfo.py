@@ -682,13 +682,99 @@ class CPUID(object):
 		flags = [k for k, v in flags.items() if v]
 
 		# Get the Extended CPU flags
-		extended_flags = {}
-
 		# http://en.wikipedia.org/wiki/CPUID#EAX.3D7.2C_ECX.3D0:_Extended_Features
+		# FIXME: This check is wrong
 		if max_extension_support == 7:
-			pass
-			# FIXME: Are we missing all these flags too?
-			# avx2 et cetera ...
+			# EBX
+			ebx = self._run_asm(
+				b"\xB8\x07\x00"     # mov ax, 0x7
+				b"\xB9\x00\x00"     # mov cx, 0x0
+				b"\x0f\xa2"         # cpuid
+				b"\x89\xD8"         # mov ax, bx
+				b"\xC3"             # ret
+			)
+
+			# ECX
+			ecx = self._run_asm(
+				b"\xB8\x07\x00"     # mov ax, 0x7
+				b"\xB9\x00\x00"     # mov cx, 0x0
+				b"\x0f\xa2"         # cpuid
+				b"\x89\xC8"         # mov ax, cx
+				b"\xC3"             # ret
+			)
+
+			# Get the extended CPU flags
+			extended_flags = {
+				'fsgsbase' : is_bit_set(ebx, 0),
+				#'reserved' : is_bit_set(ebx, 1),
+				'sgx' : is_bit_set(ebx, 2),
+				'bmi1' : is_bit_set(ebx, 3),
+				'hle' : is_bit_set(ebx, 4),
+				'avx2' : is_bit_set(ebx, 5),
+				#'' : is_bit_set(ebx, 6),
+				'smep' : is_bit_set(ebx, 7),
+				'bmi2' : is_bit_set(ebx, 8),
+				'erms' : is_bit_set(ebx, 9),
+				'invpcid' : is_bit_set(ebx, 10),
+				'rtm' : is_bit_set(ebx, 11),
+				'pqm' : is_bit_set(ebx, 12),
+				#'' : is_bit_set(ebx, 13),
+				'mpx' : is_bit_set(ebx, 14),
+				'pqe' : is_bit_set(ebx, 15),
+				'avx512f' : is_bit_set(ebx, 16),
+				'avx512dq' : is_bit_set(ebx, 17),
+				'rdseed' : is_bit_set(ebx, 18),
+				'adx' : is_bit_set(ebx, 19),
+				'smap' : is_bit_set(ebx, 20),
+				'avx512ifma' : is_bit_set(ebx, 21),
+				'pcommit' : is_bit_set(ebx, 22),
+				'clflushopt' : is_bit_set(ebx, 23),
+				'clwb' : is_bit_set(ebx, 24),
+				#'' : is_bit_set(ebx, 25),
+				'avx512pf' : is_bit_set(ebx, 26),
+				'avx512er' : is_bit_set(ebx, 27),
+				'avx512cd' : is_bit_set(ebx, 28),
+				'sha' : is_bit_set(ebx, 29),
+				'avx512bw' : is_bit_set(ebx, 30),
+				'avx512vl' : is_bit_set(ebx, 31),
+
+				'prefetchwt1' : is_bit_set(ecx, 0),
+				'avx512vbmi' : is_bit_set(ecx, 1),
+				#'reserved' : is_bit_set(ecx, 2),
+				#'reserved' : is_bit_set(ecx, 3),
+				#'reserved' : is_bit_set(ecx, 4),
+				#'reserved' : is_bit_set(ecx, 5),
+				#'reserved' : is_bit_set(ecx, 6),
+				#'reserved' : is_bit_set(ecx, 7),
+				#'reserved' : is_bit_set(ecx, 8),
+				#'reserved' : is_bit_set(ecx, 9),
+				#'reserved' : is_bit_set(ecx, 10),
+				#'reserved' : is_bit_set(ecx, 11),
+				#'reserved' : is_bit_set(ecx, 12),
+				#'reserved' : is_bit_set(ecx, 13),
+				#'reserved' : is_bit_set(ecx, 14),
+				#'reserved' : is_bit_set(ecx, 15),
+				#'reserved' : is_bit_set(ecx, 16),
+				#'reserved' : is_bit_set(ecx, 17),
+				#'reserved' : is_bit_set(ecx, 18),
+				#'reserved' : is_bit_set(ecx, 19),
+				#'reserved' : is_bit_set(ecx, 20),
+				#'reserved' : is_bit_set(ecx, 21),
+				#'reserved' : is_bit_set(ecx, 22),
+				#'reserved' : is_bit_set(ecx, 23),
+				#'reserved' : is_bit_set(ecx, 24),
+				#'reserved' : is_bit_set(ecx, 25),
+				#'reserved' : is_bit_set(ecx, 26),
+				#'reserved' : is_bit_set(ecx, 27),
+				#'reserved' : is_bit_set(ecx, 28),
+				#'reserved' : is_bit_set(ecx, 29),
+				#'reserved' : is_bit_set(ecx, 30),
+				#'reserved' : is_bit_set(ecx, 31)
+			}
+
+			# Get a list of only the flags that are true
+			extended_flags = [k for k, v in extended_flags.items() if v]
+			flags += extended_flags
 
 		# http://en.wikipedia.org/wiki/CPUID#EAX.3D80000001h:_Extended_Processor_Info_and_Feature_Bits
 		if max_extension_support >= 0x80000001:
@@ -777,9 +863,9 @@ class CPUID(object):
 				#'reserved' : is_bit_set(ecx, 31)
 			}
 
-		# Get a list of only the flags that are true
-		extended_flags = [k for k, v in extended_flags.items() if v]
-		flags += extended_flags
+			# Get a list of only the flags that are true
+			extended_flags = [k for k, v in extended_flags.items() if v]
+			flags += extended_flags
 
 		flags.sort()
 		return flags
