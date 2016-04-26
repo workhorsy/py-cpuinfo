@@ -683,25 +683,28 @@ class CPUID(object):
 
 		# Get the Extended CPU flags
 		# http://en.wikipedia.org/wiki/CPUID#EAX.3D7.2C_ECX.3D0:_Extended_Features
-		# FIXME: This check is wrong
-		if max_extension_support == 7:
+		# Only check if supported by highest function parameter
+		# http://en.wikipedia.org/wiki/CPUID#EAX.3D0:_Highest_Function_Parameter
+		if max_extension_support >= 0x80000004:
 			# EBX
 			ebx = self._run_asm(
 				b"\xB8\x07\x00"     # mov ax, 0x7
-				b"\xB9\x00\x00"     # mov cx, 0x0
+				b"\x31\xC9"         # xor cx, cx
 				b"\x0f\xa2"         # cpuid
 				b"\x89\xD8"         # mov ax, bx
 				b"\xC3"             # ret
 			)
+			print('ebx', ebx)
 
 			# ECX
 			ecx = self._run_asm(
 				b"\xB8\x07\x00"     # mov ax, 0x7
-				b"\xB9\x00\x00"     # mov cx, 0x0
+				b"\x31\xC9"         # xor cx, cx
 				b"\x0f\xa2"         # cpuid
 				b"\x89\xC8"         # mov ax, cx
 				b"\xC3"             # ret
 			)
+			print('ecx', ecx)
 
 			# Get the extended CPU flags
 			extended_flags = {
@@ -1041,6 +1044,7 @@ def actual_get_cpu_info_from_cpuid():
 
 	# Get the cpu info from the CPUID register
 	max_extension_support = cpuid.get_max_extension_support()
+	print('!!!!!!!!!!!!!!!!!!!!!!!!!!!!', format(max_extension_support, '#04X'))
 	cache_info = cpuid.get_cache(max_extension_support)
 	info = cpuid.get_info()
 
@@ -1580,6 +1584,10 @@ def get_cpu_info():
 	Returns None if nothing is found.
 	'''
 	info = None
+
+	info = actual_get_cpu_info_from_cpuid()
+	info = b64_to_obj(info)
+	print(info)
 
 	# Try the Windows registry
 	if not info:
