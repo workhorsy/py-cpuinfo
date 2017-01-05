@@ -389,7 +389,7 @@ def parse_arch(raw_arch_string):
 	elif re.match('^ppc32$|^prep$|^pmac$|^powermac$', raw_arch_string):
 		arch = 'PPC_32'
 		bits = 32
-	elif re.match('^powerpc$|^ppc64$', raw_arch_string):
+	elif re.match('^powerpc$|^ppc64$|^ppc64le$', raw_arch_string):
 		arch = 'PPC_64'
 		bits = 64
 	# SPARC
@@ -1018,9 +1018,13 @@ def get_cpu_info_from_proc_cpuinfo():
 		model = _get_field(False, output, int, 0, 'model')
 		family = _get_field(False, output, int, 0, 'cpu family')
 		hardware = _get_field(False, output, None, '', 'Hardware')
+		arch, bits = parse_arch(DataSource.raw_arch_string)
 		# Flags
-		flags = _get_field(False, output, None, None, 'flags', 'Features').split()
-		flags.sort()
+		if not arch in ['PPC_64']:
+			flags = _get_field(False, output, None, None, 'flags', 'Features').split()
+			flags.sort()
+		else:
+			flags = ''
 
 		# Convert from MHz string to Hz
 		hz_actual = _get_field(False, output, None, '', 'cpu MHz', 'cpu speed', 'clock')
@@ -1039,9 +1043,6 @@ def get_cpu_info_from_proc_cpuinfo():
 		if hz_advertised == '0.0':
 			scale, hz_advertised = _get_hz_string_from_lscpu()
 			hz_actual = hz_advertised
-
-		# Get the CPU arch and bits
-		arch, bits = parse_arch(DataSource.raw_arch_string)
 
 		return {
 		'vendor_id' : vendor_id,
@@ -1528,8 +1529,8 @@ def get_cpu_info():
 # Make sure we are running on a supported system
 def _check_arch():
 	arch, bits = parse_arch(DataSource.raw_arch_string)
-	if not arch in ['X86_32', 'X86_64', 'ARM_7', 'ARM_8']:
-		raise Exception("py-cpuinfo currently only works on X86 and some ARM CPUs.")
+	if not arch in ['X86_32', 'X86_64', 'ARM_7', 'ARM_8', 'PPC_64']:
+		raise Exception("py-cpuinfo currently only works on X86 PPC_64 and some ARM CPUs.")
 
 def main():
 	try:
@@ -1563,7 +1564,8 @@ def main():
 		print('Processor Type: {0}'.format(info.get('processor_type', '')))
 		print('Extended Model: {0}'.format(info.get('extended_model', '')))
 		print('Extended Family: {0}'.format(info.get('extended_family', '')))
-		print('Flags: {0}'.format(', '.join(info.get('flags', ''))))
+		if not info.get('arch', '') in ['PPC_64']:
+			print('Flags: {0}'.format(', '.join(info.get('flags', ''))))
 	else:
 		sys.stderr.write("Failed to find cpu info\n")
 		sys.exit(1)
