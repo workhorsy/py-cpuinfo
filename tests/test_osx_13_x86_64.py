@@ -92,10 +92,10 @@ class TestOSX(unittest.TestCase):
 		self.assertEqual(0, info['extended_model'])
 		self.assertEqual(0, info['extended_family'])
 		self.assertEqual(
-			['apic', 'clfsh', 'cmov', 'cx8', 'de', 'fpu', 'fxsr', 'htt',
-			'mca', 'mce', 'mmx', 'msr', 'mtrr', 'pae', 'pat', 'pge', 'pse',
-			'pse36', 'sep', 'sse', 'sse2', 'sse3', 'ssse3', 'tsc', 'vme',
-			'vmm']
+			['apic', 'bmi2', 'clfsh', 'cmov', 'cx8', 'de', 'em64t', 'enfstrg', 'fpu', 'fxsr', 'htt',
+			'lahf', 'mca', 'mce', 'mmx', 'msr', 'mtrr', 'pae', 'pat', 'pge', 'pse',
+			'pse36', 'rdtscp', 'sep', 'sse', 'sse2', 'sse3', 'ssse3', 'syscall', 'tsc', 'vme',
+			'vmm', 'xd', ]
 			,
 			info['flags']
 		)
