@@ -1197,6 +1197,8 @@ def get_cpu_info_from_sysctl():
 
 		# Flags
 		flags = _get_field(False, output, None, None, 'machdep.cpu.features').lower().split()
+		flags.extend(_get_field(False, output, None, None, 'machdep.cpu.leaf7_features').lower().split())
+		flags.extend(_get_field(False, output, None, None, 'machdep.cpu.extfeatures').lower().split())
 		flags.sort()
 
 		# Convert from GHz/MHz string to Hz
