@@ -1,15 +1,16 @@
 
 
 import unittest
-import cpuinfo
+from cpuinfo import *
 import helpers
 
 
-class DataSource(object):
+class MockDataSource(object):
 	bits = '64bit'
 	cpu_count = 4
 	is_windows = False
 	raw_arch_string = 'x86_64'
+	can_cpuid = False
 
 	@staticmethod
 	def has_sysctl():
@@ -63,10 +64,38 @@ hw.cpufrequency: 2890000000
 
 
 class TestOSX(unittest.TestCase):
-	def test_all(self):
-		helpers.monkey_patch_data_source(cpuinfo, DataSource)
+	def setUp(self):
+		helpers.restore_data_source(cpuinfo)
+		helpers.monkey_patch_data_source(cpuinfo, MockDataSource)
 
-		info = cpuinfo.get_cpu_info_from_sysctl()
+	'''
+	Make sure calls that should work return something,
+	and calls that should NOT work return None.
+	'''
+	def test_returns(self):
+		info = cpuinfo._get_cpu_info_from_registry()
+		self.assertIsNone(info)
+
+		info = cpuinfo._get_cpu_info_from_proc_cpuinfo()
+		self.assertIsNone(info)
+
+		info = cpuinfo._get_cpu_info_from_sysctl()
+		self.assertIsNotNone(info)
+
+		info = cpuinfo._get_cpu_info_from_kstat()
+		self.assertIsNone(info)
+
+		info = cpuinfo._get_cpu_info_from_dmesg()
+		self.assertIsNone(info)
+
+		info = cpuinfo._get_cpu_info_from_sysinfo()
+		self.assertIsNone(info)
+
+		info = cpuinfo._get_cpu_info_from_cpuid()
+		self.assertIsNone(info)
+
+	def test_all(self):
+		info = cpuinfo._get_cpu_info_from_sysctl()
 
 		self.assertEqual('GenuineIntel', info['vendor_id'])
 		self.assertEqual('', info['hardware'])

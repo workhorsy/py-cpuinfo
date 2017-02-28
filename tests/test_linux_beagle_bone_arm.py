@@ -1,11 +1,11 @@
 
 
 import unittest
-import cpuinfo
+from cpuinfo import *
 import helpers
 
 
-class DataSource(object):
+class MockDataSource(object):
 	bits = '32bit'
 	cpu_count = 1
 	is_windows = False
@@ -64,11 +64,39 @@ cpufreq stats: 300 MHz:0.00%, 600 MHz:0.00%, 800 MHz:0.00%, 1000 MHz:100.00%
 		return returncode, output
 
 
-class TestBeagleBone(unittest.TestCase):
-	def test_all(self):
-		helpers.monkey_patch_data_source(cpuinfo, DataSource)
+class TestLinux_BeagleBone(unittest.TestCase):
+	def setUp(self):
+		helpers.restore_data_source(cpuinfo)
+		helpers.monkey_patch_data_source(cpuinfo, MockDataSource)
 
-		info = cpuinfo.get_cpu_info_from_proc_cpuinfo()
+	'''
+	Make sure calls that should work return something,
+	and calls that should NOT work return None.
+	'''
+	def test_returns(self):
+		info = cpuinfo._get_cpu_info_from_registry()
+		self.assertIsNone(info)
+
+		info = cpuinfo._get_cpu_info_from_proc_cpuinfo()
+		self.assertIsNotNone(info)
+
+		info = cpuinfo._get_cpu_info_from_sysctl()
+		self.assertIsNone(info)
+
+		info = cpuinfo._get_cpu_info_from_kstat()
+		self.assertIsNone(info)
+
+		info = cpuinfo._get_cpu_info_from_dmesg()
+		self.assertIsNone(info)
+
+		info = cpuinfo._get_cpu_info_from_sysinfo()
+		self.assertIsNone(info)
+
+		info = cpuinfo._get_cpu_info_from_cpuid()
+		self.assertIsNone(info)
+
+	def test_all(self):
+		info = cpuinfo._get_cpu_info_from_proc_cpuinfo()
 
 		self.assertEqual('', info['vendor_id'])
 		self.assertEqual('BCM2708', info['hardware'])

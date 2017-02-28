@@ -14,7 +14,7 @@ class MockDataSource(object):
 
 	@staticmethod
 	def winreg_processor_brand():
-		return 'Intel(R) Core(TM) i7 CPU         870  @ 2.93GHz'
+		return 'Intel(R) Core(TM) i5-4300U CPU @ 1.90GHz'
 
 	@staticmethod
 	def winreg_vendor_id():
@@ -26,16 +26,16 @@ class MockDataSource(object):
 
 	@staticmethod
 	def winreg_hz_actual():
-		return 2933
+		return 2494
 
 	@staticmethod
 	def winreg_feature_bits():
-		return 756629502
+		return 1025196031
 
 
 
 
-class TestWindows_8_X86_64(unittest.TestCase):
+class TestWindows_10_X86_64(unittest.TestCase):
 	def setUp(self):
 		helpers.restore_data_source(cpuinfo)
 		helpers.monkey_patch_data_source(cpuinfo, MockDataSource)
@@ -71,11 +71,11 @@ class TestWindows_8_X86_64(unittest.TestCase):
 
 		self.assertEqual('GenuineIntel', info['vendor_id'])
 		self.assertEqual('', info['hardware'])
-		self.assertEqual('Intel(R) Core(TM) i7 CPU         870  @ 2.93GHz', info['brand'])
-		self.assertEqual('2.9300 GHz', info['hz_advertised'])
-		self.assertEqual('2.9330 GHz', info['hz_actual'])
-		self.assertEqual((2930000000, 0), info['hz_advertised_raw'])
-		self.assertEqual((2933000000, 0), info['hz_actual_raw'])
+		self.assertEqual('Intel(R) Core(TM) i5-4300U CPU @ 1.90GHz', info['brand'])
+		self.assertEqual('1.9000 GHz', info['hz_advertised'])
+		self.assertEqual('2.4940 GHz', info['hz_actual'])
+		self.assertEqual((1900000000, 0), info['hz_advertised_raw'])
+		self.assertEqual((2494000000, 0), info['hz_actual_raw'])
 		self.assertEqual('X86_64', info['arch'])
 		self.assertEqual(64, info['bits'])
 		self.assertEqual(4, info['count'])
@@ -94,9 +94,9 @@ class TestWindows_8_X86_64(unittest.TestCase):
 		self.assertEqual(0, info['extended_family'])
 		 # FIXME: Missing flags such as sse3 and sse4
 		self.assertEqual(
-			['acpi', 'clflush', 'cmov', 'de', 'dts', 'fxsr', 'ia64',
-			'mce', 'mmx', 'msr', 'mtrr', 'sep', 'serial', 'ss',
-			'sse', 'sse2', 'tm', 'tsc']
+			['3dnow', 'acpi', 'clflush', 'cmov', 'de', 'dts', 'fxsr',
+			'ia64', 'mca', 'mce', 'mmx', 'msr', 'mtrr', 'pse', 'sep',
+			'serial', 'ss', 'sse', 'sse2', 'tm', 'tsc']
 			,
 			info['flags']
 		)

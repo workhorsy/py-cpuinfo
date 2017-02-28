@@ -1,15 +1,16 @@
 
 
 import unittest
-import cpuinfo
+from cpuinfo import *
 import helpers
 
 
-class DataSource(object):
+class MockDataSource(object):
 	bits = '64bit'
 	cpu_count = 1
 	is_windows = False
 	raw_arch_string = 'x86_64'
+	can_cpuid = False
 
 	@staticmethod
 	def has_proc_cpuinfo():
@@ -51,11 +52,39 @@ power management:
 
 
 
-class TestDebian(unittest.TestCase):
-	def test_proc_cpuinfo(self):
-		helpers.monkey_patch_data_source(cpuinfo, DataSource)
+class TestLinuxDebian_8_X86_64(unittest.TestCase):
+	def setUp(self):
+		helpers.restore_data_source(cpuinfo)
+		helpers.monkey_patch_data_source(cpuinfo, MockDataSource)
 
-		info = cpuinfo.get_cpu_info_from_proc_cpuinfo()
+	'''
+	Make sure calls that should work return something,
+	and calls that should NOT work return None.
+	'''
+	def test_returns(self):
+		info = cpuinfo._get_cpu_info_from_registry()
+		self.assertIsNone(info)
+
+		info = cpuinfo._get_cpu_info_from_proc_cpuinfo()
+		self.assertIsNotNone(info)
+
+		info = cpuinfo._get_cpu_info_from_sysctl()
+		self.assertIsNone(info)
+
+		info = cpuinfo._get_cpu_info_from_kstat()
+		self.assertIsNone(info)
+
+		info = cpuinfo._get_cpu_info_from_dmesg()
+		self.assertIsNone(info)
+
+		info = cpuinfo._get_cpu_info_from_sysinfo()
+		self.assertIsNone(info)
+
+		info = cpuinfo._get_cpu_info_from_cpuid()
+		self.assertIsNone(info)
+
+	def test_proc_cpuinfo(self):
+		info = cpuinfo._get_cpu_info_from_proc_cpuinfo()
 
 		self.assertEqual('GenuineIntel', info['vendor_id'])
 		self.assertEqual('', info['hardware'])
