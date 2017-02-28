@@ -922,7 +922,7 @@ class CPUID(object):
 
 		return ticks
 
-def get_cpu_info_from_cpuid():
+def _get_cpu_info_from_cpuid():
 	'''
 	Returns the CPU info gathered by querying the X86 cpuid register in a new process.
 	Returns None on non X86 cpus.
@@ -945,7 +945,7 @@ def get_cpu_info_from_cpuid():
 def actual_get_cpu_info_from_cpuid():
 	'''
 	Warning! This function has the potential to crash the Python runtime.
-	Do not call it directly. Use the get_cpu_info_from_cpuid function instead.
+	Do not call it directly. Use the _get_cpu_info_from_cpuid function instead.
 	It will safely call this function in another process.
 	'''
 	# Get the CPU arch and bits
@@ -1003,7 +1003,7 @@ def actual_get_cpu_info_from_cpuid():
 	}
 	return obj_to_b64(info)
 
-def get_cpu_info_from_proc_cpuinfo():
+def _get_cpu_info_from_proc_cpuinfo():
 	'''
 	Returns the CPU info gathered from /proc/cpuinfo.
 	Returns None if /proc/cpuinfo is not found.
@@ -1081,7 +1081,7 @@ def get_cpu_info_from_proc_cpuinfo():
 		#raise # NOTE: To have this throw on error, uncomment this line
 		return None
 
-def get_cpu_info_from_dmesg():
+def _get_cpu_info_from_dmesg():
 	'''
 	Returns the CPU info gathered from dmesg.
 	Returns None if dmesg is not found or does not have the desired info.
@@ -1179,7 +1179,7 @@ def get_cpu_info_from_dmesg():
 	except:
 		return None
 
-def get_cpu_info_from_sysctl():
+def _get_cpu_info_from_sysctl():
 	'''
 	Returns the CPU info gathered from sysctl.
 	Returns None if sysctl is not found.
@@ -1246,7 +1246,7 @@ def get_cpu_info_from_sysctl():
 	except:
 		return None
 
-def get_cpu_info_from_sysinfo():
+def _get_cpu_info_from_sysinfo():
 	'''
 	Returns the CPU info gathered from sysinfo.
 	Returns None if sysinfo is not found.
@@ -1314,7 +1314,7 @@ def get_cpu_info_from_sysinfo():
 	except:
 		return None
 
-def get_cpu_info_from_registry():
+def _get_cpu_info_from_registry():
 	'''
 	FIXME: Is missing many of the newer CPU flags like sse3
 	Returns the CPU info gathered from the Windows Registry.
@@ -1422,7 +1422,7 @@ def get_cpu_info_from_registry():
 	except:
 		return None
 
-def get_cpu_info_from_kstat():
+def _get_cpu_info_from_kstat():
 	'''
 	Returns the CPU info gathered from isainfo and kstat.
 	Returns None if isainfo or kstat are not found.
@@ -1506,31 +1506,31 @@ def get_cpu_info():
 
 	# Try the Windows registry
 	if not info:
-		info = get_cpu_info_from_registry()
+		info = _get_cpu_info_from_registry()
 
 	# Try /proc/cpuinfo
 	if not info:
-		info = get_cpu_info_from_proc_cpuinfo()
+		info = _get_cpu_info_from_proc_cpuinfo()
 
 	# Try sysctl
 	if not info:
-		info = get_cpu_info_from_sysctl()
+		info = _get_cpu_info_from_sysctl()
 
 	# Try kstat
 	if not info:
-		info = get_cpu_info_from_kstat()
+		info = _get_cpu_info_from_kstat()
 
 	# Try dmesg
 	if not info:
-		info = get_cpu_info_from_dmesg()
+		info = _get_cpu_info_from_dmesg()
 
 	# Try sysinfo
 	if not info:
-		info = get_cpu_info_from_sysinfo()
+		info = _get_cpu_info_from_sysinfo()
 
 	# Try querying the CPU cpuid register
 	if not info:
-		info = get_cpu_info_from_cpuid()
+		info = _get_cpu_info_from_cpuid()
 
 	return info
 

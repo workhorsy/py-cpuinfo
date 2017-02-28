@@ -1,7 +1,7 @@
 
 
 import unittest
-import cpuinfo
+from cpuinfo import *
 import helpers
 
 
@@ -72,31 +72,31 @@ class TestBeagleBone(unittest.TestCase):
 	def test_returns(self):
 		helpers.monkey_patch_data_source(cpuinfo, DataSource)
 
-		info = cpuinfo.get_cpu_info_from_registry()
+		info = cpuinfo._get_cpu_info_from_registry()
 		self.assertIsNone(info)
 
-		info = cpuinfo.get_cpu_info_from_proc_cpuinfo()
+		info = cpuinfo._get_cpu_info_from_proc_cpuinfo()
 		self.assertIsNotNone(info)
 
-		info = cpuinfo.get_cpu_info_from_sysctl()
+		info = cpuinfo._get_cpu_info_from_sysctl()
 		self.assertIsNone(info)
 
-		info = cpuinfo.get_cpu_info_from_kstat()
+		info = cpuinfo._get_cpu_info_from_kstat()
 		self.assertIsNone(info)
 
-		info = cpuinfo.get_cpu_info_from_dmesg()
+		info = cpuinfo._get_cpu_info_from_dmesg()
 		self.assertIsNone(info)
 
-		info = cpuinfo.get_cpu_info_from_sysinfo()
+		info = cpuinfo._get_cpu_info_from_sysinfo()
 		self.assertIsNone(info)
 
-		info = cpuinfo.get_cpu_info_from_cpuid()
+		info = cpuinfo._get_cpu_info_from_cpuid()
 		self.assertIsNone(info)
 
 	def test_all(self):
 		helpers.monkey_patch_data_source(cpuinfo, DataSource)
 
-		info = cpuinfo.get_cpu_info_from_proc_cpuinfo()
+		info = cpuinfo._get_cpu_info_from_proc_cpuinfo()
 
 		self.assertEqual('', info['vendor_id'])
 		self.assertEqual('BCM2708', info['hardware'])
