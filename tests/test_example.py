@@ -72,6 +72,10 @@ class MockDataSource(object):
 		return 1, None
 
 	@staticmethod
+	def cat_var_run_dmesg_boot():
+		return 1, None
+
+	@staticmethod
 	def sysctl_machdep_cpu_hw_cpufrequency():
 		return 1, None
 
@@ -127,6 +131,8 @@ class TestExample(unittest.TestCase):
 		self.assertEqual(None, cpuinfo._get_cpu_info_from_kstat())
 
 		self.assertEqual(None, cpuinfo._get_cpu_info_from_dmesg())
+
+		self.assertEqual(None, cpuinfo._get_cpu_info_from_cat_var_run_dmesg_boot())
 
 		self.assertEqual(None, cpuinfo._get_cpu_info_from_sysinfo())
 

@@ -19,6 +19,7 @@ class TestActual(unittest.TestCase):
 			self.assertEqual(None, cpuinfo._get_cpu_info_from_sysctl())
 			self.assertEqual(None, cpuinfo._get_cpu_info_from_kstat())
 			self.assertEqual(None, cpuinfo._get_cpu_info_from_dmesg())
+			self.assertEqual(None, cpuinfo._get_cpu_info_from_cat_var_run_dmesg_boot())
 			self.assertIsNotNone(cpuinfo._get_cpu_info_from_sysinfo())
 			self.assertIsNotNone(cpuinfo._get_cpu_info_from_cpuid())
 			self.assertIsNotNone(cpuinfo.get_cpu_info())
@@ -28,6 +29,7 @@ class TestActual(unittest.TestCase):
 			self.assertEqual(None, cpuinfo._get_cpu_info_from_sysctl())
 			self.assertEqual(None, cpuinfo._get_cpu_info_from_kstat())
 			self.assertIsNotNone(cpuinfo._get_cpu_info_from_dmesg())
+			self.assertEqual(None, cpuinfo._get_cpu_info_from_cat_var_run_dmesg_boot())
 			self.assertEqual(None, cpuinfo._get_cpu_info_from_sysinfo())
 			# FIXME: This fails by segfaulting for some reason
 			self.assertEqual(None, cpuinfo._get_cpu_info_from_cpuid())
@@ -38,6 +40,7 @@ class TestActual(unittest.TestCase):
 			self.assertEqual(None, cpuinfo._get_cpu_info_from_sysctl())
 			self.assertEqual(None, cpuinfo._get_cpu_info_from_kstat())
 			self.assertEqual(None, cpuinfo._get_cpu_info_from_dmesg())
+			self.assertEqual(None, cpuinfo._get_cpu_info_from_cat_var_run_dmesg_boot())
 			self.assertEqual(None, cpuinfo._get_cpu_info_from_sysinfo())
 			# FIXME: This fails by segfaulting for some reason
 			self.assertEqual(None, cpuinfo._get_cpu_info_from_cpuid())
@@ -48,6 +51,7 @@ class TestActual(unittest.TestCase):
 			self.assertIsNotNone(cpuinfo._get_cpu_info_from_sysctl())
 			self.assertEqual(None, cpuinfo._get_cpu_info_from_kstat())
 			self.assertEqual(None, cpuinfo._get_cpu_info_from_dmesg())
+			self.assertEqual(None, cpuinfo._get_cpu_info_from_cat_var_run_dmesg_boot())
 			self.assertEqual(None, cpuinfo._get_cpu_info_from_sysinfo())
 			# FIXME: This fails by segfaulting for some reason
 			self.assertEqual(None, cpuinfo._get_cpu_info_from_cpuid())
@@ -58,6 +62,7 @@ class TestActual(unittest.TestCase):
 			self.assertEqual(None, cpuinfo._get_cpu_info_from_sysctl())
 			self.assertEqual(None, cpuinfo._get_cpu_info_from_kstat())
 			self.assertEqual(None, cpuinfo._get_cpu_info_from_dmesg())
+			self.assertEqual(None, cpuinfo._get_cpu_info_from_cat_var_run_dmesg_boot())
 			self.assertEqual(None, cpuinfo._get_cpu_info_from_sysinfo())
 			self.assertIsNotNone(cpuinfo._get_cpu_info_from_cpuid())
 			self.assertIsNotNone(cpuinfo.get_cpu_info())
@@ -67,6 +72,7 @@ class TestActual(unittest.TestCase):
 			self.assertEqual(None, cpuinfo._get_cpu_info_from_sysctl())
 			self.assertIsNotNone(cpuinfo._get_cpu_info_from_kstat())
 			self.assertEqual(None, cpuinfo._get_cpu_info_from_dmesg())
+			self.assertEqual(None, cpuinfo._get_cpu_info_from_cat_var_run_dmesg_boot())
 			self.assertEqual(None, cpuinfo._get_cpu_info_from_sysinfo())
 			# FIXME: This fails by segfaulting for some reason
 			self.assertEqual(None, cpuinfo._get_cpu_info_from_cpuid())
@@ -77,6 +83,7 @@ class TestActual(unittest.TestCase):
 			self.assertEqual(None, cpuinfo._get_cpu_info_from_sysctl())
 			self.assertEqual(None, cpuinfo._get_cpu_info_from_kstat())
 			self.assertEqual(None, cpuinfo._get_cpu_info_from_dmesg())
+			self.assertEqual(None, cpuinfo._get_cpu_info_from_cat_var_run_dmesg_boot())
 			self.assertEqual(None, cpuinfo._get_cpu_info_from_sysinfo())
 			self.assertIsNotNone(cpuinfo._get_cpu_info_from_cpuid())
 			self.assertIsNotNone(cpuinfo.get_cpu_info())

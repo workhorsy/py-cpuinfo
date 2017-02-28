@@ -20,6 +20,10 @@ class MockDataSource(object):
 		return True
 
 	@staticmethod
+	def has_var_run_dmesg_boot():
+		return True
+
+	@staticmethod
 	def has_cpufreq_info():
 		return True
 
@@ -61,6 +65,11 @@ class MockDataSource(object):
 
 	@staticmethod
 	def dmesg_a():
+		return 0, ""
+
+
+	@staticmethod
+	def cat_var_run_dmesg_boot():
 		return 0, ""
 
 	@staticmethod
@@ -115,6 +124,8 @@ class TestParseErrors(unittest.TestCase):
 		self.assertEqual(None, cpuinfo._get_cpu_info_from_kstat())
 
 		self.assertEqual(None, cpuinfo._get_cpu_info_from_dmesg())
+
+		self.assertEqual(None, cpuinfo._get_cpu_info_from_cat_var_run_dmesg_boot())
 
 		self.assertEqual(None, cpuinfo._get_cpu_info_from_sysinfo())
 

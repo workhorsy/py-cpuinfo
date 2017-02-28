@@ -88,6 +88,9 @@ class TestLinux_RaspberryPiModelB(unittest.TestCase):
 		info = cpuinfo._get_cpu_info_from_dmesg()
 		self.assertIsNone(info)
 
+		info = cpuinfo._get_cpu_info_from_cat_var_run_dmesg_boot()
+		self.assertIsNone(info)
+
 		info = cpuinfo._get_cpu_info_from_sysinfo()
 		self.assertIsNone(info)
 
