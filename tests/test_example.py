@@ -20,6 +20,10 @@ class MockDataSource(object):
 		return False
 
 	@staticmethod
+	def has_var_run_dmesg_boot():
+		return False
+
+	@staticmethod
 	def has_cpufreq_info():
 		return False
 

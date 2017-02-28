@@ -12,6 +12,10 @@ class EmptyDataSource(object):
 		return False
 
 	@staticmethod
+	def has_var_run_dmesg_boot():
+		return False
+
+	@staticmethod
 	def has_cpufreq_info():
 		return False
 
@@ -81,6 +85,8 @@ def _actual_monkey_patch_data_source(cpuinfo, NewDataSource):
 		cpuinfo.DataSource.has_proc_cpuinfo = staticmethod(NewDataSource.has_proc_cpuinfo)
 	if hasattr(NewDataSource, 'has_dmesg'):
 		cpuinfo.DataSource.has_dmesg = staticmethod(NewDataSource.has_dmesg)
+	if hasattr(NewDataSource, 'has_var_run_dmesg_boot'):
+		cpuinfo.DataSource.has_var_run_dmesg_boot = staticmethod(NewDataSource.has_var_run_dmesg_boot)
 	if hasattr(NewDataSource, 'has_cpufreq_info'):
 		cpuinfo.DataSource.has_cpufreq_info = staticmethod(NewDataSource.has_cpufreq_info)
 	if hasattr(NewDataSource, 'has_sestatus'):
@@ -105,6 +111,8 @@ def _actual_monkey_patch_data_source(cpuinfo, NewDataSource):
 		cpuinfo.DataSource.sestatus_allow_execmem = staticmethod(NewDataSource.sestatus_allow_execmem)
 	if hasattr(NewDataSource, 'dmesg_a'):
 		cpuinfo.DataSource.dmesg_a = staticmethod(NewDataSource.dmesg_a)
+	if hasattr(NewDataSource, 'cat_var_run_dmesg_boot'):
+		cpuinfo.DataSource.cat_var_run_dmesg_boot = staticmethod(NewDataSource.cat_var_run_dmesg_boot)
 	if hasattr(NewDataSource, 'sysctl_machdep_cpu_hw_cpufrequency'):
 		cpuinfo.DataSource.sysctl_machdep_cpu_hw_cpufrequency = staticmethod(NewDataSource.sysctl_machdep_cpu_hw_cpufrequency)
 	if hasattr(NewDataSource, 'isainfo_vb'):
@@ -137,6 +145,7 @@ def backup_data_source(cpuinfo):
 
 	cpuinfo.BackupDataSource.has_proc_cpuinfo = staticmethod(cpuinfo.DataSource.has_proc_cpuinfo)
 	cpuinfo.BackupDataSource.has_dmesg = staticmethod(cpuinfo.DataSource.has_dmesg)
+	cpuinfo.BackupDataSource.has_var_run_dmesg_boot = staticmethod(cpuinfo.DataSource.has_var_run_dmesg_boot)
 	cpuinfo.BackupDataSource.has_cpufreq_info = staticmethod(cpuinfo.DataSource.has_cpufreq_info)
 	cpuinfo.BackupDataSource.has_sestatus = staticmethod(cpuinfo.DataSource.has_sestatus)
 	cpuinfo.BackupDataSource.has_sysctl = staticmethod(cpuinfo.DataSource.has_sysctl)
@@ -149,6 +158,7 @@ def backup_data_source(cpuinfo):
 	cpuinfo.BackupDataSource.sestatus_allow_execheap = staticmethod(cpuinfo.DataSource.sestatus_allow_execheap)
 	cpuinfo.BackupDataSource.sestatus_allow_execmem = staticmethod(cpuinfo.DataSource.sestatus_allow_execmem)
 	cpuinfo.BackupDataSource.dmesg_a = staticmethod(cpuinfo.DataSource.dmesg_a)
+	cpuinfo.BackupDataSource.cat_var_run_dmesg_boot = staticmethod(cpuinfo.DataSource.cat_var_run_dmesg_boot)
 	cpuinfo.BackupDataSource.sysctl_machdep_cpu_hw_cpufrequency = staticmethod(cpuinfo.DataSource.sysctl_machdep_cpu_hw_cpufrequency)
 	cpuinfo.BackupDataSource.isainfo_vb = staticmethod(cpuinfo.DataSource.isainfo_vb)
 	cpuinfo.BackupDataSource.kstat_m_cpu_info = staticmethod(cpuinfo.DataSource.kstat_m_cpu_info)
@@ -169,6 +179,7 @@ def restore_data_source(cpuinfo):
 
 	cpuinfo.DataSource.has_proc_cpuinfo = cpuinfo.BackupDataSource.has_proc_cpuinfo
 	cpuinfo.DataSource.has_dmesg = cpuinfo.BackupDataSource.has_dmesg
+	cpuinfo.DataSource.has_var_run_dmesg_boot = cpuinfo.BackupDataSource.has_var_run_dmesg_boot
 	cpuinfo.DataSource.has_cpufreq_info = cpuinfo.BackupDataSource.has_cpufreq_info
 	cpuinfo.DataSource.has_sestatus = cpuinfo.BackupDataSource.has_sestatus
 	cpuinfo.DataSource.has_sysctl = cpuinfo.BackupDataSource.has_sysctl
@@ -181,6 +192,7 @@ def restore_data_source(cpuinfo):
 	cpuinfo.DataSource.sestatus_allow_execheap = cpuinfo.BackupDataSource.sestatus_allow_execheap
 	cpuinfo.DataSource.sestatus_allow_execmem = cpuinfo.BackupDataSource.sestatus_allow_execmem
 	cpuinfo.DataSource.dmesg_a = cpuinfo.BackupDataSource.dmesg_a
+	cpuinfo.DataSource.cat_var_run_dmesg_boot = cpuinfo.BackupDataSource.cat_var_run_dmesg_boot
 	cpuinfo.DataSource.sysctl_machdep_cpu_hw_cpufrequency = cpuinfo.BackupDataSource.sysctl_machdep_cpu_hw_cpufrequency
 	cpuinfo.DataSource.isainfo_vb = cpuinfo.BackupDataSource.isainfo_vb
 	cpuinfo.DataSource.kstat_m_cpu_info = cpuinfo.BackupDataSource.kstat_m_cpu_info

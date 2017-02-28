@@ -63,6 +63,10 @@ class DataSource(object):
 		return len(program_paths('dmesg')) > 0
 
 	@staticmethod
+	def has_var_run_dmesg_boot():
+		return os.path.exists('/var/run/dmesg.boot')
+
+	@staticmethod
 	def has_cpufreq_info():
 		return len(program_paths('cpufreq-info')) > 0
 
@@ -109,6 +113,10 @@ class DataSource(object):
 	@staticmethod
 	def dmesg_a():
 		return run_and_get_stdout(['dmesg', '-a'])
+
+	@staticmethod
+	def cat_var_run_dmesg_boot():
+		return run_and_get_stdout(['cat', '/var/run/dmesg.boot'])
 
 	@staticmethod
 	def sysctl_machdep_cpu_hw_cpufrequency():
@@ -1184,6 +1192,105 @@ def _get_cpu_info_from_dmesg():
 	except:
 		return None
 
+def _get_cpu_info_from_cat_var_run_dmesg_boot():
+	'''
+	Returns the CPU info gathered from /var/run/dmesg.boot.
+	Returns None if dmesg is not found or does not have the desired info.
+	'''
+	try:
+		# Just return None if there is no /var/run/dmesg.boot
+		if not DataSource.has_var_run_dmesg_boot():
+			return None
+
+		# If dmesg.boot fails return None
+		returncode, output = DataSource.cat_var_run_dmesg_boot()
+		if output == None or returncode != 0:
+			return None
+
+		# Processor Brand
+		long_brand = output.split('CPU: ')[1].split('\n')[0]
+		processor_brand = long_brand.rsplit('(', 1)[0]
+		processor_brand = processor_brand.strip()
+
+		# Hz
+		scale = 0
+		hz_actual = long_brand.rsplit('(', 1)[1].split(' ')[0].lower()
+		if hz_actual.endswith('mhz'):
+			scale = 6
+		elif hz_actual.endswith('ghz'):
+			scale = 9
+		hz_actual = hz_actual.split('-')[0]
+		hz_actual = to_hz_string(hz_actual)
+
+		# Various fields
+		fields = output.split('CPU: ')[1].split('\n')[1].split('\n')[0].strip().split(' ')
+		vendor_id = None
+		stepping = None
+		model = None
+		family = None
+		for field in fields:
+			name, value = field.split('=')
+			name = name.strip().lower()
+			value = value.strip()
+			if name == 'origin':
+				vendor_id = value.strip('"')
+			elif name == 'stepping':
+				stepping = int(value)
+			elif name == 'model':
+				model = int(value, 16)
+			elif name == 'family':
+				family = int(value, 16)
+
+		# Flags
+		flag_lines = []
+		for category in ['  Features=', '  Features2=', '  AMD Features=', '  AMD Features2=']:
+			if category in output:
+				flag_lines.append(output.split(category)[1].split('\n')[0])
+
+		flags = []
+		for line in flag_lines:
+			line = line.split('<')[1].split('>')[0].lower()
+			for flag in line.split(','):
+				flags.append(flag)
+		flags.sort()
+
+		# Convert from GHz/MHz string to Hz
+		scale, hz_advertised = _get_hz_string_from_brand(processor_brand)
+
+		# Get the CPU arch and bits
+		arch, bits = parse_arch(DataSource.raw_arch_string)
+
+		return {
+		'vendor_id' : vendor_id,
+		'hardware' : '',
+		'brand' : processor_brand,
+
+		'hz_advertised' : to_friendly_hz(hz_advertised, scale),
+		'hz_actual' : to_friendly_hz(hz_actual, 6),
+		'hz_advertised_raw' : to_raw_hz(hz_advertised, scale),
+		'hz_actual_raw' : to_raw_hz(hz_actual, 6),
+
+		'arch' : arch,
+		'bits' : bits,
+		'count' : DataSource.cpu_count,
+		'raw_arch_string' : DataSource.raw_arch_string,
+
+		'l2_cache_size' : 0,
+		'l2_cache_line_size' : 0,
+		'l2_cache_associativity' : 0,
+
+		'stepping' : stepping,
+		'model' : model,
+		'family' : family,
+		'processor_type' : 0,
+		'extended_model' : 0,
+		'extended_family' : 0,
+		'flags' : flags
+		}
+	except:
+		return None
+
+
 def _get_cpu_info_from_sysctl():
 	'''
 	Returns the CPU info gathered from sysctl.
@@ -1528,6 +1635,10 @@ def get_cpu_info():
 	# Try dmesg
 	if not info:
 		info = _get_cpu_info_from_dmesg()
+
+	# Try /var/run/dmesg.boot
+	if not info:
+		info = _get_cpu_info_from_cat_var_run_dmesg_boot()
 
 	# Try sysinfo
 	if not info:
