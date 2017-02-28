@@ -60,25 +60,25 @@ class TestDebian(unittest.TestCase):
 		helpers.monkey_patch_data_source(cpuinfo, DataSource)
 
 		info = cpuinfo.get_cpu_info_from_registry()
-		self.assertEqual(None, info)
+		self.assertIsNone(info)
 
 		info = cpuinfo.get_cpu_info_from_proc_cpuinfo()
-		self.assertNotEqual(None, info)
+		self.assertIsNotNone(info)
 
 		info = cpuinfo.get_cpu_info_from_sysctl()
-		self.assertEqual(None, info)
+		self.assertIsNone(info)
 
 		info = cpuinfo.get_cpu_info_from_kstat()
-		self.assertEqual(None, info)
+		self.assertIsNone(info)
 
 		info = cpuinfo.get_cpu_info_from_dmesg()
-		self.assertEqual(None, info)
+		self.assertIsNone(info)
 
 		info = cpuinfo.get_cpu_info_from_sysinfo()
-		self.assertEqual(None, info)
+		self.assertIsNone(info)
 
 		info = cpuinfo.get_cpu_info_from_cpuid()
-		self.assertNotEqual(None, info)
+		self.assertIsNotNone(info)
 
 	def test_proc_cpuinfo(self):
 		helpers.monkey_patch_data_source(cpuinfo, DataSource)

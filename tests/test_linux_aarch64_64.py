@@ -110,25 +110,25 @@ class TestLinuxAarch64(unittest.TestCase):
 		helpers.monkey_patch_data_source(cpuinfo, DataSource)
 
 		info = cpuinfo.get_cpu_info_from_registry()
-		self.assertEqual(None, info)
+		self.assertIsNone(info)
 
 		info = cpuinfo.get_cpu_info_from_proc_cpuinfo()
-		self.assertEqual(None, info)
+		self.assertIsNone(info)
 
 		info = cpuinfo.get_cpu_info_from_sysctl()
-		self.assertEqual(None, info)
+		self.assertIsNone(info)
 
 		info = cpuinfo.get_cpu_info_from_kstat()
-		self.assertEqual(None, info)
+		self.assertIsNone(info)
 
 		info = cpuinfo.get_cpu_info_from_dmesg()
-		self.assertEqual(None, info)
+		self.assertIsNone(info)
 
 		info = cpuinfo.get_cpu_info_from_sysinfo()
-		self.assertEqual(None, info)
+		self.assertIsNone(info)
 
 		info = cpuinfo.get_cpu_info_from_cpuid()
-		self.assertEqual(None, info)
+		self.assertIsNone(info)
 
 	'''
 	This should return None on ARM, because /proc/cpuinfo returns
@@ -139,7 +139,7 @@ class TestLinuxAarch64(unittest.TestCase):
 
 		info = cpuinfo.get_cpu_info_from_proc_cpuinfo()
 
-		self.assertEqual(None, info)
+		self.assertIsNone(info)
 
 	def test_get_cpu_info(self):
 		helpers.monkey_patch_data_source(cpuinfo, DataSource)
