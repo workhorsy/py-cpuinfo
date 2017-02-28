@@ -10,6 +10,7 @@ class DataSource(object):
 	cpu_count = 4
 	is_windows = True
 	raw_arch_string = 'AMD64'
+	can_cpuid = False
 
 	@staticmethod
 	def winreg_processor_brand():
@@ -61,7 +62,7 @@ class TestWindows8(unittest.TestCase):
 		self.assertIsNone(info)
 
 		info = cpuinfo._get_cpu_info_from_cpuid()
-		self.assertIsNotNone(info)
+		self.assertIsNone(info)
 
 	def test_all(self):
 		helpers.monkey_patch_data_source(cpuinfo, DataSource)

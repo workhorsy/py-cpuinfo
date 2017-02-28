@@ -52,6 +52,7 @@ class DataSource(object):
 	cpu_count = multiprocessing.cpu_count()
 	is_windows = platform.system().lower() == 'windows'
 	raw_arch_string = platform.machine()
+	can_cpuid = True
 
 	@staticmethod
 	def has_proc_cpuinfo():
@@ -928,6 +929,10 @@ def _get_cpu_info_from_cpuid():
 	Returns None on non X86 cpus.
 	Returns None if SELinux is in enforcing mode.
 	'''
+
+	# Return none if can't cpuid
+	if not DataSource.can_cpuid:
+		return None
 
 	# Get the CPU arch and bits
 	arch, bits = parse_arch(DataSource.raw_arch_string)

@@ -10,6 +10,7 @@ class DataSource(object):
 	cpu_count = 4
 	is_windows = False
 	raw_arch_string = 'i86pc'
+	can_cpuid = False
 
 	@staticmethod
 	def has_isainfo():
@@ -105,7 +106,7 @@ class TestSolaris(unittest.TestCase):
 		self.assertIsNone(info)
 
 		info = cpuinfo._get_cpu_info_from_cpuid()
-		self.assertIsNotNone(info)
+		self.assertIsNone(info)
 
 	def test_all(self):
 		helpers.monkey_patch_data_source(cpuinfo, DataSource)

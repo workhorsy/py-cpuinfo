@@ -74,6 +74,8 @@ def _actual_monkey_patch_data_source(cpuinfo, DataSource):
 		cpuinfo.DataSource.is_windows = DataSource.is_windows
 	if hasattr(DataSource, 'raw_arch_string'):
 		cpuinfo.DataSource.raw_arch_string = DataSource.raw_arch_string
+	if hasattr(DataSource, 'can_cpuid'):
+		cpuinfo.DataSource.can_cpuid = DataSource.can_cpuid
 
 	if hasattr(DataSource, 'has_proc_cpuinfo'):
 		cpuinfo.DataSource.has_proc_cpuinfo = staticmethod(DataSource.has_proc_cpuinfo)
