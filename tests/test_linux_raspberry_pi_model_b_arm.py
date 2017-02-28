@@ -63,7 +63,7 @@ CPU min MHz:           700.0000
 '''
 		return returncode, output
 
-class TestRaspberryPiModelB(unittest.TestCase):
+class TestLinux_RaspberryPiModelB(unittest.TestCase):
 	def setUp(self):
 		helpers.restore_data_source(cpuinfo)
 		helpers.monkey_patch_data_source(cpuinfo, MockDataSource)

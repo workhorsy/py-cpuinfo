@@ -35,7 +35,7 @@ class MockDataSource(object):
 
 
 
-class TestWindows10(unittest.TestCase):
+class TestWindows_10_X86_64(unittest.TestCase):
 	def setUp(self):
 		helpers.restore_data_source(cpuinfo)
 		helpers.monkey_patch_data_source(cpuinfo, MockDataSource)
