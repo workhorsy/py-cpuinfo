@@ -36,8 +36,8 @@ class DataSource(object):
 
 class TestWindows8(unittest.TestCase):
 	'''
-	Make sure calls that should not return something,
-	and calls that should not work return None.
+	Make sure calls that should work return something,
+	and calls that should NOT work return None.
 	'''
 	def test_returns(self):
 		helpers.monkey_patch_data_source(cpuinfo, DataSource)

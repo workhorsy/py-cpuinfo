@@ -64,8 +64,8 @@ CPU min MHz:           700.0000
 
 class TestRaspberryPiModelB(unittest.TestCase):
 	'''
-	Make sure calls that should not return something,
-	and calls that should not work return None.
+	Make sure calls that should work return something,
+	and calls that should NOT work return None.
 	'''
 	def test_returns(self):
 		helpers.monkey_patch_data_source(cpuinfo, DataSource)

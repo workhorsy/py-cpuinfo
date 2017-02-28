@@ -6,10 +6,10 @@ import helpers
 
 
 class TestHasResult(object):
+	'''
+	Fails if the result is None or an empty Dict
+	'''
 	def assertHasResult(self, result):
-		'''
-		Fails if the result is None or an empty Dict
-		'''
 		if not result:
 			raise AssertionError('Expected result, but there was none.')
 
