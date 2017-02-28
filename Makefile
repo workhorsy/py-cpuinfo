@@ -1,5 +1,5 @@
 
-VERSION = 0.2.4
+VERSION = 0.2.6
 
 all:
 	@echo build: Builds the python source dist package
@@ -24,6 +24,10 @@ build: clean
 	mv dist/py-cpuinfo-$(VERSION).zip py-cpuinfo-$(VERSION).zip
 	rm -f -rf py_cpuinfo.egg-info
 	rm -f -rf dist
+
+upload: clean
+	python setup.py sdist --formats=gztar,zip
+	twine upload dist/py-cpuinfo-$(VERSION).tar.gz
 
 install: remove
 	tar xzf py-cpuinfo-$(VERSION).tar.gz

@@ -1,3 +1,9 @@
+12/16/2015 Release 0.2.6
+	* New release because pypi does not allow deleting broken uploads
+
+12/16/2015 Release 0.2.5
+	* New release because pypi does not allow deleting broken uploads
+
 02/27/2017 Release 0.2.4
 	* Fixed Bug #35: Add basic documentation
 	* Fixed Bug #36: Make test suite test real functions too
