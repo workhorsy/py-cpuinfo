@@ -1223,7 +1223,7 @@ def _get_cpu_info_from_cat_var_run_dmesg_boot():
 		hz_actual = to_hz_string(hz_actual)
 
 		# Various fields
-		fields = output.split('CPU: ')[1].split('\n')[1].split('\n')[0].strip().split(' ')
+		fields = output.split('CPU: ')[1].split('\n')[1].split('\n')[0].strip().split('  ')
 		vendor_id = None
 		stepping = None
 		model = None

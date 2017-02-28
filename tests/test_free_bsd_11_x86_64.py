@@ -21,12 +21,33 @@ class MockDataSource(object):
 		return True
 
 	@staticmethod
+	def dmesg_a():
+		retcode = 0
+		output = '''Copyright (c) 1992-2014 The FreeBSD Project.
+Copyright (c) 1979, 1980, 1983, 1986, 1988, 1989, 1991, 1992, 1993, 1994
+    The Regents of the University of California. All rights reserved.
+FreeBSD is a registered trademark of The FreeBSD Foundation.
+FreeBSD 10.0-RELEASE-p17 #0: Tue Sep 16 14:33:46 UTC 2014
+    root@amd64-builder.pcbsd.org:/usr/obj/usr/src/sys/GENERIC amd64
+FreeBSD clang version 3.3 (tags/RELEASE_33/final 183502) 20130610
+VT(vga): text 80x25
+CPU: Intel(R) Pentium(R) CPU G640 @ 2.80GHz (2793.73-MHz K8-class CPU)
+  Origin="GenuineIntel"  Id=0x206a7  Family=0x6  Model=02a  Stepping=7
+  Features=0x1783fbff<FPU,VME,DE,PSE,TSC,MSR,PAE,MCE,CX8,APIC,SEP,MTRR,PGE,MCA,CMOV,PAT,PSE36,MMX,FXSR,SSE,SSE2,HTT>
+  Features2=0xc982203<SSE3,PCLMULQDQ,SSSE3,CX16,SSE4.1,SSE4.2,POPCNT,XSAVE,OSXSAVE>
+  AMD Features=0x28100800<SYSCALL,NX,RDTSCP,LM>
+  AMD Features2=0x1<LAHF>
+  TSC: P-state invariant
+ '''
+		return retcode, output
+
+	@staticmethod
 	def cat_var_run_dmesg_boot():
 		retcode = 0
 		output = '''
 VT(vga): text 80x25
 CPU: Intel(R) Pentium(R) CPU G640 @ 2.80GHz (2793.73-MHz K8-class CPU)
-  Origin="GenuineIntel" Id=0x206a7 Family=0x6 Model=02a Stepping=7
+  Origin="GenuineIntel"  Id=0x206a7  Family=0x6  Model=02a  Stepping=7
   Features=0x1783fbff<FPU,VME,DE,PSE,TSC,MSR,PAE,MCE,CX8,APIC,SEP,MTRR,PGE,MCA,CMOV,PAT,PSE36,MMX,FXSR,SSE,SSE2,HTT>
   Features2=0xc982203<SSE3,PCLMULQDQ,SSSE3,CX16,SSE4.1,SSE4.2,POPCNT,XSAVE,OSXSAVE>
   AMD Features=0x28100800<SYSCALL,NX,RDTSCP,LM>
@@ -60,7 +81,7 @@ class TestFreeBSD_11_X86_64(unittest.TestCase):
 		self.assertIsNone(info)
 
 		info = cpuinfo._get_cpu_info_from_dmesg()
-		self.assertIsNone(info)
+		self.assertIsNotNone(info)
 
 		info = cpuinfo._get_cpu_info_from_cat_var_run_dmesg_boot()
 		self.assertIsNotNone(info)
@@ -71,7 +92,43 @@ class TestFreeBSD_11_X86_64(unittest.TestCase):
 		info = cpuinfo._get_cpu_info_from_cpuid()
 		self.assertIsNone(info)
 
-	def test_all(self):
+	def test_get_cpu_info_from_dmesg(self):
+		info = cpuinfo._get_cpu_info_from_dmesg()
+
+		self.assertEqual('GenuineIntel', info['vendor_id'])
+		self.assertEqual('', info['hardware'])
+		self.assertEqual('Intel(R) Pentium(R) CPU G640 @ 2.80GHz', info['brand'])
+		self.assertEqual('2.8000 GHz', info['hz_advertised'])
+		self.assertEqual('2.7937 GHz', info['hz_actual'])
+		self.assertEqual((2800000000, 0), info['hz_advertised_raw'])
+		self.assertEqual((2793730000, 0), info['hz_actual_raw'])
+		self.assertEqual('X86_64', info['arch'])
+		self.assertEqual(64, info['bits'])
+		self.assertEqual(1, info['count'])
+
+		self.assertEqual('amd64', info['raw_arch_string'])
+
+		self.assertEqual(0, info['l2_cache_size'])
+		self.assertEqual(0, info['l2_cache_line_size'])
+		self.assertEqual(0, info['l2_cache_associativity'])
+
+		self.assertEqual(7, info['stepping'])
+		self.assertEqual(42, info['model'])
+		self.assertEqual(6, info['family'])
+		self.assertEqual(0, info['processor_type'])
+		self.assertEqual(0, info['extended_model'])
+		self.assertEqual(0, info['extended_family'])
+		self.assertEqual(
+			['apic', 'cmov', 'cx16', 'cx8', 'de', 'fpu', 'fxsr', 'htt',
+			'lahf', 'lm', 'mca', 'mce', 'mmx', 'msr', 'mtrr', 'nx',
+			'osxsave', 'pae', 'pat', 'pclmulqdq', 'pge', 'popcnt', 'pse',
+			'pse36', 'rdtscp', 'sep', 'sse', 'sse2', 'sse3', 'sse4.1',
+			'sse4.2', 'ssse3', 'syscall', 'tsc', 'vme', 'xsave']
+			,
+			info['flags']
+		)
+
+	def test_get_cpu_info_from_cat_var_run_dmesg_boot(self):
 		info = cpuinfo._get_cpu_info_from_cat_var_run_dmesg_boot()
 
 		self.assertEqual('GenuineIntel', info['vendor_id'])
