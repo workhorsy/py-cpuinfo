@@ -16,34 +16,6 @@ class DataSource(object):
 		return True
 
 	@staticmethod
-	def has_dmesg():
-		return False
-
-	@staticmethod
-	def has_cpufreq_info():
-		return False
-
-	@staticmethod
-	def has_sestatus():
-		return False
-
-	@staticmethod
-	def has_sysctl():
-		return False
-
-	@staticmethod
-	def has_isainfo():
-		return False
-
-	@staticmethod
-	def has_kstat():
-		return False
-
-	@staticmethod
-	def has_sysinfo():
-		return False
-
-	@staticmethod
 	def has_lscpu():
 		return True
 

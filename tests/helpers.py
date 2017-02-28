@@ -2,6 +2,38 @@
 
 import platform
 
+class EmptyDataSource(object):
+	@staticmethod
+	def has_proc_cpuinfo():
+		return False
+
+	@staticmethod
+	def has_dmesg():
+		return False
+
+	@staticmethod
+	def has_cpufreq_info():
+		return False
+
+	@staticmethod
+	def has_sestatus():
+		return False
+
+	@staticmethod
+	def has_sysctl():
+		return False
+
+	@staticmethod
+	def has_isainfo():
+		return False
+
+	@staticmethod
+	def has_kstat():
+		return False
+
+	@staticmethod
+	def has_sysinfo():
+		return False
 
 def get_os_type():
 	os_type = 'Unknown'
@@ -27,6 +59,13 @@ def get_os_type():
 
 
 def monkey_patch_data_source(cpuinfo, DataSource):
+	# Replace all methods with ones that return false
+	_actual_monkey_patch_data_source(cpuinfo, EmptyDataSource)
+
+	# Copy any methods that are the same over
+	_actual_monkey_patch_data_source(cpuinfo, DataSource)
+
+def _actual_monkey_patch_data_source(cpuinfo, DataSource):
 	if hasattr(DataSource, 'bits'):
 		cpuinfo.DataSource.bits = DataSource.bits
 	if hasattr(DataSource, 'cpu_count'):
