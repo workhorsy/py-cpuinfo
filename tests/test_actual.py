@@ -86,5 +86,3 @@ class TestActual(unittest.TestCase, TestHasResult):
 			self.assertHasResult(cpuinfo.get_cpu_info())
 		else:
 			raise AssertionError('Unexpected OS type "{0}".'.format(os_type))
-
-		self.assertEqual(True, True)
