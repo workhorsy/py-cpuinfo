@@ -103,11 +103,12 @@ These approaches are used for getting info:
 2. /proc/cpuinfo (Linux)
 3. sysctl (OS X)
 4. dmesg (Unix/Linux)
-5. isainfo and kstat (Solaris)
-6. cpufreq-info (BeagleBone)
-7. lscpu (Unix/Linux)
-8. sysinfo (Haiku)
-9. Querying the CPUID register (Intel X86 CPUs)
+5. /var/run/dmesg.boot (BSD/Unix)
+6. isainfo and kstat (Solaris)
+7. cpufreq-info (BeagleBone)
+8. lscpu (Unix/Linux)
+9. sysinfo (Haiku)
+10. Querying the CPUID register (Intel X86 CPUs)
 
 Run as a script
 ---------------
