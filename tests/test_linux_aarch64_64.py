@@ -7,7 +7,7 @@ import helpers
 
 class DataSource(object):
 	bits = '64bit'
-	cpu_count = 1
+	cpu_count = 6
 	is_windows = False
 	raw_arch_string = 'aarch64'
 
@@ -131,19 +131,40 @@ class TestLinuxAarch64(unittest.TestCase):
 		self.assertIsNone(info)
 
 	'''
-	This should return None on ARM, because /proc/cpuinfo returns
-	useless info on ARM. It only returns good info on X86.
+	FIXME: This fails because it does not have a way
+	to get CPU brand string and Hz.
 	'''
-	def test_get_cpu_info_from_proc_cpuinfo(self):
-		helpers.monkey_patch_data_source(cpuinfo, DataSource)
-
-		info = cpuinfo._get_cpu_info_from_proc_cpuinfo()
-
-		self.assertIsNone(info)
-
-	def test_get_cpu_info(self):
+	def test_all(self):
 		helpers.monkey_patch_data_source(cpuinfo, DataSource)
 
 		info = cpuinfo.get_cpu_info()
 
-		#FIXME: Make sure a valid result is returned
+		self.assertEqual('', info['vendor_id'])
+		self.assertEqual('FIXME', info['hardware'])
+		self.assertEqual('FIXME', info['brand'])
+		self.assertEqual('FIXME', info['hz_advertised'])
+		self.assertEqual('FIXME', info['hz_actual'])
+		self.assertEqual((1000000000, 0), info['hz_advertised_raw'])
+		self.assertEqual((1000000000, 0), info['hz_actual_raw'])
+		self.assertEqual('ARM_8', info['arch'])
+		self.assertEqual(64, info['bits'])
+		self.assertEqual(6, info['count'])
+
+		self.assertEqual('aarch64', info['raw_arch_string'])
+
+		self.assertEqual('', info['l2_cache_size'])
+		self.assertEqual(0, info['l2_cache_line_size'])
+		self.assertEqual(0, info['l2_cache_associativity'])
+
+		self.assertEqual(0, info['stepping'])
+		self.assertEqual(0, info['model'])
+		self.assertEqual(0, info['family'])
+		self.assertEqual(0, info['processor_type'])
+		self.assertEqual(0, info['extended_model'])
+		self.assertEqual(0, info['extended_family'])
+		self.assertEqual(
+			['aes', 'asimd', 'atomics', 'crc32', 'evtstrm',
+			'fp', 'pmull', 'sha1', 'sha2']
+			,
+			info['flags']
+		)
