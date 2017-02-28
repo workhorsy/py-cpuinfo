@@ -106,7 +106,7 @@ class TestLinuxAarch64(unittest.TestCase):
 	Make sure calls that should not return something,
 	and calls that should not work return None.
 	'''
-	def test_all(self):
+	def test_returns(self):
 		helpers.monkey_patch_data_source(cpuinfo, DataSource)
 
 		info = cpuinfo.get_cpu_info_from_registry()

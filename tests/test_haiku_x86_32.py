@@ -51,6 +51,34 @@ CPU #0: "Intel(R) Core(TM) i7 CPU         870  @ 2.93GHz"
 
 
 class TestHaiku(unittest.TestCase):
+	'''
+	Make sure calls that should not return something,
+	and calls that should not work return None.
+	'''
+	def test_returns(self):
+		helpers.monkey_patch_data_source(cpuinfo, DataSource)
+
+		info = cpuinfo.get_cpu_info_from_registry()
+		self.assertEqual(None, info)
+
+		info = cpuinfo.get_cpu_info_from_proc_cpuinfo()
+		self.assertEqual(None, info)
+
+		info = cpuinfo.get_cpu_info_from_sysctl()
+		self.assertEqual(None, info)
+
+		info = cpuinfo.get_cpu_info_from_kstat()
+		self.assertEqual(None, info)
+
+		info = cpuinfo.get_cpu_info_from_dmesg()
+		self.assertEqual(None, info)
+
+		info = cpuinfo.get_cpu_info_from_sysinfo()
+		self.assertNotEqual(None, info)
+
+		info = cpuinfo.get_cpu_info_from_cpuid()
+		self.assertNotEqual(None, info)
+
 	def test_all(self):
 		helpers.monkey_patch_data_source(cpuinfo, DataSource)
 
