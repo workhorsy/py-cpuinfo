@@ -20,8 +20,8 @@ class TestInvalidCPU(unittest.TestCase):
 	def test_arch_parse_unknown(self):
 		# If the arch is unknown, the result should be null
 		arch, bits = cpuinfo.parse_arch(DataSource.raw_arch_string)
-		self.assertEqual(None, arch)
-		self.assertEqual(None, bits)
+		self.assertIsNone(arch)
+		self.assertIsNone(bits)
 
 	def test_check_arch_exception(self):
 		# If the arch is unknown, it should raise and exception

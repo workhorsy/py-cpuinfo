@@ -115,20 +115,20 @@ class TestParseErrors(unittest.TestCase):
 		helpers.monkey_patch_data_source(cpuinfo, MockDataSource)
 
 	def test_all(self):
-		self.assertEqual(None, cpuinfo._get_cpu_info_from_registry())
+		self.assertIsNone(cpuinfo._get_cpu_info_from_registry())
 
-		self.assertEqual(None, cpuinfo._get_cpu_info_from_proc_cpuinfo())
+		self.assertIsNone(cpuinfo._get_cpu_info_from_proc_cpuinfo())
 
-		self.assertEqual(None, cpuinfo._get_cpu_info_from_sysctl())
+		self.assertIsNone(cpuinfo._get_cpu_info_from_sysctl())
 
-		self.assertEqual(None, cpuinfo._get_cpu_info_from_kstat())
+		self.assertIsNone(cpuinfo._get_cpu_info_from_kstat())
 
-		self.assertEqual(None, cpuinfo._get_cpu_info_from_dmesg())
+		self.assertIsNone(cpuinfo._get_cpu_info_from_dmesg())
 
-		self.assertEqual(None, cpuinfo._get_cpu_info_from_cat_var_run_dmesg_boot())
+		self.assertIsNone(cpuinfo._get_cpu_info_from_cat_var_run_dmesg_boot())
 
-		self.assertEqual(None, cpuinfo._get_cpu_info_from_sysinfo())
+		self.assertIsNone(cpuinfo._get_cpu_info_from_sysinfo())
 
-		#self.assertEqual(None, cpuinfo._get_cpu_info_from_cpuid())
+		#self.assertIsNone(cpuinfo._get_cpu_info_from_cpuid())
 
-		#self.assertEqual(None, cpuinfo.get_cpu_info())
+		#self.assertIsNone(cpuinfo.get_cpu_info())
