@@ -18,6 +18,7 @@ from test_osx_13_x86_64 import TestOSX
 from test_beagle_bone_arm import TestBeagleBone
 from test_raspberry_pi_model_b_arm import TestRaspberryPiModelB
 from test_windows_8_x86_64 import TestWindows8
+from test_windows_10_x86_64 import TestWindows10
 from test_solaris_11_x86_32 import TestSolaris
 from test_haiku_x86_32 import TestHaiku
 from test_linux_aarch64_64 import TestLinuxAarch64
@@ -35,6 +36,7 @@ if __name__ == '__main__':
 	suite.addTest(unittest.makeSuite(TestBeagleBone))
 	suite.addTest(unittest.makeSuite(TestRaspberryPiModelB))
 	suite.addTest(unittest.makeSuite(TestWindows8))
+	suite.addTest(unittest.makeSuite(TestWindows10))
 	suite.addTest(unittest.makeSuite(TestSolaris))
 	suite.addTest(unittest.makeSuite(TestHaiku))
 	suite.addTest(unittest.makeSuite(TestLinuxAarch64))
