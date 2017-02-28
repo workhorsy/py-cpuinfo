@@ -34,11 +34,11 @@ CPU Support
 API
 -----
 ~~~python
-get_cpu_info()
 '''
 Returns the CPU info by using the best source of information for your OS.
 Returns None if nothing is found.
 '''
+get_cpu_info()
 ~~~
 
 
