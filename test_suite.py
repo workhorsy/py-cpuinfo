@@ -20,6 +20,7 @@ from test_raspberry_pi_model_b_arm import TestRaspberryPiModelB
 from test_windows_8_x86_64 import TestWindows8
 from test_solaris_11_x86_32 import TestSolaris
 from test_haiku_x86_32 import TestHaiku
+from test_linux_aarch64_64 import TestLinuxAarch64
 from test_actual import TestActual
 
 if __name__ == '__main__':
@@ -36,6 +37,7 @@ if __name__ == '__main__':
 	suite.addTest(unittest.makeSuite(TestWindows8))
 	suite.addTest(unittest.makeSuite(TestSolaris))
 	suite.addTest(unittest.makeSuite(TestHaiku))
+	suite.addTest(unittest.makeSuite(TestLinuxAarch64))
 
 	runner = unittest.TextTestRunner()
 	runner.run(suite)
