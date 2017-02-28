@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: UTF-8 -*-
 
-# Copyright (c) 2014-2015, Matthew Brennan Jones <matthew.brennan.jones@gmail.com>
+# Copyright (c) 2014-2017, Matthew Brennan Jones <matthew.brennan.jones@gmail.com>
 # Py-cpuinfo is a Python module to show the cpuinfo of a processor
 # It uses a MIT style license
 # It is hosted at: https://github.com/workhorsy/py-cpuinfo
@@ -110,6 +110,10 @@ if program_paths('sysctl'):
 	returncode, output = run_and_get_stdout(['sysctl', 'machdep.cpu', 'hw.cpufrequency'])
 	print_output('sysctl machdep.cpu hw.cpufrequency', output)
 
+if program_paths('sysctl'):
+	returncode, output = run_and_get_stdout(['sysctl', 'hw.model', 'hw.machine'])
+	print_output('sysctl hw.model hw.machine', output)
+
 if program_paths('isainfo'):
 	returncode, output = run_and_get_stdout(['isainfo', '-vb'])
 	print_output('isainfo -vb', output)
@@ -129,6 +133,12 @@ if program_paths('dmesg'):
 	if len(output) > 20480:
 		output = output[0 : 20480]
 	print_output('dmesg', output)
+
+if os.path.exists('/var/run/dmesg.boot'):
+	returncode, output = run_and_get_stdout(['cat', '/var/run/dmesg.boot'])
+	if len(output) > 20480:
+		output = output[0 : 20480]
+	print_output('/var/run/dmesg.boot', output)
 
 if program_paths('sysinfo'):
 	returncode, output = run_and_get_stdout(['sysinfo', '-cpu'])

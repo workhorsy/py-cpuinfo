@@ -18,6 +18,7 @@ from test_linux_gentoo_2_2_x86_64 import TestLinuxGentoo_2_2_X86_64
 from test_linux_beagle_bone_arm import TestLinux_BeagleBone
 from test_linux_raspberry_pi_model_b_arm import TestLinux_RaspberryPiModelB
 from test_pcbsd_10_x86_64 import TestPCBSD
+from test_free_bsd_x86_64 import TestFreeBSD_X86_64
 from test_osx_13_x86_64 import TestOSX
 from test_solaris_11_x86_32 import TestSolaris
 from test_haiku_x86_32 import TestHaiku
@@ -40,6 +41,7 @@ if __name__ == '__main__':
 	suite.addTest(unittest.makeSuite(TestLinuxGentoo_2_2_X86_64))
 	suite.addTest(unittest.makeSuite(TestLinux_BeagleBone))
 	suite.addTest(unittest.makeSuite(TestLinux_RaspberryPiModelB))
+	suite.addTest(unittest.makeSuite(TestFreeBSD_X86_64))
 	suite.addTest(unittest.makeSuite(TestPCBSD))
 	suite.addTest(unittest.makeSuite(TestOSX))
 	suite.addTest(unittest.makeSuite(TestSolaris))
