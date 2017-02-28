@@ -5,11 +5,12 @@ from cpuinfo import *
 import helpers
 
 
-class DataSource(object):
+class MockDataSource(object):
 	bits = '64bit'
 	cpu_count = 1
 	is_windows = False
 	raw_arch_string = 'x86_64'
+	can_cpuid = False
 
 	@staticmethod
 	def has_proc_cpuinfo():
@@ -51,14 +52,16 @@ power management:
 
 
 
-class TestDebian(unittest.TestCase):
+class TestLinuxDebian_8_X86_64(unittest.TestCase):
+	def setUp(self):
+		helpers.restore_data_source(cpuinfo)
+		helpers.monkey_patch_data_source(cpuinfo, MockDataSource)
+
 	'''
 	Make sure calls that should work return something,
 	and calls that should NOT work return None.
 	'''
 	def test_returns(self):
-		helpers.monkey_patch_data_source(cpuinfo, DataSource)
-
 		info = cpuinfo._get_cpu_info_from_registry()
 		self.assertIsNone(info)
 
@@ -78,11 +81,9 @@ class TestDebian(unittest.TestCase):
 		self.assertIsNone(info)
 
 		info = cpuinfo._get_cpu_info_from_cpuid()
-		self.assertIsNotNone(info)
+		self.assertIsNone(info)
 
 	def test_proc_cpuinfo(self):
-		helpers.monkey_patch_data_source(cpuinfo, DataSource)
-
 		info = cpuinfo._get_cpu_info_from_proc_cpuinfo()
 
 		self.assertEqual('GenuineIntel', info['vendor_id'])

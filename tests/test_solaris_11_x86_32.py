@@ -5,7 +5,7 @@ from cpuinfo import *
 import helpers
 
 
-class DataSource(object):
+class MockDataSource(object):
 	bits = '32bit'
 	cpu_count = 4
 	is_windows = False
@@ -80,13 +80,15 @@ name:   cpu_info0                       class:    misc
 
 
 class TestSolaris(unittest.TestCase):
+	def setUp(self):
+		helpers.restore_data_source(cpuinfo)
+		helpers.monkey_patch_data_source(cpuinfo, MockDataSource)
+
 	'''
 	Make sure calls that should work return something,
 	and calls that should NOT work return None.
 	'''
 	def test_returns(self):
-		helpers.monkey_patch_data_source(cpuinfo, DataSource)
-
 		info = cpuinfo._get_cpu_info_from_registry()
 		self.assertIsNone(info)
 
@@ -109,8 +111,6 @@ class TestSolaris(unittest.TestCase):
 		self.assertIsNone(info)
 
 	def test_all(self):
-		helpers.monkey_patch_data_source(cpuinfo, DataSource)
-
 		info = cpuinfo._get_cpu_info_from_kstat()
 
 		self.assertEqual('GenuineIntel', info['vendor_id'])

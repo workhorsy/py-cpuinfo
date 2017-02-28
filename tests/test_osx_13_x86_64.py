@@ -5,7 +5,7 @@ from cpuinfo import *
 import helpers
 
 
-class DataSource(object):
+class MockDataSource(object):
 	bits = '64bit'
 	cpu_count = 4
 	is_windows = False
@@ -64,13 +64,15 @@ hw.cpufrequency: 2890000000
 
 
 class TestOSX(unittest.TestCase):
+	def setUp(self):
+		helpers.restore_data_source(cpuinfo)
+		helpers.monkey_patch_data_source(cpuinfo, MockDataSource)
+
 	'''
 	Make sure calls that should work return something,
 	and calls that should NOT work return None.
 	'''
 	def test_returns(self):
-		helpers.monkey_patch_data_source(cpuinfo, DataSource)
-
 		info = cpuinfo._get_cpu_info_from_registry()
 		self.assertIsNone(info)
 
@@ -93,8 +95,6 @@ class TestOSX(unittest.TestCase):
 		self.assertIsNone(info)
 
 	def test_all(self):
-		helpers.monkey_patch_data_source(cpuinfo, DataSource)
-
 		info = cpuinfo._get_cpu_info_from_sysctl()
 
 		self.assertEqual('GenuineIntel', info['vendor_id'])

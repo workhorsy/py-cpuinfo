@@ -5,15 +5,11 @@ from cpuinfo import *
 import helpers
 
 
-class TestHasResult(object):
-	'''
-	Fails if the result is None or an empty Dict
-	'''
-	def assertHasResult(self, result):
-		if not result:
-			raise AssertionError('Expected result, but there was none.')
 
-class TestActual(unittest.TestCase, TestHasResult):
+class TestActual(unittest.TestCase):
+	def setUp(self):
+		helpers.restore_data_source(cpuinfo)
+
 	def test_all(self):
 		os_type = helpers.get_os_type()
 
@@ -23,66 +19,66 @@ class TestActual(unittest.TestCase, TestHasResult):
 			self.assertEqual(None, cpuinfo._get_cpu_info_from_sysctl())
 			self.assertEqual(None, cpuinfo._get_cpu_info_from_kstat())
 			self.assertEqual(None, cpuinfo._get_cpu_info_from_dmesg())
-			self.assertHasResult(cpuinfo._get_cpu_info_from_sysinfo())
-			self.assertHasResult(cpuinfo._get_cpu_info_from_cpuid())
-			self.assertHasResult(cpuinfo.get_cpu_info())
+			self.assertIsNotNone(cpuinfo._get_cpu_info_from_sysinfo())
+			self.assertIsNotNone(cpuinfo._get_cpu_info_from_cpuid())
+			self.assertIsNotNone(cpuinfo.get_cpu_info())
 		elif os_type == 'BSD':
 			self.assertEqual(None, cpuinfo._get_cpu_info_from_registry())
 			self.assertEqual(None, cpuinfo._get_cpu_info_from_proc_cpuinfo())
 			self.assertEqual(None, cpuinfo._get_cpu_info_from_sysctl())
 			self.assertEqual(None, cpuinfo._get_cpu_info_from_kstat())
-			self.assertHasResult(cpuinfo._get_cpu_info_from_dmesg())
+			self.assertIsNotNone(cpuinfo._get_cpu_info_from_dmesg())
 			self.assertEqual(None, cpuinfo._get_cpu_info_from_sysinfo())
 			# FIXME: This fails by segfaulting for some reason
 			self.assertEqual(None, cpuinfo._get_cpu_info_from_cpuid())
-			self.assertHasResult(cpuinfo.get_cpu_info())
+			self.assertIsNotNone(cpuinfo.get_cpu_info())
 		elif os_type == 'Cygwin':
 			self.assertEqual(None, cpuinfo._get_cpu_info_from_registry())
-			self.assertHasResult(cpuinfo._get_cpu_info_from_proc_cpuinfo())
+			self.assertIsNotNone(cpuinfo._get_cpu_info_from_proc_cpuinfo())
 			self.assertEqual(None, cpuinfo._get_cpu_info_from_sysctl())
 			self.assertEqual(None, cpuinfo._get_cpu_info_from_kstat())
 			self.assertEqual(None, cpuinfo._get_cpu_info_from_dmesg())
 			self.assertEqual(None, cpuinfo._get_cpu_info_from_sysinfo())
 			# FIXME: This fails by segfaulting for some reason
 			self.assertEqual(None, cpuinfo._get_cpu_info_from_cpuid())
-			self.assertHasResult(cpuinfo.get_cpu_info())
+			self.assertIsNotNone(cpuinfo.get_cpu_info())
 		elif os_type == 'MacOS':
 			self.assertEqual(None, cpuinfo._get_cpu_info_from_registry())
 			self.assertEqual(None, cpuinfo._get_cpu_info_from_proc_cpuinfo())
-			self.assertHasResult(cpuinfo._get_cpu_info_from_sysctl())
+			self.assertIsNotNone(cpuinfo._get_cpu_info_from_sysctl())
 			self.assertEqual(None, cpuinfo._get_cpu_info_from_kstat())
 			self.assertEqual(None, cpuinfo._get_cpu_info_from_dmesg())
 			self.assertEqual(None, cpuinfo._get_cpu_info_from_sysinfo())
 			# FIXME: This fails by segfaulting for some reason
 			self.assertEqual(None, cpuinfo._get_cpu_info_from_cpuid())
-			self.assertHasResult(cpuinfo.get_cpu_info())
+			self.assertIsNotNone(cpuinfo.get_cpu_info())
 		elif os_type == 'Linux':
 			self.assertEqual(None, cpuinfo._get_cpu_info_from_registry())
-			self.assertHasResult(cpuinfo._get_cpu_info_from_proc_cpuinfo())
+			self.assertIsNotNone(cpuinfo._get_cpu_info_from_proc_cpuinfo())
 			self.assertEqual(None, cpuinfo._get_cpu_info_from_sysctl())
 			self.assertEqual(None, cpuinfo._get_cpu_info_from_kstat())
 			self.assertEqual(None, cpuinfo._get_cpu_info_from_dmesg())
 			self.assertEqual(None, cpuinfo._get_cpu_info_from_sysinfo())
-			self.assertHasResult(cpuinfo._get_cpu_info_from_cpuid())
-			self.assertHasResult(cpuinfo.get_cpu_info())
+			self.assertIsNotNone(cpuinfo._get_cpu_info_from_cpuid())
+			self.assertIsNotNone(cpuinfo.get_cpu_info())
 		elif os_type == 'Solaris':
 			self.assertEqual(None, cpuinfo._get_cpu_info_from_registry())
 			self.assertEqual(None, cpuinfo._get_cpu_info_from_proc_cpuinfo())
 			self.assertEqual(None, cpuinfo._get_cpu_info_from_sysctl())
-			self.assertHasResult(cpuinfo._get_cpu_info_from_kstat())
+			self.assertIsNotNone(cpuinfo._get_cpu_info_from_kstat())
 			self.assertEqual(None, cpuinfo._get_cpu_info_from_dmesg())
 			self.assertEqual(None, cpuinfo._get_cpu_info_from_sysinfo())
 			# FIXME: This fails by segfaulting for some reason
 			self.assertEqual(None, cpuinfo._get_cpu_info_from_cpuid())
-			self.assertHasResult(cpuinfo.get_cpu_info())
+			self.assertIsNotNone(cpuinfo.get_cpu_info())
 		elif os_type == 'Windows':
-			self.assertHasResult(cpuinfo._get_cpu_info_from_registry())
+			self.assertIsNotNone(cpuinfo._get_cpu_info_from_registry())
 			self.assertEqual(None, cpuinfo._get_cpu_info_from_proc_cpuinfo())
 			self.assertEqual(None, cpuinfo._get_cpu_info_from_sysctl())
 			self.assertEqual(None, cpuinfo._get_cpu_info_from_kstat())
 			self.assertEqual(None, cpuinfo._get_cpu_info_from_dmesg())
 			self.assertEqual(None, cpuinfo._get_cpu_info_from_sysinfo())
-			self.assertHasResult(cpuinfo._get_cpu_info_from_cpuid())
-			self.assertHasResult(cpuinfo.get_cpu_info())
+			self.assertIsNotNone(cpuinfo._get_cpu_info_from_cpuid())
+			self.assertIsNotNone(cpuinfo.get_cpu_info())
 		else:
 			raise AssertionError('Unexpected OS type "{0}".'.format(os_type))

@@ -5,11 +5,12 @@ from cpuinfo import *
 import helpers
 
 
-class DataSource(object):
+class MockDataSource(object):
 	bits = '64bit'
 	cpu_count = 1
 	is_windows = False
 	raw_arch_string = 'amd64'
+	can_cpuid = False
 
 	@staticmethod
 	def has_dmesg():
@@ -39,13 +40,15 @@ CPU: Intel(R) Core(TM) i5-4440 CPU @ 3.10GHz (2993.39-MHz K8-class CPU)
 
 
 class TestPCBSD(unittest.TestCase):
+	def setUp(self):
+		helpers.restore_data_source(cpuinfo)
+		helpers.monkey_patch_data_source(cpuinfo, MockDataSource)
+
 	'''
 	Make sure calls that should work return something,
 	and calls that should NOT work return None.
 	'''
 	def test_returns(self):
-		helpers.monkey_patch_data_source(cpuinfo, DataSource)
-
 		info = cpuinfo._get_cpu_info_from_registry()
 		self.assertIsNone(info)
 
@@ -65,11 +68,9 @@ class TestPCBSD(unittest.TestCase):
 		self.assertIsNone(info)
 
 		info = cpuinfo._get_cpu_info_from_cpuid()
-		self.assertIsNotNone(info)
+		self.assertIsNone(info)
 
 	def test_all(self):
-		helpers.monkey_patch_data_source(cpuinfo, DataSource)
-
 		info = cpuinfo._get_cpu_info_from_dmesg()
 
 		self.assertEqual('GenuineIntel', info['vendor_id'])

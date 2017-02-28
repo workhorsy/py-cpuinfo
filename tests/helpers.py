@@ -58,70 +58,136 @@ def get_os_type():
 	return os_type
 
 
-def monkey_patch_data_source(cpuinfo, DataSource):
+def monkey_patch_data_source(cpuinfo, NewDataSource):
 	# Replace all methods with ones that return false
 	_actual_monkey_patch_data_source(cpuinfo, EmptyDataSource)
 
 	# Copy any methods that are the same over
-	_actual_monkey_patch_data_source(cpuinfo, DataSource)
+	_actual_monkey_patch_data_source(cpuinfo, NewDataSource)
 
-def _actual_monkey_patch_data_source(cpuinfo, DataSource):
-	if hasattr(DataSource, 'bits'):
-		cpuinfo.DataSource.bits = DataSource.bits
-	if hasattr(DataSource, 'cpu_count'):
-		cpuinfo.DataSource.cpu_count = DataSource.cpu_count
-	if hasattr(DataSource, 'is_windows'):
-		cpuinfo.DataSource.is_windows = DataSource.is_windows
-	if hasattr(DataSource, 'raw_arch_string'):
-		cpuinfo.DataSource.raw_arch_string = DataSource.raw_arch_string
-	if hasattr(DataSource, 'can_cpuid'):
-		cpuinfo.DataSource.can_cpuid = DataSource.can_cpuid
+def _actual_monkey_patch_data_source(cpuinfo, NewDataSource):
+	if hasattr(NewDataSource, 'bits'):
+		cpuinfo.DataSource.bits = NewDataSource.bits
+	if hasattr(NewDataSource, 'cpu_count'):
+		cpuinfo.DataSource.cpu_count = NewDataSource.cpu_count
+	if hasattr(NewDataSource, 'is_windows'):
+		cpuinfo.DataSource.is_windows = NewDataSource.is_windows
+	if hasattr(NewDataSource, 'raw_arch_string'):
+		cpuinfo.DataSource.raw_arch_string = NewDataSource.raw_arch_string
+	if hasattr(NewDataSource, 'can_cpuid'):
+		cpuinfo.DataSource.can_cpuid = NewDataSource.can_cpuid
 
-	if hasattr(DataSource, 'has_proc_cpuinfo'):
-		cpuinfo.DataSource.has_proc_cpuinfo = staticmethod(DataSource.has_proc_cpuinfo)
-	if hasattr(DataSource, 'has_dmesg'):
-		cpuinfo.DataSource.has_dmesg = staticmethod(DataSource.has_dmesg)
-	if hasattr(DataSource, 'has_cpufreq_info'):
-		cpuinfo.DataSource.has_cpufreq_info = staticmethod(DataSource.has_cpufreq_info)
-	if hasattr(DataSource, 'has_sestatus'):
-		cpuinfo.DataSource.has_sestatus = staticmethod(DataSource.has_sestatus)
-	if hasattr(DataSource, 'has_sysctl'):
-		cpuinfo.DataSource.has_sysctl = staticmethod(DataSource.has_sysctl)
-	if hasattr(DataSource, 'has_isainfo'):
-		cpuinfo.DataSource.has_isainfo = staticmethod(DataSource.has_isainfo)
-	if hasattr(DataSource, 'has_kstat'):
-		cpuinfo.DataSource.has_kstat = staticmethod(DataSource.has_kstat)
-	if hasattr(DataSource, 'has_sysinfo'):
-		cpuinfo.DataSource.has_sysinfo = staticmethod(DataSource.has_sysinfo)
-	if hasattr(DataSource, 'has_lscpu'):
-		cpuinfo.DataSource.has_lscpu = staticmethod(DataSource.has_lscpu)
-	if hasattr(DataSource, 'cat_proc_cpuinfo'):
-		cpuinfo.DataSource.cat_proc_cpuinfo = staticmethod(DataSource.cat_proc_cpuinfo)
-	if hasattr(DataSource, 'cpufreq_info'):
-		cpuinfo.DataSource.cpufreq_info = staticmethod(DataSource.cpufreq_info)
-	if hasattr(DataSource, 'sestatus_allow_execheap'):
-		cpuinfo.DataSource.sestatus_allow_execheap = staticmethod(DataSource.sestatus_allow_execheap)
-	if hasattr(DataSource, 'sestatus_allow_execmem'):
-		cpuinfo.DataSource.sestatus_allow_execmem = staticmethod(DataSource.sestatus_allow_execmem)
-	if hasattr(DataSource, 'dmesg_a'):
-		cpuinfo.DataSource.dmesg_a = staticmethod(DataSource.dmesg_a)
-	if hasattr(DataSource, 'sysctl_machdep_cpu_hw_cpufrequency'):
-		cpuinfo.DataSource.sysctl_machdep_cpu_hw_cpufrequency = staticmethod(DataSource.sysctl_machdep_cpu_hw_cpufrequency)
-	if hasattr(DataSource, 'isainfo_vb'):
-		cpuinfo.DataSource.isainfo_vb = staticmethod(DataSource.isainfo_vb)
-	if hasattr(DataSource, 'kstat_m_cpu_info'):
-		cpuinfo.DataSource.kstat_m_cpu_info = staticmethod(DataSource.kstat_m_cpu_info)
-	if hasattr(DataSource, 'lscpu'):
-		cpuinfo.DataSource.lscpu = staticmethod(DataSource.lscpu)
-	if hasattr(DataSource, 'sysinfo_cpu'):
-		cpuinfo.DataSource.sysinfo_cpu = staticmethod(DataSource.sysinfo_cpu)
-	if hasattr(DataSource, 'winreg_processor_brand'):
-		cpuinfo.DataSource.winreg_processor_brand = staticmethod(DataSource.winreg_processor_brand)
-	if hasattr(DataSource, 'winreg_vendor_id'):
-		cpuinfo.DataSource.winreg_vendor_id = staticmethod(DataSource.winreg_vendor_id)
-	if hasattr(DataSource, 'winreg_raw_arch_string'):
-		cpuinfo.DataSource.winreg_raw_arch_string = staticmethod(DataSource.winreg_raw_arch_string)
-	if hasattr(DataSource, 'winreg_hz_actual'):
-		cpuinfo.DataSource.winreg_hz_actual = staticmethod(DataSource.winreg_hz_actual)
-	if hasattr(DataSource, 'winreg_feature_bits'):
-		cpuinfo.DataSource.winreg_feature_bits = staticmethod(DataSource.winreg_feature_bits)
+	if hasattr(NewDataSource, 'has_proc_cpuinfo'):
+		cpuinfo.DataSource.has_proc_cpuinfo = staticmethod(NewDataSource.has_proc_cpuinfo)
+	if hasattr(NewDataSource, 'has_dmesg'):
+		cpuinfo.DataSource.has_dmesg = staticmethod(NewDataSource.has_dmesg)
+	if hasattr(NewDataSource, 'has_cpufreq_info'):
+		cpuinfo.DataSource.has_cpufreq_info = staticmethod(NewDataSource.has_cpufreq_info)
+	if hasattr(NewDataSource, 'has_sestatus'):
+		cpuinfo.DataSource.has_sestatus = staticmethod(NewDataSource.has_sestatus)
+	if hasattr(NewDataSource, 'has_sysctl'):
+		cpuinfo.DataSource.has_sysctl = staticmethod(NewDataSource.has_sysctl)
+	if hasattr(NewDataSource, 'has_isainfo'):
+		cpuinfo.DataSource.has_isainfo = staticmethod(NewDataSource.has_isainfo)
+	if hasattr(NewDataSource, 'has_kstat'):
+		cpuinfo.DataSource.has_kstat = staticmethod(NewDataSource.has_kstat)
+	if hasattr(NewDataSource, 'has_sysinfo'):
+		cpuinfo.DataSource.has_sysinfo = staticmethod(NewDataSource.has_sysinfo)
+	if hasattr(NewDataSource, 'has_lscpu'):
+		cpuinfo.DataSource.has_lscpu = staticmethod(NewDataSource.has_lscpu)
+	if hasattr(NewDataSource, 'cat_proc_cpuinfo'):
+		cpuinfo.DataSource.cat_proc_cpuinfo = staticmethod(NewDataSource.cat_proc_cpuinfo)
+	if hasattr(NewDataSource, 'cpufreq_info'):
+		cpuinfo.DataSource.cpufreq_info = staticmethod(NewDataSource.cpufreq_info)
+	if hasattr(NewDataSource, 'sestatus_allow_execheap'):
+		cpuinfo.DataSource.sestatus_allow_execheap = staticmethod(NewDataSource.sestatus_allow_execheap)
+	if hasattr(NewDataSource, 'sestatus_allow_execmem'):
+		cpuinfo.DataSource.sestatus_allow_execmem = staticmethod(NewDataSource.sestatus_allow_execmem)
+	if hasattr(NewDataSource, 'dmesg_a'):
+		cpuinfo.DataSource.dmesg_a = staticmethod(NewDataSource.dmesg_a)
+	if hasattr(NewDataSource, 'sysctl_machdep_cpu_hw_cpufrequency'):
+		cpuinfo.DataSource.sysctl_machdep_cpu_hw_cpufrequency = staticmethod(NewDataSource.sysctl_machdep_cpu_hw_cpufrequency)
+	if hasattr(NewDataSource, 'isainfo_vb'):
+		cpuinfo.DataSource.isainfo_vb = staticmethod(NewDataSource.isainfo_vb)
+	if hasattr(NewDataSource, 'kstat_m_cpu_info'):
+		cpuinfo.DataSource.kstat_m_cpu_info = staticmethod(NewDataSource.kstat_m_cpu_info)
+	if hasattr(NewDataSource, 'lscpu'):
+		cpuinfo.DataSource.lscpu = staticmethod(NewDataSource.lscpu)
+	if hasattr(NewDataSource, 'sysinfo_cpu'):
+		cpuinfo.DataSource.sysinfo_cpu = staticmethod(NewDataSource.sysinfo_cpu)
+	if hasattr(NewDataSource, 'winreg_processor_brand'):
+		cpuinfo.DataSource.winreg_processor_brand = staticmethod(NewDataSource.winreg_processor_brand)
+	if hasattr(NewDataSource, 'winreg_vendor_id'):
+		cpuinfo.DataSource.winreg_vendor_id = staticmethod(NewDataSource.winreg_vendor_id)
+	if hasattr(NewDataSource, 'winreg_raw_arch_string'):
+		cpuinfo.DataSource.winreg_raw_arch_string = staticmethod(NewDataSource.winreg_raw_arch_string)
+	if hasattr(NewDataSource, 'winreg_hz_actual'):
+		cpuinfo.DataSource.winreg_hz_actual = staticmethod(NewDataSource.winreg_hz_actual)
+	if hasattr(NewDataSource, 'winreg_feature_bits'):
+		cpuinfo.DataSource.winreg_feature_bits = staticmethod(NewDataSource.winreg_feature_bits)
+
+def backup_data_source(cpuinfo):
+	BackupDataSource = type('BackupDataSource', (object,), {})
+	cpuinfo.BackupDataSource = BackupDataSource()
+	cpuinfo.BackupDataSource.bits = cpuinfo.DataSource.bits
+	cpuinfo.BackupDataSource.cpu_count = cpuinfo.DataSource.cpu_count
+	cpuinfo.BackupDataSource.is_windows = cpuinfo.DataSource.is_windows
+	cpuinfo.BackupDataSource.raw_arch_string = cpuinfo.DataSource.raw_arch_string
+	cpuinfo.BackupDataSource.can_cpuid = cpuinfo.DataSource.can_cpuid
+
+	cpuinfo.BackupDataSource.has_proc_cpuinfo = staticmethod(cpuinfo.DataSource.has_proc_cpuinfo)
+	cpuinfo.BackupDataSource.has_dmesg = staticmethod(cpuinfo.DataSource.has_dmesg)
+	cpuinfo.BackupDataSource.has_cpufreq_info = staticmethod(cpuinfo.DataSource.has_cpufreq_info)
+	cpuinfo.BackupDataSource.has_sestatus = staticmethod(cpuinfo.DataSource.has_sestatus)
+	cpuinfo.BackupDataSource.has_sysctl = staticmethod(cpuinfo.DataSource.has_sysctl)
+	cpuinfo.BackupDataSource.has_isainfo = staticmethod(cpuinfo.DataSource.has_isainfo)
+	cpuinfo.BackupDataSource.has_kstat = staticmethod(cpuinfo.DataSource.has_kstat)
+	cpuinfo.BackupDataSource.has_sysinfo = staticmethod(cpuinfo.DataSource.has_sysinfo)
+	cpuinfo.BackupDataSource.has_lscpu = staticmethod(cpuinfo.DataSource.has_lscpu)
+	cpuinfo.BackupDataSource.cat_proc_cpuinfo = staticmethod(cpuinfo.DataSource.cat_proc_cpuinfo)
+	cpuinfo.BackupDataSource.cpufreq_info = staticmethod(cpuinfo.DataSource.cpufreq_info)
+	cpuinfo.BackupDataSource.sestatus_allow_execheap = staticmethod(cpuinfo.DataSource.sestatus_allow_execheap)
+	cpuinfo.BackupDataSource.sestatus_allow_execmem = staticmethod(cpuinfo.DataSource.sestatus_allow_execmem)
+	cpuinfo.BackupDataSource.dmesg_a = staticmethod(cpuinfo.DataSource.dmesg_a)
+	cpuinfo.BackupDataSource.sysctl_machdep_cpu_hw_cpufrequency = staticmethod(cpuinfo.DataSource.sysctl_machdep_cpu_hw_cpufrequency)
+	cpuinfo.BackupDataSource.isainfo_vb = staticmethod(cpuinfo.DataSource.isainfo_vb)
+	cpuinfo.BackupDataSource.kstat_m_cpu_info = staticmethod(cpuinfo.DataSource.kstat_m_cpu_info)
+	cpuinfo.BackupDataSource.lscpu = staticmethod(cpuinfo.DataSource.lscpu)
+	cpuinfo.BackupDataSource.sysinfo_cpu = staticmethod(cpuinfo.DataSource.sysinfo_cpu)
+	cpuinfo.BackupDataSource.winreg_processor_brand = staticmethod(cpuinfo.DataSource.winreg_processor_brand)
+	cpuinfo.BackupDataSource.winreg_vendor_id = staticmethod(cpuinfo.DataSource.winreg_vendor_id)
+	cpuinfo.BackupDataSource.winreg_raw_arch_string = staticmethod(cpuinfo.DataSource.winreg_raw_arch_string)
+	cpuinfo.BackupDataSource.winreg_hz_actual = staticmethod(cpuinfo.DataSource.winreg_hz_actual)
+	cpuinfo.BackupDataSource.winreg_feature_bits = staticmethod(cpuinfo.DataSource.winreg_feature_bits)
+
+def restore_data_source(cpuinfo):
+	cpuinfo.DataSource.bits = cpuinfo.BackupDataSource.bits
+	cpuinfo.DataSource.cpu_count = cpuinfo.BackupDataSource.cpu_count
+	cpuinfo.DataSource.is_windows = cpuinfo.BackupDataSource.is_windows
+	cpuinfo.DataSource.raw_arch_string = cpuinfo.BackupDataSource.raw_arch_string
+	cpuinfo.DataSource.can_cpuid = cpuinfo.BackupDataSource.can_cpuid
+
+	cpuinfo.DataSource.has_proc_cpuinfo = staticmethod(cpuinfo.BackupDataSource.has_proc_cpuinfo)
+	cpuinfo.DataSource.has_dmesg = staticmethod(cpuinfo.BackupDataSource.has_dmesg)
+	cpuinfo.DataSource.has_cpufreq_info = staticmethod(cpuinfo.BackupDataSource.has_cpufreq_info)
+	cpuinfo.DataSource.has_sestatus = staticmethod(cpuinfo.BackupDataSource.has_sestatus)
+	cpuinfo.DataSource.has_sysctl = staticmethod(cpuinfo.BackupDataSource.has_sysctl)
+	cpuinfo.DataSource.has_isainfo = staticmethod(cpuinfo.BackupDataSource.has_isainfo)
+	cpuinfo.DataSource.has_kstat = staticmethod(cpuinfo.BackupDataSource.has_kstat)
+	cpuinfo.DataSource.has_sysinfo = staticmethod(cpuinfo.BackupDataSource.has_sysinfo)
+	cpuinfo.DataSource.has_lscpu = staticmethod(cpuinfo.BackupDataSource.has_lscpu)
+	cpuinfo.DataSource.cat_proc_cpuinfo = staticmethod(cpuinfo.BackupDataSource.cat_proc_cpuinfo)
+	cpuinfo.DataSource.cpufreq_info = staticmethod(cpuinfo.BackupDataSource.cpufreq_info)
+	cpuinfo.DataSource.sestatus_allow_execheap = staticmethod(cpuinfo.BackupDataSource.sestatus_allow_execheap)
+	cpuinfo.DataSource.sestatus_allow_execmem = staticmethod(cpuinfo.BackupDataSource.sestatus_allow_execmem)
+	cpuinfo.DataSource.dmesg_a = staticmethod(cpuinfo.BackupDataSource.dmesg_a)
+	cpuinfo.DataSource.sysctl_machdep_cpu_hw_cpufrequency = staticmethod(cpuinfo.BackupDataSource.sysctl_machdep_cpu_hw_cpufrequency)
+	cpuinfo.DataSource.isainfo_vb = staticmethod(cpuinfo.BackupDataSource.isainfo_vb)
+	cpuinfo.DataSource.kstat_m_cpu_info = staticmethod(cpuinfo.BackupDataSource.kstat_m_cpu_info)
+	cpuinfo.DataSource.lscpu = staticmethod(cpuinfo.BackupDataSource.lscpu)
+	cpuinfo.DataSource.sysinfo_cpu = staticmethod(cpuinfo.BackupDataSource.sysinfo_cpu)
+	cpuinfo.DataSource.winreg_processor_brand = staticmethod(cpuinfo.BackupDataSource.winreg_processor_brand)
+	cpuinfo.DataSource.winreg_vendor_id = staticmethod(cpuinfo.BackupDataSource.winreg_vendor_id)
+	cpuinfo.DataSource.winreg_raw_arch_string = staticmethod(cpuinfo.BackupDataSource.winreg_raw_arch_string)
+	cpuinfo.DataSource.winreg_hz_actual = staticmethod(cpuinfo.BackupDataSource.winreg_hz_actual)
+	cpuinfo.DataSource.winreg_feature_bits = staticmethod(cpuinfo.BackupDataSource.winreg_feature_bits)

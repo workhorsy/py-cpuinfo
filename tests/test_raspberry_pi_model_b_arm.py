@@ -5,11 +5,12 @@ from cpuinfo import *
 import helpers
 
 
-class DataSource(object):
+class MockDataSource(object):
 	bits = '32bit'
 	cpu_count = 1
 	is_windows = False
 	raw_arch_string = 'armv6l'
+	can_cpuid = False
 
 	@staticmethod
 	def has_proc_cpuinfo():
@@ -63,13 +64,15 @@ CPU min MHz:           700.0000
 		return returncode, output
 
 class TestRaspberryPiModelB(unittest.TestCase):
+	def setUp(self):
+		helpers.restore_data_source(cpuinfo)
+		helpers.monkey_patch_data_source(cpuinfo, MockDataSource)
+
 	'''
 	Make sure calls that should work return something,
 	and calls that should NOT work return None.
 	'''
 	def test_returns(self):
-		helpers.monkey_patch_data_source(cpuinfo, DataSource)
-
 		info = cpuinfo._get_cpu_info_from_registry()
 		self.assertIsNone(info)
 
@@ -92,8 +95,6 @@ class TestRaspberryPiModelB(unittest.TestCase):
 		self.assertIsNone(info)
 
 	def test_all(self):
-		helpers.monkey_patch_data_source(cpuinfo, DataSource)
-
 		info = cpuinfo._get_cpu_info_from_proc_cpuinfo()
 
 		self.assertEqual('', info['vendor_id'])
