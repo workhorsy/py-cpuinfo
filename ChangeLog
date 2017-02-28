@@ -1,3 +1,6 @@
+* Release 0.2.7
+	* Change API to hide low level functions
+
 12/16/2015 Release 0.2.6
 	* New release because pypi does not allow deleting broken uploads
 
