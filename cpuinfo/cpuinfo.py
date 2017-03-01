@@ -894,18 +894,18 @@ class CPUID(object):
 def _get_cpu_info_from_cpuid():
 	'''
 	Returns the CPU info gathered by querying the X86 cpuid register in a new process.
-	Returns None on non X86 cpus.
-	Returns None if SELinux is in enforcing mode.
+	Returns {} on non X86 cpus.
+	Returns {} if SELinux is in enforcing mode.
 	'''
 
-	# Return none if can't cpuid
+	# Return {} if can't cpuid
 	if not DataSource.can_cpuid:
 		return {}
 
 	# Get the CPU arch and bits
 	arch, bits = parse_arch(DataSource.raw_arch_string)
 
-	# Return none if this is not an X86 CPU
+	# Return {} if this is not an X86 CPU
 	if not arch in ['X86_32', 'X86_64']:
 		return {}
 
@@ -979,10 +979,10 @@ def actual_get_cpu_info_from_cpuid():
 def _get_cpu_info_from_proc_cpuinfo():
 	'''
 	Returns the CPU info gathered from /proc/cpuinfo.
-	Returns None if /proc/cpuinfo is not found.
+	Returns {} if /proc/cpuinfo is not found.
 	'''
 	try:
-		# Just return None if there is no cpuinfo
+		# Just return {} if there is no cpuinfo
 		if not DataSource.has_proc_cpuinfo():
 			return {}
 
@@ -1052,7 +1052,7 @@ def _get_cpu_info_from_proc_cpuinfo():
 def _get_cpu_info_from_beagle_bone():
 	'''
 	Returns the CPU info gathered from cpufreq-info.
-	Returns None if cpufreq-info is not found.
+	Returns {} if cpufreq-info is not found.
 	'''
 	try:
 		scale, hz_brand = 1, '0.0'
@@ -1086,7 +1086,7 @@ def _get_cpu_info_from_beagle_bone():
 def _get_cpu_info_from_lscpu():
 	'''
 	Returns the CPU info gathered from lscpu.
-	Returns None if lscpu is not found.
+	Returns {} if lscpu is not found.
 	'''
 	try:
 		scale, hz_brand = 1, '0.0'
@@ -1118,14 +1118,14 @@ def _get_cpu_info_from_lscpu():
 def _get_cpu_info_from_dmesg():
 	'''
 	Returns the CPU info gathered from dmesg.
-	Returns None if dmesg is not found or does not have the desired info.
+	Returns {} if dmesg is not found or does not have the desired info.
 	'''
 	try:
-		# Just return None if there is no dmesg
+		# Just return {} if there is no dmesg
 		if not DataSource.has_dmesg():
 			return {}
 
-		# If dmesg fails return None
+		# If dmesg fails return {}
 		returncode, output = DataSource.dmesg_a()
 		if output == None or returncode != 0:
 			return {}
@@ -1216,14 +1216,14 @@ def _get_cpu_info_from_dmesg():
 def _get_cpu_info_from_cat_var_run_dmesg_boot():
 	'''
 	Returns the CPU info gathered from /var/run/dmesg.boot.
-	Returns None if dmesg is not found or does not have the desired info.
+	Returns {} if dmesg is not found or does not have the desired info.
 	'''
 	try:
-		# Just return None if there is no /var/run/dmesg.boot
+		# Just return {} if there is no /var/run/dmesg.boot
 		if not DataSource.has_var_run_dmesg_boot():
 			return {}
 
-		# If dmesg.boot fails return None
+		# If dmesg.boot fails return {}
 		returncode, output = DataSource.cat_var_run_dmesg_boot()
 		if output == None or returncode != 0:
 			return {}
@@ -1315,14 +1315,14 @@ def _get_cpu_info_from_cat_var_run_dmesg_boot():
 def _get_cpu_info_from_sysctl():
 	'''
 	Returns the CPU info gathered from sysctl.
-	Returns None if sysctl is not found.
+	Returns {} if sysctl is not found.
 	'''
 	try:
-		# Just return None if there is no sysctl
+		# Just return {} if there is no sysctl
 		if not DataSource.has_sysctl():
 			return {}
 
-		# If sysctl fails return None
+		# If sysctl fails return {}
 		returncode, output = DataSource.sysctl_machdep_cpu_hw_cpufrequency()
 		if output == None or returncode != 0:
 			return {}
@@ -1382,14 +1382,14 @@ def _get_cpu_info_from_sysctl():
 def _get_cpu_info_from_sysinfo():
 	'''
 	Returns the CPU info gathered from sysinfo.
-	Returns None if sysinfo is not found.
+	Returns {} if sysinfo is not found.
 	'''
 	try:
-		# Just return None if there is no sysinfo
+		# Just return {} if there is no sysinfo
 		if not DataSource.has_sysinfo():
 			return {}
 
-		# If sysinfo fails return None
+		# If sysinfo fails return {}
 		returncode, output = DataSource.sysinfo_cpu()
 		if output == None or returncode != 0:
 			return {}
@@ -1451,10 +1451,10 @@ def _get_cpu_info_from_registry():
 	'''
 	FIXME: Is missing many of the newer CPU flags like sse3
 	Returns the CPU info gathered from the Windows Registry.
-	Returns None if not on Windows.
+	Returns {} if not on Windows.
 	'''
 	try:
-		# Just return None if not on Windows
+		# Just return {} if not on Windows
 		if not DataSource.is_windows:
 			return {}
 
@@ -1558,19 +1558,19 @@ def _get_cpu_info_from_registry():
 def _get_cpu_info_from_kstat():
 	'''
 	Returns the CPU info gathered from isainfo and kstat.
-	Returns None if isainfo or kstat are not found.
+	Returns {} if isainfo or kstat are not found.
 	'''
 	try:
-		# Just return None if there is no isainfo or kstat
+		# Just return {} if there is no isainfo or kstat
 		if not DataSource.has_isainfo() or not DataSource.has_kstat():
 			return {}
 
-		# If isainfo fails return None
+		# If isainfo fails return {}
 		returncode, flag_output = DataSource.isainfo_vb()
 		if flag_output == None or returncode != 0:
 			return {}
 
-		# If kstat fails return None
+		# If kstat fails return {}
 		returncode, kstat = DataSource.kstat_m_cpu_info()
 		if kstat == None or returncode != 0:
 			return {}
@@ -1643,7 +1643,7 @@ def get_cpu_info():
 	'''
 	Returns the CPU info by using the best source of information for your OS.
 	This is the recommended function for getting CPU info.
-	Returns None if nothing is found.
+	Returns {} if nothing is found.
 	'''
 	info = {}
 
