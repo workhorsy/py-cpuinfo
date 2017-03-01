@@ -273,54 +273,62 @@ def _get_hz_string_from_brand(processor_brand):
 	return (scale, hz_brand)
 
 def _get_cpu_info_from_beagle_bone():
-	scale, hz_brand = 1, '0.0'
+	try:
+		scale, hz_brand = 1, '0.0'
 
-	if not DataSource.has_cpufreq_info():
+		if not DataSource.has_cpufreq_info():
+			return {}
+
+		returncode, output = DataSource.cpufreq_info()
+		if returncode != 0:
+			return {}
+
+		hz_brand = output.split('current CPU frequency is')[1].split('.')[0].lower()
+
+		if hz_brand.endswith('mhz'):
+			scale = 6
+		elif hz_brand.endswith('ghz'):
+			scale = 9
+		hz_brand = hz_brand.rstrip('mhz').rstrip('ghz').strip()
+		hz_brand = to_hz_string(hz_brand)
+
+		return {
+			'hz_advertised' : to_friendly_hz(hz_brand, scale),
+			'hz_actual' : to_friendly_hz(hz_brand, 6),
+			'hz_advertised_raw' : to_raw_hz(hz_brand, scale),
+			'hz_actual_raw' : to_raw_hz(hz_brand, scale),
+		}
+	except:
+		#raise # NOTE: To have this throw on error, uncomment this line
 		return {}
-
-	returncode, output = DataSource.cpufreq_info()
-	if returncode != 0:
-		return {}
-
-	hz_brand = output.split('current CPU frequency is')[1].split('.')[0].lower()
-
-	if hz_brand.endswith('mhz'):
-		scale = 6
-	elif hz_brand.endswith('ghz'):
-		scale = 9
-	hz_brand = hz_brand.rstrip('mhz').rstrip('ghz').strip()
-	hz_brand = to_hz_string(hz_brand)
-
-	return {
-		'hz_advertised' : to_friendly_hz(hz_brand, scale),
-		'hz_actual' : to_friendly_hz(hz_brand, 6),
-		'hz_advertised_raw' : to_raw_hz(hz_brand, scale),
-		'hz_actual_raw' : to_raw_hz(hz_brand, scale),
-	}
 
 def _get_cpu_info_from_lscpu():
-	scale, hz_brand = 1, '0.0'
+	try:
+		scale, hz_brand = 1, '0.0'
 
-	if not DataSource.has_lscpu():
+		if not DataSource.has_lscpu():
+			return {}
+
+		returncode, output = DataSource.lscpu()
+		if returncode != 0:
+			return {}
+
+		new_hz = _get_field(False, output, None, None, 'CPU max MHz', 'CPU MHz')
+		if new_hz == None:
+			return {}
+
+		new_hz = to_hz_string(new_hz)
+		scale = 6
+
+		return {
+			'hz_advertised' : to_friendly_hz(new_hz, scale),
+			'hz_actual' : to_friendly_hz(new_hz, 6),
+			'hz_advertised_raw' : to_raw_hz(new_hz, scale),
+			'hz_actual_raw' : to_raw_hz(new_hz, scale),
+		}
+	except:
+		#raise # NOTE: To have this throw on error, uncomment this line
 		return {}
-
-	returncode, output = DataSource.lscpu()
-	if returncode != 0:
-		return {}
-
-	new_hz = _get_field(False, output, None, None, 'CPU max MHz', 'CPU MHz')
-	if new_hz == None:
-		return {}
-
-	new_hz = to_hz_string(new_hz)
-	scale = 6
-
-	return {
-		'hz_advertised' : to_friendly_hz(new_hz, scale),
-		'hz_actual' : to_friendly_hz(new_hz, 6),
-		'hz_advertised_raw' : to_raw_hz(new_hz, scale),
-		'hz_actual_raw' : to_raw_hz(new_hz, scale),
-	}
 
 def to_friendly_hz(ticks, scale):
 	# Get the raw Hz as a string
