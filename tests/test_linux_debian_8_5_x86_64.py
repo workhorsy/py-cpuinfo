@@ -461,10 +461,10 @@ class TestLinuxDebian_8_5_X86_64(unittest.TestCase):
 	def test_get_cpu_info_from_lscpu(self):
 		info = cpuinfo._get_cpu_info_from_lscpu()
 
-		self.assertEqual('2.0708 GHz', info['hz_advertised'])
-		self.assertEqual('2.0708 GHz', info['hz_actual'])
-		self.assertEqual((2070796000, 0), info['hz_advertised_raw'])
-		self.assertEqual((2070796000, 0), info['hz_actual_raw'])
+		self.assertEqual('2.7937 GHz', info['hz_advertised'])
+		self.assertEqual('2.7937 GHz', info['hz_actual'])
+		self.assertEqual((2793652000, 0), info['hz_advertised_raw'])
+		self.assertEqual((2793652000, 0), info['hz_actual_raw'])
 
 	def test_get_cpu_info_from_dmesg(self):
 		info = cpuinfo._get_cpu_info_from_dmesg()
