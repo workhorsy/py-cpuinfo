@@ -272,15 +272,15 @@ def _get_hz_string_from_brand(processor_brand):
 
 	return (scale, hz_brand)
 
-def _get_hz_string_from_beagle_bone():
+def _get_cpu_info_from_beagle_bone():
 	scale, hz_brand = 1, '0.0'
 
 	if not DataSource.has_cpufreq_info():
-		return scale, hz_brand
+		return {}
 
 	returncode, output = DataSource.cpufreq_info()
 	if returncode != 0:
-		return (scale, hz_brand)
+		return {}
 
 	hz_brand = output.split('current CPU frequency is')[1].split('.')[0].lower()
 
@@ -291,26 +291,36 @@ def _get_hz_string_from_beagle_bone():
 	hz_brand = hz_brand.rstrip('mhz').rstrip('ghz').strip()
 	hz_brand = to_hz_string(hz_brand)
 
-	return (scale, hz_brand)
+	return {
+		'hz_advertised' : to_friendly_hz(hz_brand, scale),
+		'hz_actual' : to_friendly_hz(hz_brand, 6),
+		'hz_advertised_raw' : to_raw_hz(hz_brand, scale),
+		'hz_actual_raw' : to_raw_hz(hz_brand, scale),
+	}
 
-def _get_hz_string_from_lscpu():
+def _get_cpu_info_from_lscpu():
 	scale, hz_brand = 1, '0.0'
 
 	if not DataSource.has_lscpu():
-		return scale, hz_brand
+		return {}
 
 	returncode, output = DataSource.lscpu()
 	if returncode != 0:
-		return (scale, hz_brand)
+		return {}
 
 	new_hz = _get_field(False, output, None, None, 'CPU max MHz', 'CPU MHz')
 	if new_hz == None:
-		return (scale, hz_brand)
+		return {}
 
 	new_hz = to_hz_string(new_hz)
 	scale = 6
 
-	return (scale, new_hz)
+	return {
+		'hz_advertised' : to_friendly_hz(new_hz, scale),
+		'hz_actual' : to_friendly_hz(new_hz, 6),
+		'hz_advertised_raw' : to_raw_hz(new_hz, scale),
+		'hz_actual_raw' : to_raw_hz(new_hz, scale),
+	}
 
 def to_friendly_hz(ticks, scale):
 	# Get the raw Hz as a string
@@ -940,18 +950,18 @@ def _get_cpu_info_from_cpuid():
 
 	# Return none if can't cpuid
 	if not DataSource.can_cpuid:
-		return None
+		return {}
 
 	# Get the CPU arch and bits
 	arch, bits = parse_arch(DataSource.raw_arch_string)
 
 	# Return none if this is not an X86 CPU
 	if not arch in ['X86_32', 'X86_64']:
-		return None
+		return {}
 
 	returncode, output = run_and_get_stdout([sys.executable, "-c", "import cpuinfo; print(cpuinfo.actual_get_cpu_info_from_cpuid())"])
 	if returncode != 0:
-		return None
+		return {}
 	info = b64_to_obj(output)
 	return info
 
@@ -1024,11 +1034,11 @@ def _get_cpu_info_from_proc_cpuinfo():
 	try:
 		# Just return None if there is no cpuinfo
 		if not DataSource.has_proc_cpuinfo():
-			return None
+			return {}
 
 		returncode, output = DataSource.cat_proc_cpuinfo()
 		if returncode != 0:
-			return None
+			return {}
 
 		# Various fields
 		vendor_id = _get_field(False, output, None, '', 'vendor_id', 'vendor id', 'vendor')
@@ -1050,28 +1060,13 @@ def _get_cpu_info_from_proc_cpuinfo():
 		# Convert from GHz/MHz string to Hz
 		scale, hz_advertised = _get_hz_string_from_brand(processor_brand)
 
-		# Try getting the Hz for a BeagleBone
-		if hz_advertised == '0.0':
-			scale, hz_advertised = _get_hz_string_from_beagle_bone()
-			hz_actual = hz_advertised
-
-		# Try getting the Hz for a lscpu
-		if hz_advertised == '0.0':
-			scale, hz_advertised = _get_hz_string_from_lscpu()
-			hz_actual = hz_advertised
-
 		# Get the CPU arch and bits
 		arch, bits = parse_arch(DataSource.raw_arch_string)
 
-		return {
+		info = {
 		'vendor_id' : vendor_id,
 		'hardware' : hardware,
 		'brand' : processor_brand,
-
-		'hz_advertised' : to_friendly_hz(hz_advertised, scale),
-		'hz_actual' : to_friendly_hz(hz_actual, 6),
-		'hz_advertised_raw' : to_raw_hz(hz_advertised, scale),
-		'hz_actual_raw' : to_raw_hz(hz_actual, 6),
 
 		'arch' : arch,
 		'bits' : bits,
@@ -1090,9 +1085,19 @@ def _get_cpu_info_from_proc_cpuinfo():
 		'extended_family' : 0,
 		'flags' : flags
 		}
+
+		# Add the Hz if there is one
+		if to_raw_hz(hz_advertised, scale) > (0, 0):
+			info['hz_advertised'] = to_friendly_hz(hz_advertised, scale)
+			info['hz_advertised_raw'] = to_raw_hz(hz_advertised, scale)
+		if to_raw_hz(hz_actual, scale) > (0, 0):
+			info['hz_actual'] = to_friendly_hz(hz_actual, 6)
+			info['hz_actual_raw'] = to_raw_hz(hz_actual, 6)
+
+		return info
 	except:
 		#raise # NOTE: To have this throw on error, uncomment this line
-		return None
+		return {}
 
 def _get_cpu_info_from_dmesg():
 	'''
@@ -1102,12 +1107,12 @@ def _get_cpu_info_from_dmesg():
 	try:
 		# Just return None if there is no dmesg
 		if not DataSource.has_dmesg():
-			return None
+			return {}
 
 		# If dmesg fails return None
 		returncode, output = DataSource.dmesg_a()
 		if output == None or returncode != 0:
-			return None
+			return {}
 
 		# Processor Brand
 		long_brand = output.split('CPU: ')[1].split('\n')[0]
@@ -1190,7 +1195,7 @@ def _get_cpu_info_from_dmesg():
 		'flags' : flags
 		}
 	except:
-		return None
+		return {}
 
 def _get_cpu_info_from_cat_var_run_dmesg_boot():
 	'''
@@ -1200,12 +1205,12 @@ def _get_cpu_info_from_cat_var_run_dmesg_boot():
 	try:
 		# Just return None if there is no /var/run/dmesg.boot
 		if not DataSource.has_var_run_dmesg_boot():
-			return None
+			return {}
 
 		# If dmesg.boot fails return None
 		returncode, output = DataSource.cat_var_run_dmesg_boot()
 		if output == None or returncode != 0:
-			return None
+			return {}
 
 		# Processor Brand
 		long_brand = output.split('CPU: ')[1].split('\n')[0]
@@ -1288,7 +1293,7 @@ def _get_cpu_info_from_cat_var_run_dmesg_boot():
 		'flags' : flags
 		}
 	except:
-		return None
+		return {}
 
 
 def _get_cpu_info_from_sysctl():
@@ -1299,12 +1304,12 @@ def _get_cpu_info_from_sysctl():
 	try:
 		# Just return None if there is no sysctl
 		if not DataSource.has_sysctl():
-			return None
+			return {}
 
 		# If sysctl fails return None
 		returncode, output = DataSource.sysctl_machdep_cpu_hw_cpufrequency()
 		if output == None or returncode != 0:
-			return None
+			return {}
 
 		# Various fields
 		vendor_id = _get_field(False, output, None, None, 'machdep.cpu.vendor')
@@ -1356,7 +1361,7 @@ def _get_cpu_info_from_sysctl():
 		'flags' : flags
 		}
 	except:
-		return None
+		return {}
 
 def _get_cpu_info_from_sysinfo():
 	'''
@@ -1366,12 +1371,12 @@ def _get_cpu_info_from_sysinfo():
 	try:
 		# Just return None if there is no sysinfo
 		if not DataSource.has_sysinfo():
-			return None
+			return {}
 
 		# If sysinfo fails return None
 		returncode, output = DataSource.sysinfo_cpu()
 		if output == None or returncode != 0:
-			return None
+			return {}
 
 		# Various fields
 		vendor_id = '' #_get_field(False, output, None, None, 'CPU #0: ')
@@ -1424,7 +1429,7 @@ def _get_cpu_info_from_sysinfo():
 		'flags' : flags
 		}
 	except:
-		return None
+		return {}
 
 def _get_cpu_info_from_registry():
 	'''
@@ -1435,7 +1440,7 @@ def _get_cpu_info_from_registry():
 	try:
 		# Just return None if not on Windows
 		if not DataSource.is_windows:
-			return None
+			return {}
 
 		# Get the CPU name
 		processor_brand = DataSource.winreg_processor_brand()
@@ -1532,7 +1537,7 @@ def _get_cpu_info_from_registry():
 		'flags' : flags
 		}
 	except:
-		return None
+		return {}
 
 def _get_cpu_info_from_kstat():
 	'''
@@ -1542,17 +1547,17 @@ def _get_cpu_info_from_kstat():
 	try:
 		# Just return None if there is no isainfo or kstat
 		if not DataSource.has_isainfo() or not DataSource.has_kstat():
-			return None
+			return {}
 
 		# If isainfo fails return None
 		returncode, flag_output = DataSource.isainfo_vb()
 		if flag_output == None or returncode != 0:
-			return None
+			return {}
 
 		# If kstat fails return None
 		returncode, kstat = DataSource.kstat_m_cpu_info()
 		if kstat == None or returncode != 0:
-			return None
+			return {}
 
 		# Various fields
 		vendor_id = kstat.split('\tvendor_id ')[1].split('\n')[0].strip()
@@ -1606,7 +1611,17 @@ def _get_cpu_info_from_kstat():
 		'flags' : flags
 		}
 	except:
-		return None
+		return {}
+
+def HasAllFields(info):
+	keys = [
+		'vendor_id', 'hardware', 'brand', 'hz_advertised', 'hz_actual',
+		'hz_advertised_raw', 'hz_actual_raw', 'arch', 'bits', 'count',
+		'raw_arch_string', 'l2_cache_size', 'l2_cache_line_size',
+		'l2_cache_associativity', 'stepping', 'model', 'family',
+		'processor_type', 'extended_model', 'extended_family', 'flags'
+	]
+	return all(k in info for k in keys)
 
 def get_cpu_info():
 	'''
@@ -1614,39 +1629,47 @@ def get_cpu_info():
 	This is the recommended function for getting CPU info.
 	Returns None if nothing is found.
 	'''
-	info = None
+	info = {}
 
 	# Try the Windows registry
-	if not info:
-		info = _get_cpu_info_from_registry()
+	if not HasAllFields(info):
+		info.update(_get_cpu_info_from_registry())
 
 	# Try /proc/cpuinfo
-	if not info:
-		info = _get_cpu_info_from_proc_cpuinfo()
+	if not HasAllFields(info):
+		info.update(_get_cpu_info_from_proc_cpuinfo())
+
+	# Try Beagle Bone
+	if not HasAllFields(info):
+		info.update(_get_cpu_info_from_beagle_bone())
+
+	# Try LSCPU
+	if not HasAllFields(info):
+		info.update(_get_cpu_info_from_lscpu())
 
 	# Try sysctl
-	if not info:
-		info = _get_cpu_info_from_sysctl()
+	if not HasAllFields(info):
+		info.update(_get_cpu_info_from_sysctl())
 
 	# Try kstat
-	if not info:
-		info = _get_cpu_info_from_kstat()
+	if not HasAllFields(info):
+		info.update(_get_cpu_info_from_kstat())
 
 	# Try dmesg
-	if not info:
-		info = _get_cpu_info_from_dmesg()
+	if not HasAllFields(info):
+		info.update(_get_cpu_info_from_dmesg())
 
 	# Try /var/run/dmesg.boot
-	if not info:
-		info = _get_cpu_info_from_cat_var_run_dmesg_boot()
+	if not HasAllFields(info):
+		info.update(_get_cpu_info_from_cat_var_run_dmesg_boot())
 
 	# Try sysinfo
-	if not info:
-		info = _get_cpu_info_from_sysinfo()
+	if not HasAllFields(info):
+		info.update(_get_cpu_info_from_sysinfo())
 
 	# Try querying the CPU cpuid register
-	if not info:
-		info = _get_cpu_info_from_cpuid()
+	if not HasAllFields(info):
+		info.update(_get_cpu_info_from_cpuid())
 
 	return info
 

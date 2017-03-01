@@ -452,30 +452,30 @@ class TestLinuxGentoo_2_2_X86_64(unittest.TestCase):
 	'''
 	def test_returns(self):
 		info = cpuinfo._get_cpu_info_from_registry()
-		self.assertIsNone(info)
+		self.assertEqual({}, info)
 
 		info = cpuinfo._get_cpu_info_from_proc_cpuinfo()
 		self.assertIsNotNone(info)
 
 		info = cpuinfo._get_cpu_info_from_sysctl()
-		self.assertIsNone(info)
+		self.assertEqual({}, info)
 
 		info = cpuinfo._get_cpu_info_from_kstat()
-		self.assertIsNone(info)
+		self.assertEqual({}, info)
 
 		# FIXME: This returns None because dmesg log
 		# has the info in a different format.
 		info = cpuinfo._get_cpu_info_from_dmesg()
-		self.assertIsNone(info)
+		self.assertEqual({}, info)
 
 		info = cpuinfo._get_cpu_info_from_cat_var_run_dmesg_boot()
-		self.assertIsNone(info)
+		self.assertEqual({}, info)
 
 		info = cpuinfo._get_cpu_info_from_sysinfo()
-		self.assertIsNone(info)
+		self.assertEqual({}, info)
 
 		info = cpuinfo._get_cpu_info_from_cpuid()
-		self.assertIsNone(info)
+		self.assertEqual({}, info)
 
 	def test_proc_cpuinfo(self):
 		info = cpuinfo._get_cpu_info_from_proc_cpuinfo()

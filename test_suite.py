@@ -33,6 +33,7 @@ if __name__ == '__main__':
 	helpers.backup_data_source(cpuinfo)
 
 	suite = unittest.TestSuite()
+
 	suite.addTest(unittest.makeSuite(TestExample))
 	suite.addTest(unittest.makeSuite(TestParseErrors))
 	suite.addTest(unittest.makeSuite(TestInvalidCPU))

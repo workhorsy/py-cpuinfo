@@ -74,33 +74,73 @@ class TestLinux_RaspberryPiModelB(unittest.TestCase):
 	'''
 	def test_returns(self):
 		info = cpuinfo._get_cpu_info_from_registry()
-		self.assertIsNone(info)
+		self.assertEqual({}, info)
 
 		info = cpuinfo._get_cpu_info_from_proc_cpuinfo()
 		self.assertIsNotNone(info)
 
 		info = cpuinfo._get_cpu_info_from_sysctl()
-		self.assertIsNone(info)
+		self.assertEqual({}, info)
 
 		info = cpuinfo._get_cpu_info_from_kstat()
-		self.assertIsNone(info)
+		self.assertEqual({}, info)
 
 		info = cpuinfo._get_cpu_info_from_dmesg()
-		self.assertIsNone(info)
+		self.assertEqual({}, info)
 
 		info = cpuinfo._get_cpu_info_from_cat_var_run_dmesg_boot()
-		self.assertIsNone(info)
+		self.assertEqual({}, info)
 
 		info = cpuinfo._get_cpu_info_from_sysinfo()
-		self.assertIsNone(info)
+		self.assertEqual({}, info)
 
 		info = cpuinfo._get_cpu_info_from_cpuid()
-		self.assertIsNone(info)
+		self.assertEqual({}, info)
 
-	def test_all(self):
+	def test_get_cpu_info_from_lscpu(self):
+		info = cpuinfo._get_cpu_info_from_lscpu()
+
+		self.assertEqual('700.0000 MHz', info['hz_advertised'])
+		self.assertEqual('700.0000 MHz', info['hz_actual'])
+		self.assertEqual((700000000, 0), info['hz_advertised_raw'])
+		self.assertEqual((700000000, 0), info['hz_actual_raw'])
+
+	def test_get_cpu_info_from_proc_cpuinfo(self):
 		info = cpuinfo._get_cpu_info_from_proc_cpuinfo()
 
-		self.assertEqual('', info['vendor_id'])
+		self.assertEqual('GenuineIntel', info['vendor_id'])
+		self.assertEqual('BCM2708', info['hardware'])
+		self.assertEqual('ARMv6-compatible processor rev 7 (v6l)', info['brand'])
+		self.assertFalse('hz_advertised' in info)
+		self.assertFalse('hz_actual' in info)
+		self.assertFalse('hz_advertised_raw' in info)
+		self.assertFalse('hz_actual_raw' in info)
+		self.assertEqual('ARM_7', info['arch'])
+		self.assertEqual(32, info['bits'])
+		self.assertEqual(1, info['count'])
+
+		self.assertEqual('armv6l', info['raw_arch_string'])
+
+		self.assertEqual('', info['l2_cache_size'])
+		self.assertEqual(0, info['l2_cache_line_size'])
+		self.assertEqual(0, info['l2_cache_associativity'])
+
+		self.assertEqual(0, info['stepping'])
+		self.assertEqual(0, info['model'])
+		self.assertEqual(0, info['family'])
+		self.assertEqual(0, info['processor_type'])
+		self.assertEqual(0, info['extended_model'])
+		self.assertEqual(0, info['extended_family'])
+		self.assertEqual(
+			['edsp', 'fastmult', 'half', 'java', 'swp', 'thumb', 'tls', 'vfp']
+			,
+			info['flags']
+		)
+
+	def test_all(self):
+		info = cpuinfo.get_cpu_info()
+
+		self.assertEqual('GenuineIntel', info['vendor_id'])
 		self.assertEqual('BCM2708', info['hardware'])
 		self.assertEqual('ARMv6-compatible processor rev 7 (v6l)', info['brand'])
 		self.assertEqual('700.0000 MHz', info['hz_advertised'])
