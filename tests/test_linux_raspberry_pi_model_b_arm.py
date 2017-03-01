@@ -10,15 +10,10 @@ class MockDataSource(object):
 	cpu_count = 1
 	is_windows = False
 	raw_arch_string = 'armv6l'
-	can_cpuid = False
 
 	@staticmethod
 	def has_proc_cpuinfo():
 		return True
-
-	@staticmethod
-	def has_cpufreq_info():
-		return False
 
 	@staticmethod
 	def has_lscpu():
@@ -108,7 +103,7 @@ class TestLinux_RaspberryPiModelB(unittest.TestCase):
 	def test_get_cpu_info_from_proc_cpuinfo(self):
 		info = cpuinfo._get_cpu_info_from_proc_cpuinfo()
 
-		self.assertEqual('GenuineIntel', info['vendor_id'])
+		self.assertEqual('', info['vendor_id'])
 		self.assertEqual('BCM2708', info['hardware'])
 		self.assertEqual('ARMv6-compatible processor rev 7 (v6l)', info['brand'])
 		self.assertFalse('hz_advertised' in info)
@@ -140,7 +135,7 @@ class TestLinux_RaspberryPiModelB(unittest.TestCase):
 	def test_all(self):
 		info = cpuinfo.get_cpu_info()
 
-		self.assertEqual('GenuineIntel', info['vendor_id'])
+		self.assertEqual('', info['vendor_id'])
 		self.assertEqual('BCM2708', info['hardware'])
 		self.assertEqual('ARMv6-compatible processor rev 7 (v6l)', info['brand'])
 		self.assertEqual('700.0000 MHz', info['hz_advertised'])
