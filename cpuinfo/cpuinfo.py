@@ -1050,6 +1050,10 @@ def _get_cpu_info_from_proc_cpuinfo():
 		return {}
 
 def _get_cpu_info_from_beagle_bone():
+	'''
+	Returns the CPU info gathered from cpufreq-info.
+	Returns None if cpufreq-info is not found.
+	'''
 	try:
 		scale, hz_brand = 1, '0.0'
 
@@ -1080,6 +1084,10 @@ def _get_cpu_info_from_beagle_bone():
 		return {}
 
 def _get_cpu_info_from_lscpu():
+	'''
+	Returns the CPU info gathered from lscpu.
+	Returns None if lscpu is not found.
+	'''
 	try:
 		scale, hz_brand = 1, '0.0'
 
