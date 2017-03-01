@@ -64,33 +64,19 @@ class TestFreeBSD_11_X86_64(unittest.TestCase):
 		helpers.monkey_patch_data_source(cpuinfo, MockDataSource)
 
 	'''
-	Make sure calls that should work return something,
-	and calls that should NOT work return None.
+	Make sure calls return the expected number of fields.
 	'''
 	def test_returns(self):
-		info = cpuinfo._get_cpu_info_from_registry()
-		self.assertEqual({}, info)
-
-		info = cpuinfo._get_cpu_info_from_proc_cpuinfo()
-		self.assertEqual({}, info)
-
-		info = cpuinfo._get_cpu_info_from_sysctl()
-		self.assertEqual({}, info)
-
-		info = cpuinfo._get_cpu_info_from_kstat()
-		self.assertEqual({}, info)
-
-		info = cpuinfo._get_cpu_info_from_dmesg()
-		self.assertIsNotNone(info)
-
-		info = cpuinfo._get_cpu_info_from_cat_var_run_dmesg_boot()
-		self.assertIsNotNone(info)
-
-		info = cpuinfo._get_cpu_info_from_sysinfo()
-		self.assertEqual({}, info)
-
-		info = cpuinfo._get_cpu_info_from_cpuid()
-		self.assertEqual({}, info)
+		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_registry()))
+		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_beagle_bone()))
+		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_lscpu()))
+		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_proc_cpuinfo()))
+		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_sysctl()))
+		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_kstat()))
+		self.assertEqual(21, len(cpuinfo._get_cpu_info_from_dmesg()))
+		self.assertEqual(21, len(cpuinfo._get_cpu_info_from_cat_var_run_dmesg_boot()))
+		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_sysinfo()))
+		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_cpuid()))
 
 	def test_get_cpu_info_from_dmesg(self):
 		info = cpuinfo._get_cpu_info_from_dmesg()

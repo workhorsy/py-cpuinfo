@@ -115,6 +115,21 @@ class TestParseErrors(unittest.TestCase):
 		helpers.restore_data_source(cpuinfo)
 		helpers.monkey_patch_data_source(cpuinfo, MockDataSource)
 
+	'''
+	Make sure calls return the expected number of fields.
+	'''
+	def test_returns(self):
+		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_registry()))
+		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_beagle_bone()))
+		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_lscpu()))
+		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_proc_cpuinfo()))
+		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_sysctl()))
+		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_kstat()))
+		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_dmesg()))
+		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_cat_var_run_dmesg_boot()))
+		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_sysinfo()))
+		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_cpuid()))
+
 	def test_all(self):
 		self.assertEqual({}, cpuinfo._get_cpu_info_from_registry())
 
