@@ -13,7 +13,9 @@ from test_example import TestExample
 from test_parse_errors import TestParseErrors
 from test_invalid_cpu import TestInvalidCPU
 from test_linux_debian_8_x86_64 import TestLinuxDebian_8_X86_64
+from test_linux_debian_8_5_x86_64 import TestLinuxDebian_8_5_X86_64
 from test_linux_ubuntu_16_04_x86_64 import TestLinuxUbuntu_16_04_X86_64
+from test_linux_fedora_24_x86_64 import TestLinuxFedora_24_X86_64
 from test_linux_aarch64_64 import TestLinux_Aarch_64
 from test_linux_gentoo_2_2_x86_64 import TestLinuxGentoo_2_2_X86_64
 from test_linux_beagle_bone_arm import TestLinux_BeagleBone
@@ -39,7 +41,9 @@ if __name__ == '__main__':
 	suite.addTest(unittest.makeSuite(TestParseErrors))
 	suite.addTest(unittest.makeSuite(TestInvalidCPU))
 	suite.addTest(unittest.makeSuite(TestLinuxDebian_8_X86_64))
+	suite.addTest(unittest.makeSuite(TestLinuxDebian_8_5_X86_64))
 	suite.addTest(unittest.makeSuite(TestLinuxUbuntu_16_04_X86_64))
+	suite.addTest(unittest.makeSuite(TestLinuxFedora_24_X86_64))
 	suite.addTest(unittest.makeSuite(TestLinux_Aarch_64))
 	suite.addTest(unittest.makeSuite(TestLinuxGentoo_2_2_X86_64))
 	suite.addTest(unittest.makeSuite(TestLinux_BeagleBone))
