@@ -509,9 +509,9 @@ class TestLinuxFedora_24_X86_64(unittest.TestCase):
 		self.assertEqual('', info['hardware'])
 		self.assertEqual('Intel(R) Pentium(R) CPU G640 @ 2.80GHz', info['brand'])
 		self.assertEqual('2.8000 GHz', info['hz_advertised'])
-		self.assertEqual('1.9014 GHz', info['hz_actual'])
+		self.assertEqual('2.7937 GHz', info['hz_actual'])
 		self.assertEqual((2800000000, 0), info['hz_advertised_raw'])
-		self.assertEqual((1901375000, 0), info['hz_actual_raw'])
+		self.assertEqual((2793652000, 0), info['hz_actual_raw'])
 		self.assertEqual('X86_64', info['arch'])
 		self.assertEqual(64, info['bits'])
 		self.assertEqual(2, info['count'])
@@ -529,17 +529,12 @@ class TestLinuxFedora_24_X86_64(unittest.TestCase):
 		self.assertEqual(0, info['extended_model'])
 		self.assertEqual(0, info['extended_family'])
 		self.assertEqual(
-			['acpi', 'aperfmperf', 'apic', 'arat', 'arch_perfmon', 'bts',
-			'clflush', 'cmov', 'constant_tsc', 'cx16', 'cx8', 'de', 'ds_cpl',
-			'dtes64', 'dtherm', 'dts', 'eagerfpu', 'epb', 'ept', 'est',
-			'flexpriority', 'fpu', 'fxsr', 'ht', 'lahf_lm', 'lm', 'mca',
-			'mce', 'mmx', 'monitor', 'msr', 'mtrr', 'nonstop_tsc', 'nopl',
-			'nx', 'pae', 'pat', 'pbe', 'pcid', 'pclmulqdq', 'pdcm', 'pebs',
-			'pge', 'pln', 'pni', 'popcnt', 'pse', 'pse36', 'pts', 'rdtscp',
-			'rep_good', 'sep', 'ss', 'sse', 'sse2', 'sse4_1', 'sse4_2',
-			'ssse3', 'syscall', 'tm', 'tm2', 'tpr_shadow', 'tsc',
-			'tsc_deadline_timer', 'vme', 'vmx', 'vnmi', 'vpid', 'xsave',
-			'xsaveopt', 'xtopology', 'xtpr']
+			['apic', 'clflush', 'cmov', 'constant_tsc', 'cx16', 'cx8', 'de',
+			'fpu', 'fxsr', 'ht', 'hypervisor', 'lahf_lm', 'lm', 'mca', 'mce',
+			'mmx', 'msr', 'mtrr', 'nonstop_tsc', 'nopl', 'nx', 'pae', 'pat',
+			'pclmulqdq', 'pge', 'pni', 'popcnt', 'pse', 'pse36', 'rdtscp',
+			'rep_good', 'sep', 'sse', 'sse2', 'sse4_1', 'sse4_2', 'ssse3',
+			'syscall', 'tsc', 'vme', 'xsave', 'xtopology']
 			,
 			info['flags']
 		)
