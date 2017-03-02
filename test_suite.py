@@ -39,9 +39,8 @@ if __name__ == '__main__':
 	suite = unittest.TestSuite()
 
 	suite.addTest(unittest.makeSuite(TestParseCPUString))
-
 	suite.addTest(unittest.makeSuite(TestExample))
-	#suite.addTest(unittest.makeSuite(TestParseErrors))
+	suite.addTest(unittest.makeSuite(TestParseErrors))
 	suite.addTest(unittest.makeSuite(TestInvalidCPU))
 	suite.addTest(unittest.makeSuite(TestLinuxDebian_8_X86_64))
 	suite.addTest(unittest.makeSuite(TestLinuxDebian_8_5_X86_64))
