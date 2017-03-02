@@ -453,7 +453,7 @@ class TestLinuxDebian_8_5_X86_64(unittest.TestCase):
 		self.assertEqual(21, len(cpuinfo._get_cpu_info_from_proc_cpuinfo()))
 		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_sysctl()))
 		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_kstat()))
-		self.assertEqual(21, len(cpuinfo._get_cpu_info_from_dmesg()))
+		self.assertEqual(20, len(cpuinfo._get_cpu_info_from_dmesg()))
 		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_cat_var_run_dmesg_boot()))
 		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_sysinfo()))
 		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_cpuid()))
@@ -469,9 +469,6 @@ class TestLinuxDebian_8_5_X86_64(unittest.TestCase):
 	def test_get_cpu_info_from_dmesg(self):
 		info = cpuinfo._get_cpu_info_from_dmesg()
 
-		# FIXME
-		#self.assertEqual('GenuineIntel', info['vendor_id'])
-		self.assertEqual('', info['hardware'])
 		self.assertEqual('Intel(R) Pentium(R) CPU G640 @ 2.80GHz', info['brand'])
 		self.assertEqual('2.8000 GHz', info['hz_advertised'])
 		self.assertEqual('2.8000 GHz', info['hz_actual'])
@@ -493,24 +490,11 @@ class TestLinuxDebian_8_5_X86_64(unittest.TestCase):
 		self.assertEqual(0, info['processor_type'])
 		self.assertEqual(0, info['extended_model'])
 		self.assertEqual(0, info['extended_family'])
-		# FIXME
-		'''
-		self.assertEqual(
-			['apic', 'cmov', 'cx16', 'cx8', 'de', 'fpu', 'fxsr', 'htt',
-			'lahf', 'lm', 'mca', 'mce', 'mmx', 'msr', 'mtrr', 'nx',
-			'osxsave', 'pae', 'pat', 'pclmulqdq', 'pge', 'popcnt', 'pse',
-			'pse36', 'rdtscp', 'sep', 'sse', 'sse2', 'sse3', 'sse4.1',
-			'sse4.2', 'ssse3', 'syscall', 'tsc', 'vme', 'xsave']
-			,
-			info['flags']
-		)
-		'''
 
 	def test_get_cpu_info_from_proc_cpuinfo(self):
 		info = cpuinfo._get_cpu_info_from_proc_cpuinfo()
 
 		self.assertEqual('GenuineIntel', info['vendor_id'])
-		self.assertEqual('', info['hardware'])
 		self.assertEqual('Intel(R) Pentium(R) CPU G640 @ 2.80GHz', info['brand'])
 		self.assertEqual('2.8000 GHz', info['hz_advertised'])
 		self.assertEqual('2.7937 GHz', info['hz_actual'])

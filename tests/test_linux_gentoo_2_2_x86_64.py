@@ -456,7 +456,7 @@ class TestLinuxGentoo_2_2_X86_64(unittest.TestCase):
 		self.assertEqual(21, len(cpuinfo._get_cpu_info_from_proc_cpuinfo()))
 		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_sysctl()))
 		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_kstat()))
-		self.assertEqual(21, len(cpuinfo._get_cpu_info_from_dmesg()))
+		self.assertEqual(20, len(cpuinfo._get_cpu_info_from_dmesg()))
 		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_cat_var_run_dmesg_boot()))
 		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_sysinfo()))
 		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_cpuid()))
@@ -465,7 +465,6 @@ class TestLinuxGentoo_2_2_X86_64(unittest.TestCase):
 		info = cpuinfo._get_cpu_info_from_proc_cpuinfo()
 
 		self.assertEqual('GenuineIntel', info['vendor_id'])
-		self.assertEqual('', info['hardware'])
 		self.assertEqual('Intel(R) Pentium(R) CPU G640 @ 2.80GHz', info['brand'])
 		self.assertEqual('2.8000 GHz', info['hz_advertised'])
 		self.assertEqual('2.7937 GHz', info['hz_actual'])

@@ -68,7 +68,7 @@ class TestHaiku(unittest.TestCase):
 		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_kstat()))
 		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_dmesg()))
 		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_cat_var_run_dmesg_boot()))
-		self.assertEqual(21, len(cpuinfo._get_cpu_info_from_sysinfo()))
+		self.assertEqual(20, len(cpuinfo._get_cpu_info_from_sysinfo()))
 		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_cpuid()))
 
 	def test_all(self):
@@ -76,7 +76,6 @@ class TestHaiku(unittest.TestCase):
 
 		# FIXME: Add vendor id
 		#self.assertEqual('GenuineIntel', info['vendor_id'])
-		self.assertEqual('', info['hardware'])
 		self.assertEqual('Intel(R) Core(TM) i7 CPU         870  @ 2.93GHz', info['brand'])
 		self.assertEqual('2.9300 GHz', info['hz_advertised'])
 		self.assertEqual('2.9300 GHz', info['hz_actual'])

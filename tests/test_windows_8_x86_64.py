@@ -44,7 +44,7 @@ class TestWindows_8_X86_64(unittest.TestCase):
 	Make sure calls return the expected number of fields.
 	'''
 	def test_returns(self):
-		self.assertEqual(21, len(cpuinfo._get_cpu_info_from_registry()))
+		self.assertEqual(20, len(cpuinfo._get_cpu_info_from_registry()))
 		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_beagle_bone()))
 		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_lscpu()))
 		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_proc_cpuinfo()))
@@ -59,7 +59,6 @@ class TestWindows_8_X86_64(unittest.TestCase):
 		info = cpuinfo._get_cpu_info_from_registry()
 
 		self.assertEqual('GenuineIntel', info['vendor_id'])
-		self.assertEqual('', info['hardware'])
 		self.assertEqual('Intel(R) Core(TM) i7 CPU         870  @ 2.93GHz', info['brand'])
 		self.assertEqual('2.9300 GHz', info['hz_advertised'])
 		self.assertEqual('2.9330 GHz', info['hz_actual'])
