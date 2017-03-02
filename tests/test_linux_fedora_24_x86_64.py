@@ -453,7 +453,7 @@ class TestLinuxFedora_24_X86_64(unittest.TestCase):
 		self.assertEqual(21, len(cpuinfo._get_cpu_info_from_proc_cpuinfo()))
 		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_sysctl()))
 		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_kstat()))
-		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_dmesg()))
+		self.assertEqual(21, len(cpuinfo._get_cpu_info_from_dmesg()))
 		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_cat_var_run_dmesg_boot()))
 		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_sysinfo()))
 		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_cpuid()))
@@ -461,10 +461,10 @@ class TestLinuxFedora_24_X86_64(unittest.TestCase):
 	def test_get_cpu_info_from_lscpu(self):
 		info = cpuinfo._get_cpu_info_from_lscpu()
 
-		self.assertEqual('2.0708 GHz', info['hz_advertised'])
-		self.assertEqual('2.0708 GHz', info['hz_actual'])
-		self.assertEqual((2070796000, 0), info['hz_advertised_raw'])
-		self.assertEqual((2070796000, 0), info['hz_actual_raw'])
+		self.assertEqual('2.7937 GHz', info['hz_advertised'])
+		self.assertEqual('2.7937 GHz', info['hz_actual'])
+		self.assertEqual((2793652000, 0), info['hz_advertised_raw'])
+		self.assertEqual((2793652000, 0), info['hz_actual_raw'])
 
 	def test_get_cpu_info_from_dmesg(self):
 		info = cpuinfo._get_cpu_info_from_dmesg()

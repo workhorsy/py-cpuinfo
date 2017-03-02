@@ -11,6 +11,7 @@ sys.path.append(os.path.realpath('tests'))
 # Import all the test files
 from test_example import TestExample
 from test_parse_errors import TestParseErrors
+from test_parse_cpu_string import TestParseCPUString
 from test_invalid_cpu import TestInvalidCPU
 from test_linux_debian_8_x86_64 import TestLinuxDebian_8_X86_64
 from test_linux_debian_8_5_x86_64 import TestLinuxDebian_8_5_X86_64
@@ -37,8 +38,10 @@ if __name__ == '__main__':
 
 	suite = unittest.TestSuite()
 
+	suite.addTest(unittest.makeSuite(TestParseCPUString))
+
 	suite.addTest(unittest.makeSuite(TestExample))
-	suite.addTest(unittest.makeSuite(TestParseErrors))
+	#suite.addTest(unittest.makeSuite(TestParseErrors))
 	suite.addTest(unittest.makeSuite(TestInvalidCPU))
 	suite.addTest(unittest.makeSuite(TestLinuxDebian_8_X86_64))
 	suite.addTest(unittest.makeSuite(TestLinuxDebian_8_5_X86_64))
