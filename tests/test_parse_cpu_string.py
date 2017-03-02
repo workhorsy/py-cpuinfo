@@ -38,6 +38,16 @@ class TestParseCPUString(unittest.TestCase):
 		self.assertEqual(None, model)
 		self.assertEqual(None, family)
 
+		processor_brand, hz_actual, scale, vendor_id, stepping, model, family = \
+		cpuinfo._parse_cpu_string("Intel(R) Pentium(R) CPU G640 @ 2.80GHz (2793.73-MHz K8-class CPU)")
+		self.assertEqual("Intel(R) Pentium(R) CPU G640 @ 2.80GHz", processor_brand)
+		self.assertEqual('2.8', hz_actual)
+		self.assertEqual(9, scale)
+		self.assertEqual(None, vendor_id)
+		self.assertEqual(None, stepping)
+		self.assertEqual(None, model)
+		self.assertEqual(None, family)
+
 	def test_to_friendly_hz(self):
 		scale, hz_brand = cpuinfo._get_hz_string_from_brand('Intel(R) Pentium(R) CPU G640 @ 2.80GHz')
 		self.assertEqual(9, scale)

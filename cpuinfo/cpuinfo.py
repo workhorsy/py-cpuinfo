@@ -1137,23 +1137,26 @@ def _parse_cpu_string(cpu_string):
 	# Various fields
 	vendor_id, stepping, model, family = (None, None, None, None)
 	if fields:
-		fields = fields.rsplit('(', 1)[1].split(')')[0].split(',')
-		fields = [f.strip().lower() for f in fields]
-		fields = [f.split(':') for f in fields]
-		fields = [{f[0].strip() : f[1].strip()} for f in fields]
-		#print('fields: ', fields)
-		for field in fields:
-			name = field.keys()[0]
-			value = field.values()[0]
-			#print('name:{0}, value:{1}'.format(name, value))
-			if name == 'origin':
-				vendor_id = value.strip('"')
-			elif name == 'stepping':
-				stepping = int(value.lstrip('0x'), 16)
-			elif name == 'model':
-				model = int(value.lstrip('0x'), 16)
-			elif name in ['fam', 'family']:
-				family = int(value.lstrip('0x'), 16)
+		try:
+			fields = fields.rsplit('(', 1)[1].split(')')[0].split(',')
+			fields = [f.strip().lower() for f in fields]
+			fields = [f.split(':') for f in fields]
+			fields = [{f[0].strip() : f[1].strip()} for f in fields]
+			#print('fields: ', fields)
+			for field in fields:
+				name = field.keys()[0]
+				value = field.values()[0]
+				#print('name:{0}, value:{1}'.format(name, value))
+				if name == 'origin':
+					vendor_id = value.strip('"')
+				elif name == 'stepping':
+					stepping = int(value.lstrip('0x'), 16)
+				elif name == 'model':
+					model = int(value.lstrip('0x'), 16)
+				elif name in ['fam', 'family']:
+					family = int(value.lstrip('0x'), 16)
+		except:
+			pass
 
 	return (processor_brand, hz_brand, scale, vendor_id, stepping, model, family)
 
