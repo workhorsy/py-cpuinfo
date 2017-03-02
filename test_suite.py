@@ -36,28 +36,35 @@ if __name__ == '__main__':
 	import helpers
 	helpers.backup_data_source(cpuinfo)
 
+	# Get all the tests
+	tests = [
+		TestParseCPUString,
+		TestExample,
+		TestParseErrors,
+		TestInvalidCPU,
+		TestLinuxDebian_8_X86_64,
+		TestLinuxDebian_8_5_X86_64,
+		TestLinuxUbuntu_16_04_X86_64,
+		TestLinuxFedora_24_X86_64,
+		TestLinux_Aarch_64,
+		TestLinuxGentoo_2_2_X86_64,
+		TestLinux_BeagleBone,
+		TestLinux_RaspberryPiModelB,
+		TestFreeBSD_11_X86_64,
+		TestPCBSD,
+		TestOSX,
+		TestSolaris,
+		TestHaiku,
+		TestWindows_8_X86_64,
+		TestWindows_10_X86_64,
+		TestActual
+	]
+
+	# Add the tests to the suite
 	suite = unittest.TestSuite()
+	for test in tests:
+		suite.addTest(unittest.makeSuite(test))
 
-	suite.addTest(unittest.makeSuite(TestParseCPUString))
-	suite.addTest(unittest.makeSuite(TestExample))
-	suite.addTest(unittest.makeSuite(TestParseErrors))
-	suite.addTest(unittest.makeSuite(TestInvalidCPU))
-	suite.addTest(unittest.makeSuite(TestLinuxDebian_8_X86_64))
-	suite.addTest(unittest.makeSuite(TestLinuxDebian_8_5_X86_64))
-	suite.addTest(unittest.makeSuite(TestLinuxUbuntu_16_04_X86_64))
-	suite.addTest(unittest.makeSuite(TestLinuxFedora_24_X86_64))
-	suite.addTest(unittest.makeSuite(TestLinux_Aarch_64))
-	suite.addTest(unittest.makeSuite(TestLinuxGentoo_2_2_X86_64))
-	suite.addTest(unittest.makeSuite(TestLinux_BeagleBone))
-	suite.addTest(unittest.makeSuite(TestLinux_RaspberryPiModelB))
-	suite.addTest(unittest.makeSuite(TestFreeBSD_11_X86_64))
-	suite.addTest(unittest.makeSuite(TestPCBSD))
-	suite.addTest(unittest.makeSuite(TestOSX))
-	suite.addTest(unittest.makeSuite(TestSolaris))
-	suite.addTest(unittest.makeSuite(TestHaiku))
-	suite.addTest(unittest.makeSuite(TestWindows_8_X86_64))
-	suite.addTest(unittest.makeSuite(TestWindows_10_X86_64))
-	suite.addTest(unittest.makeSuite(TestActual))
-
+	# Run the tests
 	runner = unittest.TextTestRunner()
 	runner.run(suite)
