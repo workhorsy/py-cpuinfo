@@ -1175,11 +1175,29 @@ def _get_cpu_info_from_dmesg():
 		if output == None or returncode != 0:
 			return {}
 
-		# FIXME: This breaks when there are multiple CPU0: or CPU strings.
-		raw = output.split('CPU0:')[1].split("\n")[0].strip()
-		processor_brand, hz_actual, scale, vendor_id, stepping, model, family = \
-		_parse_cpu_string(raw)
-		#print((processor_brand, hz_actual, scale, vendor_id, stepping, model, family))
+		# Get all the dmesg lines that might contain a CPU string
+		lines = output.split('CPU0:')[1:] + \
+				output.split('CPU1:')[1:] + \
+				output.split('CPU:')[1:]
+		lines = [l.split('\n')[0].strip() for l in lines]
+
+		# Convert the lines to CPU strings
+		cpu_strings = [_parse_cpu_string(l) for l in lines]
+
+		# Find the CPU string that has the most fields
+		best_string = None
+		highest_count = 0
+		for cpu_string in cpu_strings:
+			count = sum([n is not None for n in cpu_string])
+			if count > highest_count:
+				highest_count = count
+				best_string = cpu_string
+
+		# If no CPU string was found, return {}
+		if not best_string:
+			return {}
+
+		processor_brand, hz_actual, scale, vendor_id, stepping, model, family = best_string
 
 		# Flags
 		flag_lines = []
