@@ -100,6 +100,7 @@ L2 cache:              16384K
 NUMA node0 CPU(s):     0-47
 NUMA node1 CPU(s):     48-95
 '''
+		return returncode, output
 
 
 class TestLinux_Aarch_64(unittest.TestCase):
@@ -108,33 +109,29 @@ class TestLinux_Aarch_64(unittest.TestCase):
 		helpers.monkey_patch_data_source(cpuinfo, MockDataSource)
 
 	'''
-	Make sure calls that should work return something,
-	and calls that should NOT work return None.
+	Make sure calls return the expected number of fields.
 	'''
 	def test_returns(self):
-		info = cpuinfo._get_cpu_info_from_registry()
-		self.assertIsNone(info)
+		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_registry()))
+		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_cpufreq_info()))
+		self.assertEqual(4, len(cpuinfo._get_cpu_info_from_lscpu()))
+		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_proc_cpuinfo()))
+		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_sysctl()))
+		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_kstat()))
+		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_dmesg()))
+		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_cat_var_run_dmesg_boot()))
+		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_sysinfo()))
+		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_cpuid()))
+		self.assertEqual(4, len(cpuinfo.get_cpu_info()))
 
-		info = cpuinfo._get_cpu_info_from_proc_cpuinfo()
-		self.assertIsNone(info)
+	def test_get_cpu_info_from_lscpu(self):
+		info = cpuinfo._get_cpu_info_from_lscpu()
 
-		info = cpuinfo._get_cpu_info_from_sysctl()
-		self.assertIsNone(info)
+		self.assertEqual('ARM_8', info['arch'])
+		self.assertEqual(64, info['bits'])
+		self.assertEqual(6, info['count'])
 
-		info = cpuinfo._get_cpu_info_from_kstat()
-		self.assertIsNone(info)
-
-		info = cpuinfo._get_cpu_info_from_dmesg()
-		self.assertIsNone(info)
-
-		info = cpuinfo._get_cpu_info_from_cat_var_run_dmesg_boot()
-		self.assertIsNone(info)
-
-		info = cpuinfo._get_cpu_info_from_sysinfo()
-		self.assertIsNone(info)
-
-		info = cpuinfo._get_cpu_info_from_cpuid()
-		self.assertIsNone(info)
+		self.assertEqual('aarch64', info['raw_arch_string'])
 
 	'''
 	FIXME: This fails because it does not have a way

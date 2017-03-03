@@ -70,38 +70,49 @@ class TestLinux_BeagleBone(unittest.TestCase):
 		helpers.monkey_patch_data_source(cpuinfo, MockDataSource)
 
 	'''
-	Make sure calls that should work return something,
-	and calls that should NOT work return None.
+	Make sure calls return the expected number of fields.
 	'''
 	def test_returns(self):
-		info = cpuinfo._get_cpu_info_from_registry()
-		self.assertIsNone(info)
+		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_registry()))
+		self.assertEqual(4, len(cpuinfo._get_cpu_info_from_cpufreq_info()))
+		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_lscpu()))
+		self.assertEqual(8, len(cpuinfo._get_cpu_info_from_proc_cpuinfo()))
+		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_sysctl()))
+		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_kstat()))
+		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_dmesg()))
+		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_cat_var_run_dmesg_boot()))
+		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_sysinfo()))
+		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_cpuid()))
+		self.assertEqual(11, len(cpuinfo.get_cpu_info()))
 
+	def test_get_cpu_info_from_cpufreq_info(self):
+		info = cpuinfo._get_cpu_info_from_cpufreq_info()
+
+		self.assertEqual('1.0000 GHz', info['hz_advertised'])
+		self.assertEqual('1.0000 GHz', info['hz_actual'])
+		self.assertEqual((1000000000, 0), info['hz_advertised_raw'])
+		self.assertEqual((1000000000, 0), info['hz_actual_raw'])
+
+	def test_get_cpu_info_from_proc_cpuinfo(self):
 		info = cpuinfo._get_cpu_info_from_proc_cpuinfo()
-		self.assertIsNotNone(info)
 
-		info = cpuinfo._get_cpu_info_from_sysctl()
-		self.assertIsNone(info)
+		self.assertEqual('BCM2708', info['hardware'])
+		self.assertEqual('ARMv6-compatible processor rev 7 (v6l)', info['brand'])
+		self.assertEqual('ARM_7', info['arch'])
+		self.assertEqual(32, info['bits'])
+		self.assertEqual(1, info['count'])
 
-		info = cpuinfo._get_cpu_info_from_kstat()
-		self.assertIsNone(info)
+		self.assertEqual('armv7l', info['raw_arch_string'])
 
-		info = cpuinfo._get_cpu_info_from_dmesg()
-		self.assertIsNone(info)
-
-		info = cpuinfo._get_cpu_info_from_cat_var_run_dmesg_boot()
-		self.assertIsNone(info)
-
-		info = cpuinfo._get_cpu_info_from_sysinfo()
-		self.assertIsNone(info)
-
-		info = cpuinfo._get_cpu_info_from_cpuid()
-		self.assertIsNone(info)
+		self.assertEqual(
+			['edsp', 'fastmult', 'half', 'java', 'swp', 'thumb', 'tls', 'vfp']
+			,
+			info['flags']
+		)
 
 	def test_all(self):
-		info = cpuinfo._get_cpu_info_from_proc_cpuinfo()
+		info = cpuinfo.get_cpu_info()
 
-		self.assertEqual('', info['vendor_id'])
 		self.assertEqual('BCM2708', info['hardware'])
 		self.assertEqual('ARMv6-compatible processor rev 7 (v6l)', info['brand'])
 		self.assertEqual('1.0000 GHz', info['hz_advertised'])
@@ -114,16 +125,6 @@ class TestLinux_BeagleBone(unittest.TestCase):
 
 		self.assertEqual('armv7l', info['raw_arch_string'])
 
-		self.assertEqual('', info['l2_cache_size'])
-		self.assertEqual(0, info['l2_cache_line_size'])
-		self.assertEqual(0, info['l2_cache_associativity'])
-
-		self.assertEqual(0, info['stepping'])
-		self.assertEqual(0, info['model'])
-		self.assertEqual(0, info['family'])
-		self.assertEqual(0, info['processor_type'])
-		self.assertEqual(0, info['extended_model'])
-		self.assertEqual(0, info['extended_family'])
 		self.assertEqual(
 			['edsp', 'fastmult', 'half', 'java', 'swp', 'thumb', 'tls', 'vfp']
 			,

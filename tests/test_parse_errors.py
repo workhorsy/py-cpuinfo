@@ -10,6 +10,7 @@ class MockDataSource(object):
 	cpu_count = 1
 	is_windows = True
 	raw_arch_string = 'x86_64'
+	can_cpuid = False
 
 	@staticmethod
 	def has_proc_cpuinfo():
@@ -90,23 +91,23 @@ class MockDataSource(object):
 
 	@staticmethod
 	def winreg_processor_brand():
-		return None
+		return {}
 
 	@staticmethod
 	def winreg_vendor_id():
-		return None
+		return {}
 
 	@staticmethod
 	def winreg_raw_arch_string():
-		return None
+		return {}
 
 	@staticmethod
 	def winreg_hz_actual():
-		return None
+		return {}
 
 	@staticmethod
 	def winreg_feature_bits():
-		return None
+		return {}
 
 
 class TestParseErrors(unittest.TestCase):
@@ -114,21 +115,36 @@ class TestParseErrors(unittest.TestCase):
 		helpers.restore_data_source(cpuinfo)
 		helpers.monkey_patch_data_source(cpuinfo, MockDataSource)
 
+	'''
+	Make sure calls return the expected number of fields.
+	'''
+	def test_returns(self):
+		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_registry()))
+		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_cpufreq_info()))
+		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_lscpu()))
+		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_proc_cpuinfo()))
+		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_sysctl()))
+		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_kstat()))
+		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_dmesg()))
+		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_cat_var_run_dmesg_boot()))
+		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_sysinfo()))
+		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_cpuid()))
+
 	def test_all(self):
-		self.assertIsNone(cpuinfo._get_cpu_info_from_registry())
+		self.assertEqual({}, cpuinfo._get_cpu_info_from_registry())
 
-		self.assertIsNone(cpuinfo._get_cpu_info_from_proc_cpuinfo())
+		self.assertEqual({}, cpuinfo._get_cpu_info_from_proc_cpuinfo())
 
-		self.assertIsNone(cpuinfo._get_cpu_info_from_sysctl())
+		self.assertEqual({}, cpuinfo._get_cpu_info_from_sysctl())
 
-		self.assertIsNone(cpuinfo._get_cpu_info_from_kstat())
+		self.assertEqual({}, cpuinfo._get_cpu_info_from_kstat())
 
-		self.assertIsNone(cpuinfo._get_cpu_info_from_dmesg())
+		self.assertEqual({}, cpuinfo._get_cpu_info_from_dmesg())
 
-		self.assertIsNone(cpuinfo._get_cpu_info_from_cat_var_run_dmesg_boot())
+		self.assertEqual({}, cpuinfo._get_cpu_info_from_cat_var_run_dmesg_boot())
 
-		self.assertIsNone(cpuinfo._get_cpu_info_from_sysinfo())
+		self.assertEqual({}, cpuinfo._get_cpu_info_from_sysinfo())
 
-		#self.assertIsNone(cpuinfo._get_cpu_info_from_cpuid())
+		#self.assertEqual({}, cpuinfo._get_cpu_info_from_cpuid())
 
-		#self.assertIsNone(cpuinfo.get_cpu_info())
+		#self.assertEqual({}, cpuinfo.get_cpu_info())

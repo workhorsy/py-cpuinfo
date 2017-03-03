@@ -45,60 +45,59 @@ class TestPCBSD(unittest.TestCase):
 		helpers.monkey_patch_data_source(cpuinfo, MockDataSource)
 
 	'''
-	Make sure calls that should work return something,
-	and calls that should NOT work return None.
+	Make sure calls return the expected number of fields.
 	'''
 	def test_returns(self):
-		info = cpuinfo._get_cpu_info_from_registry()
-		self.assertIsNone(info)
+		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_registry()))
+		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_cpufreq_info()))
+		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_lscpu()))
+		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_proc_cpuinfo()))
+		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_sysctl()))
+		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_kstat()))
+		self.assertEqual(14, len(cpuinfo._get_cpu_info_from_dmesg()))
+		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_cat_var_run_dmesg_boot()))
+		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_sysinfo()))
+		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_cpuid()))
+		self.assertEqual(10, len(cpuinfo.get_cpu_info()))
 
-		info = cpuinfo._get_cpu_info_from_proc_cpuinfo()
-		self.assertIsNone(info)
-
-		info = cpuinfo._get_cpu_info_from_sysctl()
-		self.assertIsNone(info)
-
-		info = cpuinfo._get_cpu_info_from_kstat()
-		self.assertIsNone(info)
-
-		info = cpuinfo._get_cpu_info_from_dmesg()
-		self.assertIsNotNone(info)
-
-		info = cpuinfo._get_cpu_info_from_cat_var_run_dmesg_boot()
-		self.assertIsNone(info)
-
-		info = cpuinfo._get_cpu_info_from_sysinfo()
-		self.assertIsNone(info)
-
-		info = cpuinfo._get_cpu_info_from_cpuid()
-		self.assertIsNone(info)
-
-	def test_all(self):
+	def test_get_cpu_info_from_dmesg(self):
 		info = cpuinfo._get_cpu_info_from_dmesg()
 
-		self.assertEqual('GenuineIntel', info['vendor_id'])
-		self.assertEqual('', info['hardware'])
+		self.assertEqual(None, info['vendor_id'])
 		self.assertEqual('Intel(R) Core(TM) i5-4440 CPU @ 3.10GHz', info['brand'])
 		self.assertEqual('3.1000 GHz', info['hz_advertised'])
-		self.assertEqual('2.9934 GHz', info['hz_actual'])
+		self.assertEqual('3.1000 GHz', info['hz_actual'])
 		self.assertEqual((3100000000, 0), info['hz_advertised_raw'])
-		self.assertEqual((2993390000, 0), info['hz_actual_raw'])
+		self.assertEqual((3100000000, 0), info['hz_actual_raw'])
 		self.assertEqual('X86_64', info['arch'])
 		self.assertEqual(64, info['bits'])
 		self.assertEqual(1, info['count'])
 
 		self.assertEqual('amd64', info['raw_arch_string'])
 
-		self.assertEqual(0, info['l2_cache_size'])
-		self.assertEqual(0, info['l2_cache_line_size'])
-		self.assertEqual(0, info['l2_cache_associativity'])
+		self.assertEqual(
+			['apic', 'clflush', 'cmov', 'cx8', 'de', 'fpu', 'fxsr', 'lahf',
+			'lm', 'mca', 'mce', 'mmx', 'mon', 'msr', 'mtrr', 'nx', 'pae',
+			'pat', 'pge', 'pse', 'pse36', 'rdtscp', 'sep', 'sse', 'sse2',
+			'sse3', 'ssse3', 'syscall', 'tsc', 'vme']
+			,
+			info['flags']
+		)
 
-		self.assertEqual(3, info['stepping'])
-		self.assertEqual(60, info['model'])
-		self.assertEqual(6, info['family'])
-		self.assertEqual(0, info['processor_type'])
-		self.assertEqual(0, info['extended_model'])
-		self.assertEqual(0, info['extended_family'])
+	def test_all(self):
+		info = cpuinfo.get_cpu_info()
+
+		self.assertEqual('Intel(R) Core(TM) i5-4440 CPU @ 3.10GHz', info['brand'])
+		self.assertEqual('3.1000 GHz', info['hz_advertised'])
+		self.assertEqual('3.1000 GHz', info['hz_actual'])
+		self.assertEqual((3100000000, 0), info['hz_advertised_raw'])
+		self.assertEqual((3100000000, 0), info['hz_actual_raw'])
+		self.assertEqual('X86_64', info['arch'])
+		self.assertEqual(64, info['bits'])
+		self.assertEqual(1, info['count'])
+
+		self.assertEqual('amd64', info['raw_arch_string'])
+
 		self.assertEqual(
 			['apic', 'clflush', 'cmov', 'cx8', 'de', 'fpu', 'fxsr', 'lahf',
 			'lm', 'mca', 'mce', 'mmx', 'mon', 'msr', 'mtrr', 'nx', 'pae',

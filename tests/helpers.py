@@ -8,6 +8,10 @@ class EmptyDataSource(object):
 		return False
 
 	@staticmethod
+	def has_lscpu():
+		return False
+
+	@staticmethod
 	def has_dmesg():
 		return False
 

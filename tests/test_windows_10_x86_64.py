@@ -41,39 +41,25 @@ class TestWindows_10_X86_64(unittest.TestCase):
 		helpers.monkey_patch_data_source(cpuinfo, MockDataSource)
 
 	'''
-	Make sure calls that should work return something,
-	and calls that should NOT work return None.
+	Make sure calls return the expected number of fields.
 	'''
 	def test_returns(self):
-		info = cpuinfo._get_cpu_info_from_registry()
-		self.assertIsNotNone(info)
+		self.assertEqual(11, len(cpuinfo._get_cpu_info_from_registry()))
+		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_cpufreq_info()))
+		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_lscpu()))
+		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_proc_cpuinfo()))
+		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_sysctl()))
+		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_kstat()))
+		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_dmesg()))
+		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_cat_var_run_dmesg_boot()))
+		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_sysinfo()))
+		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_cpuid()))
+		self.assertEqual(11, len(cpuinfo.get_cpu_info()))
 
-		info = cpuinfo._get_cpu_info_from_proc_cpuinfo()
-		self.assertIsNone(info)
-
-		info = cpuinfo._get_cpu_info_from_sysctl()
-		self.assertIsNone(info)
-
-		info = cpuinfo._get_cpu_info_from_kstat()
-		self.assertIsNone(info)
-
-		info = cpuinfo._get_cpu_info_from_dmesg()
-		self.assertIsNone(info)
-
-		info = cpuinfo._get_cpu_info_from_cat_var_run_dmesg_boot()
-		self.assertIsNone(info)
-
-		info = cpuinfo._get_cpu_info_from_sysinfo()
-		self.assertIsNone(info)
-
-		info = cpuinfo._get_cpu_info_from_cpuid()
-		self.assertIsNone(info)
-
-	def test_all(self):
+	def test_get_cpu_info_from_registry(self):
 		info = cpuinfo._get_cpu_info_from_registry()
 
 		self.assertEqual('GenuineIntel', info['vendor_id'])
-		self.assertEqual('', info['hardware'])
 		self.assertEqual('Intel(R) Core(TM) i5-4300U CPU @ 1.90GHz', info['brand'])
 		self.assertEqual('1.9000 GHz', info['hz_advertised'])
 		self.assertEqual('2.4940 GHz', info['hz_actual'])
@@ -85,16 +71,30 @@ class TestWindows_10_X86_64(unittest.TestCase):
 
 		self.assertEqual('AMD64', info['raw_arch_string'])
 
-		self.assertEqual(0, info['l2_cache_size']) # FIXME
-		self.assertEqual(0, info['l2_cache_line_size'])
-		self.assertEqual(0, info['l2_cache_associativity'])
+		 # FIXME: Missing flags such as sse3 and sse4
+		self.assertEqual(
+			['3dnow', 'acpi', 'clflush', 'cmov', 'de', 'dts', 'fxsr',
+			'ia64', 'mca', 'mce', 'mmx', 'msr', 'mtrr', 'pse', 'sep',
+			'serial', 'ss', 'sse', 'sse2', 'tm', 'tsc']
+			,
+			info['flags']
+		)
 
-		self.assertEqual(0, info['stepping']) # FIXME
-		self.assertEqual(0, info['model']) # FIXME
-		self.assertEqual(0, info['family']) # FIXME
-		self.assertEqual(0, info['processor_type'])
-		self.assertEqual(0, info['extended_model'])
-		self.assertEqual(0, info['extended_family'])
+	def test_all(self):
+		info = cpuinfo.get_cpu_info()
+
+		self.assertEqual('GenuineIntel', info['vendor_id'])
+		self.assertEqual('Intel(R) Core(TM) i5-4300U CPU @ 1.90GHz', info['brand'])
+		self.assertEqual('1.9000 GHz', info['hz_advertised'])
+		self.assertEqual('2.4940 GHz', info['hz_actual'])
+		self.assertEqual((1900000000, 0), info['hz_advertised_raw'])
+		self.assertEqual((2494000000, 0), info['hz_actual_raw'])
+		self.assertEqual('X86_64', info['arch'])
+		self.assertEqual(64, info['bits'])
+		self.assertEqual(4, info['count'])
+
+		self.assertEqual('AMD64', info['raw_arch_string'])
+
 		 # FIXME: Missing flags such as sse3 and sse4
 		self.assertEqual(
 			['3dnow', 'acpi', 'clflush', 'cmov', 'de', 'dts', 'fxsr',
