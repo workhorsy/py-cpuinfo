@@ -484,16 +484,9 @@ class TestLinuxUbuntu_16_04_X86_64(unittest.TestCase):
 
 		self.assertEqual('x86_64', info['raw_arch_string'])
 
-		self.assertEqual(0, info['l2_cache_size'])
-		self.assertEqual(0, info['l2_cache_line_size'])
-		self.assertEqual(0, info['l2_cache_associativity'])
-
 		self.assertEqual(7, info['stepping'])
 		self.assertEqual(42, info['model'])
 		self.assertEqual(6, info['family'])
-		self.assertEqual(0, info['processor_type'])
-		self.assertEqual(0, info['extended_model'])
-		self.assertEqual(0, info['extended_family'])
 
 	def test_get_cpu_info_from_proc_cpuinfo(self):
 		info = cpuinfo._get_cpu_info_from_proc_cpuinfo()
