@@ -452,7 +452,7 @@ class TestLinuxGentoo_2_2_X86_64(unittest.TestCase):
 	def test_returns(self):
 		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_registry()))
 		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_beagle_bone()))
-		self.assertEqual(4, len(cpuinfo._get_cpu_info_from_lscpu()))
+		self.assertEqual(14, len(cpuinfo._get_cpu_info_from_lscpu()))
 		self.assertEqual(16, len(cpuinfo._get_cpu_info_from_proc_cpuinfo()))
 		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_sysctl()))
 		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_kstat()))
@@ -464,10 +464,31 @@ class TestLinuxGentoo_2_2_X86_64(unittest.TestCase):
 	def test_get_cpu_info_from_lscpu(self):
 		info = cpuinfo._get_cpu_info_from_lscpu()
 
+		self.assertEqual('GenuineIntel', info['vendor_id'])
+		self.assertEqual('Intel(R) Pentium(R) CPU G640 @ 2.80GHz', info['brand'])
 		self.assertEqual('2.7937 GHz', info['hz_advertised'])
 		self.assertEqual('2.7937 GHz', info['hz_actual'])
 		self.assertEqual((2793652000, 0), info['hz_advertised_raw'])
 		self.assertEqual((2793652000, 0), info['hz_actual_raw'])
+		self.assertEqual('X86_64', info['arch'])
+		self.assertEqual(64, info['bits'])
+		self.assertEqual(2, info['count'])
+
+		self.assertEqual('x86_64', info['raw_arch_string'])
+
+		self.assertEqual(7, info['stepping'])
+		self.assertEqual(42, info['model'])
+		self.assertEqual(6, info['family'])
+		self.assertEqual(
+			['apic', 'clflush', 'cmov', 'constant_tsc', 'cx16', 'cx8', 'de',
+			'fpu', 'fxsr', 'ht', 'hypervisor', 'lahf_lm', 'lm', 'mca', 'mce',
+			'mmx', 'msr', 'mtrr', 'nonstop_tsc', 'nopl', 'nx', 'pae', 'pat',
+			'pclmulqdq', 'pge', 'pni', 'popcnt', 'pse', 'pse36', 'rdtscp',
+			'rep_good', 'sep', 'sse', 'sse2', 'sse4_1', 'sse4_2', 'ssse3',
+			'syscall', 'tsc', 'vme', 'xsave', 'xtopology']
+			,
+			info['flags']
+		)
 
 	def test_get_cpu_info_from_dmesg(self):
 		info = cpuinfo._get_cpu_info_from_dmesg()

@@ -69,7 +69,7 @@ class TestLinux_RaspberryPiModelB(unittest.TestCase):
 	def test_returns(self):
 		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_registry()))
 		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_beagle_bone()))
-		self.assertEqual(4, len(cpuinfo._get_cpu_info_from_lscpu()))
+		self.assertEqual(8, len(cpuinfo._get_cpu_info_from_lscpu()))
 		self.assertEqual(12, len(cpuinfo._get_cpu_info_from_proc_cpuinfo()))
 		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_sysctl()))
 		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_kstat()))
@@ -86,6 +86,11 @@ class TestLinux_RaspberryPiModelB(unittest.TestCase):
 		self.assertEqual('700.0000 MHz', info['hz_actual'])
 		self.assertEqual((700000000, 0), info['hz_advertised_raw'])
 		self.assertEqual((700000000, 0), info['hz_actual_raw'])
+		self.assertEqual('ARM_7', info['arch'])
+		self.assertEqual(32, info['bits'])
+		self.assertEqual(1, info['count'])
+
+		self.assertEqual('armv6l', info['raw_arch_string'])
 
 	def test_get_cpu_info_from_proc_cpuinfo(self):
 		info = cpuinfo._get_cpu_info_from_proc_cpuinfo()

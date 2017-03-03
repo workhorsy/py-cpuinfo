@@ -1084,8 +1084,6 @@ def _get_cpu_info_from_lscpu():
 	Returns {} if lscpu is not found.
 	'''
 	try:
-		scale, hz_brand = 1, '0.0'
-
 		if not DataSource.has_lscpu():
 			return {}
 
@@ -1093,19 +1091,56 @@ def _get_cpu_info_from_lscpu():
 		if returncode != 0:
 			return {}
 
-		new_hz = _get_field(False, output, None, None, 'CPU max MHz', 'CPU MHz')
-		if new_hz == None:
-			return {}
-
-		new_hz = to_hz_string(new_hz)
-		scale = 6
-
-		return {
-			'hz_advertised' : to_friendly_hz(new_hz, scale),
-			'hz_actual' : to_friendly_hz(new_hz, 6),
-			'hz_advertised_raw' : to_raw_hz(new_hz, scale),
-			'hz_actual_raw' : to_raw_hz(new_hz, scale),
+		# Get the CPU arch and bits
+		arch, bits = parse_arch(DataSource.raw_arch_string)
+		info = {
+			'arch' : arch,
+			'bits' : bits,
+			'count' : DataSource.cpu_count,
+			'raw_arch_string' : DataSource.raw_arch_string,
 		}
+
+		new_hz = _get_field(False, output, None, None, 'CPU max MHz', 'CPU MHz')
+		if new_hz:
+			new_hz = to_hz_string(new_hz)
+			scale = 6
+			info['hz_advertised'] = to_friendly_hz(new_hz, scale)
+			info['hz_actual'] = to_friendly_hz(new_hz, scale)
+			info['hz_advertised_raw'] = to_raw_hz(new_hz, scale)
+			info['hz_actual_raw'] = to_raw_hz(new_hz, scale)
+
+		vendor_id = _get_field(False, output, None, None, 'Vendor ID')
+		if vendor_id:
+			info['vendor_id'] = vendor_id
+
+		brand = _get_field(False, output, None, None, 'Model name')
+		if brand:
+			info['brand'] = brand
+
+		brand = _get_field(False, output, None, None, 'Model name')
+		if brand:
+			info['brand'] = brand
+
+		family = _get_field(False, output, None, None, 'CPU family')
+		if family:
+			info['family'] = int(family)
+
+		stepping = _get_field(False, output, None, None, 'Stepping')
+		if stepping:
+			info['stepping'] = int(stepping)
+
+		model = _get_field(False, output, None, None, 'Model')
+		if model:
+			info['model'] = int(model)
+
+		# Flags
+		flags = _get_field(False, output, None, None, 'flags', 'Features')
+		if flags:
+			flags = flags.split()
+			flags.sort()
+			info['flags'] = flags
+
+		return info
 	except:
 		#raise # NOTE: To have this throw on error, uncomment this line
 		return {}
