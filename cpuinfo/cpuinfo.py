@@ -1156,21 +1156,8 @@ def _parse_cpu_string(cpu_string):
 
 	return (processor_brand, hz_brand, scale, vendor_id, stepping, model, family)
 
-def _get_cpu_info_from_dmesg():
-	'''
-	Returns the CPU info gathered from dmesg.
-	Returns {} if dmesg is not found or does not have the desired info.
-	'''
+def _parse_dmesg_output(output):
 	try:
-		# Just return {} if there is no dmesg
-		if not DataSource.has_dmesg():
-			return {}
-
-		# If dmesg fails return {}
-		returncode, output = DataSource.dmesg_a()
-		if output == None or returncode != 0:
-			return {}
-
 		# Get all the dmesg lines that might contain a CPU string
 		lines = output.split('CPU0:')[1:] + \
 				output.split('CPU1:')[1:] + \
@@ -1258,97 +1245,41 @@ def _get_cpu_info_from_dmesg():
 		}
 	except:
 		#raise
+		pass
+
+	return {}
+
+def _get_cpu_info_from_dmesg():
+	'''
+	Returns the CPU info gathered from dmesg.
+	Returns {} if dmesg is not found or does not have the desired info.
+	'''
+	# Just return {} if there is no dmesg
+	if not DataSource.has_dmesg():
 		return {}
+
+	# If dmesg fails return {}
+	returncode, output = DataSource.dmesg_a()
+	if output == None or returncode != 0:
+		return {}
+
+	return _parse_dmesg_output(output)
 
 def _get_cpu_info_from_cat_var_run_dmesg_boot():
 	'''
 	Returns the CPU info gathered from /var/run/dmesg.boot.
 	Returns {} if dmesg is not found or does not have the desired info.
 	'''
-	try:
-		# Just return {} if there is no /var/run/dmesg.boot
-		if not DataSource.has_var_run_dmesg_boot():
-			return {}
-
-		# If dmesg.boot fails return {}
-		returncode, output = DataSource.cat_var_run_dmesg_boot()
-		if output == None or returncode != 0:
-			return {}
-
-		# Processor Brand
-		long_brand = output.split('CPU: ')[1].split('\n')[0]
-		processor_brand = long_brand.rsplit('(', 1)[0]
-		processor_brand = processor_brand.strip()
-
-		# Hz
-		scale = 0
-		hz_actual = long_brand.rsplit('(', 1)[1].split(' ')[0].lower()
-		if hz_actual.endswith('mhz'):
-			scale = 6
-		elif hz_actual.endswith('ghz'):
-			scale = 9
-		hz_actual = hz_actual.split('-')[0]
-		hz_actual = to_hz_string(hz_actual)
-
-		# Various fields
-		fields = output.split('CPU: ')[1].split('\n')[1].split('\n')[0].strip().split('  ')
-		vendor_id = None
-		stepping = None
-		model = None
-		family = None
-		for field in fields:
-			name, value = field.split('=')
-			name = name.strip().lower()
-			value = value.strip()
-			if name == 'origin':
-				vendor_id = value.strip('"')
-			elif name == 'stepping':
-				stepping = int(value)
-			elif name == 'model':
-				model = int(value, 16)
-			elif name == 'family':
-				family = int(value, 16)
-
-		# Flags
-		flag_lines = []
-		for category in ['  Features=', '  Features2=', '  AMD Features=', '  AMD Features2=']:
-			if category in output:
-				flag_lines.append(output.split(category)[1].split('\n')[0])
-
-		flags = []
-		for line in flag_lines:
-			line = line.split('<')[1].split('>')[0].lower()
-			for flag in line.split(','):
-				flags.append(flag)
-		flags.sort()
-
-		# Convert from GHz/MHz string to Hz
-		scale, hz_advertised = _get_hz_string_from_brand(processor_brand)
-
-		# Get the CPU arch and bits
-		arch, bits = parse_arch(DataSource.raw_arch_string)
-
-		return {
-		'vendor_id' : vendor_id,
-		'brand' : processor_brand,
-
-		'hz_advertised' : to_friendly_hz(hz_advertised, scale),
-		'hz_actual' : to_friendly_hz(hz_actual, 6),
-		'hz_advertised_raw' : to_raw_hz(hz_advertised, scale),
-		'hz_actual_raw' : to_raw_hz(hz_actual, 6),
-
-		'arch' : arch,
-		'bits' : bits,
-		'count' : DataSource.cpu_count,
-		'raw_arch_string' : DataSource.raw_arch_string,
-
-		'stepping' : stepping,
-		'model' : model,
-		'family' : family,
-		'flags' : flags
-		}
-	except:
+	# Just return {} if there is no /var/run/dmesg.boot
+	if not DataSource.has_var_run_dmesg_boot():
 		return {}
+
+	# If dmesg.boot fails return {}
+	returncode, output = DataSource.cat_var_run_dmesg_boot()
+	if output == None or returncode != 0:
+		return {}
+
+	return _parse_dmesg_output(output)
 
 
 def _get_cpu_info_from_sysctl():
