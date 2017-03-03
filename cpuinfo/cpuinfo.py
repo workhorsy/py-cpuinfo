@@ -1183,7 +1183,7 @@ def _get_cpu_info_from_proc_cpuinfo():
 		#raise # NOTE: To have this throw on error, uncomment this line
 		return {}
 
-def _get_cpu_info_from_beagle_bone():
+def _get_cpu_info_from_cpufreq_info():
 	'''
 	Returns the CPU info gathered from cpufreq-info.
 	Returns {} if cpufreq-info is not found.
@@ -1628,9 +1628,9 @@ def get_cpu_info():
 	if not HasAllFields(info):
 		info.update(_get_cpu_info_from_proc_cpuinfo())
 
-	# Try Beagle Bone
+	# Try cpufreq-info
 	if not HasAllFields(info):
-		info.update(_get_cpu_info_from_beagle_bone())
+		info.update(_get_cpu_info_from_cpufreq_info())
 
 	# Try LSCPU
 	if not HasAllFields(info):

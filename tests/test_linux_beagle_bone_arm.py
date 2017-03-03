@@ -74,7 +74,7 @@ class TestLinux_BeagleBone(unittest.TestCase):
 	'''
 	def test_returns(self):
 		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_registry()))
-		self.assertEqual(4, len(cpuinfo._get_cpu_info_from_beagle_bone()))
+		self.assertEqual(4, len(cpuinfo._get_cpu_info_from_cpufreq_info()))
 		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_lscpu()))
 		self.assertEqual(12, len(cpuinfo._get_cpu_info_from_proc_cpuinfo()))
 		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_sysctl()))
@@ -85,8 +85,8 @@ class TestLinux_BeagleBone(unittest.TestCase):
 		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_cpuid()))
 		self.assertEqual(16, len(cpuinfo.get_cpu_info()))
 
-	def test_get_cpu_info_from_beagle_bone(self):
-		info = cpuinfo._get_cpu_info_from_beagle_bone()
+	def test_get_cpu_info_from_cpufreq_info(self):
+		info = cpuinfo._get_cpu_info_from_cpufreq_info()
 
 		self.assertEqual('1.0000 GHz', info['hz_advertised'])
 		self.assertEqual('1.0000 GHz', info['hz_actual'])

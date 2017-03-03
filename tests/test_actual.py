@@ -15,7 +15,7 @@ class TestActual(unittest.TestCase):
 
 		if os_type == 'BeOS':
 			self.assertEqual({}, cpuinfo._get_cpu_info_from_registry())
-			self.assertEqual({}, cpuinfo._get_cpu_info_from_beagle_bone())
+			self.assertEqual({}, cpuinfo._get_cpu_info_from_cpufreq_info())
 			self.assertEqual({}, cpuinfo._get_cpu_info_from_lscpu())
 			self.assertEqual({}, cpuinfo._get_cpu_info_from_proc_cpuinfo())
 			self.assertEqual({}, cpuinfo._get_cpu_info_from_sysctl())
@@ -27,7 +27,7 @@ class TestActual(unittest.TestCase):
 			self.assertTrue(len(cpuinfo.get_cpu_info()) > 0)
 		elif os_type == 'BSD':
 			self.assertEqual({}, cpuinfo._get_cpu_info_from_registry())
-			self.assertEqual({}, cpuinfo._get_cpu_info_from_beagle_bone())
+			self.assertEqual({}, cpuinfo._get_cpu_info_from_cpufreq_info())
 			self.assertEqual({}, cpuinfo._get_cpu_info_from_lscpu())
 			self.assertEqual({}, cpuinfo._get_cpu_info_from_proc_cpuinfo())
 			self.assertEqual({}, cpuinfo._get_cpu_info_from_sysctl())
@@ -40,7 +40,7 @@ class TestActual(unittest.TestCase):
 			self.assertTrue(len(cpuinfo.get_cpu_info()) > 0)
 		elif os_type == 'Cygwin':
 			self.assertEqual({}, cpuinfo._get_cpu_info_from_registry())
-			self.assertEqual({}, cpuinfo._get_cpu_info_from_beagle_bone())
+			self.assertEqual({}, cpuinfo._get_cpu_info_from_cpufreq_info())
 			self.assertEqual({}, cpuinfo._get_cpu_info_from_lscpu())
 			self.assertTrue(len(cpuinfo._get_cpu_info_from_proc_cpuinfo()) > 0)
 			self.assertEqual({}, cpuinfo._get_cpu_info_from_sysctl())
@@ -53,7 +53,7 @@ class TestActual(unittest.TestCase):
 			self.assertTrue(len(cpuinfo.get_cpu_info()) > 0)
 		elif os_type == 'MacOS':
 			self.assertEqual({}, cpuinfo._get_cpu_info_from_registry())
-			self.assertEqual({}, cpuinfo._get_cpu_info_from_beagle_bone())
+			self.assertEqual({}, cpuinfo._get_cpu_info_from_cpufreq_info())
 			self.assertEqual({}, cpuinfo._get_cpu_info_from_lscpu())
 			self.assertEqual({}, cpuinfo._get_cpu_info_from_proc_cpuinfo())
 			self.assertTrue(len(cpuinfo._get_cpu_info_from_sysctl()) > 0)
@@ -66,7 +66,7 @@ class TestActual(unittest.TestCase):
 			self.assertTrue(len(cpuinfo.get_cpu_info()) > 0)
 		elif os_type == 'Linux':
 			self.assertEqual({}, cpuinfo._get_cpu_info_from_registry())
-			self.assertEqual({}, cpuinfo._get_cpu_info_from_beagle_bone())
+			self.assertEqual({}, cpuinfo._get_cpu_info_from_cpufreq_info())
 			self.assertTrue(len(cpuinfo._get_cpu_info_from_lscpu()) > 0)
 			self.assertTrue(len(cpuinfo._get_cpu_info_from_proc_cpuinfo()) > 0)
 			self.assertEqual({}, cpuinfo._get_cpu_info_from_sysctl())
@@ -78,7 +78,7 @@ class TestActual(unittest.TestCase):
 			self.assertTrue(len(cpuinfo.get_cpu_info()) > 0)
 		elif os_type == 'Solaris':
 			self.assertEqual({}, cpuinfo._get_cpu_info_from_registry())
-			self.assertEqual({}, cpuinfo._get_cpu_info_from_beagle_bone())
+			self.assertEqual({}, cpuinfo._get_cpu_info_from_cpufreq_info())
 			self.assertEqual({}, cpuinfo._get_cpu_info_from_lscpu())
 			self.assertEqual({}, cpuinfo._get_cpu_info_from_proc_cpuinfo())
 			self.assertEqual({}, cpuinfo._get_cpu_info_from_sysctl())
@@ -91,7 +91,7 @@ class TestActual(unittest.TestCase):
 			self.assertTrue(len(cpuinfo.get_cpu_info()) > 0)
 		elif os_type == 'Windows':
 			self.assertTrue(len(cpuinfo._get_cpu_info_from_registry()) > 0)
-			self.assertEqual({}, cpuinfo._get_cpu_info_from_beagle_bone())
+			self.assertEqual({}, cpuinfo._get_cpu_info_from_cpufreq_info())
 			self.assertEqual({}, cpuinfo._get_cpu_info_from_lscpu())
 			self.assertEqual({}, cpuinfo._get_cpu_info_from_proc_cpuinfo())
 			self.assertEqual({}, cpuinfo._get_cpu_info_from_sysctl())
