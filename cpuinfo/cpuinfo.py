@@ -333,6 +333,145 @@ def to_hz_string(ticks):
 
 	return ticks
 
+def _parse_cpu_string(cpu_string):
+	# Get location of fields at end of string
+	fields_index = cpu_string.find('(', cpu_string.find('@'))
+	#print(fields_index)
+
+	# Processor Brand
+	processor_brand = cpu_string
+	if fields_index != -1:
+		processor_brand = cpu_string[0 : fields_index].strip()
+	#print('processor_brand: ', processor_brand)
+
+	fields = None
+	if fields_index != -1:
+		fields = cpu_string[fields_index : ]
+	#print('fields: ', fields)
+
+	# Hz
+	scale, hz_brand = _get_hz_string_from_brand(processor_brand)
+
+	# Various fields
+	vendor_id, stepping, model, family = (None, None, None, None)
+	if fields:
+		try:
+			fields = fields.rsplit('(', 1)[1].split(')')[0].split(',')
+			fields = [f.strip().lower() for f in fields]
+			fields = [f.split(':') for f in fields]
+			fields = [{f[0].strip() : f[1].strip()} for f in fields]
+			#print('fields: ', fields)
+			for field in fields:
+				name = list(field.keys())[0]
+				value = list(field.values())[0]
+				#print('name:{0}, value:{1}'.format(name, value))
+				if name == 'origin':
+					vendor_id = value.strip('"')
+				elif name == 'stepping':
+					stepping = int(value.lstrip('0x'), 16)
+				elif name == 'model':
+					model = int(value.lstrip('0x'), 16)
+				elif name in ['fam', 'family']:
+					family = int(value.lstrip('0x'), 16)
+		except:
+			#raise
+			pass
+
+	return (processor_brand, hz_brand, scale, vendor_id, stepping, model, family)
+
+def _parse_dmesg_output(output):
+	try:
+		# Get all the dmesg lines that might contain a CPU string
+		lines = output.split('CPU0:')[1:] + \
+				output.split('CPU1:')[1:] + \
+				output.split('CPU:')[1:]
+		lines = [l.split('\n')[0].strip() for l in lines]
+
+		# Convert the lines to CPU strings
+		cpu_strings = [_parse_cpu_string(l) for l in lines]
+
+		# Find the CPU string that has the most fields
+		best_string = None
+		highest_count = 0
+		for cpu_string in cpu_strings:
+			count = sum([n is not None for n in cpu_string])
+			if count > highest_count:
+				highest_count = count
+				best_string = cpu_string
+
+		# If no CPU string was found, return {}
+		if not best_string:
+			return {}
+
+		processor_brand, hz_actual, scale, vendor_id, stepping, model, family = best_string
+
+		# Origin
+		if '  Origin=' in output:
+			fields = output[output.find('  Origin=') : ].split('\n')[0]
+			fields = fields.strip().split()
+			fields = [n.strip().split('=') for n in fields]
+			fields = [{n[0].strip().lower() : n[1].strip()} for n in fields]
+			#print('fields: ', fields)
+
+			for field in fields:
+				name = list(field.keys())[0]
+				value = list(field.values())[0]
+				#print('name:{0}, value:{1}'.format(name, value))
+				if name == 'origin':
+					vendor_id = value.strip('"')
+				elif name == 'stepping':
+					stepping = int(value.lstrip('0x'), 16)
+				elif name == 'model':
+					model = int(value.lstrip('0x'), 16)
+				elif name in ['fam', 'family']:
+					family = int(value.lstrip('0x'), 16)
+
+		#print('FIELDS: ', (vendor_id, stepping, model, family))
+
+		# Features
+		flag_lines = []
+		for category in ['  Features=', '  Features2=', '  AMD Features=', '  AMD Features2=']:
+			if category in output:
+				flag_lines.append(output.split(category)[1].split('\n')[0])
+
+		flags = []
+		for line in flag_lines:
+			line = line.split('<')[1].split('>')[0].lower()
+			for flag in line.split(','):
+				flags.append(flag)
+		flags.sort()
+
+		# Convert from GHz/MHz string to Hz
+		scale, hz_advertised = _get_hz_string_from_brand(processor_brand)
+
+		# Get the CPU arch and bits
+		arch, bits = parse_arch(DataSource.raw_arch_string)
+
+		return {
+		'vendor_id' : vendor_id,
+		'brand' : processor_brand,
+
+		'hz_advertised' : to_friendly_hz(hz_advertised, scale),
+		'hz_actual' : to_friendly_hz(hz_actual, scale),
+		'hz_advertised_raw' : to_raw_hz(hz_advertised, scale),
+		'hz_actual_raw' : to_raw_hz(hz_actual, scale),
+
+		'arch' : arch,
+		'bits' : bits,
+		'count' : DataSource.cpu_count,
+		'raw_arch_string' : DataSource.raw_arch_string,
+
+		'stepping' : stepping,
+		'model' : model,
+		'family' : family,
+		'flags' : flags
+		}
+	except:
+		#raise
+		pass
+
+	return {}
+
 def parse_arch(raw_arch_string):
 	arch, bits = None, None
 	raw_arch_string = raw_arch_string.lower()
@@ -891,30 +1030,6 @@ class CPUID(object):
 
 		return ticks
 
-def _get_cpu_info_from_cpuid():
-	'''
-	Returns the CPU info gathered by querying the X86 cpuid register in a new process.
-	Returns {} on non X86 cpus.
-	Returns {} if SELinux is in enforcing mode.
-	'''
-
-	# Return {} if can't cpuid
-	if not DataSource.can_cpuid:
-		return {}
-
-	# Get the CPU arch and bits
-	arch, bits = parse_arch(DataSource.raw_arch_string)
-
-	# Return {} if this is not an X86 CPU
-	if not arch in ['X86_32', 'X86_64']:
-		return {}
-
-	returncode, output = run_and_get_stdout([sys.executable, "-c", "import cpuinfo; print(cpuinfo.actual_get_cpu_info_from_cpuid())"])
-	if returncode != 0:
-		return {}
-	info = b64_to_obj(output)
-	return info
-
 def actual_get_cpu_info_from_cpuid():
 	'''
 	Warning! This function has the potential to crash the Python runtime.
@@ -975,6 +1090,30 @@ def actual_get_cpu_info_from_cpuid():
 	'flags' : cpuid.get_flags(max_extension_support)
 	}
 	return obj_to_b64(info)
+
+def _get_cpu_info_from_cpuid():
+	'''
+	Returns the CPU info gathered by querying the X86 cpuid register in a new process.
+	Returns {} on non X86 cpus.
+	Returns {} if SELinux is in enforcing mode.
+	'''
+
+	# Return {} if can't cpuid
+	if not DataSource.can_cpuid:
+		return {}
+
+	# Get the CPU arch and bits
+	arch, bits = parse_arch(DataSource.raw_arch_string)
+
+	# Return {} if this is not an X86 CPU
+	if not arch in ['X86_32', 'X86_64']:
+		return {}
+
+	returncode, output = run_and_get_stdout([sys.executable, "-c", "import cpuinfo; print(cpuinfo.actual_get_cpu_info_from_cpuid())"])
+	if returncode != 0:
+		return {}
+	info = b64_to_obj(output)
+	return info
 
 def _get_cpu_info_from_proc_cpuinfo():
 	'''
@@ -1144,145 +1283,6 @@ def _get_cpu_info_from_lscpu():
 	except:
 		#raise # NOTE: To have this throw on error, uncomment this line
 		return {}
-
-def _parse_cpu_string(cpu_string):
-	# Get location of fields at end of string
-	fields_index = cpu_string.find('(', cpu_string.find('@'))
-	#print(fields_index)
-
-	# Processor Brand
-	processor_brand = cpu_string
-	if fields_index != -1:
-		processor_brand = cpu_string[0 : fields_index].strip()
-	#print('processor_brand: ', processor_brand)
-
-	fields = None
-	if fields_index != -1:
-		fields = cpu_string[fields_index : ]
-	#print('fields: ', fields)
-
-	# Hz
-	scale, hz_brand = _get_hz_string_from_brand(processor_brand)
-
-	# Various fields
-	vendor_id, stepping, model, family = (None, None, None, None)
-	if fields:
-		try:
-			fields = fields.rsplit('(', 1)[1].split(')')[0].split(',')
-			fields = [f.strip().lower() for f in fields]
-			fields = [f.split(':') for f in fields]
-			fields = [{f[0].strip() : f[1].strip()} for f in fields]
-			#print('fields: ', fields)
-			for field in fields:
-				name = list(field.keys())[0]
-				value = list(field.values())[0]
-				#print('name:{0}, value:{1}'.format(name, value))
-				if name == 'origin':
-					vendor_id = value.strip('"')
-				elif name == 'stepping':
-					stepping = int(value.lstrip('0x'), 16)
-				elif name == 'model':
-					model = int(value.lstrip('0x'), 16)
-				elif name in ['fam', 'family']:
-					family = int(value.lstrip('0x'), 16)
-		except:
-			#raise
-			pass
-
-	return (processor_brand, hz_brand, scale, vendor_id, stepping, model, family)
-
-def _parse_dmesg_output(output):
-	try:
-		# Get all the dmesg lines that might contain a CPU string
-		lines = output.split('CPU0:')[1:] + \
-				output.split('CPU1:')[1:] + \
-				output.split('CPU:')[1:]
-		lines = [l.split('\n')[0].strip() for l in lines]
-
-		# Convert the lines to CPU strings
-		cpu_strings = [_parse_cpu_string(l) for l in lines]
-
-		# Find the CPU string that has the most fields
-		best_string = None
-		highest_count = 0
-		for cpu_string in cpu_strings:
-			count = sum([n is not None for n in cpu_string])
-			if count > highest_count:
-				highest_count = count
-				best_string = cpu_string
-
-		# If no CPU string was found, return {}
-		if not best_string:
-			return {}
-
-		processor_brand, hz_actual, scale, vendor_id, stepping, model, family = best_string
-
-		# Origin
-		if '  Origin=' in output:
-			fields = output[output.find('  Origin=') : ].split('\n')[0]
-			fields = fields.strip().split()
-			fields = [n.strip().split('=') for n in fields]
-			fields = [{n[0].strip().lower() : n[1].strip()} for n in fields]
-			#print('fields: ', fields)
-
-			for field in fields:
-				name = list(field.keys())[0]
-				value = list(field.values())[0]
-				#print('name:{0}, value:{1}'.format(name, value))
-				if name == 'origin':
-					vendor_id = value.strip('"')
-				elif name == 'stepping':
-					stepping = int(value.lstrip('0x'), 16)
-				elif name == 'model':
-					model = int(value.lstrip('0x'), 16)
-				elif name in ['fam', 'family']:
-					family = int(value.lstrip('0x'), 16)
-
-		#print('FIELDS: ', (vendor_id, stepping, model, family))
-
-		# Features
-		flag_lines = []
-		for category in ['  Features=', '  Features2=', '  AMD Features=', '  AMD Features2=']:
-			if category in output:
-				flag_lines.append(output.split(category)[1].split('\n')[0])
-
-		flags = []
-		for line in flag_lines:
-			line = line.split('<')[1].split('>')[0].lower()
-			for flag in line.split(','):
-				flags.append(flag)
-		flags.sort()
-
-		# Convert from GHz/MHz string to Hz
-		scale, hz_advertised = _get_hz_string_from_brand(processor_brand)
-
-		# Get the CPU arch and bits
-		arch, bits = parse_arch(DataSource.raw_arch_string)
-
-		return {
-		'vendor_id' : vendor_id,
-		'brand' : processor_brand,
-
-		'hz_advertised' : to_friendly_hz(hz_advertised, scale),
-		'hz_actual' : to_friendly_hz(hz_actual, scale),
-		'hz_advertised_raw' : to_raw_hz(hz_advertised, scale),
-		'hz_actual_raw' : to_raw_hz(hz_actual, scale),
-
-		'arch' : arch,
-		'bits' : bits,
-		'count' : DataSource.cpu_count,
-		'raw_arch_string' : DataSource.raw_arch_string,
-
-		'stepping' : stepping,
-		'model' : model,
-		'family' : family,
-		'flags' : flags
-		}
-	except:
-		#raise
-		pass
-
-	return {}
 
 def _get_cpu_info_from_dmesg():
 	'''
