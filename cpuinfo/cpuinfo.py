@@ -1139,8 +1139,8 @@ def _parse_cpu_string(cpu_string):
 			fields = [{f[0].strip() : f[1].strip()} for f in fields]
 			#print('fields: ', fields)
 			for field in fields:
-				name = field.keys()[0]
-				value = field.values()[0]
+				name = list(field.keys())[0]
+				value = list(field.values())[0]
 				#print('name:{0}, value:{1}'.format(name, value))
 				if name == 'origin':
 					vendor_id = value.strip('"')
@@ -1151,6 +1151,7 @@ def _parse_cpu_string(cpu_string):
 				elif name in ['fam', 'family']:
 					family = int(value.lstrip('0x'), 16)
 		except:
+			#raise
 			pass
 
 	return (processor_brand, hz_brand, scale, vendor_id, stepping, model, family)

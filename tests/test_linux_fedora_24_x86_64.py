@@ -481,9 +481,9 @@ class TestLinuxFedora_24_X86_64(unittest.TestCase):
 
 		self.assertEqual('x86_64', info['raw_arch_string'])
 
-		self.assertEqual(None, info['stepping'])
-		self.assertEqual(None, info['model'])
-		self.assertEqual(None, info['family'])
+		self.assertEqual(7, info['stepping'])
+		self.assertEqual(42, info['model'])
+		self.assertEqual(6, info['family'])
 		self.assertEqual(
 			[]
 			,
