@@ -100,6 +100,7 @@ L2 cache:              16384K
 NUMA node0 CPU(s):     0-47
 NUMA node1 CPU(s):     48-95
 '''
+		return returncode, output
 
 
 class TestLinux_Aarch_64(unittest.TestCase):
@@ -125,10 +126,11 @@ class TestLinux_Aarch_64(unittest.TestCase):
 	def test_get_cpu_info_from_lscpu(self):
 		info = cpuinfo._get_cpu_info_from_lscpu()
 
-		self.assertEqual('2.0708 GHz', info['hz_advertised'])
-		self.assertEqual('2.0708 GHz', info['hz_actual'])
-		self.assertEqual((2070796000, 0), info['hz_advertised_raw'])
-		self.assertEqual((2070796000, 0), info['hz_actual_raw'])
+		self.assertEqual('ARM_8', info['arch'])
+		self.assertEqual(64, info['bits'])
+		self.assertEqual(6, info['count'])
+
+		self.assertEqual('aarch64', info['raw_arch_string'])
 
 	'''
 	FIXME: This fails because it does not have a way
