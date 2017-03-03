@@ -473,7 +473,7 @@ class TestLinuxGentoo_2_2_X86_64(unittest.TestCase):
 		# FIXME: Add the rest of this test
 		self.assertEqual(False, True)
 
-	def test_proc_cpuinfo(self):
+	def test_get_cpu_info_from_proc_cpuinfo(self):
 		info = cpuinfo._get_cpu_info_from_proc_cpuinfo()
 
 		self.assertEqual('GenuineIntel', info['vendor_id'])

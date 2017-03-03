@@ -83,7 +83,7 @@ class TestOSX(unittest.TestCase):
 		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_sysinfo()))
 		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_cpuid()))
 
-	def test_all(self):
+	def test_get_cpu_info_from_sysctl(self):
 		info = cpuinfo._get_cpu_info_from_sysctl()
 
 		self.assertEqual('GenuineIntel', info['vendor_id'])
