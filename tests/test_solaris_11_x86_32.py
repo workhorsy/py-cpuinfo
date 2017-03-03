@@ -98,9 +98,34 @@ class TestSolaris(unittest.TestCase):
 		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_cat_var_run_dmesg_boot()))
 		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_sysinfo()))
 		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_cpuid()))
+		self.assertEqual(14, len(cpuinfo.get_cpu_info()))
 
 	def test_get_cpu_info_from_kstat(self):
 		info = cpuinfo._get_cpu_info_from_kstat()
+
+		self.assertEqual('GenuineIntel', info['vendor_id'])
+		self.assertEqual('Intel(r) Core(tm) i7 CPU         870  @ 2.93GHz', info['brand'])
+		self.assertEqual('2.9310 GHz', info['hz_advertised'])
+		self.assertEqual('2.9305 GHz', info['hz_actual'])
+		self.assertEqual((2931000000, 0), info['hz_advertised_raw'])
+		self.assertEqual((2930505167, 0), info['hz_actual_raw'])
+		self.assertEqual('X86_32', info['arch'])
+		self.assertEqual(32, info['bits'])
+		self.assertEqual(4, info['count'])
+
+		self.assertEqual('i86pc', info['raw_arch_string'])
+
+		self.assertEqual(5, info['stepping'])
+		self.assertEqual(30, info['model'])
+		self.assertEqual(6, info['family'])
+		self.assertEqual(
+			['ahf', 'amd_sysc', 'cmov', 'cx8', 'fpu', 'fxsr', 'mmx', 'sse', 'sse2', 'sse3', 'ssse3', 'tsc', 'tscp']
+			,
+			info['flags']
+		)
+
+	def test_all(self):
+		info = cpuinfo.get_cpu_info()
 
 		self.assertEqual('GenuineIntel', info['vendor_id'])
 		self.assertEqual('Intel(r) Core(tm) i7 CPU         870  @ 2.93GHz', info['brand'])

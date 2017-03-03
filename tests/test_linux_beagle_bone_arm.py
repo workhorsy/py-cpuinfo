@@ -76,14 +76,14 @@ class TestLinux_BeagleBone(unittest.TestCase):
 		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_registry()))
 		self.assertEqual(4, len(cpuinfo._get_cpu_info_from_cpufreq_info()))
 		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_lscpu()))
-		self.assertEqual(12, len(cpuinfo._get_cpu_info_from_proc_cpuinfo()))
+		self.assertEqual(8, len(cpuinfo._get_cpu_info_from_proc_cpuinfo()))
 		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_sysctl()))
 		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_kstat()))
 		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_dmesg()))
 		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_cat_var_run_dmesg_boot()))
 		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_sysinfo()))
 		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_cpuid()))
-		self.assertEqual(16, len(cpuinfo.get_cpu_info()))
+		self.assertEqual(11, len(cpuinfo.get_cpu_info()))
 
 	def test_get_cpu_info_from_cpufreq_info(self):
 		info = cpuinfo._get_cpu_info_from_cpufreq_info()
@@ -96,7 +96,6 @@ class TestLinux_BeagleBone(unittest.TestCase):
 	def test_get_cpu_info_from_proc_cpuinfo(self):
 		info = cpuinfo._get_cpu_info_from_proc_cpuinfo()
 
-		self.assertEqual('', info['vendor_id'])
 		self.assertEqual('BCM2708', info['hardware'])
 		self.assertEqual('ARMv6-compatible processor rev 7 (v6l)', info['brand'])
 		self.assertEqual('ARM_7', info['arch'])
@@ -105,11 +104,6 @@ class TestLinux_BeagleBone(unittest.TestCase):
 
 		self.assertEqual('armv7l', info['raw_arch_string'])
 
-		self.assertEqual('', info['l2_cache_size'])
-
-		self.assertEqual(0, info['stepping'])
-		self.assertEqual(0, info['model'])
-		self.assertEqual(0, info['family'])
 		self.assertEqual(
 			['edsp', 'fastmult', 'half', 'java', 'swp', 'thumb', 'tls', 'vfp']
 			,
@@ -119,7 +113,6 @@ class TestLinux_BeagleBone(unittest.TestCase):
 	def test_all(self):
 		info = cpuinfo.get_cpu_info()
 
-		self.assertEqual('', info['vendor_id'])
 		self.assertEqual('BCM2708', info['hardware'])
 		self.assertEqual('ARMv6-compatible processor rev 7 (v6l)', info['brand'])
 		self.assertEqual('1.0000 GHz', info['hz_advertised'])
@@ -132,11 +125,6 @@ class TestLinux_BeagleBone(unittest.TestCase):
 
 		self.assertEqual('armv7l', info['raw_arch_string'])
 
-		self.assertEqual('', info['l2_cache_size'])
-
-		self.assertEqual(0, info['stepping'])
-		self.assertEqual(0, info['model'])
-		self.assertEqual(0, info['family'])
 		self.assertEqual(
 			['edsp', 'fastmult', 'half', 'java', 'swp', 'thumb', 'tls', 'vfp']
 			,

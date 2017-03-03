@@ -77,6 +77,7 @@ class TestFreeBSD_11_X86_64(unittest.TestCase):
 		self.assertEqual(14, len(cpuinfo._get_cpu_info_from_cat_var_run_dmesg_boot()))
 		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_sysinfo()))
 		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_cpuid()))
+		self.assertEqual(14, len(cpuinfo.get_cpu_info()))
 
 	def test_get_cpu_info_from_dmesg(self):
 		info = cpuinfo._get_cpu_info_from_dmesg()
@@ -108,6 +109,34 @@ class TestFreeBSD_11_X86_64(unittest.TestCase):
 
 	def test_get_cpu_info_from_cat_var_run_dmesg_boot(self):
 		info = cpuinfo._get_cpu_info_from_cat_var_run_dmesg_boot()
+
+		self.assertEqual('GenuineIntel', info['vendor_id'])
+		self.assertEqual('Intel(R) Pentium(R) CPU G640 @ 2.80GHz', info['brand'])
+		self.assertEqual('2.8000 GHz', info['hz_advertised'])
+		self.assertEqual('2.8000 GHz', info['hz_actual'])
+		self.assertEqual((2800000000, 0), info['hz_advertised_raw'])
+		self.assertEqual((2800000000, 0), info['hz_actual_raw'])
+		self.assertEqual('X86_64', info['arch'])
+		self.assertEqual(64, info['bits'])
+		self.assertEqual(1, info['count'])
+
+		self.assertEqual('amd64', info['raw_arch_string'])
+
+		self.assertEqual(7, info['stepping'])
+		self.assertEqual(42, info['model'])
+		self.assertEqual(6, info['family'])
+		self.assertEqual(
+			['apic', 'cmov', 'cx16', 'cx8', 'de', 'fpu', 'fxsr', 'htt',
+			'lahf', 'lm', 'mca', 'mce', 'mmx', 'msr', 'mtrr', 'nx',
+			'osxsave', 'pae', 'pat', 'pclmulqdq', 'pge', 'popcnt', 'pse',
+			'pse36', 'rdtscp', 'sep', 'sse', 'sse2', 'sse3', 'sse4.1',
+			'sse4.2', 'ssse3', 'syscall', 'tsc', 'vme', 'xsave']
+			,
+			info['flags']
+		)
+
+	def test_all(self):
+		info = cpuinfo.get_cpu_info()
 
 		self.assertEqual('GenuineIntel', info['vendor_id'])
 		self.assertEqual('Intel(R) Pentium(R) CPU G640 @ 2.80GHz', info['brand'])

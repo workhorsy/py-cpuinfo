@@ -1153,7 +1153,6 @@ def _get_cpu_info_from_proc_cpuinfo():
 		arch, bits = parse_arch(DataSource.raw_arch_string)
 
 		info = {
-		'vendor_id' : vendor_id,
 		'hardware' : hardware,
 		'brand' : processor_brand,
 
@@ -1164,11 +1163,20 @@ def _get_cpu_info_from_proc_cpuinfo():
 
 		'l2_cache_size' : cache_size,
 
-		'stepping' : stepping,
-		'model' : model,
-		'family' : family,
 		'flags' : flags
 		}
+
+		if vendor_id:
+			info['vendor_id'] = vendor_id
+
+		if stepping:
+			info['stepping'] = stepping
+
+		if model:
+			info['model'] = model
+
+		if family:
+			info['family'] = family
 
 		# Add the Hz if there is one
 		if to_raw_hz(hz_advertised, scale) > (0, 0):
@@ -1602,7 +1610,7 @@ def _get_cpu_info_from_kstat():
 	except:
 		return {}
 
-def HasAllFields(info):
+def CopyNewFields(info, new_info):
 	keys = [
 		'vendor_id', 'hardware', 'brand', 'hz_advertised', 'hz_actual',
 		'hz_advertised_raw', 'hz_actual_raw', 'arch', 'bits', 'count',
@@ -1610,7 +1618,10 @@ def HasAllFields(info):
 		'l2_cache_associativity', 'stepping', 'model', 'family',
 		'processor_type', 'extended_model', 'extended_family', 'flags'
 	]
-	return all(k in info for k in keys)
+
+	for key in keys:
+		if new_info.get(key, None) and not info.get(key, None):
+			info[key] = new_info[key]
 
 def get_cpu_info():
 	'''
@@ -1621,44 +1632,34 @@ def get_cpu_info():
 	info = {}
 
 	# Try the Windows registry
-	if not HasAllFields(info):
-		info.update(_get_cpu_info_from_registry())
+	CopyNewFields(info, _get_cpu_info_from_registry())
 
 	# Try /proc/cpuinfo
-	if not HasAllFields(info):
-		info.update(_get_cpu_info_from_proc_cpuinfo())
+	CopyNewFields(info, _get_cpu_info_from_proc_cpuinfo())
 
 	# Try cpufreq-info
-	if not HasAllFields(info):
-		info.update(_get_cpu_info_from_cpufreq_info())
+	CopyNewFields(info, _get_cpu_info_from_cpufreq_info())
 
 	# Try LSCPU
-	if not HasAllFields(info):
-		info.update(_get_cpu_info_from_lscpu())
+	CopyNewFields(info, _get_cpu_info_from_lscpu())
 
 	# Try sysctl
-	if not HasAllFields(info):
-		info.update(_get_cpu_info_from_sysctl())
+	CopyNewFields(info, _get_cpu_info_from_sysctl())
 
 	# Try kstat
-	if not HasAllFields(info):
-		info.update(_get_cpu_info_from_kstat())
+	CopyNewFields(info, _get_cpu_info_from_kstat())
 
 	# Try dmesg
-	if not HasAllFields(info):
-		info.update(_get_cpu_info_from_dmesg())
+	CopyNewFields(info, _get_cpu_info_from_dmesg())
 
 	# Try /var/run/dmesg.boot
-	if not HasAllFields(info):
-		info.update(_get_cpu_info_from_cat_var_run_dmesg_boot())
+	CopyNewFields(info, _get_cpu_info_from_cat_var_run_dmesg_boot())
 
 	# Try sysinfo
-	if not HasAllFields(info):
-		info.update(_get_cpu_info_from_sysinfo())
+	CopyNewFields(info, _get_cpu_info_from_sysinfo())
 
 	# Try querying the CPU cpuid register
-	if not HasAllFields(info):
-		info.update(_get_cpu_info_from_cpuid())
+	CopyNewFields(info, _get_cpu_info_from_cpuid())
 
 	return info
 

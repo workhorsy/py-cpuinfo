@@ -461,6 +461,7 @@ class TestLinuxUbuntu_16_04_X86_64(unittest.TestCase):
 		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_cat_var_run_dmesg_boot()))
 		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_sysinfo()))
 		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_cpuid()))
+		self.assertEqual(15, len(cpuinfo.get_cpu_info()))
 
 	def test_get_cpu_info_from_lscpu(self):
 		info = cpuinfo._get_cpu_info_from_lscpu()
@@ -516,6 +517,42 @@ class TestLinuxUbuntu_16_04_X86_64(unittest.TestCase):
 
 	def test_get_cpu_info_from_proc_cpuinfo(self):
 		info = cpuinfo._get_cpu_info_from_proc_cpuinfo()
+
+		self.assertEqual('GenuineIntel', info['vendor_id'])
+		self.assertEqual('Intel(R) Pentium(R) CPU G640 @ 2.80GHz', info['brand'])
+		self.assertEqual('2.8000 GHz', info['hz_advertised'])
+		self.assertEqual('1.9014 GHz', info['hz_actual'])
+		self.assertEqual((2800000000, 0), info['hz_advertised_raw'])
+		self.assertEqual((1901375000, 0), info['hz_actual_raw'])
+		self.assertEqual('X86_64', info['arch'])
+		self.assertEqual(64, info['bits'])
+		self.assertEqual(2, info['count'])
+
+		self.assertEqual('x86_64', info['raw_arch_string'])
+
+		self.assertEqual('3072 KB', info['l2_cache_size'])
+
+		self.assertEqual(7, info['stepping'])
+		self.assertEqual(42, info['model'])
+		self.assertEqual(6, info['family'])
+		self.assertEqual(
+			['acpi', 'aperfmperf', 'apic', 'arat', 'arch_perfmon', 'bts',
+			'clflush', 'cmov', 'constant_tsc', 'cx16', 'cx8', 'de', 'ds_cpl',
+			'dtes64', 'dtherm', 'dts', 'eagerfpu', 'epb', 'ept', 'est',
+			'flexpriority', 'fpu', 'fxsr', 'ht', 'lahf_lm', 'lm', 'mca',
+			'mce', 'mmx', 'monitor', 'msr', 'mtrr', 'nonstop_tsc', 'nopl',
+			'nx', 'pae', 'pat', 'pbe', 'pcid', 'pclmulqdq', 'pdcm', 'pebs',
+			'pge', 'pln', 'pni', 'popcnt', 'pse', 'pse36', 'pts', 'rdtscp',
+			'rep_good', 'sep', 'ss', 'sse', 'sse2', 'sse4_1', 'sse4_2',
+			'ssse3', 'syscall', 'tm', 'tm2', 'tpr_shadow', 'tsc',
+			'tsc_deadline_timer', 'vme', 'vmx', 'vnmi', 'vpid', 'xsave',
+			'xsaveopt', 'xtopology', 'xtpr']
+			,
+			info['flags']
+		)
+
+	def test_all(self):
+		info = cpuinfo.get_cpu_info()
 
 		self.assertEqual('GenuineIntel', info['vendor_id'])
 		self.assertEqual('Intel(R) Pentium(R) CPU G640 @ 2.80GHz', info['brand'])
