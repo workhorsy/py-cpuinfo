@@ -1195,7 +1195,30 @@ def _get_cpu_info_from_dmesg():
 
 		processor_brand, hz_actual, scale, vendor_id, stepping, model, family = best_string
 
-		# Flags
+		# Origin
+		if '  Origin=' in output:
+			fields = output[output.find('  Origin=') : ].split('\n')[0]
+			fields = fields.strip().split()
+			fields = [n.strip().split('=') for n in fields]
+			fields = [{n[0].strip().lower() : n[1].strip()} for n in fields]
+			#print('fields: ', fields)
+
+			for field in fields:
+				name = list(field.keys())[0]
+				value = list(field.values())[0]
+				#print('name:{0}, value:{1}'.format(name, value))
+				if name == 'origin':
+					vendor_id = value.strip('"')
+				elif name == 'stepping':
+					stepping = int(value.lstrip('0x'), 16)
+				elif name == 'model':
+					model = int(value.lstrip('0x'), 16)
+				elif name in ['fam', 'family']:
+					family = int(value.lstrip('0x'), 16)
+
+		#print('FIELDS: ', (vendor_id, stepping, model, family))
+
+		# Features
 		flag_lines = []
 		for category in ['  Features=', '  Features2=', '  AMD Features=', '  AMD Features2=']:
 			if category in output:
