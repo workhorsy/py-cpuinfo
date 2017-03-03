@@ -2,10 +2,10 @@
 	* Change API to hide low level functions
 	* Fixed Bug #51: Combine data from all sources instead of picking one
 
-12/16/2015 Release 0.2.6
+02/27/2017 Release 0.2.6
 	* New release because pypi does not allow deleting broken uploads
 
-12/16/2015 Release 0.2.5
+02/27/2017 Release 0.2.5
 	* New release because pypi does not allow deleting broken uploads
 
 02/27/2017 Release 0.2.4
