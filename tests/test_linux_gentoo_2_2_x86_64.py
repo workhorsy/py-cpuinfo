@@ -470,8 +470,26 @@ class TestLinuxGentoo_2_2_X86_64(unittest.TestCase):
 	def test_get_cpu_info_from_dmesg(self):
 		info = cpuinfo._get_cpu_info_from_dmesg()
 
-		# FIXME: Add the rest of this test
-		self.assertEqual(False, True)
+		self.assertEqual(None, info['vendor_id'])
+		self.assertEqual('Intel(R) Pentium(R) CPU G640 @ 2.80GHz', info['brand'])
+		self.assertEqual('2.8000 GHz', info['hz_advertised'])
+		self.assertEqual('2.8000 GHz', info['hz_actual'])
+		self.assertEqual((2800000000, 0), info['hz_advertised_raw'])
+		self.assertEqual((2800000000, 0), info['hz_actual_raw'])
+		self.assertEqual('X86_64', info['arch'])
+		self.assertEqual(64, info['bits'])
+		self.assertEqual(2, info['count'])
+
+		self.assertEqual('x86_64', info['raw_arch_string'])
+
+		self.assertEqual(7, info['stepping'])
+		self.assertEqual(42, info['model'])
+		self.assertEqual(6, info['family'])
+		self.assertEqual(
+			[]
+			,
+			info['flags']
+		)
 
 	def test_get_cpu_info_from_proc_cpuinfo(self):
 		info = cpuinfo._get_cpu_info_from_proc_cpuinfo()
