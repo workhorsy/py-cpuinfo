@@ -73,15 +73,15 @@ class TestFreeBSD_11_X86_64(unittest.TestCase):
 		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_proc_cpuinfo()))
 		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_sysctl()))
 		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_kstat()))
-		self.assertEqual(20, len(cpuinfo._get_cpu_info_from_dmesg()))
-		self.assertEqual(20, len(cpuinfo._get_cpu_info_from_cat_var_run_dmesg_boot()))
+		self.assertEqual(14, len(cpuinfo._get_cpu_info_from_dmesg()))
+		self.assertEqual(14, len(cpuinfo._get_cpu_info_from_cat_var_run_dmesg_boot()))
 		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_sysinfo()))
 		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_cpuid()))
 
 	def test_get_cpu_info_from_dmesg(self):
 		info = cpuinfo._get_cpu_info_from_dmesg()
 
-		self.assertEqual(None, info['vendor_id'])
+		self.assertEqual('GenuineIntel', info['vendor_id'])
 		self.assertEqual('Intel(R) Pentium(R) CPU G640 @ 2.80GHz', info['brand'])
 		self.assertEqual('2.8000 GHz', info['hz_advertised'])
 		self.assertEqual('2.8000 GHz', info['hz_actual'])
@@ -93,16 +93,9 @@ class TestFreeBSD_11_X86_64(unittest.TestCase):
 
 		self.assertEqual('amd64', info['raw_arch_string'])
 
-		self.assertEqual(0, info['l2_cache_size'])
-		self.assertEqual(0, info['l2_cache_line_size'])
-		self.assertEqual(0, info['l2_cache_associativity'])
-
-		self.assertEqual(None, info['stepping'])
-		self.assertEqual(None, info['model'])
-		self.assertEqual(None, info['family'])
-		self.assertEqual(0, info['processor_type'])
-		self.assertEqual(0, info['extended_model'])
-		self.assertEqual(0, info['extended_family'])
+		self.assertEqual(7, info['stepping'])
+		self.assertEqual(42, info['model'])
+		self.assertEqual(6, info['family'])
 		self.assertEqual(
 			['apic', 'cmov', 'cx16', 'cx8', 'de', 'fpu', 'fxsr', 'htt',
 			'lahf', 'lm', 'mca', 'mce', 'mmx', 'msr', 'mtrr', 'nx',
@@ -128,16 +121,9 @@ class TestFreeBSD_11_X86_64(unittest.TestCase):
 
 		self.assertEqual('amd64', info['raw_arch_string'])
 
-		self.assertEqual(0, info['l2_cache_size'])
-		self.assertEqual(0, info['l2_cache_line_size'])
-		self.assertEqual(0, info['l2_cache_associativity'])
-
 		self.assertEqual(7, info['stepping'])
 		self.assertEqual(42, info['model'])
 		self.assertEqual(6, info['family'])
-		self.assertEqual(0, info['processor_type'])
-		self.assertEqual(0, info['extended_model'])
-		self.assertEqual(0, info['extended_family'])
 		self.assertEqual(
 			['apic', 'cmov', 'cx16', 'cx8', 'de', 'fpu', 'fxsr', 'htt',
 			'lahf', 'lm', 'mca', 'mce', 'mmx', 'msr', 'mtrr', 'nx',

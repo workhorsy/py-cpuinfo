@@ -450,10 +450,10 @@ class TestLinuxFedora_24_X86_64(unittest.TestCase):
 		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_registry()))
 		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_beagle_bone()))
 		self.assertEqual(4, len(cpuinfo._get_cpu_info_from_lscpu()))
-		self.assertEqual(21, len(cpuinfo._get_cpu_info_from_proc_cpuinfo()))
+		self.assertEqual(16, len(cpuinfo._get_cpu_info_from_proc_cpuinfo()))
 		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_sysctl()))
 		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_kstat()))
-		self.assertEqual(20, len(cpuinfo._get_cpu_info_from_dmesg()))
+		self.assertEqual(14, len(cpuinfo._get_cpu_info_from_dmesg()))
 		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_cat_var_run_dmesg_boot()))
 		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_sysinfo()))
 		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_cpuid()))
@@ -481,16 +481,9 @@ class TestLinuxFedora_24_X86_64(unittest.TestCase):
 
 		self.assertEqual('x86_64', info['raw_arch_string'])
 
-		self.assertEqual(0, info['l2_cache_size'])
-		self.assertEqual(0, info['l2_cache_line_size'])
-		self.assertEqual(0, info['l2_cache_associativity'])
-
-		self.assertEqual(7, info['stepping'])
-		self.assertEqual(42, info['model'])
-		self.assertEqual(6, info['family'])
-		self.assertEqual(0, info['processor_type'])
-		self.assertEqual(0, info['extended_model'])
-		self.assertEqual(0, info['extended_family'])
+		self.assertEqual(None, info['stepping'])
+		self.assertEqual(None, info['model'])
+		self.assertEqual(None, info['family'])
 		self.assertEqual(
 			[]
 			,
@@ -501,6 +494,7 @@ class TestLinuxFedora_24_X86_64(unittest.TestCase):
 		info = cpuinfo._get_cpu_info_from_proc_cpuinfo()
 
 		self.assertEqual('GenuineIntel', info['vendor_id'])
+		self.assertEqual('', info['hardware'])
 		self.assertEqual('Intel(R) Pentium(R) CPU G640 @ 2.80GHz', info['brand'])
 		self.assertEqual('2.8000 GHz', info['hz_advertised'])
 		self.assertEqual('2.7937 GHz', info['hz_actual'])
@@ -513,15 +507,10 @@ class TestLinuxFedora_24_X86_64(unittest.TestCase):
 		self.assertEqual('x86_64', info['raw_arch_string'])
 
 		self.assertEqual('3072 KB', info['l2_cache_size'])
-		self.assertEqual(0, info['l2_cache_line_size'])
-		self.assertEqual(0, info['l2_cache_associativity'])
 
 		self.assertEqual(7, info['stepping'])
 		self.assertEqual(42, info['model'])
 		self.assertEqual(6, info['family'])
-		self.assertEqual(0, info['processor_type'])
-		self.assertEqual(0, info['extended_model'])
-		self.assertEqual(0, info['extended_family'])
 		self.assertEqual(
 			['apic', 'clflush', 'cmov', 'constant_tsc', 'cx16', 'cx8', 'de',
 			'fpu', 'fxsr', 'ht', 'hypervisor', 'lahf_lm', 'lm', 'mca', 'mce',

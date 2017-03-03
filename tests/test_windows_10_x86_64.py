@@ -44,7 +44,7 @@ class TestWindows_10_X86_64(unittest.TestCase):
 	Make sure calls return the expected number of fields.
 	'''
 	def test_returns(self):
-		self.assertEqual(20, len(cpuinfo._get_cpu_info_from_registry()))
+		self.assertEqual(11, len(cpuinfo._get_cpu_info_from_registry()))
 		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_beagle_bone()))
 		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_lscpu()))
 		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_proc_cpuinfo()))
@@ -70,16 +70,6 @@ class TestWindows_10_X86_64(unittest.TestCase):
 
 		self.assertEqual('AMD64', info['raw_arch_string'])
 
-		self.assertEqual(0, info['l2_cache_size']) # FIXME
-		self.assertEqual(0, info['l2_cache_line_size'])
-		self.assertEqual(0, info['l2_cache_associativity'])
-
-		self.assertEqual(0, info['stepping']) # FIXME
-		self.assertEqual(0, info['model']) # FIXME
-		self.assertEqual(0, info['family']) # FIXME
-		self.assertEqual(0, info['processor_type'])
-		self.assertEqual(0, info['extended_model'])
-		self.assertEqual(0, info['extended_family'])
 		 # FIXME: Missing flags such as sse3 and sse4
 		self.assertEqual(
 			['3dnow', 'acpi', 'clflush', 'cmov', 'de', 'dts', 'fxsr',

@@ -1024,15 +1024,10 @@ def _get_cpu_info_from_proc_cpuinfo():
 		'raw_arch_string' : DataSource.raw_arch_string,
 
 		'l2_cache_size' : cache_size,
-		'l2_cache_line_size' : 0,
-		'l2_cache_associativity' : 0,
 
 		'stepping' : stepping,
 		'model' : model,
 		'family' : family,
-		'processor_type' : 0,
-		'extended_model' : 0,
-		'extended_family' : 0,
 		'flags' : flags
 		}
 
@@ -1232,16 +1227,9 @@ def _get_cpu_info_from_dmesg():
 		'count' : DataSource.cpu_count,
 		'raw_arch_string' : DataSource.raw_arch_string,
 
-		'l2_cache_size' : 0,
-		'l2_cache_line_size' : 0,
-		'l2_cache_associativity' : 0,
-
 		'stepping' : stepping,
 		'model' : model,
 		'family' : family,
-		'processor_type' : 0,
-		'extended_model' : 0,
-		'extended_family' : 0,
 		'flags' : flags
 		}
 	except:
@@ -1330,16 +1318,9 @@ def _get_cpu_info_from_cat_var_run_dmesg_boot():
 		'count' : DataSource.cpu_count,
 		'raw_arch_string' : DataSource.raw_arch_string,
 
-		'l2_cache_size' : 0,
-		'l2_cache_line_size' : 0,
-		'l2_cache_associativity' : 0,
-
 		'stepping' : stepping,
 		'model' : model,
 		'family' : family,
-		'processor_type' : 0,
-		'extended_model' : 0,
-		'extended_family' : 0,
 		'flags' : flags
 		}
 	except:
@@ -1398,15 +1379,10 @@ def _get_cpu_info_from_sysctl():
 		'raw_arch_string' : DataSource.raw_arch_string,
 
 		'l2_cache_size' : cache_size,
-		'l2_cache_line_size' : 0,
-		'l2_cache_associativity' : 0,
 
 		'stepping' : stepping,
 		'model' : model,
 		'family' : family,
-		'processor_type' : 0,
-		'extended_model' : 0,
-		'extended_family' : 0,
 		'flags' : flags
 		}
 	except:
@@ -1465,15 +1441,10 @@ def _get_cpu_info_from_sysinfo():
 		'raw_arch_string' : DataSource.raw_arch_string,
 
 		'l2_cache_size' : cache_size,
-		'l2_cache_line_size' : 0,
-		'l2_cache_associativity' : 0,
 
 		'stepping' : stepping,
 		'model' : model,
 		'family' : family,
-		'processor_type' : 0,
-		'extended_model' : 0,
-		'extended_family' : 0,
 		'flags' : flags
 		}
 	except:
@@ -1571,16 +1542,6 @@ def _get_cpu_info_from_registry():
 		'count' : DataSource.cpu_count,
 		'raw_arch_string' : raw_arch_string,
 
-		'l2_cache_size' : 0,
-		'l2_cache_line_size' : 0,
-		'l2_cache_associativity' : 0,
-
-		'stepping' : 0,
-		'model' : 0,
-		'family' : 0,
-		'processor_type' : 0,
-		'extended_model' : 0,
-		'extended_family' : 0,
 		'flags' : flags
 		}
 	except:
@@ -1609,7 +1570,6 @@ def _get_cpu_info_from_kstat():
 		# Various fields
 		vendor_id = kstat.split('\tvendor_id ')[1].split('\n')[0].strip()
 		processor_brand = kstat.split('\tbrand ')[1].split('\n')[0].strip()
-		cache_size = 0
 		stepping = int(kstat.split('\tstepping ')[1].split('\n')[0].strip())
 		model = int(kstat.split('\tmodel ')[1].split('\n')[0].strip())
 		family = int(kstat.split('\tfamily ')[1].split('\n')[0].strip())
@@ -1644,16 +1604,9 @@ def _get_cpu_info_from_kstat():
 		'count' : DataSource.cpu_count,
 		'raw_arch_string' : DataSource.raw_arch_string,
 
-		'l2_cache_size' : cache_size,
-		'l2_cache_line_size' : 0,
-		'l2_cache_associativity' : 0,
-
 		'stepping' : stepping,
 		'model' : model,
 		'family' : family,
-		'processor_type' : 0,
-		'extended_model' : 0,
-		'extended_family' : 0,
 		'flags' : flags
 		}
 	except:

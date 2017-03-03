@@ -76,7 +76,7 @@ class TestOSX(unittest.TestCase):
 		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_beagle_bone()))
 		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_lscpu()))
 		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_proc_cpuinfo()))
-		self.assertEqual(20, len(cpuinfo._get_cpu_info_from_sysctl()))
+		self.assertEqual(15, len(cpuinfo._get_cpu_info_from_sysctl()))
 		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_kstat()))
 		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_dmesg()))
 		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_cat_var_run_dmesg_boot()))
@@ -99,15 +99,11 @@ class TestOSX(unittest.TestCase):
 		self.assertEqual('x86_64', info['raw_arch_string'])
 
 		self.assertEqual('256', info['l2_cache_size'])
-		self.assertEqual(0, info['l2_cache_line_size'])
-		self.assertEqual(0, info['l2_cache_associativity'])
 
 		self.assertEqual(9, info['stepping'])
 		self.assertEqual(58, info['model'])
 		self.assertEqual(6, info['family'])
-		self.assertEqual(0, info['processor_type'])
-		self.assertEqual(0, info['extended_model'])
-		self.assertEqual(0, info['extended_family'])
+
 		self.assertEqual(
 			['apic', 'bmi2', 'clfsh', 'cmov', 'cx8', 'de', 'em64t', 'enfstrg', 'fpu', 'fxsr', 'htt',
 			'lahf', 'mca', 'mce', 'mmx', 'msr', 'mtrr', 'pae', 'pat', 'pge', 'pse',

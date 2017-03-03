@@ -68,14 +68,13 @@ class TestHaiku(unittest.TestCase):
 		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_kstat()))
 		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_dmesg()))
 		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_cat_var_run_dmesg_boot()))
-		self.assertEqual(20, len(cpuinfo._get_cpu_info_from_sysinfo()))
+		self.assertEqual(15, len(cpuinfo._get_cpu_info_from_sysinfo()))
 		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_cpuid()))
 
 	def test_all(self):
 		info = cpuinfo._get_cpu_info_from_sysinfo()
 
-		# FIXME: Add vendor id
-		#self.assertEqual('GenuineIntel', info['vendor_id'])
+		self.assertEqual('', info['vendor_id'])
 		self.assertEqual('Intel(R) Core(TM) i7 CPU         870  @ 2.93GHz', info['brand'])
 		self.assertEqual('2.9300 GHz', info['hz_advertised'])
 		self.assertEqual('2.9300 GHz', info['hz_actual'])
@@ -88,15 +87,10 @@ class TestHaiku(unittest.TestCase):
 		self.assertEqual('BePC', info['raw_arch_string'])
 
 		self.assertEqual('', info['l2_cache_size'])
-		self.assertEqual(0, info['l2_cache_line_size'])
-		self.assertEqual(0, info['l2_cache_associativity'])
 
 		self.assertEqual(5, info['stepping'])
 		self.assertEqual(30, info['model'])
 		self.assertEqual(6, info['family'])
-		self.assertEqual(0, info['processor_type'])
-		self.assertEqual(0, info['extended_model'])
-		self.assertEqual(0, info['extended_family'])
 		self.assertEqual(
 			['apic', 'cflush', 'cmov', 'cx8', 'de', 'fpu', 'fxstr', 'htt',
 			'mca', 'mce', 'mmx', 'msr', 'mtrr', 'pat', 'pge', 'pse', 'pse36',

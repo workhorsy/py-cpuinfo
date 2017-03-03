@@ -76,13 +76,14 @@ class TestLinux_BeagleBone(unittest.TestCase):
 		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_registry()))
 		self.assertEqual(4, len(cpuinfo._get_cpu_info_from_beagle_bone()))
 		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_lscpu()))
-		self.assertEqual(17, len(cpuinfo._get_cpu_info_from_proc_cpuinfo()))
+		self.assertEqual(12, len(cpuinfo._get_cpu_info_from_proc_cpuinfo()))
 		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_sysctl()))
 		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_kstat()))
 		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_dmesg()))
 		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_cat_var_run_dmesg_boot()))
 		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_sysinfo()))
 		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_cpuid()))
+		self.assertEqual(16, len(cpuinfo.get_cpu_info()))
 
 	def test_get_cpu_info_from_beagle_bone(self):
 		info = cpuinfo._get_cpu_info_from_beagle_bone()
@@ -105,15 +106,10 @@ class TestLinux_BeagleBone(unittest.TestCase):
 		self.assertEqual('armv7l', info['raw_arch_string'])
 
 		self.assertEqual('', info['l2_cache_size'])
-		self.assertEqual(0, info['l2_cache_line_size'])
-		self.assertEqual(0, info['l2_cache_associativity'])
 
 		self.assertEqual(0, info['stepping'])
 		self.assertEqual(0, info['model'])
 		self.assertEqual(0, info['family'])
-		self.assertEqual(0, info['processor_type'])
-		self.assertEqual(0, info['extended_model'])
-		self.assertEqual(0, info['extended_family'])
 		self.assertEqual(
 			['edsp', 'fastmult', 'half', 'java', 'swp', 'thumb', 'tls', 'vfp']
 			,
@@ -137,15 +133,10 @@ class TestLinux_BeagleBone(unittest.TestCase):
 		self.assertEqual('armv7l', info['raw_arch_string'])
 
 		self.assertEqual('', info['l2_cache_size'])
-		self.assertEqual(0, info['l2_cache_line_size'])
-		self.assertEqual(0, info['l2_cache_associativity'])
 
 		self.assertEqual(0, info['stepping'])
 		self.assertEqual(0, info['model'])
 		self.assertEqual(0, info['family'])
-		self.assertEqual(0, info['processor_type'])
-		self.assertEqual(0, info['extended_model'])
-		self.assertEqual(0, info['extended_family'])
 		self.assertEqual(
 			['edsp', 'fastmult', 'half', 'java', 'swp', 'thumb', 'tls', 'vfp']
 			,

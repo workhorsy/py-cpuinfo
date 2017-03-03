@@ -64,7 +64,7 @@ class TestLinuxDebian_8_X86_64(unittest.TestCase):
 		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_registry()))
 		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_beagle_bone()))
 		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_lscpu()))
-		self.assertEqual(21, len(cpuinfo._get_cpu_info_from_proc_cpuinfo()))
+		self.assertEqual(16, len(cpuinfo._get_cpu_info_from_proc_cpuinfo()))
 		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_sysctl()))
 		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_kstat()))
 		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_dmesg()))
@@ -89,15 +89,10 @@ class TestLinuxDebian_8_X86_64(unittest.TestCase):
 		self.assertEqual('x86_64', info['raw_arch_string'])
 
 		self.assertEqual('6144 KB', info['l2_cache_size'])
-		self.assertEqual(0, info['l2_cache_line_size'])
-		self.assertEqual(0, info['l2_cache_associativity'])
 
 		self.assertEqual(5, info['stepping'])
 		self.assertEqual(30, info['model'])
 		self.assertEqual(6, info['family'])
-		self.assertEqual(0, info['processor_type'])
-		self.assertEqual(0, info['extended_model'])
-		self.assertEqual(0, info['extended_family'])
 		self.assertEqual(
 			['apic', 'clflush', 'cmov', 'constant_tsc', 'cx8', 'de', 'fpu',
 			'fxsr', 'ht', 'lahf_lm', 'lm', 'mca', 'mce', 'mmx', 'msr', 'mtrr',
