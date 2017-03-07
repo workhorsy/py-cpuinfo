@@ -1625,8 +1625,7 @@ def CopyNewFields(info, new_info):
 
 def get_cpu_info():
 	'''
-	Returns the CPU info by using the best source of information for your OS.
-	This is the recommended function for getting CPU info.
+	Returns the CPU info by using the best sources of information for your OS.
 	Returns {} if nothing is found.
 	'''
 	info = {}

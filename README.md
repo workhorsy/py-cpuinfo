@@ -35,8 +35,8 @@ API
 -----
 ~~~python
 '''
-Returns the CPU info by using the best source of information for your OS.
-Returns None if nothing is found.
+Returns the CPU info by using the best sources of information for your OS.
+Returns {} if nothing is found.
 '''
 get_cpu_info()
 ~~~
