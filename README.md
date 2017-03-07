@@ -103,6 +103,13 @@ info = cpuinfo.get_cpu_info()
 print(info)
 ~~~
 
+Install instructions
+-----
+~~~bash
+$ python -m pip install -U py-cpuinfo
+~~~
+
+
 Bugs and Corrections
 -----
 

@@ -133,6 +133,12 @@ Run as a library
     info = cpuinfo.get_cpu_info()
     print(info)
 
+Install instructions
+----------------
+
+.. code:: bash
+    $ python -m pip install -U py-cpuinfo
+
 Bugs and Corrections
 --------------------
 
