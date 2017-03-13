@@ -2,10 +2,10 @@
 	* Fixed Bug #53: CPUID breaks test suite when SE Linux is on (Fedora 25)
 	* Fixed Bug #54: CPUID breaks when it returns nothing (Fedora 26)
 
-12/16/2015 Release 0.2.6
+02/27/2017 Release 0.2.6
 	* New release because pypi does not allow deleting broken uploads
 
-12/16/2015 Release 0.2.5
+02/27/2017 Release 0.2.5
 	* New release because pypi does not allow deleting broken uploads
 
 02/27/2017 Release 0.2.4
