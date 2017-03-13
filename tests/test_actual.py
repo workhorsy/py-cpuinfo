@@ -8,6 +8,9 @@ import helpers
 
 class TestActual(unittest.TestCase):
 	def setUp(self):
+		helpers.backup_data_source(cpuinfo)
+
+	def tearDown(self):
 		helpers.restore_data_source(cpuinfo)
 
 	def test_all(self):

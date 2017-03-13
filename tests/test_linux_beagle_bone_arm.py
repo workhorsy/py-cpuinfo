@@ -66,8 +66,11 @@ cpufreq stats: 300 MHz:0.00%, 600 MHz:0.00%, 800 MHz:0.00%, 1000 MHz:100.00%
 
 class TestLinux_BeagleBone(unittest.TestCase):
 	def setUp(self):
-		helpers.restore_data_source(cpuinfo)
+		helpers.backup_data_source(cpuinfo)
 		helpers.monkey_patch_data_source(cpuinfo, MockDataSource)
+
+	def tearDown(self):
+		helpers.restore_data_source(cpuinfo)
 
 	'''
 	Make sure calls return the expected number of fields.

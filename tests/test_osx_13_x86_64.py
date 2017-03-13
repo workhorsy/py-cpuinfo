@@ -65,8 +65,11 @@ hw.cpufrequency: 2890000000
 
 class TestOSX(unittest.TestCase):
 	def setUp(self):
-		helpers.restore_data_source(cpuinfo)
+		helpers.backup_data_source(cpuinfo)
 		helpers.monkey_patch_data_source(cpuinfo, MockDataSource)
+
+	def tearDown(self):
+		helpers.restore_data_source(cpuinfo)
 
 	'''
 	Make sure calls return the expected number of fields.
