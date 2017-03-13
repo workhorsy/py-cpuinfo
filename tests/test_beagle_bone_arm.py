@@ -66,8 +66,11 @@ cpufreq stats: 300 MHz:0.00%, 600 MHz:0.00%, 800 MHz:0.00%, 1000 MHz:100.00%
 
 class TestBeagleBone(unittest.TestCase):
 	def setUp(self):
-		helpers.restore_data_source(cpuinfo)
+		helpers.backup_data_source(cpuinfo)
 		helpers.monkey_patch_data_source(cpuinfo, MockDataSource)
+
+	def tearDown(self):
+		helpers.restore_data_source(cpuinfo)
 
 	def test_all(self):
 		info = cpuinfo.get_cpu_info_from_proc_cpuinfo()

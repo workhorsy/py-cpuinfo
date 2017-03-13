@@ -15,8 +15,11 @@ class MockDataSource(object):
 
 class TestCPUID(unittest.TestCase):
 	def setUp(self):
-		helpers.restore_data_source(cpuinfo)
+		helpers.backup_data_source(cpuinfo)
 		helpers.monkey_patch_data_source(cpuinfo, MockDataSource)
+
+	def tearDown(self):
+		helpers.restore_data_source(cpuinfo)
 
 	# Make sure this returns {} on an invalid arch
 	def test_return_empty(self):

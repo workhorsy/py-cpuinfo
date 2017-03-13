@@ -14,8 +14,11 @@ class MockDataSource(object):
 
 class TestInvalidCPU(unittest.TestCase):
 	def setUp(self):
-		helpers.restore_data_source(cpuinfo)
+		helpers.backup_data_source(cpuinfo)
 		helpers.monkey_patch_data_source(cpuinfo, MockDataSource)
+
+	def tearDown(self):
+		helpers.restore_data_source(cpuinfo)
 
 	def test_arch_parse_unknown(self):
 		# If the arch is unknown, the result should be null

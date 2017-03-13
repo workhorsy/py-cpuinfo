@@ -52,8 +52,11 @@ CPU #0: "Intel(R) Core(TM) i7 CPU         870  @ 2.93GHz"
 
 class TestHaiku(unittest.TestCase):
 	def setUp(self):
+		helpers.backup_data_source(cpuinfo)
+		helpers.monkey_patch_data_source(cpuinfo, MockDataSource)
+
+	def tearDown(self):
 		helpers.restore_data_source(cpuinfo)
-		helpers.monkey_patch_data_source(cpuinfo, MockDataSource)	
 
 	def test_all(self):
 		info = cpuinfo.get_cpu_info_from_sysinfo()
