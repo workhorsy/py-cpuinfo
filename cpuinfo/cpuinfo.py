@@ -946,12 +946,12 @@ def actual_get_cpu_info_from_cpuid():
 
 	# Return none if this is not an X86 CPU
 	if not arch in ['X86_32', 'X86_64']:
-		return None
+		return obj_to_b64({})
 
 	# Return none if SE Linux is in enforcing mode
 	cpuid = CPUID()
 	if cpuid.is_selinux_enforcing:
-		return None
+		return obj_to_b64({})
 
 	# Get the cpu info from the CPUID register
 	max_extension_support = cpuid.get_max_extension_support()
