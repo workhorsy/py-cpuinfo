@@ -1,4 +1,4 @@
-* Release 0.2.7
+03/13/2017 Release 0.2.7
 	* Fixed Bug #53: CPUID breaks test suite when SE Linux is on (Fedora 25)
 	* Fixed Bug #54: CPUID breaks when it returns nothing (Fedora 26)
 
