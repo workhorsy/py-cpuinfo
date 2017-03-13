@@ -929,6 +929,13 @@ def get_cpu_info_from_cpuid():
 	Returns None if SELinux is in enforcing mode.
 	'''
 
+	# Get the CPU arch and bits
+	arch, bits = parse_arch(DataSource.raw_arch_string)
+
+	# Return {} if this is not an X86 CPU
+	if not arch in ['X86_32', 'X86_64']:
+		return {}
+
 	returncode, output = run_and_get_stdout([sys.executable, "-c", "import cpuinfo; print(cpuinfo.actual_get_cpu_info_from_cpuid())"])
 	if returncode != 0:
 		return None

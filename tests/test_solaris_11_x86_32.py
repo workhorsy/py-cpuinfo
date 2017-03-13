@@ -1,11 +1,11 @@
 
 
 import unittest
-import cpuinfo
+from cpuinfo import *
 import helpers
 
 
-class DataSource(object):
+class MockDataSource(object):
 	bits = '32bit'
 	cpu_count = 4
 	is_windows = False
@@ -79,9 +79,11 @@ name:   cpu_info0                       class:    misc
 
 
 class TestSolaris(unittest.TestCase):
-	def test_all(self):
-		helpers.monkey_patch_data_source(cpuinfo, DataSource)
+	def setUp(self):
+		helpers.restore_data_source(cpuinfo)
+		helpers.monkey_patch_data_source(cpuinfo, MockDataSource)
 
+	def test_all(self):
 		info = cpuinfo.get_cpu_info_from_kstat()
 
 		self.assertEqual('GenuineIntel', info['vendor_id'])

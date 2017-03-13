@@ -1,11 +1,11 @@
 
 
 import unittest
-import cpuinfo
+from cpuinfo import *
 import helpers
 
 
-class DataSource(object):
+class MockDataSource(object):
 	bits = '64bit'
 	cpu_count = 1
 	is_windows = True
@@ -101,9 +101,11 @@ class DataSource(object):
 
 
 class TestParseErrors(unittest.TestCase):
-	def test_all(self):
-		helpers.monkey_patch_data_source(cpuinfo, DataSource)
+	def setUp(self):
+		helpers.restore_data_source(cpuinfo)
+		helpers.monkey_patch_data_source(cpuinfo, MockDataSource)
 
+	def test_all(self):
 		self.assertEqual(None, cpuinfo.get_cpu_info_from_registry())
 
 		self.assertEqual(None, cpuinfo.get_cpu_info_from_proc_cpuinfo())

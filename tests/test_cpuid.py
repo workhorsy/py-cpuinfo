@@ -1,12 +1,12 @@
 
 
 import unittest
-import cpuinfo
+from cpuinfo import *
 import helpers
 
 
 
-class DataSource(object):
+class MockDataSource(object):
 	bits = '64bit'
 	cpu_count = 1
 	is_windows = False
@@ -14,7 +14,10 @@ class DataSource(object):
 
 
 class TestCPUID(unittest.TestCase):
+	def setUp(self):
+		helpers.restore_data_source(cpuinfo)
+		helpers.monkey_patch_data_source(cpuinfo, MockDataSource)
+
 	# Make sure this returns {} on an invalid arch
 	def test_return_empty(self):
-		helpers.monkey_patch_data_source(cpuinfo, DataSource)
 		self.assertEqual({}, cpuinfo.get_cpu_info_from_cpuid())

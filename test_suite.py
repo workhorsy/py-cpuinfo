@@ -24,6 +24,11 @@ from test_cpuid import TestCPUID
 from test_actual import TestActual
 
 if __name__ == '__main__':
+	# Create a backup of DataSource to restore before each test
+	from cpuinfo import *
+	import helpers
+	helpers.backup_data_source(cpuinfo)
+
 	suite = unittest.TestSuite()
 	suite.addTest(unittest.makeSuite(TestActual))
 	suite.addTest(unittest.makeSuite(TestCPUID))
