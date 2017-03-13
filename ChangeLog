@@ -1,6 +1,10 @@
-* Release 0.3.0
+* Release 3.0.0
 	* Change API to hide low level functions
 	* Fixed Bug #51: Combine data from all sources instead of picking one
+
+* Release 0.2.7
+	* Fixed Bug #53: CPUID breaks test suite when SE Linux is on (Fedora 25)
+	* Fixed Bug #54: CPUID breaks when it returns nothing (Fedora 26)
 
 02/27/2017 Release 0.2.6
 	* New release because pypi does not allow deleting broken uploads
