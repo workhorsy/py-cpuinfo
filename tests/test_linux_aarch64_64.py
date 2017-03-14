@@ -136,10 +136,7 @@ class TestLinux_Aarch_64(unittest.TestCase):
 
 		self.assertEqual('aarch64', info['raw_arch_string'])
 
-	'''
-	FIXME: This fails because it does not have a way
-	to get CPU brand string and Hz.
-	'''
+	@unittest.skip("FIXME: This fails because it does not have a way to get CPU brand string and Hz.")
 	def test_all(self):
 		info = cpuinfo.get_cpu_info()
 
