@@ -404,39 +404,27 @@ class TestLinuxDebian_8_7_1_ppc64le(unittest.TestCase):
 	'''
 	Make sure calls return the expected number of fields.
 	'''
-	#@unittest.skip("FIXME: ")
 	def test_returns(self):
 		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_registry()))
 		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_cpufreq_info()))
 		self.assertEqual(4, len(cpuinfo._get_cpu_info_from_lscpu()))
-		self.assertEqual(7, len(cpuinfo._get_cpu_info_from_proc_cpuinfo()))
+		self.assertEqual(9, len(cpuinfo._get_cpu_info_from_proc_cpuinfo()))
 		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_sysctl()))
 		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_kstat()))
 		#self.assertEqual(0, len(cpuinfo._get_cpu_info_from_dmesg()))
 		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_cat_var_run_dmesg_boot()))
 		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_sysinfo()))
 		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_cpuid()))
-		#self.assertEqual(9, len(cpuinfo.get_cpu_info()))
+		self.assertEqual(9, len(cpuinfo.get_cpu_info()))
 
-	#@unittest.skip("FIXME: ")
 	def test_get_cpu_info_from_lscpu(self):
 		info = cpuinfo._get_cpu_info_from_lscpu()
 
-		#self.assertEqual('GenuineIntel', info['vendor_id'])
-		#self.assertEqual('POWER7 (raw), altivec supported', info['brand'])
-		#self.assertEqual('1.0000 GHz', info['hz_advertised'])
-		#self.assertEqual('1.0000 GHz', info['hz_actual'])
-		#self.assertEqual((1000000000, 0), info['hz_advertised_raw'])
-		#self.assertEqual((1000000000, 0), info['hz_actual_raw'])
 		self.assertEqual('PPC_64', info['arch'])
 		self.assertEqual(64, info['bits'])
 		self.assertEqual(2, info['count'])
-
 		self.assertEqual('ppc64le', info['raw_arch_string'])
 
-		#self.assertEqual(7, info['stepping'])
-		#self.assertEqual(42, info['model'])
-		#self.assertEqual(6, info['family'])
 
 	@unittest.skip("FIXME: This gets garbage for the brand")
 	def test_get_cpu_info_from_dmesg(self):
@@ -461,49 +449,30 @@ class TestLinuxDebian_8_7_1_ppc64le(unittest.TestCase):
 
 		self.assertEqual([], info['flags'])
 
-	#@unittest.skip("FIXME: ")
 	def test_get_cpu_info_from_proc_cpuinfo(self):
 		info = cpuinfo._get_cpu_info_from_proc_cpuinfo()
 
-		#self.assertEqual('GenuineIntel', info['vendor_id'])
 		self.assertEqual('POWER7 (raw), altivec supported', info['brand'])
-		#self.assertEqual('', info['hardware'])
-		#self.assertEqual('1.0000 GHz', info['hz_advertised'])
+		self.assertEqual('1.0000 GHz', info['hz_advertised'])
 		self.assertEqual('1.0000 GHz', info['hz_actual'])
-		#self.assertEqual((1000000000, 0), info['hz_advertised_raw'])
+		self.assertEqual((1000000000, 0), info['hz_advertised_raw'])
 		self.assertEqual((1000000000, 0), info['hz_actual_raw'])
 		self.assertEqual('PPC_64', info['arch'])
 		self.assertEqual(64, info['bits'])
 		self.assertEqual(2, info['count'])
-
 		self.assertEqual('ppc64le', info['raw_arch_string'])
 
-		#self.assertEqual('', info['l2_cache_size'])
 
-		#self.assertEqual(7, info['stepping'])
-		#self.assertEqual(42, info['model'])
-		#self.assertEqual(6, info['family'])
-		#self.assertEqual(None, info['flags'])
-
-	#@unittest.skip("FIXME: ")
+	# FIXME: This needs a way to get the CPU flags
 	def test_all(self):
 		info = cpuinfo.get_cpu_info()
 
-		#self.assertEqual('GenuineIntel', info['vendor_id'])
 		self.assertEqual('POWER7 (raw), altivec supported', info['brand'])
-		#self.assertEqual('1.0000 GHz', info['hz_advertised'])
+		self.assertEqual('1.0000 GHz', info['hz_advertised'])
 		self.assertEqual('1.0000 GHz', info['hz_actual'])
-		#self.assertEqual((1000000000, 0), info['hz_advertised_raw'])
+		self.assertEqual((1000000000, 0), info['hz_advertised_raw'])
 		self.assertEqual((1000000000, 0), info['hz_actual_raw'])
 		self.assertEqual('PPC_64', info['arch'])
 		self.assertEqual(64, info['bits'])
 		self.assertEqual(2, info['count'])
-
 		self.assertEqual('ppc64le', info['raw_arch_string'])
-
-		#self.assertEqual('', info['l2_cache_size'])
-
-		#self.assertEqual(7, info['stepping'])
-		#self.assertEqual(42, info['model'])
-		#self.assertEqual(6, info['family'])
-		#self.assertEqual(None, info['flags'])

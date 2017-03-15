@@ -1175,6 +1175,13 @@ def _get_cpu_info_from_proc_cpuinfo():
 		'family' : family,
 		}
 
+		# Make the Hz the same for actual and advertised if missing any
+		if not hz_advertised or hz_advertised == '0.0':
+			hz_advertised = hz_actual
+			scale = 6
+		elif not hz_actual or hz_actual == '0.0':
+			hz_actual = hz_advertised
+
 		# Add the Hz if there is one
 		if to_raw_hz(hz_advertised, scale) > (0, 0):
 			info['hz_advertised'] = to_friendly_hz(hz_advertised, scale)
