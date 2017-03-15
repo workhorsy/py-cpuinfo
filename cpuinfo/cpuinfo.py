@@ -382,9 +382,12 @@ def _parse_cpu_string(cpu_string):
 def _parse_dmesg_output(output):
 	try:
 		# Get all the dmesg lines that might contain a CPU string
-		lines = output.split('CPU0:')[1:] + \
-				output.split('CPU1:')[1:] + \
-				output.split('CPU:')[1:]
+		lines = output.split(' CPU0:')[1:] + \
+				output.split(' CPU1:')[1:] + \
+				output.split(' CPU:')[1:] + \
+				output.split('\nCPU0:')[1:] + \
+				output.split('\nCPU1:')[1:] + \
+				output.split('\nCPU:')[1:]
 		lines = [l.split('\n')[0].strip() for l in lines]
 
 		# Convert the lines to CPU strings
@@ -451,11 +454,6 @@ def _parse_dmesg_output(output):
 		'vendor_id' : vendor_id,
 		'brand' : processor_brand,
 
-		'hz_advertised' : to_friendly_hz(hz_advertised, scale),
-		'hz_actual' : to_friendly_hz(hz_actual, scale),
-		'hz_advertised_raw' : to_raw_hz(hz_advertised, scale),
-		'hz_actual_raw' : to_raw_hz(hz_actual, scale),
-
 		'arch' : arch,
 		'bits' : bits,
 		'count' : DataSource.cpu_count,
@@ -466,6 +464,14 @@ def _parse_dmesg_output(output):
 		'family' : family,
 		'flags' : flags
 		}
+
+		if hz_advertised and hz_advertised != '0.0':
+			info['hz_advertised'] = to_friendly_hz(hz_advertised, scale)
+			info['hz_actual'] = to_friendly_hz(hz_actual, scale)
+
+		if hz_advertised and hz_advertised != '0.0':
+			info['hz_advertised_raw'] = to_raw_hz(hz_advertised, scale)
+			info['hz_actual_raw'] = to_raw_hz(hz_actual, scale)
 
 		return {k: v for k, v in info.items() if v}
 	except:
