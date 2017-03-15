@@ -71,14 +71,13 @@ class TestHaiku(unittest.TestCase):
 		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_kstat()))
 		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_dmesg()))
 		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_cat_var_run_dmesg_boot()))
-		self.assertEqual(15, len(cpuinfo._get_cpu_info_from_sysinfo()))
+		self.assertEqual(13, len(cpuinfo._get_cpu_info_from_sysinfo()))
 		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_cpuid()))
 		self.assertEqual(13, len(cpuinfo.get_cpu_info()))
 
 	def test_get_cpu_info_from_sysinfo(self):
 		info = cpuinfo._get_cpu_info_from_sysinfo()
 
-		self.assertEqual('', info['vendor_id'])
 		self.assertEqual('Intel(R) Core(TM) i7 CPU         870  @ 2.93GHz', info['brand'])
 		self.assertEqual('2.9300 GHz', info['hz_advertised'])
 		self.assertEqual('2.9300 GHz', info['hz_actual'])
@@ -89,8 +88,6 @@ class TestHaiku(unittest.TestCase):
 		self.assertEqual(4, info['count'])
 
 		self.assertEqual('BePC', info['raw_arch_string'])
-
-		self.assertEqual('', info['l2_cache_size'])
 
 		self.assertEqual(5, info['stepping'])
 		self.assertEqual(30, info['model'])

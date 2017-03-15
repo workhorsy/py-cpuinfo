@@ -57,7 +57,7 @@ class TestPCBSD(unittest.TestCase):
 		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_proc_cpuinfo()))
 		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_sysctl()))
 		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_kstat()))
-		self.assertEqual(14, len(cpuinfo._get_cpu_info_from_dmesg()))
+		self.assertEqual(10, len(cpuinfo._get_cpu_info_from_dmesg()))
 		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_cat_var_run_dmesg_boot()))
 		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_sysinfo()))
 		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_cpuid()))
@@ -66,7 +66,6 @@ class TestPCBSD(unittest.TestCase):
 	def test_get_cpu_info_from_dmesg(self):
 		info = cpuinfo._get_cpu_info_from_dmesg()
 
-		self.assertEqual(None, info['vendor_id'])
 		self.assertEqual('Intel(R) Core(TM) i5-4440 CPU @ 3.10GHz', info['brand'])
 		self.assertEqual('3.1000 GHz', info['hz_advertised'])
 		self.assertEqual('3.1000 GHz', info['hz_actual'])

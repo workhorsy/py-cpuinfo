@@ -409,7 +409,7 @@ class TestLinuxDebian_8_7_1_ppc64le(unittest.TestCase):
 		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_registry()))
 		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_cpufreq_info()))
 		self.assertEqual(4, len(cpuinfo._get_cpu_info_from_lscpu()))
-		self.assertEqual(9, len(cpuinfo._get_cpu_info_from_proc_cpuinfo()))
+		self.assertEqual(7, len(cpuinfo._get_cpu_info_from_proc_cpuinfo()))
 		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_sysctl()))
 		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_kstat()))
 		#self.assertEqual(0, len(cpuinfo._get_cpu_info_from_dmesg()))
@@ -467,7 +467,7 @@ class TestLinuxDebian_8_7_1_ppc64le(unittest.TestCase):
 
 		#self.assertEqual('GenuineIntel', info['vendor_id'])
 		self.assertEqual('POWER7 (raw), altivec supported', info['brand'])
-		self.assertEqual('', info['hardware'])
+		#self.assertEqual('', info['hardware'])
 		#self.assertEqual('1.0000 GHz', info['hz_advertised'])
 		self.assertEqual('1.0000 GHz', info['hz_actual'])
 		#self.assertEqual((1000000000, 0), info['hz_advertised_raw'])
@@ -478,7 +478,7 @@ class TestLinuxDebian_8_7_1_ppc64le(unittest.TestCase):
 
 		self.assertEqual('ppc64le', info['raw_arch_string'])
 
-		self.assertEqual('', info['l2_cache_size'])
+		#self.assertEqual('', info['l2_cache_size'])
 
 		#self.assertEqual(7, info['stepping'])
 		#self.assertEqual(42, info['model'])

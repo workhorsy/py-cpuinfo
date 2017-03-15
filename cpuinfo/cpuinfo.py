@@ -447,7 +447,7 @@ def _parse_dmesg_output(output):
 		# Get the CPU arch and bits
 		arch, bits = parse_arch(DataSource.raw_arch_string)
 
-		return {
+		info = {
 		'vendor_id' : vendor_id,
 		'brand' : processor_brand,
 
@@ -466,6 +466,8 @@ def _parse_dmesg_output(output):
 		'family' : family,
 		'flags' : flags
 		}
+
+		return {k: v for k, v in info.items() if v}
 	except:
 		#raise
 		pass
@@ -1089,6 +1091,8 @@ def actual_get_cpu_info_from_cpuid():
 	'extended_family' : info['extended_family'],
 	'flags' : cpuid.get_flags(max_extension_support)
 	}
+
+	info = {k: v for k, v in info.items() if v}
 	return obj_to_b64(info)
 
 def _get_cpu_info_from_cpuid():
@@ -1164,22 +1168,12 @@ def _get_cpu_info_from_proc_cpuinfo():
 		'raw_arch_string' : DataSource.raw_arch_string,
 
 		'l2_cache_size' : cache_size,
+		'flags' : flags,
+		'vendor_id' : vendor_id,
+		'stepping' : stepping,
+		'model' : model,
+		'family' : family,
 		}
-
-		if flags:
-			info['flags'] = flags
-
-		if vendor_id:
-			info['vendor_id'] = vendor_id
-
-		if stepping:
-			info['stepping'] = stepping
-
-		if model:
-			info['model'] = model
-
-		if family:
-			info['family'] = family
 
 		# Add the Hz if there is one
 		if to_raw_hz(hz_advertised, scale) > (0, 0):
@@ -1189,6 +1183,7 @@ def _get_cpu_info_from_proc_cpuinfo():
 			info['hz_actual'] = to_friendly_hz(hz_actual, 6)
 			info['hz_actual_raw'] = to_raw_hz(hz_actual, 6)
 
+		info = {k: v for k, v in info.items() if v}
 		return info
 	except:
 		#raise # NOTE: To have this throw on error, uncomment this line
@@ -1218,12 +1213,15 @@ def _get_cpu_info_from_cpufreq_info():
 		hz_brand = hz_brand.rstrip('mhz').rstrip('ghz').strip()
 		hz_brand = to_hz_string(hz_brand)
 
-		return {
+		info = {
 			'hz_advertised' : to_friendly_hz(hz_brand, scale),
 			'hz_actual' : to_friendly_hz(hz_brand, 6),
 			'hz_advertised_raw' : to_raw_hz(hz_brand, scale),
 			'hz_actual_raw' : to_raw_hz(hz_brand, scale),
 		}
+
+		info = {k: v for k, v in info.items() if v}
+		return info
 	except:
 		#raise # NOTE: To have this throw on error, uncomment this line
 		return {}
@@ -1290,6 +1288,7 @@ def _get_cpu_info_from_lscpu():
 			flags.sort()
 			info['flags'] = flags
 
+		info = {k: v for k, v in info.items() if v}
 		return info
 	except:
 		#raise # NOTE: To have this throw on error, uncomment this line
@@ -1365,7 +1364,7 @@ def _get_cpu_info_from_sysctl():
 		# Get the CPU arch and bits
 		arch, bits = parse_arch(DataSource.raw_arch_string)
 
-		return {
+		info = {
 		'vendor_id' : vendor_id,
 		'brand' : processor_brand,
 
@@ -1386,6 +1385,9 @@ def _get_cpu_info_from_sysctl():
 		'family' : family,
 		'flags' : flags
 		}
+
+		info = {k: v for k, v in info.items() if v}
+		return info
 	except:
 		return {}
 
@@ -1427,7 +1429,7 @@ def _get_cpu_info_from_sysinfo():
 		# Get the CPU arch and bits
 		arch, bits = parse_arch(DataSource.raw_arch_string)
 
-		return {
+		info = {
 		'vendor_id' : vendor_id,
 		'brand' : processor_brand,
 
@@ -1448,6 +1450,9 @@ def _get_cpu_info_from_sysinfo():
 		'family' : family,
 		'flags' : flags
 		}
+
+		info = {k: v for k, v in info.items() if v}
+		return info
 	except:
 		return {}
 
@@ -1529,7 +1534,7 @@ def _get_cpu_info_from_registry():
 		flags = [k for k, v in flags.items() if v]
 		flags.sort()
 
-		return {
+		info = {
 		'vendor_id' : vendor_id,
 		'brand' : processor_brand,
 
@@ -1545,6 +1550,9 @@ def _get_cpu_info_from_registry():
 
 		'flags' : flags
 		}
+
+		info = {k: v for k, v in info.items() if v}
+		return info
 	except:
 		return {}
 
@@ -1591,7 +1599,7 @@ def _get_cpu_info_from_kstat():
 		# Get the CPU arch and bits
 		arch, bits = parse_arch(DataSource.raw_arch_string)
 
-		return {
+		info = {
 		'vendor_id' : vendor_id,
 		'brand' : processor_brand,
 
@@ -1610,6 +1618,9 @@ def _get_cpu_info_from_kstat():
 		'family' : family,
 		'flags' : flags
 		}
+
+		info = {k: v for k, v in info.items() if v}
+		return info
 	except:
 		return {}
 

@@ -453,10 +453,10 @@ class TestLinuxDebian_8_5_X86_64(unittest.TestCase):
 		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_registry()))
 		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_cpufreq_info()))
 		self.assertEqual(13, len(cpuinfo._get_cpu_info_from_lscpu()))
-		self.assertEqual(16, len(cpuinfo._get_cpu_info_from_proc_cpuinfo()))
+		self.assertEqual(15, len(cpuinfo._get_cpu_info_from_proc_cpuinfo()))
 		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_sysctl()))
 		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_kstat()))
-		self.assertEqual(14, len(cpuinfo._get_cpu_info_from_dmesg()))
+		self.assertEqual(12, len(cpuinfo._get_cpu_info_from_dmesg()))
 		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_cat_var_run_dmesg_boot()))
 		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_sysinfo()))
 		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_cpuid()))
@@ -484,7 +484,6 @@ class TestLinuxDebian_8_5_X86_64(unittest.TestCase):
 	def test_get_cpu_info_from_dmesg(self):
 		info = cpuinfo._get_cpu_info_from_dmesg()
 
-		self.assertEqual(None, info['vendor_id'])
 		self.assertEqual('Intel(R) Pentium(R) CPU G640 @ 2.80GHz', info['brand'])
 		self.assertEqual('2.8000 GHz', info['hz_advertised'])
 		self.assertEqual('2.8000 GHz', info['hz_actual'])
@@ -500,14 +499,11 @@ class TestLinuxDebian_8_5_X86_64(unittest.TestCase):
 		self.assertEqual(42, info['model'])
 		self.assertEqual(6, info['family'])
 
-		self.assertEqual([], info['flags'])
-
 	def test_get_cpu_info_from_proc_cpuinfo(self):
 		info = cpuinfo._get_cpu_info_from_proc_cpuinfo()
 
 		self.assertEqual('GenuineIntel', info['vendor_id'])
 		self.assertEqual('Intel(R) Pentium(R) CPU G640 @ 2.80GHz', info['brand'])
-		self.assertEqual('', info['hardware'])
 		self.assertEqual('2.8000 GHz', info['hz_advertised'])
 		self.assertEqual('2.7937 GHz', info['hz_actual'])
 		self.assertEqual((2800000000, 0), info['hz_advertised_raw'])
