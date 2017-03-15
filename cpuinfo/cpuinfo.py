@@ -497,7 +497,7 @@ def parse_arch(raw_arch_string):
 	elif re.match('^ppc32$|^prep$|^pmac$|^powermac$', raw_arch_string):
 		arch = 'PPC_32'
 		bits = 32
-	elif re.match('^powerpc$|^ppc64$', raw_arch_string):
+	elif re.match('^powerpc$|^ppc64$|^ppc64le$', raw_arch_string):
 		arch = 'PPC_64'
 		bits = 64
 	# SPARC
@@ -1138,8 +1138,10 @@ def _get_cpu_info_from_proc_cpuinfo():
 		family = _get_field(False, output, int, 0, 'cpu family')
 		hardware = _get_field(False, output, None, '', 'Hardware')
 		# Flags
-		flags = _get_field(False, output, None, None, 'flags', 'Features').split()
-		flags.sort()
+		flags = _get_field(False, output, None, None, 'flags', 'Features')
+		if flags:
+			flags = flags.split()
+			flags.sort()
 
 		# Convert from MHz string to Hz
 		hz_actual = _get_field(False, output, None, '', 'cpu MHz', 'cpu speed', 'clock')
@@ -1162,9 +1164,10 @@ def _get_cpu_info_from_proc_cpuinfo():
 		'raw_arch_string' : DataSource.raw_arch_string,
 
 		'l2_cache_size' : cache_size,
-
-		'flags' : flags
 		}
+
+		if flags:
+			info['flags'] = flags
 
 		if vendor_id:
 			info['vendor_id'] = vendor_id
@@ -1269,15 +1272,15 @@ def _get_cpu_info_from_lscpu():
 			info['brand'] = brand
 
 		family = _get_field(False, output, None, None, 'CPU family')
-		if family:
+		if family and family.isdigit():
 			info['family'] = int(family)
 
 		stepping = _get_field(False, output, None, None, 'Stepping')
-		if stepping:
+		if stepping and stepping.isdigit():
 			info['stepping'] = int(stepping)
 
 		model = _get_field(False, output, None, None, 'Model')
-		if model:
+		if model and model.isdigit():
 			info['model'] = int(model)
 
 		# Flags
@@ -1665,8 +1668,8 @@ def get_cpu_info():
 # Make sure we are running on a supported system
 def _check_arch():
 	arch, bits = parse_arch(DataSource.raw_arch_string)
-	if not arch in ['X86_32', 'X86_64', 'ARM_7', 'ARM_8']:
-		raise Exception("py-cpuinfo currently only works on X86 and some ARM CPUs.")
+	if not arch in ['X86_32', 'X86_64', 'ARM_7', 'ARM_8', 'PPC_64']:
+		raise Exception("py-cpuinfo currently only works on X86 and some PPC and ARM CPUs.")
 
 def main():
 	try:
