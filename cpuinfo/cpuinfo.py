@@ -497,7 +497,7 @@ def parse_arch(raw_arch_string):
 	elif re.match('^ppc32$|^prep$|^pmac$|^powermac$', raw_arch_string):
 		arch = 'PPC_32'
 		bits = 32
-	elif re.match('^powerpc$|^ppc64$', raw_arch_string):
+	elif re.match('^powerpc$|^ppc64$|^ppc64le$', raw_arch_string):
 		arch = 'PPC_64'
 		bits = 64
 	# SPARC
@@ -1665,7 +1665,7 @@ def get_cpu_info():
 # Make sure we are running on a supported system
 def _check_arch():
 	arch, bits = parse_arch(DataSource.raw_arch_string)
-	if not arch in ['X86_32', 'X86_64', 'ARM_7', 'ARM_8']:
+	if not arch in ['X86_32', 'X86_64', 'ARM_7', 'ARM_8', 'PPC_64']:
 		raise Exception("py-cpuinfo currently only works on X86 and some ARM CPUs.")
 
 def main():

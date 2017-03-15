@@ -15,6 +15,7 @@ from test_parse_cpu_string import TestParseCPUString
 from test_invalid_cpu import TestInvalidCPU
 from test_linux_debian_8_x86_64 import TestLinuxDebian_8_X86_64
 from test_linux_debian_8_5_x86_64 import TestLinuxDebian_8_5_X86_64
+from test_linux_debian_8_7_1_ppc64le import TestLinuxDebian_8_7_1_ppc64le
 from test_linux_ubuntu_16_04_x86_64 import TestLinuxUbuntu_16_04_X86_64
 from test_linux_fedora_24_x86_64 import TestLinuxFedora_24_X86_64
 from test_linux_aarch64_64 import TestLinux_Aarch_64
@@ -40,6 +41,7 @@ if __name__ == '__main__':
 		TestInvalidCPU,
 		TestLinuxDebian_8_X86_64,
 		TestLinuxDebian_8_5_X86_64,
+		TestLinuxDebian_8_7_1_ppc64le,
 		TestLinuxUbuntu_16_04_X86_64,
 		TestLinuxFedora_24_X86_64,
 		TestLinux_Aarch_64,
