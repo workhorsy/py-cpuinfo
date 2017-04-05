@@ -1,5 +1,6 @@
 
 # OS X 10.12 Sierra
+# Darwin version 16
 
 import unittest
 from cpuinfo import *
@@ -84,7 +85,7 @@ hw.cpufrequency: 1700000000
 
 
 
-class TestOSX_16(unittest.TestCase):
+class TestOSX_10_12(unittest.TestCase):
 	def setUp(self):
 		helpers.backup_data_source(cpuinfo)
 		helpers.monkey_patch_data_source(cpuinfo, MockDataSource)
