@@ -161,11 +161,11 @@ class TestLinux_Odroid_C2_Aarch_64(unittest.TestCase):
 	'''
 	Make sure calls return the expected number of fields.
 	'''
-	@unittest.skip("")
+	@unittest.skip("FIXME: This breaks because it fails to parse cpu flags")
 	def test_returns(self):
 		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_registry()))
 		self.assertEqual(4, len(cpuinfo._get_cpu_info_from_cpufreq_info()))
-		self.assertEqual(7, len(cpuinfo._get_cpu_info_from_lscpu()))
+		self.assertEqual(8, len(cpuinfo._get_cpu_info_from_lscpu()))
 		self.assertEqual(1, len(cpuinfo._get_cpu_info_from_proc_cpuinfo()))
 		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_sysctl()))
 		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_kstat()))
@@ -175,7 +175,6 @@ class TestLinux_Odroid_C2_Aarch_64(unittest.TestCase):
 		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_cpuid()))
 		self.assertEqual(9, len(cpuinfo.get_cpu_info()))
 
-	@unittest.skip("FIXME: Figure out how to parse the CPU info")
 	def test_get_cpu_info_from_cpufreq_info(self):
 		info = cpuinfo._get_cpu_info_from_cpufreq_info()
 
@@ -197,7 +196,7 @@ class TestLinux_Odroid_C2_Aarch_64(unittest.TestCase):
 
 		self.assertEqual('aarch64', info['raw_arch_string'])
 
-	@unittest.skip("")
+	@unittest.skip("FIXME: This breaks because it fails to parse cpu flags")
 	def test_get_cpu_info_from_proc_cpuinfo(self):
 		info = cpuinfo._get_cpu_info_from_proc_cpuinfo()
 
@@ -206,10 +205,9 @@ class TestLinux_Odroid_C2_Aarch_64(unittest.TestCase):
 			info['flags']
 		)
 
-	@unittest.skip("")
+	@unittest.skip("FIXME: This breaks because it fails to parse cpu flags")
 	def test_all(self):
 		info = cpuinfo.get_cpu_info()
-		print(info)
 
 		self.assertEqual('1.5360 GHz', info['hz_advertised'])
 		self.assertEqual('1.5360 GHz', info['hz_actual'])

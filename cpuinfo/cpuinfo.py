@@ -1217,7 +1217,7 @@ def _get_cpu_info_from_cpufreq_info():
 		if returncode != 0:
 			return {}
 
-		hz_brand = output.split('current CPU frequency is')[1].split('.')[0].lower()
+		hz_brand = output.split('current CPU frequency is')[1].split('\n')[0].rsplit('.', 1)[0].lower().strip()
 
 		if hz_brand.endswith('mhz'):
 			scale = 6
@@ -1228,7 +1228,7 @@ def _get_cpu_info_from_cpufreq_info():
 
 		info = {
 			'hz_advertised' : to_friendly_hz(hz_brand, scale),
-			'hz_actual' : to_friendly_hz(hz_brand, 6),
+			'hz_actual' : to_friendly_hz(hz_brand, scale),
 			'hz_advertised_raw' : to_raw_hz(hz_brand, scale),
 			'hz_actual_raw' : to_raw_hz(hz_brand, scale),
 		}
