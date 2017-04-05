@@ -1,5 +1,5 @@
 
-VERSION = 0.2.6
+VERSION = 3.0.0
 
 all:
 	@echo build: Builds the python source dist package
