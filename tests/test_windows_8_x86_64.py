@@ -47,7 +47,7 @@ class TestWindows_8_X86_64(unittest.TestCase):
 	Make sure calls return the expected number of fields.
 	'''
 	def test_returns(self):
-		self.assertEqual(11, len(cpuinfo._get_cpu_info_from_registry()))
+		self.assertEqual(7, len(cpuinfo._get_cpu_info_from_registry()))
 		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_cpufreq_info()))
 		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_lscpu()))
 		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_proc_cpuinfo()))
@@ -68,11 +68,6 @@ class TestWindows_8_X86_64(unittest.TestCase):
 		self.assertEqual('2.9330 GHz', info['hz_actual'])
 		self.assertEqual((2930000000, 0), info['hz_advertised_raw'])
 		self.assertEqual((2933000000, 0), info['hz_actual_raw'])
-		self.assertEqual('X86_64', info['arch'])
-		self.assertEqual(64, info['bits'])
-		self.assertEqual(4, info['count'])
-
-		self.assertEqual('AMD64', info['raw_arch_string'])
 
 		 # FIXME: Missing flags such as sse3 and sse4
 		self.assertEqual(

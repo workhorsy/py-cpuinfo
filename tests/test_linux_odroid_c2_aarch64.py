@@ -161,19 +161,18 @@ class TestLinux_Odroid_C2_Aarch_64(unittest.TestCase):
 	'''
 	Make sure calls return the expected number of fields.
 	'''
-	@unittest.skip("FIXME: This breaks because it fails to parse cpu flags")
 	def test_returns(self):
 		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_registry()))
 		self.assertEqual(4, len(cpuinfo._get_cpu_info_from_cpufreq_info()))
-		self.assertEqual(8, len(cpuinfo._get_cpu_info_from_lscpu()))
-		self.assertEqual(1, len(cpuinfo._get_cpu_info_from_proc_cpuinfo()))
+		self.assertEqual(4, len(cpuinfo._get_cpu_info_from_lscpu()))
+		self.assertEqual(2, len(cpuinfo._get_cpu_info_from_proc_cpuinfo()))
 		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_sysctl()))
 		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_kstat()))
 		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_dmesg()))
 		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_cat_var_run_dmesg_boot()))
 		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_sysinfo()))
 		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_cpuid()))
-		self.assertEqual(9, len(cpuinfo.get_cpu_info()))
+		self.assertEqual(10, len(cpuinfo.get_cpu_info()))
 
 	def test_get_cpu_info_from_cpufreq_info(self):
 		info = cpuinfo._get_cpu_info_from_cpufreq_info()
@@ -190,29 +189,25 @@ class TestLinux_Odroid_C2_Aarch_64(unittest.TestCase):
 		self.assertEqual('1.5360 GHz', info['hz_actual'])
 		self.assertEqual((1536000000, 0), info['hz_advertised_raw'])
 		self.assertEqual((1536000000, 0), info['hz_actual_raw'])
-		self.assertEqual('ARM_8', info['arch'])
-		self.assertEqual(64, info['bits'])
-		self.assertEqual(4, info['count'])
 
-		self.assertEqual('aarch64', info['raw_arch_string'])
-
-	@unittest.skip("FIXME: This breaks because it fails to parse cpu flags")
 	def test_get_cpu_info_from_proc_cpuinfo(self):
 		info = cpuinfo._get_cpu_info_from_proc_cpuinfo()
 
+		self.assertEqual('ODROID-C2', info['hardware'])
+
 		self.assertEqual(
-			['fp', 'asimd', 'crc32'],
+			['asimd', 'crc32', 'fp'],
 			info['flags']
 		)
 
-	@unittest.skip("FIXME: This breaks because it fails to parse cpu flags")
 	def test_all(self):
 		info = cpuinfo.get_cpu_info()
 
-		self.assertEqual('1.5360 GHz', info['hz_advertised'])
-		self.assertEqual('1.5360 GHz', info['hz_actual'])
-		self.assertEqual((1536000000, 0), info['hz_advertised_raw'])
-		self.assertEqual((1536000000, 0), info['hz_actual_raw'])
+		self.assertEqual('ODROID-C2', info['hardware'])
+		self.assertEqual('1.5400 GHz', info['hz_advertised'])
+		self.assertEqual('1.5400 GHz', info['hz_actual'])
+		self.assertEqual((1540000000, 0), info['hz_advertised_raw'])
+		self.assertEqual((1540000000, 0), info['hz_actual_raw'])
 		self.assertEqual('ARM_8', info['arch'])
 		self.assertEqual(64, info['bits'])
 		self.assertEqual(4, info['count'])
@@ -220,6 +215,6 @@ class TestLinux_Odroid_C2_Aarch_64(unittest.TestCase):
 		self.assertEqual('aarch64', info['raw_arch_string'])
 
 		self.assertEqual(
-			['fp', 'asimd', 'crc32'],
+			['asimd', 'crc32', 'fp'],
 			info['flags']
 		)

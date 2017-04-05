@@ -57,7 +57,7 @@ class TestPCBSD(unittest.TestCase):
 		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_proc_cpuinfo()))
 		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_sysctl()))
 		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_kstat()))
-		self.assertEqual(10, len(cpuinfo._get_cpu_info_from_dmesg()))
+		self.assertEqual(6, len(cpuinfo._get_cpu_info_from_dmesg()))
 		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_cat_var_run_dmesg_boot()))
 		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_sysinfo()))
 		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_cpuid()))
@@ -71,11 +71,6 @@ class TestPCBSD(unittest.TestCase):
 		self.assertEqual('3.1000 GHz', info['hz_actual'])
 		self.assertEqual((3100000000, 0), info['hz_advertised_raw'])
 		self.assertEqual((3100000000, 0), info['hz_actual_raw'])
-		self.assertEqual('X86_64', info['arch'])
-		self.assertEqual(64, info['bits'])
-		self.assertEqual(1, info['count'])
-
-		self.assertEqual('amd64', info['raw_arch_string'])
 
 		self.assertEqual(
 			['apic', 'clflush', 'cmov', 'cx8', 'de', 'fpu', 'fxsr', 'lahf',

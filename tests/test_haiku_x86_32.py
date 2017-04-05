@@ -71,7 +71,7 @@ class TestHaiku(unittest.TestCase):
 		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_kstat()))
 		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_dmesg()))
 		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_cat_var_run_dmesg_boot()))
-		self.assertEqual(13, len(cpuinfo._get_cpu_info_from_sysinfo()))
+		self.assertEqual(9, len(cpuinfo._get_cpu_info_from_sysinfo()))
 		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_cpuid()))
 		self.assertEqual(13, len(cpuinfo.get_cpu_info()))
 
@@ -83,11 +83,6 @@ class TestHaiku(unittest.TestCase):
 		self.assertEqual('2.9300 GHz', info['hz_actual'])
 		self.assertEqual((2930000000, 0), info['hz_advertised_raw'])
 		self.assertEqual((2930000000, 0), info['hz_actual_raw'])
-		self.assertEqual('X86_32', info['arch'])
-		self.assertEqual(32, info['bits'])
-		self.assertEqual(4, info['count'])
-
-		self.assertEqual('BePC', info['raw_arch_string'])
 
 		self.assertEqual(5, info['stepping'])
 		self.assertEqual(30, info['model'])

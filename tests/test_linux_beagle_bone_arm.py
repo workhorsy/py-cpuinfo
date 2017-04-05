@@ -79,7 +79,7 @@ class TestLinux_BeagleBone(unittest.TestCase):
 		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_registry()))
 		self.assertEqual(4, len(cpuinfo._get_cpu_info_from_cpufreq_info()))
 		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_lscpu()))
-		self.assertEqual(7, len(cpuinfo._get_cpu_info_from_proc_cpuinfo()))
+		self.assertEqual(3, len(cpuinfo._get_cpu_info_from_proc_cpuinfo()))
 		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_sysctl()))
 		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_kstat()))
 		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_dmesg()))
@@ -101,11 +101,6 @@ class TestLinux_BeagleBone(unittest.TestCase):
 
 		self.assertEqual('BCM2708', info['hardware'])
 		self.assertEqual('ARMv6-compatible processor rev 7 (v6l)', info['brand'])
-		self.assertEqual('ARM_7', info['arch'])
-		self.assertEqual(32, info['bits'])
-		self.assertEqual(1, info['count'])
-
-		self.assertEqual('armv7l', info['raw_arch_string'])
 
 		self.assertEqual(
 			['edsp', 'fastmult', 'half', 'java', 'swp', 'thumb', 'tls', 'vfp']

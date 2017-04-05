@@ -407,8 +407,8 @@ class TestLinuxDebian_8_7_1_ppc64le(unittest.TestCase):
 	def test_returns(self):
 		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_registry()))
 		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_cpufreq_info()))
-		self.assertEqual(4, len(cpuinfo._get_cpu_info_from_lscpu()))
-		self.assertEqual(9, len(cpuinfo._get_cpu_info_from_proc_cpuinfo()))
+		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_lscpu()))
+		self.assertEqual(5, len(cpuinfo._get_cpu_info_from_proc_cpuinfo()))
 		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_sysctl()))
 		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_kstat()))
 		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_dmesg()))
@@ -419,11 +419,7 @@ class TestLinuxDebian_8_7_1_ppc64le(unittest.TestCase):
 
 	def test_get_cpu_info_from_lscpu(self):
 		info = cpuinfo._get_cpu_info_from_lscpu()
-
-		self.assertEqual('PPC_64', info['arch'])
-		self.assertEqual(64, info['bits'])
-		self.assertEqual(2, info['count'])
-		self.assertEqual('ppc64le', info['raw_arch_string'])
+		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_lscpu()))
 
 	def test_get_cpu_info_from_proc_cpuinfo(self):
 		info = cpuinfo._get_cpu_info_from_proc_cpuinfo()
@@ -433,10 +429,6 @@ class TestLinuxDebian_8_7_1_ppc64le(unittest.TestCase):
 		self.assertEqual('1.0000 GHz', info['hz_actual'])
 		self.assertEqual((1000000000, 0), info['hz_advertised_raw'])
 		self.assertEqual((1000000000, 0), info['hz_actual_raw'])
-		self.assertEqual('PPC_64', info['arch'])
-		self.assertEqual(64, info['bits'])
-		self.assertEqual(2, info['count'])
-		self.assertEqual('ppc64le', info['raw_arch_string'])
 
 
 	# FIXME: This needs a way to get the CPU flags

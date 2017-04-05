@@ -117,24 +117,30 @@ class TestLinux_Aarch_64(unittest.TestCase):
 	def test_returns(self):
 		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_registry()))
 		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_cpufreq_info()))
-		self.assertEqual(4, len(cpuinfo._get_cpu_info_from_lscpu()))
-		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_proc_cpuinfo()))
+		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_lscpu()))
+		self.assertEqual(1, len(cpuinfo._get_cpu_info_from_proc_cpuinfo()))
 		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_sysctl()))
 		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_kstat()))
 		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_dmesg()))
 		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_cat_var_run_dmesg_boot()))
 		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_sysinfo()))
 		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_cpuid()))
-		self.assertEqual(4, len(cpuinfo.get_cpu_info()))
+		self.assertEqual(5, len(cpuinfo.get_cpu_info()))
 
 	def test_get_cpu_info_from_lscpu(self):
 		info = cpuinfo._get_cpu_info_from_lscpu()
 
-		self.assertEqual('ARM_8', info['arch'])
-		self.assertEqual(64, info['bits'])
-		self.assertEqual(6, info['count'])
+		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_lscpu()))
 
-		self.assertEqual('aarch64', info['raw_arch_string'])
+	def test_get_cpu_info_from_proc_cpuinfo(self):
+		info = cpuinfo._get_cpu_info_from_proc_cpuinfo()
+
+		self.assertEqual(
+			['aes', 'asimd', 'atomics', 'crc32', 'evtstrm',
+			'fp', 'pmull', 'sha1', 'sha2']
+			,
+			info['flags']
+		)
 
 	@unittest.skip("FIXME: This fails because it does not have a way to get CPU brand string and Hz.")
 	def test_all(self):

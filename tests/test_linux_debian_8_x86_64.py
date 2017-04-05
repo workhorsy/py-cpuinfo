@@ -67,7 +67,7 @@ class TestLinuxDebian_8_X86_64(unittest.TestCase):
 		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_registry()))
 		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_cpufreq_info()))
 		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_lscpu()))
-		self.assertEqual(15, len(cpuinfo._get_cpu_info_from_proc_cpuinfo()))
+		self.assertEqual(11, len(cpuinfo._get_cpu_info_from_proc_cpuinfo()))
 		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_sysctl()))
 		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_kstat()))
 		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_dmesg()))
@@ -85,11 +85,6 @@ class TestLinuxDebian_8_X86_64(unittest.TestCase):
 		self.assertEqual('2.9283 GHz', info['hz_actual'])
 		self.assertEqual((2930000000, 0), info['hz_advertised_raw'])
 		self.assertEqual((2928283000, 0), info['hz_actual_raw'])
-		self.assertEqual('X86_64', info['arch'])
-		self.assertEqual(64, info['bits'])
-		self.assertEqual(1, info['count'])
-
-		self.assertEqual('x86_64', info['raw_arch_string'])
 
 		self.assertEqual('6144 KB', info['l2_cache_size'])
 

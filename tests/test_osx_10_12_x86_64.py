@@ -101,7 +101,7 @@ class TestOSX_10_12(unittest.TestCase):
 		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_cpufreq_info()))
 		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_lscpu()))
 		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_proc_cpuinfo()))
-		self.assertEqual(15, len(cpuinfo._get_cpu_info_from_sysctl()))
+		self.assertEqual(11, len(cpuinfo._get_cpu_info_from_sysctl()))
 		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_kstat()))
 		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_dmesg()))
 		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_cat_var_run_dmesg_boot()))
@@ -118,11 +118,6 @@ class TestOSX_10_12(unittest.TestCase):
 		self.assertEqual('1.7000 GHz', info['hz_actual'])
 		self.assertEqual((1700000000, 0), info['hz_advertised_raw'])
 		self.assertEqual((1700000000, 0), info['hz_actual_raw'])
-		self.assertEqual('X86_64', info['arch'])
-		self.assertEqual(64, info['bits'])
-		self.assertEqual(4, info['count'])
-
-		self.assertEqual('x86_64', info['raw_arch_string'])
 
 		self.assertEqual('256', info['l2_cache_size'])
 

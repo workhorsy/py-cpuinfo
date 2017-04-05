@@ -447,17 +447,9 @@ def _parse_dmesg_output(output):
 		# Convert from GHz/MHz string to Hz
 		scale, hz_advertised = _get_hz_string_from_brand(processor_brand)
 
-		# Get the CPU arch and bits
-		arch, bits = parse_arch(DataSource.raw_arch_string)
-
 		info = {
 		'vendor_id' : vendor_id,
 		'brand' : processor_brand,
-
-		'arch' : arch,
-		'bits' : bits,
-		'count' : DataSource.cpu_count,
-		'raw_arch_string' : DataSource.raw_arch_string,
 
 		'stepping' : stepping,
 		'model' : model,
@@ -1080,11 +1072,6 @@ def actual_get_cpu_info_from_cpuid():
 	'hz_advertised_raw' : to_raw_hz(hz_advertised, scale),
 	'hz_actual_raw' : to_raw_hz(hz_actual, 6),
 
-	'arch' : arch,
-	'bits' : bits,
-	'count' : DataSource.cpu_count,
-	'raw_arch_string' : DataSource.raw_arch_string,
-
 	'l2_cache_size' : cache_info['size_kb'],
 	'l2_cache_line_size' : cache_info['line_size_b'],
 	'l2_cache_associativity' : hex(cache_info['associativity']),
@@ -1159,19 +1146,15 @@ def _get_cpu_info_from_proc_cpuinfo():
 		hz_actual = to_hz_string(hz_actual)
 
 		# Convert from GHz/MHz string to Hz
-		scale, hz_advertised = _get_hz_string_from_brand(processor_brand)
-
-		# Get the CPU arch and bits
-		arch, bits = parse_arch(DataSource.raw_arch_string)
+		scale, hz_advertised = (0, None)
+		try:
+			scale, hz_advertised = _get_hz_string_from_brand(processor_brand)
+		except Exception:
+			pass
 
 		info = {
 		'hardware' : hardware,
 		'brand' : processor_brand,
-
-		'arch' : arch,
-		'bits' : bits,
-		'count' : DataSource.cpu_count,
-		'raw_arch_string' : DataSource.raw_arch_string,
 
 		'l2_cache_size' : cache_size,
 		'flags' : flags,
@@ -1252,14 +1235,7 @@ def _get_cpu_info_from_lscpu():
 		if returncode != 0:
 			return {}
 
-		# Get the CPU arch and bits
-		arch, bits = parse_arch(DataSource.raw_arch_string)
-		info = {
-			'arch' : arch,
-			'bits' : bits,
-			'count' : DataSource.cpu_count,
-			'raw_arch_string' : DataSource.raw_arch_string,
-		}
+		info = {}
 
 		new_hz = _get_field(False, output, None, None, 'CPU max MHz', 'CPU MHz')
 		if new_hz:
@@ -1374,9 +1350,6 @@ def _get_cpu_info_from_sysctl():
 		hz_actual = _get_field(False, output, None, None, 'hw.cpufrequency')
 		hz_actual = to_hz_string(hz_actual)
 
-		# Get the CPU arch and bits
-		arch, bits = parse_arch(DataSource.raw_arch_string)
-
 		info = {
 		'vendor_id' : vendor_id,
 		'brand' : processor_brand,
@@ -1385,11 +1358,6 @@ def _get_cpu_info_from_sysctl():
 		'hz_actual' : to_friendly_hz(hz_actual, 0),
 		'hz_advertised_raw' : to_raw_hz(hz_advertised, scale),
 		'hz_actual_raw' : to_raw_hz(hz_actual, 0),
-
-		'arch' : arch,
-		'bits' : bits,
-		'count' : DataSource.cpu_count,
-		'raw_arch_string' : DataSource.raw_arch_string,
 
 		'l2_cache_size' : cache_size,
 
@@ -1439,9 +1407,6 @@ def _get_cpu_info_from_sysinfo():
 		scale, hz_advertised = _get_hz_string_from_brand(processor_brand)
 		hz_actual = hz_advertised
 
-		# Get the CPU arch and bits
-		arch, bits = parse_arch(DataSource.raw_arch_string)
-
 		info = {
 		'vendor_id' : vendor_id,
 		'brand' : processor_brand,
@@ -1450,11 +1415,6 @@ def _get_cpu_info_from_sysinfo():
 		'hz_actual' : to_friendly_hz(hz_actual, scale),
 		'hz_advertised_raw' : to_raw_hz(hz_advertised, scale),
 		'hz_actual_raw' : to_raw_hz(hz_actual, scale),
-
-		'arch' : arch,
-		'bits' : bits,
-		'count' : DataSource.cpu_count,
-		'raw_arch_string' : DataSource.raw_arch_string,
 
 		'l2_cache_size' : cache_size,
 
@@ -1556,11 +1516,6 @@ def _get_cpu_info_from_registry():
 		'hz_advertised_raw' : to_raw_hz(hz_advertised, scale),
 		'hz_actual_raw' : to_raw_hz(hz_actual, 6),
 
-		'arch' : arch,
-		'bits' : bits,
-		'count' : DataSource.cpu_count,
-		'raw_arch_string' : raw_arch_string,
-
 		'flags' : flags
 		}
 
@@ -1609,9 +1564,6 @@ def _get_cpu_info_from_kstat():
 		hz_actual = kstat.split('\tcurrent_clock_Hz ')[1].split('\n')[0].strip()
 		hz_actual = to_hz_string(hz_actual)
 
-		# Get the CPU arch and bits
-		arch, bits = parse_arch(DataSource.raw_arch_string)
-
 		info = {
 		'vendor_id' : vendor_id,
 		'brand' : processor_brand,
@@ -1620,11 +1572,6 @@ def _get_cpu_info_from_kstat():
 		'hz_actual' : to_friendly_hz(hz_actual, 0),
 		'hz_advertised_raw' : to_raw_hz(hz_advertised, scale),
 		'hz_actual_raw' : to_raw_hz(hz_actual, 0),
-
-		'arch' : arch,
-		'bits' : bits,
-		'count' : DataSource.cpu_count,
-		'raw_arch_string' : DataSource.raw_arch_string,
 
 		'stepping' : stepping,
 		'model' : model,
@@ -1655,7 +1602,16 @@ def get_cpu_info():
 	Returns the CPU info by using the best sources of information for your OS.
 	Returns {} if nothing is found.
 	'''
-	info = {}
+
+	# Get the CPU arch and bits
+	arch, bits = parse_arch(DataSource.raw_arch_string)
+
+	info = {
+		'arch' : arch,
+		'bits' : bits,
+		'count' : DataSource.cpu_count,
+		'raw_arch_string' : DataSource.raw_arch_string,
+	}
 
 	# Try the Windows registry
 	CopyNewFields(info, _get_cpu_info_from_registry())
