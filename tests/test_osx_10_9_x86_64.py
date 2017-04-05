@@ -1,4 +1,6 @@
 
+# OS X 10.9 Mavericks
+# Darwin version 13
 
 import unittest
 from cpuinfo import *
@@ -63,7 +65,7 @@ hw.cpufrequency: 2890000000
 
 
 
-class TestOSX(unittest.TestCase):
+class TestOSX_10_9(unittest.TestCase):
 	def setUp(self):
 		helpers.backup_data_source(cpuinfo)
 		helpers.monkey_patch_data_source(cpuinfo, MockDataSource)

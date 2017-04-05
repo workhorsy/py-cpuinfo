@@ -1,6 +1,7 @@
 * Release 3.0.0
 	* Change API to hide low level functions
 	* Fixed Bug #51: Combine data from all sources instead of picking one
+	* Fixed Bug #59: Not working on OS X 10.12 Sierra
 
 03/13/2017 Release 0.2.7
 	* Fixed Bug #53: CPUID breaks test suite when SE Linux is on (Fedora 25)
