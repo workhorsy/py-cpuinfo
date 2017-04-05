@@ -113,11 +113,11 @@ class TestOSX_10_12(unittest.TestCase):
 		info = cpuinfo._get_cpu_info_from_sysctl()
 
 		self.assertEqual('GenuineIntel', info['vendor_id'])
-		self.assertEqual('Intel(R) Core(TM) i5-4440 CPU @ 3.10GHz', info['brand'])
-		self.assertEqual('3.1000 GHz', info['hz_advertised'])
-		self.assertEqual('2.8900 GHz', info['hz_actual'])
-		self.assertEqual((3100000000, 0), info['hz_advertised_raw'])
-		self.assertEqual((2890000000, 0), info['hz_actual_raw'])
+		self.assertEqual('Intel(R) Core(TM) i5-2557M CPU @ 1.70GHz', info['brand'])
+		self.assertEqual('1.7000 GHz', info['hz_advertised'])
+		self.assertEqual('1.7000 GHz', info['hz_actual'])
+		self.assertEqual((1700000000, 0), info['hz_advertised_raw'])
+		self.assertEqual((1700000000, 0), info['hz_actual_raw'])
 		self.assertEqual('X86_64', info['arch'])
 		self.assertEqual(64, info['bits'])
 		self.assertEqual(4, info['count'])
@@ -126,15 +126,19 @@ class TestOSX_10_12(unittest.TestCase):
 
 		self.assertEqual('256', info['l2_cache_size'])
 
-		self.assertEqual(9, info['stepping'])
-		self.assertEqual(58, info['model'])
+		self.assertEqual(7, info['stepping'])
+		self.assertEqual(42, info['model'])
 		self.assertEqual(6, info['family'])
 
 		self.assertEqual(
-			['apic', 'bmi2', 'clfsh', 'cmov', 'cx8', 'de', 'em64t', 'enfstrg', 'fpu', 'fxsr', 'htt',
-			'lahf', 'mca', 'mce', 'mmx', 'msr', 'mtrr', 'pae', 'pat', 'pge', 'pse',
-			'pse36', 'rdtscp', 'sep', 'sse', 'sse2', 'sse3', 'ssse3', 'syscall', 'tsc', 'vme',
-			'vmm', 'xd', ]
+			['acpi', 'aes', 'apic', 'avx1.0', 'clfsh', 'cmov', 'cx16', 'cx8',
+			'de', 'ds', 'dscpl', 'dtes64', 'em64t', 'est', 'fpu', 'fxsr',
+			'htt', 'lahf', 'mca', 'mce', 'mmx', 'mon', 'msr', 'mtrr',
+			'osxsave', 'pae', 'pat', 'pbe', 'pcid', 'pclmulqdq', 'pdcm',
+			'pge', 'popcnt', 'pse', 'pse36', 'rdtscp', 'sep', 'smx', 'ss',
+			'sse', 'sse2', 'sse3', 'sse4.1', 'sse4.2', 'ssse3', 'syscall',
+			'tm', 'tm2', 'tpr', 'tsc', 'tsci', 'tsctmr', 'vme', 'vmx',
+			'x2apic', 'xd', 'xsave']
 			,
 			info['flags']
 		)
@@ -143,11 +147,11 @@ class TestOSX_10_12(unittest.TestCase):
 		info = cpuinfo.get_cpu_info()
 
 		self.assertEqual('GenuineIntel', info['vendor_id'])
-		self.assertEqual('Intel(R) Core(TM) i5-4440 CPU @ 3.10GHz', info['brand'])
-		self.assertEqual('3.1000 GHz', info['hz_advertised'])
-		self.assertEqual('2.8900 GHz', info['hz_actual'])
-		self.assertEqual((3100000000, 0), info['hz_advertised_raw'])
-		self.assertEqual((2890000000, 0), info['hz_actual_raw'])
+		self.assertEqual('Intel(R) Core(TM) i5-2557M CPU @ 1.70GHz', info['brand'])
+		self.assertEqual('1.7000 GHz', info['hz_advertised'])
+		self.assertEqual('1.7000 GHz', info['hz_actual'])
+		self.assertEqual((1700000000, 0), info['hz_advertised_raw'])
+		self.assertEqual((1700000000, 0), info['hz_actual_raw'])
 		self.assertEqual('X86_64', info['arch'])
 		self.assertEqual(64, info['bits'])
 		self.assertEqual(4, info['count'])
@@ -156,15 +160,19 @@ class TestOSX_10_12(unittest.TestCase):
 
 		self.assertEqual('256', info['l2_cache_size'])
 
-		self.assertEqual(9, info['stepping'])
-		self.assertEqual(58, info['model'])
+		self.assertEqual(7, info['stepping'])
+		self.assertEqual(42, info['model'])
 		self.assertEqual(6, info['family'])
 
 		self.assertEqual(
-			['apic', 'bmi2', 'clfsh', 'cmov', 'cx8', 'de', 'em64t', 'enfstrg', 'fpu', 'fxsr', 'htt',
-			'lahf', 'mca', 'mce', 'mmx', 'msr', 'mtrr', 'pae', 'pat', 'pge', 'pse',
-			'pse36', 'rdtscp', 'sep', 'sse', 'sse2', 'sse3', 'ssse3', 'syscall', 'tsc', 'vme',
-			'vmm', 'xd', ]
+			['acpi', 'aes', 'apic', 'avx1.0', 'clfsh', 'cmov', 'cx16', 'cx8',
+			'de', 'ds', 'dscpl', 'dtes64', 'em64t', 'est', 'fpu', 'fxsr',
+			'htt', 'lahf', 'mca', 'mce', 'mmx', 'mon', 'msr', 'mtrr',
+			'osxsave', 'pae', 'pat', 'pbe', 'pcid', 'pclmulqdq', 'pdcm',
+			'pge', 'popcnt', 'pse', 'pse36', 'rdtscp', 'sep', 'smx', 'ss',
+			'sse', 'sse2', 'sse3', 'sse4.1', 'sse4.2', 'ssse3', 'syscall',
+			'tm', 'tm2', 'tpr', 'tsc', 'tsci', 'tsctmr', 'vme', 'vmx',
+			'x2apic', 'xd', 'xsave']
 			,
 			info['flags']
 		)
