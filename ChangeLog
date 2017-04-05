@@ -1,4 +1,4 @@
-* Release 3.0.0
+04/05/2017 Release 3.0.0
 	* Change API to hide low level functions
 	* Fixed Bug #51: Combine data from all sources instead of picking one
 	* Fixed Bug #59: Not working on OS X 10.12 Sierra
