@@ -1,5 +1,5 @@
 
-# OS X 10.9 Mavericks
+# OS X 10.12 Sierra
 
 import unittest
 from cpuinfo import *
@@ -21,50 +21,70 @@ class MockDataSource(object):
 	def sysctl_machdep_cpu_hw_cpufrequency():
 		returncode = 0
 		output = '''
-machdep.cpu.max_basic: 5
-machdep.cpu.max_ext: 2147483656
-machdep.cpu.vendor: GenuineIntel
-machdep.cpu.brand_string: Intel(R) Core(TM) i5-4440 CPU @ 3.10GHz
-machdep.cpu.family: 6
-machdep.cpu.model: 58
-machdep.cpu.extmodel: 3
-machdep.cpu.extfamily: 0
-machdep.cpu.stepping: 9
-machdep.cpu.feature_bits: 395049983 2147484161
-machdep.cpu.leaf7_feature_bits: 832
-machdep.cpu.extfeature_bits: 672139264 1
-machdep.cpu.signature: 198313
-machdep.cpu.brand: 0
-machdep.cpu.features: FPU VME DE PSE TSC MSR PAE MCE CX8 APIC SEP MTRR PGE MCA CMOV PAT PSE36 CLFSH MMX FXSR SSE SSE2 HTT SSE3 SSSE3 VMM
-machdep.cpu.leaf7_features: ENFSTRG BMI2
-machdep.cpu.extfeatures: SYSCALL XD EM64T LAHF RDTSCP
-machdep.cpu.logical_per_package: 4
-machdep.cpu.cores_per_package: 4
-machdep.cpu.microcode_version: 25
-machdep.cpu.processor_flag: 1
-machdep.cpu.mwait.linesize_min: 0
-machdep.cpu.mwait.linesize_max: 0
-machdep.cpu.mwait.extensions: 3
-machdep.cpu.mwait.sub_Cstates: 0
-machdep.cpu.cache.linesize: 64
-machdep.cpu.cache.L2_associativity: 8
-machdep.cpu.cache.size: 256
-machdep.cpu.tlb.inst.large: 8
-machdep.cpu.tlb.data.small: 64
-machdep.cpu.tlb.data.small_level1: 128
-machdep.cpu.tlb.shared: 1024
-machdep.cpu.address_bits.physical: 39
-machdep.cpu.address_bits.virtual: 48
-machdep.cpu.core_count: 4
+machdep.cpu.tsc_ccc.denominator: 0
+machdep.cpu.tsc_ccc.numerator: 0
 machdep.cpu.thread_count: 4
-hw.cpufrequency: 2890000000
+machdep.cpu.core_count: 2
+machdep.cpu.address_bits.virtual: 48
+machdep.cpu.address_bits.physical: 36
+machdep.cpu.tlb.shared: 512
+machdep.cpu.tlb.data.large: 32
+machdep.cpu.tlb.data.small: 64
+machdep.cpu.tlb.inst.large: 8
+machdep.cpu.tlb.inst.small: 64
+machdep.cpu.cache.size: 256
+machdep.cpu.cache.L2_associativity: 8
+machdep.cpu.cache.linesize: 64
+machdep.cpu.arch_perf.fixed_width: 48
+machdep.cpu.arch_perf.fixed_number: 3
+machdep.cpu.arch_perf.events: 0
+machdep.cpu.arch_perf.events_number: 7
+machdep.cpu.arch_perf.width: 48
+machdep.cpu.arch_perf.number: 4
+machdep.cpu.arch_perf.version: 3
+machdep.cpu.xsave.extended_state1: 1 0 0 0
+machdep.cpu.xsave.extended_state: 7 832 832 0
+machdep.cpu.thermal.energy_policy: 1
+machdep.cpu.thermal.hardware_feedback: 0
+machdep.cpu.thermal.package_thermal_intr: 1
+machdep.cpu.thermal.fine_grain_clock_mod: 1
+machdep.cpu.thermal.core_power_limits: 1
+machdep.cpu.thermal.ACNT_MCNT: 1
+machdep.cpu.thermal.thresholds: 2
+machdep.cpu.thermal.invariant_APIC_timer: 1
+machdep.cpu.thermal.dynamic_acceleration: 1
+machdep.cpu.thermal.sensor: 1
+machdep.cpu.mwait.sub_Cstates: 135456
+machdep.cpu.mwait.extensions: 3
+machdep.cpu.mwait.linesize_max: 64
+machdep.cpu.mwait.linesize_min: 64
+machdep.cpu.processor_flag: 4
+machdep.cpu.microcode_version: 40
+machdep.cpu.cores_per_package: 8
+machdep.cpu.logical_per_package: 16
+machdep.cpu.extfeatures: SYSCALL XD EM64T LAHF RDTSCP TSCI
+machdep.cpu.features: FPU VME DE PSE TSC MSR PAE MCE CX8 APIC SEP MTRR PGE MCA CMOV PAT PSE36 CLFSH DS ACPI MMX FXSR SSE SSE2 SS HTT TM PBE SSE3 PCLMULQDQ DTES64 MON DSCPL VMX SMX EST TM2 SSSE3 CX16 TPR PDCM SSE4.1 SSE4.2 x2APIC POPCNT AES PCID XSAVE OSXSAVE TSCTMR AVX1.0
+machdep.cpu.brand: 0
+machdep.cpu.signature: 132775
+machdep.cpu.extfeature_bits: 4967106816
+machdep.cpu.feature_bits: 2286390448420027391
+machdep.cpu.stepping: 7
+machdep.cpu.extfamily: 0
+machdep.cpu.extmodel: 2
+machdep.cpu.model: 42
+machdep.cpu.family: 6
+machdep.cpu.brand_string: Intel(R) Core(TM) i5-2557M CPU @ 1.70GHz
+machdep.cpu.vendor: GenuineIntel
+machdep.cpu.max_ext: 2147483656
+machdep.cpu.max_basic: 13
+hw.cpufrequency: 1700000000
 '''
 		return returncode, output
 
 
 
 
-class TestOSX_13(unittest.TestCase):
+class TestOSX_16(unittest.TestCase):
 	def setUp(self):
 		helpers.backup_data_source(cpuinfo)
 		helpers.monkey_patch_data_source(cpuinfo, MockDataSource)

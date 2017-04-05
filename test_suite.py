@@ -24,7 +24,8 @@ from test_linux_beagle_bone_arm import TestLinux_BeagleBone
 from test_linux_raspberry_pi_model_b_arm import TestLinux_RaspberryPiModelB
 from test_pcbsd_10_x86_64 import TestPCBSD
 from test_free_bsd_11_x86_64 import TestFreeBSD_11_X86_64
-from test_osx_13_x86_64 import TestOSX
+from test_osx_13_x86_64 import TestOSX_13
+from test_osx_16_x86_64 import TestOSX_16
 from test_solaris_11_x86_32 import TestSolaris
 from test_haiku_x86_32 import TestHaiku
 from test_windows_8_x86_64 import TestWindows_8_X86_64
@@ -50,7 +51,8 @@ if __name__ == '__main__':
 		TestLinux_RaspberryPiModelB,
 		TestFreeBSD_11_X86_64,
 		TestPCBSD,
-		TestOSX,
+		TestOSX_13,
+		TestOSX_16,
 		TestSolaris,
 		TestHaiku,
 		TestWindows_8_X86_64,
