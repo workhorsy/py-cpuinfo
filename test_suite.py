@@ -20,6 +20,7 @@ from test_linux_ubuntu_16_04_x86_64 import TestLinuxUbuntu_16_04_X86_64
 from test_linux_fedora_24_x86_64 import TestLinuxFedora_24_X86_64
 from test_linux_aarch64_64 import TestLinux_Aarch_64
 from test_linux_gentoo_2_2_x86_64 import TestLinuxGentoo_2_2_X86_64
+from test_linux_rhel_7_3_ppc64le import TestLinuxRHEL_7_3_ppc64le
 from test_linux_beagle_bone_arm import TestLinux_BeagleBone
 from test_linux_raspberry_pi_model_b_arm import TestLinux_RaspberryPiModelB
 from test_linux_odroid_c2_aarch64 import TestLinux_Odroid_C2_Aarch_64
@@ -49,6 +50,7 @@ if __name__ == '__main__':
 		TestLinuxFedora_24_X86_64,
 		TestLinux_Aarch_64,
 		TestLinuxGentoo_2_2_X86_64,
+		TestLinuxRHEL_7_3_ppc64le,
 		TestLinux_BeagleBone,
 		TestLinux_RaspberryPiModelB,
 		TestLinux_Odroid_C2_Aarch_64,
