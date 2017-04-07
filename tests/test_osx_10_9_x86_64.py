@@ -37,7 +37,7 @@ machdep.cpu.extfeature_bits: 672139264 1
 machdep.cpu.signature: 198313
 machdep.cpu.brand: 0
 machdep.cpu.features: FPU VME DE PSE TSC MSR PAE MCE CX8 APIC SEP MTRR PGE MCA CMOV PAT PSE36 CLFSH MMX FXSR SSE SSE2 HTT SSE3 SSSE3 VMM
-machdep.cpu.leaf7_features: ENFSTRG BMI2
+machdep.cpu.leaf7_features: ENFSTRG BMI2 AVX2
 machdep.cpu.extfeatures: SYSCALL XD EM64T LAHF RDTSCP
 machdep.cpu.logical_per_package: 4
 machdep.cpu.cores_per_package: 4
@@ -106,7 +106,7 @@ class TestOSX_10_9(unittest.TestCase):
 		self.assertEqual(6, info['family'])
 
 		self.assertEqual(
-			['apic', 'bmi2', 'clfsh', 'cmov', 'cx8', 'de', 'em64t', 'enfstrg', 'fpu', 'fxsr', 'htt',
+			['apic', 'avx2', 'bmi2', 'clfsh', 'cmov', 'cx8', 'de', 'em64t', 'enfstrg', 'fpu', 'fxsr', 'htt',
 			'lahf', 'mca', 'mce', 'mmx', 'msr', 'mtrr', 'pae', 'pat', 'pge', 'pse',
 			'pse36', 'rdtscp', 'sep', 'sse', 'sse2', 'sse3', 'ssse3', 'syscall', 'tsc', 'vme',
 			'vmm', 'xd', ]
@@ -136,7 +136,7 @@ class TestOSX_10_9(unittest.TestCase):
 		self.assertEqual(6, info['family'])
 
 		self.assertEqual(
-			['apic', 'bmi2', 'clfsh', 'cmov', 'cx8', 'de', 'em64t', 'enfstrg', 'fpu', 'fxsr', 'htt',
+			['apic', 'avx2', 'bmi2', 'clfsh', 'cmov', 'cx8', 'de', 'em64t', 'enfstrg', 'fpu', 'fxsr', 'htt',
 			'lahf', 'mca', 'mce', 'mmx', 'msr', 'mtrr', 'pae', 'pat', 'pge', 'pse',
 			'pse36', 'rdtscp', 'sep', 'sse', 'sse2', 'sse3', 'ssse3', 'syscall', 'tsc', 'vme',
 			'vmm', 'xd', ]
