@@ -1,3 +1,6 @@
+* Release 3.1.0:
+	* Fixed Bug #63: Include py-cpuinfo version in output
+
 04/05/2017 Release 3.0.0
 	* Change API to hide low level functions
 	* Fixed Bug #51: Combine data from all sources instead of picking one

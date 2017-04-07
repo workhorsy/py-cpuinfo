@@ -25,6 +25,7 @@
 # TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
+CPUINFO_VERSION = (3, 0, 0)
 
 import os, sys
 import re
@@ -1607,6 +1608,7 @@ def get_cpu_info():
 	arch, bits = parse_arch(DataSource.raw_arch_string)
 
 	info = {
+		'cpuinfo_version' : CPUINFO_VERSION,
 		'arch' : arch,
 		'bits' : bits,
 		'count' : DataSource.cpu_count,
@@ -1660,6 +1662,7 @@ def main():
 
 	info = get_cpu_info()
 	if info:
+		print('cpuinfo version: {0}'.format(info.get('cpuinfo_version', '')))
 		print('Vendor ID: {0}'.format(info.get('vendor_id', '')))
 		print('Hardware Raw: {0}'.format(info.get('hardware', '')))
 		print('Brand: {0}'.format(info.get('brand', '')))

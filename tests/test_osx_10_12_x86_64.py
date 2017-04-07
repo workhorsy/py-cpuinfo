@@ -107,7 +107,7 @@ class TestOSX_10_12(unittest.TestCase):
 		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_cat_var_run_dmesg_boot()))
 		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_sysinfo()))
 		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_cpuid()))
-		self.assertEqual(15, len(cpuinfo.get_cpu_info()))
+		self.assertEqual(16, len(cpuinfo.get_cpu_info()))
 
 	def test_get_cpu_info_from_sysctl(self):
 		info = cpuinfo._get_cpu_info_from_sysctl()
