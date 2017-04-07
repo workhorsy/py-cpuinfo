@@ -20,7 +20,7 @@ OS Support
 | Cygwin        | Windows                                                |                 |
 | Haiku         | Haiku Nightly                                          | BeOS            |
 | Linux         | Arch, Centos, Debian, Fedora, Gentoo, OpenSuse, Ubuntu |                 |
-| OS X          | 10.8, 10.9, 10.10                                      | 10.11           |
+| OS X          | 10.8 - 10.12                                           |                 |
 | Solaris       | Oracle Solaris, OpenIndiana                            |                 |
 | Windows       | XP, Vista, 7, 8, 10                                    | RT              |
 
