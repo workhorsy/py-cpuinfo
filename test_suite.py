@@ -37,6 +37,11 @@ from test_cpuid import TestCPUID
 from test_actual import TestActual
 
 if __name__ == '__main__':
+	def logger(msg):
+		import inspect
+		print("\n{0}:{1}".format(msg, inspect.stack()[1][1:3]))
+	unittest.logger = logger
+
 	# Get all the tests
 	tests = [
 		TestParseCPUString,

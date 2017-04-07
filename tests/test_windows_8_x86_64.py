@@ -69,7 +69,8 @@ class TestWindows_8_X86_64(unittest.TestCase):
 		self.assertEqual((2930000000, 0), info['hz_advertised_raw'])
 		self.assertEqual((2933000000, 0), info['hz_actual_raw'])
 
-		 # FIXME: Missing flags such as sse3 and sse4
+		if "logger" in dir(unittest): unittest.logger("FIXME: Missing flags such as sse3 and sse4")
+
 		self.assertEqual(
 			['acpi', 'clflush', 'cmov', 'de', 'dts', 'fxsr', 'ia64',
 			'mce', 'mmx', 'msr', 'mtrr', 'sep', 'serial', 'ss',
@@ -93,7 +94,8 @@ class TestWindows_8_X86_64(unittest.TestCase):
 
 		self.assertEqual('AMD64', info['raw_arch_string'])
 
-		 # FIXME: Missing flags such as sse3 and sse4
+		if "logger" in dir(unittest): unittest.logger("FIXME: Missing flags such as sse3 and sse4")
+
 		self.assertEqual(
 			['acpi', 'clflush', 'cmov', 'de', 'dts', 'fxsr', 'ia64',
 			'mce', 'mmx', 'msr', 'mtrr', 'sep', 'serial', 'ss',

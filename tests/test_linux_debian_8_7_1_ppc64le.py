@@ -430,9 +430,9 @@ class TestLinuxDebian_8_7_1_ppc64le(unittest.TestCase):
 		self.assertEqual((1000000000, 0), info['hz_advertised_raw'])
 		self.assertEqual((1000000000, 0), info['hz_actual_raw'])
 
-
-	# FIXME: This needs a way to get the CPU flags
 	def test_all(self):
+		if "logger" in dir(unittest): unittest.logger("FIXME: This needs a way to get the CPU flags")
+
 		info = cpuinfo.get_cpu_info()
 
 		self.assertEqual('POWER7 (raw), altivec supported', info['brand'])
