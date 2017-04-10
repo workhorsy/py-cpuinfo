@@ -252,7 +252,7 @@ class TestLinux_Odroid_XU3_arm_32(unittest.TestCase):
 	'''
 	Make sure calls return the expected number of fields.
 	'''
-	@unittest.skip("FIXME")
+	#@unittest.skip("FIXME")
 	def test_returns(self):
 		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_registry()))
 		self.assertEqual(4, len(cpuinfo._get_cpu_info_from_cpufreq_info()))
@@ -266,8 +266,10 @@ class TestLinux_Odroid_XU3_arm_32(unittest.TestCase):
 		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_cpuid()))
 		self.assertEqual(11, len(cpuinfo.get_cpu_info()))
 
-	@unittest.skip("FIXME")
 	def test_get_cpu_info_from_cpufreq_info(self):
+		if "logger" in dir(unittest): unittest.logger("FIXME: This fails because it can't parse cpufreq-info GHz")
+
+
 		info = cpuinfo._get_cpu_info_from_cpufreq_info()
 
 		self.assertEqual('1.4000 GHz', info['hz_advertised'])
