@@ -1,6 +1,7 @@
 * Release 3.1.0:
 	* Fixed Bug #63: Include py-cpuinfo version in output
 	* Fixed Bug #29: Missing AVX2 CPU flag on OS X
+	* Fixed Bug #41: Broken on Odroid XU3 armhf ARM 32bit
 
 04/05/2017 Release 3.0.0
 	* Change API to hide low level functions
