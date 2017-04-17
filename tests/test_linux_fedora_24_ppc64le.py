@@ -357,19 +357,6 @@ class TestLinuxFedora_24_ppc64le(unittest.TestCase):
 
 		self.assertEqual('POWER8E (raw), altivec supported', info['brand'])
 
-	def test_get_cpu_info_from_dmesg(self):
-		info = cpuinfo._get_cpu_info_from_dmesg()
-
-		self.assertEqual('POWER8E (raw), altivec supported', info['brand'])
-		self.assertEqual('3.4250 GHz', info['hz_advertised'])
-		self.assertEqual('3.4250 GHz', info['hz_actual'])
-		self.assertEqual((3425000000, 0), info['hz_advertised_raw'])
-		self.assertEqual((3425000000, 0), info['hz_actual_raw'])
-
-		self.assertEqual(7, info['stepping'])
-		self.assertEqual(42, info['model'])
-		self.assertEqual(6, info['family'])
-
 	def test_get_cpu_info_from_proc_cpuinfo(self):
 		info = cpuinfo._get_cpu_info_from_proc_cpuinfo()
 
