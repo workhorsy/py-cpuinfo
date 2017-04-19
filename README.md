@@ -28,7 +28,7 @@ OS Support
 CPU Support
 -----
 * X86 32bit and 64bit
-* Some ARM CPUs (tested on BeagleBone armv7l)
+* Some ARM and PPC CPUs
 
 
 API
@@ -80,7 +80,8 @@ These approaches are used for getting info:
 7. cpufreq-info (BeagleBone)
 8. lscpu (Unix/Linux)
 9. sysinfo (Haiku)
-10. Querying the CPUID register (Intel X86 CPUs)
+10. device-tree ibm features flags (Linux PPC)
+11. Querying the CPUID register (Intel X86 CPUs)
 
 
 Run as a script
