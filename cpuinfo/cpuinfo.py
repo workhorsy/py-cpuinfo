@@ -1212,7 +1212,10 @@ def _get_cpu_info_from_cpufreq_info():
 		if returncode != 0:
 			return {}
 
-		hz_brand = output.split('current CPU frequency is')[1].split('\n')[0].rsplit('.', 1)[0].lower().strip()
+		hz_brand = output.split('current CPU frequency is')[1].split('\n')[0]
+		i = hz_brand.find('Hz')
+		assert(i != -1)
+		hz_brand = hz_brand[0 : i+2].strip().lower()
 
 		if hz_brand.endswith('mhz'):
 			scale = 6

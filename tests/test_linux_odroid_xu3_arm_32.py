@@ -252,12 +252,11 @@ class TestLinux_Odroid_XU3_arm_32(unittest.TestCase):
 	'''
 	Make sure calls return the expected number of fields.
 	'''
-	@unittest.skip("FIXME")
 	def test_returns(self):
 		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_registry()))
 		self.assertEqual(4, len(cpuinfo._get_cpu_info_from_cpufreq_info()))
-		self.assertEqual(4, len(cpuinfo._get_cpu_info_from_lscpu()))
-		self.assertEqual(2, len(cpuinfo._get_cpu_info_from_proc_cpuinfo()))
+		self.assertEqual(5, len(cpuinfo._get_cpu_info_from_lscpu()))
+		self.assertEqual(3, len(cpuinfo._get_cpu_info_from_proc_cpuinfo()))
 		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_sysctl()))
 		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_kstat()))
 		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_dmesg()))
@@ -265,9 +264,8 @@ class TestLinux_Odroid_XU3_arm_32(unittest.TestCase):
 		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_ibm_pa_features()))
 		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_sysinfo()))
 		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_cpuid()))
-		self.assertEqual(11, len(cpuinfo.get_cpu_info()))
+		self.assertEqual(12, len(cpuinfo.get_cpu_info()))
 
-	@unittest.skip("FIXME")
 	def test_get_cpu_info_from_cpufreq_info(self):
 		info = cpuinfo._get_cpu_info_from_cpufreq_info()
 
@@ -279,6 +277,7 @@ class TestLinux_Odroid_XU3_arm_32(unittest.TestCase):
 	def test_get_cpu_info_from_lscpu(self):
 		info = cpuinfo._get_cpu_info_from_lscpu()
 
+		self.assertEqual('ARMv7 Processor rev 3 (v7l)', info['brand'])
 		self.assertEqual('1.4000 GHz', info['hz_advertised'])
 		self.assertEqual('1.4000 GHz', info['hz_actual'])
 		self.assertEqual((1400000000, 0), info['hz_advertised_raw'])
@@ -287,6 +286,7 @@ class TestLinux_Odroid_XU3_arm_32(unittest.TestCase):
 	def test_get_cpu_info_from_proc_cpuinfo(self):
 		info = cpuinfo._get_cpu_info_from_proc_cpuinfo()
 
+		self.assertEqual('ARMv7 Processor rev 3 (v7l)', info['brand'])
 		self.assertEqual('ODROID-XU3', info['hardware'])
 
 		self.assertEqual(
@@ -298,6 +298,7 @@ class TestLinux_Odroid_XU3_arm_32(unittest.TestCase):
 	def test_all(self):
 		info = cpuinfo.get_cpu_info()
 
+		self.assertEqual('ARMv7 Processor rev 3 (v7l)', info['brand'])
 		self.assertEqual('ODROID-XU3', info['hardware'])
 		self.assertEqual('1.4000 GHz', info['hz_advertised'])
 		self.assertEqual('1.4000 GHz', info['hz_actual'])
