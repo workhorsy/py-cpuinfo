@@ -1,6 +1,9 @@
 * Release 3.1.0:
 	* Fixed Bug #63: Include py-cpuinfo version in output
 	* Fixed Bug #29: Missing AVX2 CPU flag on OS X
+	* Fixed Bug #61: Not working on RHEL7.3 ppc64le
+	* Fixed Bug #56: Not working on Red Flag Linux ppc64le
+	* Fixed Bug #55: Not working on Fedora 24 ppc64le
 
 04/05/2017 Release 3.0.0
 	* Change API to hide low level functions
