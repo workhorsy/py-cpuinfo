@@ -25,6 +25,19 @@ class MockDataSource(object):
 		return True
 
 	@staticmethod
+	def has_ibm_pa_features():
+		return True
+
+	@staticmethod
+	def ibm_pa_features():
+		returncode = 0
+		output = '''
+/proc/device-tree/cpus/PowerPC,POWER7@1/ibm,pa-features 3ff60006 c08000c7
+
+'''
+		return returncode, output
+
+	@staticmethod
 	def cat_proc_cpuinfo():
 		returncode = 0
 		output = '''
@@ -326,14 +339,22 @@ class TestLinuxRHEL_7_3_ppc64le(unittest.TestCase):
 		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_kstat()))
 		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_dmesg()))
 		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_cat_var_run_dmesg_boot()))
+		self.assertEqual(1, len(cpuinfo._get_cpu_info_from_ibm_pa_features()))
 		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_sysinfo()))
 		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_cpuid()))
-		self.assertEqual(10, len(cpuinfo.get_cpu_info()))
+		self.assertEqual(11, len(cpuinfo.get_cpu_info()))
 
 	def test_get_cpu_info_from_lscpu(self):
 		info = cpuinfo._get_cpu_info_from_lscpu()
 
 		self.assertEqual('POWER8E (raw), altivec supported', info['brand'])
+
+	def test_get_cpu_info_from_ibm_pa_features(self):
+		info = cpuinfo._get_cpu_info_from_ibm_pa_features()
+		self.assertEqual(
+			['dss_2.02', 'dss_2.05', 'dss_2.06', 'fpu', 'lsd_in_dscr', 'ppr', 'slb', 'sso_2.06', 'ugr_in_dscr'],
+			info['flags']
+		)
 
 	def test_get_cpu_info_from_proc_cpuinfo(self):
 		info = cpuinfo._get_cpu_info_from_proc_cpuinfo()
@@ -345,8 +366,6 @@ class TestLinuxRHEL_7_3_ppc64le(unittest.TestCase):
 		self.assertEqual((3425000000, 0), info['hz_actual_raw'])
 
 	def test_all(self):
-		if "logger" in dir(unittest): unittest.logger("FIXME: This needs a way to get cpu flags")
-
 		info = cpuinfo.get_cpu_info()
 
 		self.assertEqual('POWER8E (raw), altivec supported', info['brand'])
@@ -358,3 +377,7 @@ class TestLinuxRHEL_7_3_ppc64le(unittest.TestCase):
 		self.assertEqual(64, info['bits'])
 		self.assertEqual(16, info['count'])
 		self.assertEqual('ppc64le', info['raw_arch_string'])
+		self.assertEqual(
+			['dss_2.02', 'dss_2.05', 'dss_2.06', 'fpu', 'lsd_in_dscr', 'ppr', 'slb', 'sso_2.06', 'ugr_in_dscr'],
+			info['flags']
+		)
