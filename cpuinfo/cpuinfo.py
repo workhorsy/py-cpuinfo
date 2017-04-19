@@ -28,6 +28,7 @@
 CPUINFO_VERSION = (3, 0, 0)
 
 import os, sys
+import glob
 import re
 import time
 import platform
@@ -96,6 +97,10 @@ class DataSource(object):
 		return len(program_paths('lscpu')) > 0
 
 	@staticmethod
+	def has_ibm_pa_features():
+		return len(program_paths('lsprop')) > 0
+
+	@staticmethod
 	def cat_proc_cpuinfo():
 		return run_and_get_stdout(['cat', '/proc/cpuinfo'])
 
@@ -138,6 +143,12 @@ class DataSource(object):
 	@staticmethod
 	def lscpu():
 		return run_and_get_stdout(['lscpu'])
+
+	@staticmethod
+	def ibm_pa_features():
+		ibm_features = glob.glob('/proc/device-tree/cpus/*/ibm,pa-features')
+		if ibm_features:
+			return run_and_get_stdout(['lsprop', ibm_features[0]])
 
 	@staticmethod
 	def winreg_processor_brand():
@@ -1300,6 +1311,25 @@ def _get_cpu_info_from_dmesg():
 
 	return _parse_dmesg_output(output)
 
+
+def _get_cpu_info_from_ibm_pa_features():
+	'''
+	Returns the CPU info gathered from lsprop /proc/device-tree/cpus/*/ibm,pa-features
+	Returns {} if lsprop is not found or ibm,pa-features does not have the desired info.
+	'''
+	# Just return {} if there is no lsprop
+	if not DataSource.has_ibm_pa_features():
+		return {}
+
+	# If ibm,pa-features fails return {}
+	returncode, output = DataSource.ibm_pa_features()
+	if output == None or returncode != 0:
+		return {}
+
+	# FIXME: Parse and return the output here
+	return {}
+
+
 def _get_cpu_info_from_cat_var_run_dmesg_boot():
 	'''
 	Returns the CPU info gathered from /var/run/dmesg.boot.
@@ -1638,6 +1668,9 @@ def get_cpu_info():
 
 	# Try /var/run/dmesg.boot
 	CopyNewFields(info, _get_cpu_info_from_cat_var_run_dmesg_boot())
+
+	# Try lsprop ibm,pa-features
+	CopyNewFields(info, _get_cpu_info_from_ibm_pa_features())
 
 	# Try sysinfo
 	CopyNewFields(info, _get_cpu_info_from_sysinfo())

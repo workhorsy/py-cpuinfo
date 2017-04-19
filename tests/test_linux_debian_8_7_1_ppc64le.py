@@ -25,6 +25,19 @@ class MockDataSource(object):
 		return True
 
 	@staticmethod
+	def has_ibm_pa_features():
+		return True
+
+	@staticmethod
+	def ibm_pa_features():
+		returncode = 0
+		output = '''
+/proc/device-tree/cpus/PowerPC,POWER7@1/ibm,pa-features 3ff60006 c08000c7
+
+'''
+		return returncode, output
+
+	@staticmethod
 	def cat_proc_cpuinfo():
 		returncode = 0
 		output = '''
