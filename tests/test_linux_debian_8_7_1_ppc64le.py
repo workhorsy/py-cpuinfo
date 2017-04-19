@@ -433,7 +433,7 @@ class TestLinuxDebian_8_7_1_ppc64le(unittest.TestCase):
 
 	def test_get_cpu_info_from_lscpu(self):
 		info = cpuinfo._get_cpu_info_from_lscpu()
-		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_lscpu()))
+		self.assertEqual(0, len(info))
 
 	def test_get_cpu_info_from_ibm_pa_features(self):
 		info = cpuinfo._get_cpu_info_from_ibm_pa_features()
