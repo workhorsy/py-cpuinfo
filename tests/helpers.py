@@ -12,6 +12,10 @@ class EmptyDataSource(object):
 		return False
 
 	@staticmethod
+	def has_ibm_pa_features():
+		return False
+
+	@staticmethod
 	def has_dmesg():
 		return False
 
@@ -103,6 +107,8 @@ def _actual_monkey_patch_data_source(cpuinfo, NewDataSource):
 		cpuinfo.DataSource.has_kstat = staticmethod(NewDataSource.has_kstat)
 	if hasattr(NewDataSource, 'has_sysinfo'):
 		cpuinfo.DataSource.has_sysinfo = staticmethod(NewDataSource.has_sysinfo)
+	if hasattr(NewDataSource, 'has_ibm_pa_features'):
+		cpuinfo.DataSource.has_ibm_pa_features = staticmethod(NewDataSource.has_ibm_pa_features)
 	if hasattr(NewDataSource, 'has_lscpu'):
 		cpuinfo.DataSource.has_lscpu = staticmethod(NewDataSource.has_lscpu)
 	if hasattr(NewDataSource, 'cat_proc_cpuinfo'):
@@ -125,6 +131,8 @@ def _actual_monkey_patch_data_source(cpuinfo, NewDataSource):
 		cpuinfo.DataSource.kstat_m_cpu_info = staticmethod(NewDataSource.kstat_m_cpu_info)
 	if hasattr(NewDataSource, 'lscpu'):
 		cpuinfo.DataSource.lscpu = staticmethod(NewDataSource.lscpu)
+	if hasattr(NewDataSource, 'ibm_pa_features'):
+		cpuinfo.DataSource.ibm_pa_features = staticmethod(NewDataSource.ibm_pa_features)
 	if hasattr(NewDataSource, 'sysinfo_cpu'):
 		cpuinfo.DataSource.sysinfo_cpu = staticmethod(NewDataSource.sysinfo_cpu)
 	if hasattr(NewDataSource, 'winreg_processor_brand'):
@@ -157,6 +165,7 @@ def backup_data_source(cpuinfo):
 	cpuinfo.BackupDataSource.has_kstat = staticmethod(cpuinfo.DataSource.has_kstat)
 	cpuinfo.BackupDataSource.has_sysinfo = staticmethod(cpuinfo.DataSource.has_sysinfo)
 	cpuinfo.BackupDataSource.has_lscpu = staticmethod(cpuinfo.DataSource.has_lscpu)
+	cpuinfo.BackupDataSource.has_ibm_pa_features = staticmethod(cpuinfo.DataSource.has_ibm_pa_features)
 	cpuinfo.BackupDataSource.cat_proc_cpuinfo = staticmethod(cpuinfo.DataSource.cat_proc_cpuinfo)
 	cpuinfo.BackupDataSource.cpufreq_info = staticmethod(cpuinfo.DataSource.cpufreq_info)
 	cpuinfo.BackupDataSource.sestatus_allow_execheap = staticmethod(cpuinfo.DataSource.sestatus_allow_execheap)
@@ -167,6 +176,7 @@ def backup_data_source(cpuinfo):
 	cpuinfo.BackupDataSource.isainfo_vb = staticmethod(cpuinfo.DataSource.isainfo_vb)
 	cpuinfo.BackupDataSource.kstat_m_cpu_info = staticmethod(cpuinfo.DataSource.kstat_m_cpu_info)
 	cpuinfo.BackupDataSource.lscpu = staticmethod(cpuinfo.DataSource.lscpu)
+	cpuinfo.BackupDataSource.ibm_pa_features = staticmethod(cpuinfo.DataSource.ibm_pa_features)
 	cpuinfo.BackupDataSource.sysinfo_cpu = staticmethod(cpuinfo.DataSource.sysinfo_cpu)
 	cpuinfo.BackupDataSource.winreg_processor_brand = staticmethod(cpuinfo.DataSource.winreg_processor_brand)
 	cpuinfo.BackupDataSource.winreg_vendor_id = staticmethod(cpuinfo.DataSource.winreg_vendor_id)
@@ -191,6 +201,7 @@ def restore_data_source(cpuinfo):
 	cpuinfo.DataSource.has_kstat = cpuinfo.BackupDataSource.has_kstat
 	cpuinfo.DataSource.has_sysinfo = cpuinfo.BackupDataSource.has_sysinfo
 	cpuinfo.DataSource.has_lscpu = cpuinfo.BackupDataSource.has_lscpu
+	cpuinfo.DataSource.has_ibm_pa_features = cpuinfo.BackupDataSource.has_ibm_pa_features
 	cpuinfo.DataSource.cat_proc_cpuinfo = cpuinfo.BackupDataSource.cat_proc_cpuinfo
 	cpuinfo.DataSource.cpufreq_info = cpuinfo.BackupDataSource.cpufreq_info
 	cpuinfo.DataSource.sestatus_allow_execheap = cpuinfo.BackupDataSource.sestatus_allow_execheap
@@ -201,6 +212,7 @@ def restore_data_source(cpuinfo):
 	cpuinfo.DataSource.isainfo_vb = cpuinfo.BackupDataSource.isainfo_vb
 	cpuinfo.DataSource.kstat_m_cpu_info = cpuinfo.BackupDataSource.kstat_m_cpu_info
 	cpuinfo.DataSource.lscpu = cpuinfo.BackupDataSource.lscpu
+	cpuinfo.DataSource.ibm_pa_features = cpuinfo.BackupDataSource.ibm_pa_features
 	cpuinfo.DataSource.sysinfo_cpu = cpuinfo.BackupDataSource.sysinfo_cpu
 	cpuinfo.DataSource.winreg_processor_brand = cpuinfo.BackupDataSource.winreg_processor_brand
 	cpuinfo.DataSource.winreg_vendor_id = cpuinfo.BackupDataSource.winreg_vendor_id

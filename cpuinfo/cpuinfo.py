@@ -28,6 +28,7 @@
 CPUINFO_VERSION = (3, 0, 0)
 
 import os, sys
+import glob
 import re
 import time
 import platform
@@ -96,6 +97,10 @@ class DataSource(object):
 		return len(program_paths('lscpu')) > 0
 
 	@staticmethod
+	def has_ibm_pa_features():
+		return len(program_paths('lsprop')) > 0
+
+	@staticmethod
 	def cat_proc_cpuinfo():
 		return run_and_get_stdout(['cat', '/proc/cpuinfo'])
 
@@ -138,6 +143,12 @@ class DataSource(object):
 	@staticmethod
 	def lscpu():
 		return run_and_get_stdout(['lscpu'])
+
+	@staticmethod
+	def ibm_pa_features():
+		ibm_features = glob.glob('/proc/device-tree/cpus/*/ibm,pa-features')
+		if ibm_features:
+			return run_and_get_stdout(['lsprop', ibm_features[0]])
 
 	@staticmethod
 	def winreg_processor_brand():
@@ -1303,6 +1314,123 @@ def _get_cpu_info_from_dmesg():
 
 	return _parse_dmesg_output(output)
 
+
+# https://openpowerfoundation.org/wp-content/uploads/2016/05/LoPAPR_DRAFT_v11_24March2016_cmt1.pdf
+# page 767
+def _get_cpu_info_from_ibm_pa_features():
+	'''
+	Returns the CPU info gathered from lsprop /proc/device-tree/cpus/*/ibm,pa-features
+	Returns {} if lsprop is not found or ibm,pa-features does not have the desired info.
+	'''
+	# Just return {} if there is no lsprop
+	if not DataSource.has_ibm_pa_features():
+		return {}
+
+	# If ibm,pa-features fails return {}
+	returncode, output = DataSource.ibm_pa_features()
+	if output == None or returncode != 0:
+		return {}
+
+	value = output.split("ibm,pa-features")[1].strip()
+	left, right = value.split(' ')
+	left = int(left, 16)
+	right = int(right, 16)
+
+	# Get the CPU flags
+	flags = {
+		# Byte 0
+		'mmu' : is_bit_set(left, 0),
+		'fpu' : is_bit_set(left, 1),
+		'slb' : is_bit_set(left, 2),
+		'run' : is_bit_set(left, 3),
+		#'reserved' : is_bit_set(left, 4),
+		'dabr' : is_bit_set(left, 5),
+		'ne' : is_bit_set(left, 6),
+		'wtr' : is_bit_set(left, 7),
+
+		# Byte 1
+		'mcr' : is_bit_set(left, 8),
+		'dsisr' : is_bit_set(left, 9),
+		'lp' : is_bit_set(left, 10),
+		'ri' : is_bit_set(left, 11),
+		'dabrx' : is_bit_set(left, 12),
+		'sprg3' : is_bit_set(left, 13),
+		'rislb' : is_bit_set(left, 14),
+		'pp' : is_bit_set(left, 15),
+
+		# Byte 2
+		'vpm' : is_bit_set(left, 16),
+		'dss_2.05' : is_bit_set(left, 17),
+		#'reserved' : is_bit_set(left, 18),
+		'dar' : is_bit_set(left, 19),
+		#'reserved' : is_bit_set(left, 20),
+		'ppr' : is_bit_set(left, 21),
+		'dss_2.02' : is_bit_set(left, 22),
+		'dss_2.06' : is_bit_set(left, 23),
+
+		# Byte 3
+		'lsd_in_dscr' : is_bit_set(left, 24),
+		'ugr_in_dscr' : is_bit_set(left, 25),
+		#'reserved' : is_bit_set(left, 26),
+		#'reserved' : is_bit_set(left, 27),
+		#'reserved' : is_bit_set(left, 28),
+		#'reserved' : is_bit_set(left, 29),
+		#'reserved' : is_bit_set(left, 30),
+		#'reserved' : is_bit_set(left, 31),
+
+		# Byte 4
+		'sso_2.06' : is_bit_set(right, 0),
+		#'reserved' : is_bit_set(right, 1),
+		#'reserved' : is_bit_set(right, 2),
+		#'reserved' : is_bit_set(right, 3),
+		#'reserved' : is_bit_set(right, 4),
+		#'reserved' : is_bit_set(right, 5),
+		#'reserved' : is_bit_set(right, 6),
+		#'reserved' : is_bit_set(right, 7),
+
+		# Byte 5
+		'le' : is_bit_set(right, 8),
+		'cfar' : is_bit_set(right, 9),
+		'eb' : is_bit_set(right, 10),
+		'lsq_2.07' : is_bit_set(right, 11),
+		#'reserved' : is_bit_set(right, 12),
+		#'reserved' : is_bit_set(right, 13),
+		#'reserved' : is_bit_set(right, 14),
+		#'reserved' : is_bit_set(right, 15),
+
+		# Byte 6
+		'dss_2.07' : is_bit_set(right, 16),
+		#'reserved' : is_bit_set(right, 17),
+		#'reserved' : is_bit_set(right, 18),
+		#'reserved' : is_bit_set(right, 19),
+		#'reserved' : is_bit_set(right, 20),
+		#'reserved' : is_bit_set(right, 21),
+		#'reserved' : is_bit_set(right, 22),
+		#'reserved' : is_bit_set(right, 23),
+
+		# Byte 7
+		#'reserved' : is_bit_set(right, 24),
+		#'reserved' : is_bit_set(right, 25),
+		#'reserved' : is_bit_set(right, 26),
+		#'reserved' : is_bit_set(right, 27),
+		#'reserved' : is_bit_set(right, 28),
+		#'reserved' : is_bit_set(right, 29),
+		#'reserved' : is_bit_set(right, 30),
+		#'reserved' : is_bit_set(right, 31),
+	}
+
+	# Get a list of only the flags that are true
+	flags = [k for k, v in flags.items() if v]
+	flags.sort()
+
+	info = {
+		'flags' : flags
+	}
+	info = {k: v for k, v in info.items() if v}
+
+	return info
+
+
 def _get_cpu_info_from_cat_var_run_dmesg_boot():
 	'''
 	Returns the CPU info gathered from /var/run/dmesg.boot.
@@ -1641,6 +1769,9 @@ def get_cpu_info():
 
 	# Try /var/run/dmesg.boot
 	CopyNewFields(info, _get_cpu_info_from_cat_var_run_dmesg_boot())
+
+	# Try lsprop ibm,pa-features
+	CopyNewFields(info, _get_cpu_info_from_ibm_pa_features())
 
 	# Try sysinfo
 	CopyNewFields(info, _get_cpu_info_from_sysinfo())
