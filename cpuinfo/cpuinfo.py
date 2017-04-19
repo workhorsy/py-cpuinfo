@@ -1322,117 +1322,120 @@ def _get_cpu_info_from_ibm_pa_features():
 	Returns the CPU info gathered from lsprop /proc/device-tree/cpus/*/ibm,pa-features
 	Returns {} if lsprop is not found or ibm,pa-features does not have the desired info.
 	'''
-	# Just return {} if there is no lsprop
-	if not DataSource.has_ibm_pa_features():
+	try:
+		# Just return {} if there is no lsprop
+		if not DataSource.has_ibm_pa_features():
+			return {}
+
+		# If ibm,pa-features fails return {}
+		returncode, output = DataSource.ibm_pa_features()
+		if output == None or returncode != 0:
+			return {}
+
+		# Filter out invalid characters from output
+		value = output.split("ibm,pa-features")[1].lower()
+		value = [s for s in value if s in list('0123456789abcfed')]
+		value = ''.join(value)
+
+		# Get data converted to Uint32 chunks
+		left = int(value[0 : 8], 16)
+		right = int(value[8 : 16], 16)
+
+		# Get the CPU flags
+		flags = {
+			# Byte 0
+			'mmu' : is_bit_set(left, 0),
+			'fpu' : is_bit_set(left, 1),
+			'slb' : is_bit_set(left, 2),
+			'run' : is_bit_set(left, 3),
+			#'reserved' : is_bit_set(left, 4),
+			'dabr' : is_bit_set(left, 5),
+			'ne' : is_bit_set(left, 6),
+			'wtr' : is_bit_set(left, 7),
+
+			# Byte 1
+			'mcr' : is_bit_set(left, 8),
+			'dsisr' : is_bit_set(left, 9),
+			'lp' : is_bit_set(left, 10),
+			'ri' : is_bit_set(left, 11),
+			'dabrx' : is_bit_set(left, 12),
+			'sprg3' : is_bit_set(left, 13),
+			'rislb' : is_bit_set(left, 14),
+			'pp' : is_bit_set(left, 15),
+
+			# Byte 2
+			'vpm' : is_bit_set(left, 16),
+			'dss_2.05' : is_bit_set(left, 17),
+			#'reserved' : is_bit_set(left, 18),
+			'dar' : is_bit_set(left, 19),
+			#'reserved' : is_bit_set(left, 20),
+			'ppr' : is_bit_set(left, 21),
+			'dss_2.02' : is_bit_set(left, 22),
+			'dss_2.06' : is_bit_set(left, 23),
+
+			# Byte 3
+			'lsd_in_dscr' : is_bit_set(left, 24),
+			'ugr_in_dscr' : is_bit_set(left, 25),
+			#'reserved' : is_bit_set(left, 26),
+			#'reserved' : is_bit_set(left, 27),
+			#'reserved' : is_bit_set(left, 28),
+			#'reserved' : is_bit_set(left, 29),
+			#'reserved' : is_bit_set(left, 30),
+			#'reserved' : is_bit_set(left, 31),
+
+			# Byte 4
+			'sso_2.06' : is_bit_set(right, 0),
+			#'reserved' : is_bit_set(right, 1),
+			#'reserved' : is_bit_set(right, 2),
+			#'reserved' : is_bit_set(right, 3),
+			#'reserved' : is_bit_set(right, 4),
+			#'reserved' : is_bit_set(right, 5),
+			#'reserved' : is_bit_set(right, 6),
+			#'reserved' : is_bit_set(right, 7),
+
+			# Byte 5
+			'le' : is_bit_set(right, 8),
+			'cfar' : is_bit_set(right, 9),
+			'eb' : is_bit_set(right, 10),
+			'lsq_2.07' : is_bit_set(right, 11),
+			#'reserved' : is_bit_set(right, 12),
+			#'reserved' : is_bit_set(right, 13),
+			#'reserved' : is_bit_set(right, 14),
+			#'reserved' : is_bit_set(right, 15),
+
+			# Byte 6
+			'dss_2.07' : is_bit_set(right, 16),
+			#'reserved' : is_bit_set(right, 17),
+			#'reserved' : is_bit_set(right, 18),
+			#'reserved' : is_bit_set(right, 19),
+			#'reserved' : is_bit_set(right, 20),
+			#'reserved' : is_bit_set(right, 21),
+			#'reserved' : is_bit_set(right, 22),
+			#'reserved' : is_bit_set(right, 23),
+
+			# Byte 7
+			#'reserved' : is_bit_set(right, 24),
+			#'reserved' : is_bit_set(right, 25),
+			#'reserved' : is_bit_set(right, 26),
+			#'reserved' : is_bit_set(right, 27),
+			#'reserved' : is_bit_set(right, 28),
+			#'reserved' : is_bit_set(right, 29),
+			#'reserved' : is_bit_set(right, 30),
+			#'reserved' : is_bit_set(right, 31),
+		}
+
+		# Get a list of only the flags that are true
+		flags = [k for k, v in flags.items() if v]
+		flags.sort()
+
+		info = {
+			'flags' : flags
+		}
+		info = {k: v for k, v in info.items() if v}
+
+		return info
+	except:
 		return {}
-
-	# If ibm,pa-features fails return {}
-	returncode, output = DataSource.ibm_pa_features()
-	if output == None or returncode != 0:
-		return {}
-
-	# Filter out invalid characters from output
-	value = output.split("ibm,pa-features")[1].lower()
-	value = [s for s in value if s in list('0123456789abcfed')]
-	value = ''.join(value)
-
-	# Get data converted to Uint32 chunks
-	left = int(value[0 : 8], 16)
-	right = int(value[8 : 16], 16)
-
-	# Get the CPU flags
-	flags = {
-		# Byte 0
-		'mmu' : is_bit_set(left, 0),
-		'fpu' : is_bit_set(left, 1),
-		'slb' : is_bit_set(left, 2),
-		'run' : is_bit_set(left, 3),
-		#'reserved' : is_bit_set(left, 4),
-		'dabr' : is_bit_set(left, 5),
-		'ne' : is_bit_set(left, 6),
-		'wtr' : is_bit_set(left, 7),
-
-		# Byte 1
-		'mcr' : is_bit_set(left, 8),
-		'dsisr' : is_bit_set(left, 9),
-		'lp' : is_bit_set(left, 10),
-		'ri' : is_bit_set(left, 11),
-		'dabrx' : is_bit_set(left, 12),
-		'sprg3' : is_bit_set(left, 13),
-		'rislb' : is_bit_set(left, 14),
-		'pp' : is_bit_set(left, 15),
-
-		# Byte 2
-		'vpm' : is_bit_set(left, 16),
-		'dss_2.05' : is_bit_set(left, 17),
-		#'reserved' : is_bit_set(left, 18),
-		'dar' : is_bit_set(left, 19),
-		#'reserved' : is_bit_set(left, 20),
-		'ppr' : is_bit_set(left, 21),
-		'dss_2.02' : is_bit_set(left, 22),
-		'dss_2.06' : is_bit_set(left, 23),
-
-		# Byte 3
-		'lsd_in_dscr' : is_bit_set(left, 24),
-		'ugr_in_dscr' : is_bit_set(left, 25),
-		#'reserved' : is_bit_set(left, 26),
-		#'reserved' : is_bit_set(left, 27),
-		#'reserved' : is_bit_set(left, 28),
-		#'reserved' : is_bit_set(left, 29),
-		#'reserved' : is_bit_set(left, 30),
-		#'reserved' : is_bit_set(left, 31),
-
-		# Byte 4
-		'sso_2.06' : is_bit_set(right, 0),
-		#'reserved' : is_bit_set(right, 1),
-		#'reserved' : is_bit_set(right, 2),
-		#'reserved' : is_bit_set(right, 3),
-		#'reserved' : is_bit_set(right, 4),
-		#'reserved' : is_bit_set(right, 5),
-		#'reserved' : is_bit_set(right, 6),
-		#'reserved' : is_bit_set(right, 7),
-
-		# Byte 5
-		'le' : is_bit_set(right, 8),
-		'cfar' : is_bit_set(right, 9),
-		'eb' : is_bit_set(right, 10),
-		'lsq_2.07' : is_bit_set(right, 11),
-		#'reserved' : is_bit_set(right, 12),
-		#'reserved' : is_bit_set(right, 13),
-		#'reserved' : is_bit_set(right, 14),
-		#'reserved' : is_bit_set(right, 15),
-
-		# Byte 6
-		'dss_2.07' : is_bit_set(right, 16),
-		#'reserved' : is_bit_set(right, 17),
-		#'reserved' : is_bit_set(right, 18),
-		#'reserved' : is_bit_set(right, 19),
-		#'reserved' : is_bit_set(right, 20),
-		#'reserved' : is_bit_set(right, 21),
-		#'reserved' : is_bit_set(right, 22),
-		#'reserved' : is_bit_set(right, 23),
-
-		# Byte 7
-		#'reserved' : is_bit_set(right, 24),
-		#'reserved' : is_bit_set(right, 25),
-		#'reserved' : is_bit_set(right, 26),
-		#'reserved' : is_bit_set(right, 27),
-		#'reserved' : is_bit_set(right, 28),
-		#'reserved' : is_bit_set(right, 29),
-		#'reserved' : is_bit_set(right, 30),
-		#'reserved' : is_bit_set(right, 31),
-	}
-
-	# Get a list of only the flags that are true
-	flags = [k for k, v in flags.items() if v]
-	flags.sort()
-
-	info = {
-		'flags' : flags
-	}
-	info = {k: v for k, v in info.items() if v}
-
-	return info
 
 
 def _get_cpu_info_from_cat_var_run_dmesg_boot():
