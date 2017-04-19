@@ -27,6 +27,7 @@
 
 
 import os, sys
+import glob
 import platform
 import multiprocessing
 import subprocess
@@ -43,6 +44,7 @@ PY2 = sys.version_info[0] == 2
 
 out_file_name = 'system_info.txt'
 out_file = open(out_file_name, 'w')
+
 
 def run_and_get_stdout(command, pipe_command=None):
 	if not pipe_command:
@@ -143,6 +145,12 @@ if os.path.exists('/var/run/dmesg.boot'):
 if program_paths('sysinfo'):
 	returncode, output = run_and_get_stdout(['sysinfo', '-cpu'])
 	print_output('sysinfo -cpu', output)
+
+if program_paths('lsprop'):
+	ibm_features = glob.glob('/proc/device-tree/cpus/*/ibm,pa-features')
+	if ibm_features:
+		returncode, output = run_and_get_stdout(['lsprop', ibm_features[0]])
+		print_output('lsprop /proc/device-tree/cpus/*/ibm,pa-features', output)
 
 if 'winreg' in sys.modules:
 	key = winreg.OpenKey(winreg.HKEY_LOCAL_MACHINE, r"Hardware\Description\System\CentralProcessor\0")
