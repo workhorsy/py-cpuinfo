@@ -1,3 +1,6 @@
+* Release 3.2.0
+	* Fixed Bug #68: Broken Qemu guest CPU flag parsing on Ubuntu 17.10 POWER8
+
 04/19/2017 Release 3.1.0:
 	* Fixed Bug #63: Include py-cpuinfo version in output
 	* Fixed Bug #29: Missing AVX2 CPU flag on OS X

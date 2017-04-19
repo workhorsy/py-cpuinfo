@@ -1331,10 +1331,14 @@ def _get_cpu_info_from_ibm_pa_features():
 	if output == None or returncode != 0:
 		return {}
 
-	value = output.split("ibm,pa-features")[1].strip()
-	left, right = value.split(' ')
-	left = int(left, 16)
-	right = int(right, 16)
+	# Filter out invalid characters from output
+	value = output.split("ibm,pa-features")[1].lower()
+	value = [s for s in value if s in list('0123456789abcfed')]
+	value = ''.join(value)
+
+	# Get data converted to Uint32 chunks
+	left = int(value[0 : 8], 16)
+	right = int(value[8 : 16], 16)
 
 	# Get the CPU flags
 	flags = {

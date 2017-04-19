@@ -32,7 +32,9 @@ class MockDataSource(object):
 	def ibm_pa_features():
 		returncode = 0
 		output = '''
-/proc/device-tree/cpus/PowerPC,POWER7@1/ibm,pa-features 3ff60006 c08000c7
+/proc/device-tree/cpus/PowerPC,POWER8@0/ibm,pa-features
+                 18 00 f6 3f c7 c0 80 f0 80 00 00 00 00 00 00 00...?............
+                 00 00 80 00 80 00 80 00 80 00                  ..........
 
 '''
 		return returncode, output
@@ -438,7 +440,7 @@ class TestLinuxDebian_8_7_1_ppc64le(unittest.TestCase):
 	def test_get_cpu_info_from_ibm_pa_features(self):
 		info = cpuinfo._get_cpu_info_from_ibm_pa_features()
 		self.assertEqual(
-			['dss_2.02', 'dss_2.05', 'dss_2.06', 'fpu', 'lsd_in_dscr', 'ppr', 'slb', 'sso_2.06', 'ugr_in_dscr'],
+			['dabr', 'dabrx', 'dsisr', 'fpu', 'lp', 'mmu', 'pp', 'rislb', 'run', 'slb', 'sprg3'],
 			info['flags']
 		)
 
@@ -464,6 +466,6 @@ class TestLinuxDebian_8_7_1_ppc64le(unittest.TestCase):
 		self.assertEqual(2, info['count'])
 		self.assertEqual('ppc64le', info['raw_arch_string'])
 		self.assertEqual(
-			['dss_2.02', 'dss_2.05', 'dss_2.06', 'fpu', 'lsd_in_dscr', 'ppr', 'slb', 'sso_2.06', 'ugr_in_dscr'],
+			['dabr', 'dabrx', 'dsisr', 'fpu', 'lp', 'mmu', 'pp', 'rislb', 'run', 'slb', 'sprg3'],
 			info['flags']
 		)
