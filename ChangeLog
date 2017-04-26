@@ -1,3 +1,6 @@
+* Release 3.3.0
+	* Fixed Bug #70: subprocess.Popen breaks under Windows GUI app
+
 04/19/2017 Release 3.2.0
 	* Fixed Bug #68: Broken Qemu guest CPU flag parsing on Ubuntu 17.04 POWER8
 
