@@ -1,4 +1,4 @@
-* Release 3.3.0
+06/10/2017 Release 3.3.0
 	* Fixed Bug #70: subprocess.Popen breaks under Windows GUI app
 	* Fixed Bug #72: Fails to parse invalid CPUID result.
 
