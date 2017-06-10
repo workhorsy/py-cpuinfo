@@ -194,9 +194,12 @@ def obj_to_b64(thing):
 	return d
 
 def b64_to_obj(thing):
-	a = base64.b64decode(thing)
-	b = pickle.loads(a)
-	return b
+	try:
+		a = base64.b64decode(thing)
+		b = pickle.loads(a)
+		return b
+	except:
+		return {}
 
 def run_and_get_stdout(command, pipe_command=None):
 	if not pipe_command:
