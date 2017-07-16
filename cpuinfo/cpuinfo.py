@@ -1279,6 +1279,18 @@ def _get_cpu_info_from_lscpu():
 		if model and model.isdigit():
 			info['model'] = int(model)
 
+		l1_data_cache_size = _get_field(False, output, None, None, 'L1d cache')
+		if l1_data_cache_size:
+			info['l1_data_cache_size'] = l1_data_cache_size
+
+		l1_instruction_cache_size = _get_field(False, output, None, None, 'L1i cache')
+		if l1_instruction_cache_size:
+			info['l1_instruction_cache_size'] = l1_instruction_cache_size
+
+		l3_cache_size = _get_field(False, output, None, None, 'L3 cache')
+		if l3_cache_size:
+			info['l3_cache_size'] = l3_cache_size
+
 		l2_cache_size = _get_field(False, output, None, None, 'L2 cache')
 		if l2_cache_size:
 			info['l2_cache_size'] = l2_cache_size
@@ -1732,7 +1744,7 @@ def CopyNewFields(info, new_info):
 		'raw_arch_string', 'l2_cache_size', 'l2_cache_line_size',
 		'l2_cache_associativity', 'stepping', 'model', 'family',
 		'processor_type', 'extended_model', 'extended_family', 'flags',
-        'l3_cache_size'
+        'l3_cache_size', 'l1_data_cache_size', 'l1_instruction_cache_size'
 	]
 
 	for key in keys:
@@ -1820,6 +1832,8 @@ def main():
 
 		print('Raw Arch String: {0}'.format(info.get('raw_arch_string', '')))
 
+		print('L1 Data Cache Size: {0}'.format(info.get('l1_data_cache_size', '')))
+		print('L1 Instruction Cache Size: {0}'.format(info.get('l1_instruction_cache_size', '')))
 		print('L2 Cache Size: {0}'.format(info.get('l2_cache_size', '')))
 		print('L2 Cache Line Size: {0}'.format(info.get('l2_cache_line_size', '')))
 		print('L2 Cache Associativity: {0}'.format(info.get('l2_cache_associativity', '')))
