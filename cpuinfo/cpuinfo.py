@@ -351,18 +351,15 @@ def to_hz_string(ticks):
 def _parse_cpu_string(cpu_string):
 	# Get location of fields at end of string
 	fields_index = cpu_string.find('(', cpu_string.find('@'))
-	#print(fields_index)
 
 	# Processor Brand
 	processor_brand = cpu_string
 	if fields_index != -1:
 		processor_brand = cpu_string[0 : fields_index].strip()
-	#print('processor_brand: ', processor_brand)
 
 	fields = None
 	if fields_index != -1:
 		fields = cpu_string[fields_index : ]
-	#print('fields: ', fields)
 
 	# Hz
 	scale, hz_brand = _get_hz_string_from_brand(processor_brand)
@@ -375,11 +372,9 @@ def _parse_cpu_string(cpu_string):
 			fields = [f.strip().lower() for f in fields]
 			fields = [f.split(':') for f in fields]
 			fields = [{f[0].strip() : f[1].strip()} for f in fields]
-			#print('fields: ', fields)
 			for field in fields:
 				name = list(field.keys())[0]
 				value = list(field.values())[0]
-				#print('name:{0}, value:{1}'.format(name, value))
 				if name == 'origin':
 					vendor_id = value.strip('"')
 				elif name == 'stepping':
@@ -429,12 +424,10 @@ def _parse_dmesg_output(output):
 			fields = fields.strip().split()
 			fields = [n.strip().split('=') for n in fields]
 			fields = [{n[0].strip().lower() : n[1].strip()} for n in fields]
-			#print('fields: ', fields)
 
 			for field in fields:
 				name = list(field.keys())[0]
 				value = list(field.values())[0]
-				#print('name:{0}, value:{1}'.format(name, value))
 				if name == 'origin':
 					vendor_id = value.strip('"')
 				elif name == 'stepping':
@@ -444,7 +437,6 @@ def _parse_dmesg_output(output):
 				elif name in ['fam', 'family']:
 					family = int(value.lstrip('0x'), 16)
 
-		#print('FIELDS: ', (vendor_id, stepping, model, family))
 
 		# Features
 		flag_lines = []
@@ -1076,7 +1068,6 @@ def actual_get_cpu_info_from_cpuid():
 
 	# Get the Hz and scale
 	scale, hz_advertised = _get_hz_string_from_brand(processor_brand)
-
 	info = {
 	'vendor_id' : cpuid.get_vendor_id(),
 	'hardware' : '',
@@ -1171,7 +1162,7 @@ def _get_cpu_info_from_proc_cpuinfo():
 		'hardware' : hardware,
 		'brand' : processor_brand,
 
-		'l2_cache_size' : cache_size,
+		'l3_cache_size' : cache_size,
 		'flags' : flags,
 		'vendor_id' : vendor_id,
 		'stepping' : stepping,
@@ -1287,6 +1278,14 @@ def _get_cpu_info_from_lscpu():
 		model = _get_field(False, output, None, None, 'Model')
 		if model and model.isdigit():
 			info['model'] = int(model)
+
+		l2_cache_size = _get_field(False, output, None, None, 'L2 cache')
+		if l2_cache_size:
+			info['l2_cache_size'] = l2_cache_size
+
+		l3_cache_size = _get_field(False, output, None, None, 'L3 cache')
+		if l3_cache_size:
+			info['l3_cache_size'] = l3_cache_size
 
 		# Flags
 		flags = _get_field(False, output, None, None, 'flags', 'Features')
@@ -1732,7 +1731,8 @@ def CopyNewFields(info, new_info):
 		'hz_advertised_raw', 'hz_actual_raw', 'arch', 'bits', 'count',
 		'raw_arch_string', 'l2_cache_size', 'l2_cache_line_size',
 		'l2_cache_associativity', 'stepping', 'model', 'family',
-		'processor_type', 'extended_model', 'extended_family', 'flags'
+		'processor_type', 'extended_model', 'extended_family', 'flags',
+        'l3_cache_size'
 	]
 
 	for key in keys:
@@ -1823,7 +1823,7 @@ def main():
 		print('L2 Cache Size: {0}'.format(info.get('l2_cache_size', '')))
 		print('L2 Cache Line Size: {0}'.format(info.get('l2_cache_line_size', '')))
 		print('L2 Cache Associativity: {0}'.format(info.get('l2_cache_associativity', '')))
-
+		print('L3 Cache Size: {0}'.format(info.get('l3_cache_size', '')))
 		print('Stepping: {0}'.format(info.get('stepping', '')))
 		print('Model: {0}'.format(info.get('model', '')))
 		print('Family: {0}'.format(info.get('family', '')))
