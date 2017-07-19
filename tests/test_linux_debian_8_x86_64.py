@@ -87,7 +87,7 @@ class TestLinuxDebian_8_X86_64(unittest.TestCase):
 		self.assertEqual((2930000000, 0), info['hz_advertised_raw'])
 		self.assertEqual((2928283000, 0), info['hz_actual_raw'])
 
-		self.assertEqual('6144 KB', info['l2_cache_size'])
+		self.assertEqual('6144 KB', info['l3_cache_size'])
 
 		self.assertEqual(5, info['stepping'])
 		self.assertEqual(30, info['model'])
@@ -116,7 +116,7 @@ class TestLinuxDebian_8_X86_64(unittest.TestCase):
 
 		self.assertEqual('x86_64', info['raw_arch_string'])
 
-		self.assertEqual('6144 KB', info['l2_cache_size'])
+		self.assertEqual('6144 KB', info['l3_cache_size'])
 
 		self.assertEqual(5, info['stepping'])
 		self.assertEqual(30, info['model'])

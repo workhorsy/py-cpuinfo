@@ -452,7 +452,7 @@ class TestLinuxDebian_8_5_X86_64(unittest.TestCase):
 	def test_returns(self):
 		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_registry()))
 		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_cpufreq_info()))
-		self.assertEqual(9, len(cpuinfo._get_cpu_info_from_lscpu()))
+		self.assertEqual(13, len(cpuinfo._get_cpu_info_from_lscpu()))
 		self.assertEqual(11, len(cpuinfo._get_cpu_info_from_proc_cpuinfo()))
 		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_sysctl()))
 		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_kstat()))
@@ -461,7 +461,7 @@ class TestLinuxDebian_8_5_X86_64(unittest.TestCase):
 		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_ibm_pa_features()))
 		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_sysinfo()))
 		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_cpuid()))
-		self.assertEqual(16, len(cpuinfo.get_cpu_info()))
+		self.assertEqual(19, len(cpuinfo.get_cpu_info()))
 
 	def test_get_cpu_info_from_lscpu(self):
 		info = cpuinfo._get_cpu_info_from_lscpu()
@@ -476,6 +476,12 @@ class TestLinuxDebian_8_5_X86_64(unittest.TestCase):
 		self.assertEqual(7, info['stepping'])
 		self.assertEqual(42, info['model'])
 		self.assertEqual(6, info['family'])
+
+		self.assertEqual('32K', info['l1_instruction_cache_size'])
+		self.assertEqual('32K', info['l1_data_cache_size'])
+
+		self.assertEqual('256K', info['l2_cache_size'])
+		self.assertEqual('3072K', info['l3_cache_size'])
 
 	def test_get_cpu_info_from_dmesg(self):
 		info = cpuinfo._get_cpu_info_from_dmesg()
@@ -500,7 +506,7 @@ class TestLinuxDebian_8_5_X86_64(unittest.TestCase):
 		self.assertEqual((2800000000, 0), info['hz_advertised_raw'])
 		self.assertEqual((2793652000, 0), info['hz_actual_raw'])
 
-		self.assertEqual('3072 KB', info['l2_cache_size'])
+		self.assertEqual('3072 KB', info['l3_cache_size'])
 
 		self.assertEqual(7, info['stepping'])
 		self.assertEqual(42, info['model'])
@@ -531,7 +537,11 @@ class TestLinuxDebian_8_5_X86_64(unittest.TestCase):
 
 		self.assertEqual('x86_64', info['raw_arch_string'])
 
-		self.assertEqual('3072 KB', info['l2_cache_size'])
+		self.assertEqual('32K', info['l1_instruction_cache_size'])
+		self.assertEqual('32K', info['l1_data_cache_size'])
+
+		self.assertEqual('256K', info['l2_cache_size'])
+		self.assertEqual('3072 KB', info['l3_cache_size'])
 
 		self.assertEqual(7, info['stepping'])
 		self.assertEqual(42, info['model'])

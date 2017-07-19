@@ -117,7 +117,7 @@ class TestLinux_Aarch_64(unittest.TestCase):
 	def test_returns(self):
 		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_registry()))
 		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_cpufreq_info()))
-		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_lscpu()))
+		self.assertEqual(3, len(cpuinfo._get_cpu_info_from_lscpu()))
 		self.assertEqual(1, len(cpuinfo._get_cpu_info_from_proc_cpuinfo()))
 		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_sysctl()))
 		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_kstat()))
@@ -126,12 +126,17 @@ class TestLinux_Aarch_64(unittest.TestCase):
 		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_ibm_pa_features()))
 		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_sysinfo()))
 		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_cpuid()))
-		self.assertEqual(6, len(cpuinfo.get_cpu_info()))
+		self.assertEqual(9, len(cpuinfo.get_cpu_info()))
 
 	def test_get_cpu_info_from_lscpu(self):
 		info = cpuinfo._get_cpu_info_from_lscpu()
 
-		self.assertEqual(0, len(info))
+		self.assertEqual('78K', info['l1_instruction_cache_size'])
+		self.assertEqual('32K', info['l1_data_cache_size'])
+
+		self.assertEqual('16384K', info['l2_cache_size'])
+
+		self.assertEqual(3, len(info))
 
 	def test_get_cpu_info_from_proc_cpuinfo(self):
 		info = cpuinfo._get_cpu_info_from_proc_cpuinfo()
@@ -160,9 +165,14 @@ class TestLinux_Aarch_64(unittest.TestCase):
 
 		self.assertEqual('aarch64', info['raw_arch_string'])
 
-		self.assertEqual('', info['l2_cache_size'])
+		self.assertEqual('78K', info['l1_instruction_cache_size'])
+		self.assertEqual('32K', info['l1_data_cache_size'])
+
+		self.assertEqual('16384K', info['l2_cache_size'])
 		self.assertEqual(0, info['l2_cache_line_size'])
 		self.assertEqual(0, info['l2_cache_associativity'])
+
+		self.assertEqual('', info['l3_cache_size'])
 
 		self.assertEqual(0, info['stepping'])
 		self.assertEqual(0, info['model'])

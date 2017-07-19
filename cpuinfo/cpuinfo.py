@@ -351,15 +351,18 @@ def to_hz_string(ticks):
 def _parse_cpu_string(cpu_string):
 	# Get location of fields at end of string
 	fields_index = cpu_string.find('(', cpu_string.find('@'))
+	#print(fields_index)
 
 	# Processor Brand
 	processor_brand = cpu_string
 	if fields_index != -1:
 		processor_brand = cpu_string[0 : fields_index].strip()
+	#print('processor_brand: ', processor_brand)
 
 	fields = None
 	if fields_index != -1:
 		fields = cpu_string[fields_index : ]
+	#print('fields: ', fields)
 
 	# Hz
 	scale, hz_brand = _get_hz_string_from_brand(processor_brand)
@@ -372,9 +375,11 @@ def _parse_cpu_string(cpu_string):
 			fields = [f.strip().lower() for f in fields]
 			fields = [f.split(':') for f in fields]
 			fields = [{f[0].strip() : f[1].strip()} for f in fields]
+			#print('fields: ', fields)
 			for field in fields:
 				name = list(field.keys())[0]
 				value = list(field.values())[0]
+				#print('name:{0}, value:{1}'.format(name, value))
 				if name == 'origin':
 					vendor_id = value.strip('"')
 				elif name == 'stepping':
@@ -424,10 +429,11 @@ def _parse_dmesg_output(output):
 			fields = fields.strip().split()
 			fields = [n.strip().split('=') for n in fields]
 			fields = [{n[0].strip().lower() : n[1].strip()} for n in fields]
-
+			#print('fields: ', fields)
 			for field in fields:
 				name = list(field.keys())[0]
 				value = list(field.values())[0]
+				#print('name:{0}, value:{1}'.format(name, value))
 				if name == 'origin':
 					vendor_id = value.strip('"')
 				elif name == 'stepping':
@@ -436,7 +442,7 @@ def _parse_dmesg_output(output):
 					model = int(value.lstrip('0x'), 16)
 				elif name in ['fam', 'family']:
 					family = int(value.lstrip('0x'), 16)
-
+		#print('FIELDS: ', (vendor_id, stepping, model, family))
 
 		# Features
 		flag_lines = []
@@ -1286,10 +1292,6 @@ def _get_cpu_info_from_lscpu():
 		l1_instruction_cache_size = _get_field(False, output, None, None, 'L1i cache')
 		if l1_instruction_cache_size:
 			info['l1_instruction_cache_size'] = l1_instruction_cache_size
-
-		l3_cache_size = _get_field(False, output, None, None, 'L3 cache')
-		if l3_cache_size:
-			info['l3_cache_size'] = l3_cache_size
 
 		l2_cache_size = _get_field(False, output, None, None, 'L2 cache')
 		if l2_cache_size:
