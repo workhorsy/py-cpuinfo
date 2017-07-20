@@ -430,7 +430,6 @@ def _parse_dmesg_output(output):
 			fields = [n.strip().split('=') for n in fields]
 			fields = [{n[0].strip().lower() : n[1].strip()} for n in fields]
 			#print('fields: ', fields)
-
 			for field in fields:
 				name = list(field.keys())[0]
 				value = list(field.values())[0]
@@ -443,7 +442,6 @@ def _parse_dmesg_output(output):
 					model = int(value.lstrip('0x'), 16)
 				elif name in ['fam', 'family']:
 					family = int(value.lstrip('0x'), 16)
-
 		#print('FIELDS: ', (vendor_id, stepping, model, family))
 
 		# Features
@@ -1076,7 +1074,6 @@ def actual_get_cpu_info_from_cpuid():
 
 	# Get the Hz and scale
 	scale, hz_advertised = _get_hz_string_from_brand(processor_brand)
-
 	info = {
 	'vendor_id' : cpuid.get_vendor_id(),
 	'hardware' : '',
@@ -1171,7 +1168,7 @@ def _get_cpu_info_from_proc_cpuinfo():
 		'hardware' : hardware,
 		'brand' : processor_brand,
 
-		'l2_cache_size' : cache_size,
+		'l3_cache_size' : cache_size,
 		'flags' : flags,
 		'vendor_id' : vendor_id,
 		'stepping' : stepping,
@@ -1287,6 +1284,22 @@ def _get_cpu_info_from_lscpu():
 		model = _get_field(False, output, None, None, 'Model')
 		if model and model.isdigit():
 			info['model'] = int(model)
+
+		l1_data_cache_size = _get_field(False, output, None, None, 'L1d cache')
+		if l1_data_cache_size:
+			info['l1_data_cache_size'] = l1_data_cache_size
+
+		l1_instruction_cache_size = _get_field(False, output, None, None, 'L1i cache')
+		if l1_instruction_cache_size:
+			info['l1_instruction_cache_size'] = l1_instruction_cache_size
+
+		l2_cache_size = _get_field(False, output, None, None, 'L2 cache')
+		if l2_cache_size:
+			info['l2_cache_size'] = l2_cache_size
+
+		l3_cache_size = _get_field(False, output, None, None, 'L3 cache')
+		if l3_cache_size:
+			info['l3_cache_size'] = l3_cache_size
 
 		# Flags
 		flags = _get_field(False, output, None, None, 'flags', 'Features')
@@ -1732,7 +1745,8 @@ def CopyNewFields(info, new_info):
 		'hz_advertised_raw', 'hz_actual_raw', 'arch', 'bits', 'count',
 		'raw_arch_string', 'l2_cache_size', 'l2_cache_line_size',
 		'l2_cache_associativity', 'stepping', 'model', 'family',
-		'processor_type', 'extended_model', 'extended_family', 'flags'
+		'processor_type', 'extended_model', 'extended_family', 'flags',
+        'l3_cache_size', 'l1_data_cache_size', 'l1_instruction_cache_size'
 	]
 
 	for key in keys:
@@ -1820,10 +1834,12 @@ def main():
 
 		print('Raw Arch String: {0}'.format(info.get('raw_arch_string', '')))
 
+		print('L1 Data Cache Size: {0}'.format(info.get('l1_data_cache_size', '')))
+		print('L1 Instruction Cache Size: {0}'.format(info.get('l1_instruction_cache_size', '')))
 		print('L2 Cache Size: {0}'.format(info.get('l2_cache_size', '')))
 		print('L2 Cache Line Size: {0}'.format(info.get('l2_cache_line_size', '')))
 		print('L2 Cache Associativity: {0}'.format(info.get('l2_cache_associativity', '')))
-
+		print('L3 Cache Size: {0}'.format(info.get('l3_cache_size', '')))
 		print('Stepping: {0}'.format(info.get('stepping', '')))
 		print('Model: {0}'.format(info.get('model', '')))
 		print('Family: {0}'.format(info.get('family', '')))
