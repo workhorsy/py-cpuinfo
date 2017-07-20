@@ -1746,7 +1746,7 @@ def CopyNewFields(info, new_info):
 		'raw_arch_string', 'l2_cache_size', 'l2_cache_line_size',
 		'l2_cache_associativity', 'stepping', 'model', 'family',
 		'processor_type', 'extended_model', 'extended_family', 'flags',
-        'l3_cache_size', 'l1_data_cache_size', 'l1_instruction_cache_size'
+		'l3_cache_size', 'l1_data_cache_size', 'l1_instruction_cache_size'
 	]
 
 	for key in keys:
