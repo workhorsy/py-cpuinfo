@@ -3,7 +3,7 @@
 
 # Copyright (c) 2014-2017, Matthew Brennan Jones <matthew.brennan.jones@gmail.com>
 # Py-cpuinfo is a Python module to show the cpuinfo of a processor
-# It uses a MIT style license
+# It uses the MIT License
 # It is hosted at: https://github.com/workhorsy/py-cpuinfo
 #
 # Permission is hereby granted, free of charge, to any person obtaining
