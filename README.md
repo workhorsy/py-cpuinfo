@@ -57,9 +57,9 @@ Output
 | bits                          | 64 |
 | count                         | 4 |
 | raw_arch_string               | "x86_64" |
-| l1_data_cache_size            | "32K" |
-| l1_instruction_cache_size     | "32K" |
-| l2_cache_size                 | "256K" |
+| l1_data_cache_size            | "32 KB" |
+| l1_instruction_cache_size     | "32 KB" |
+| l2_cache_size                 | "256 KB" |
 | l2_cache_line_size            | 6 |
 | l2_cache_associativity        | 0x100 |
 | l3_cache_size                 | "3072 KB" |

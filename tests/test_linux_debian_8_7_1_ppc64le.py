@@ -435,8 +435,8 @@ class TestLinuxDebian_8_7_1_ppc64le(unittest.TestCase):
 
 	def test_get_cpu_info_from_lscpu(self):
 		info = cpuinfo._get_cpu_info_from_lscpu()
-		self.assertEqual('32K', info['l1_instruction_cache_size'])
-		self.assertEqual('32K', info['l1_data_cache_size'])
+		self.assertEqual('32 KB', info['l1_instruction_cache_size'])
+		self.assertEqual('32 KB', info['l1_data_cache_size'])
 		self.assertEqual(2, len(info))
 
 	def test_get_cpu_info_from_ibm_pa_features(self):
@@ -466,8 +466,8 @@ class TestLinuxDebian_8_7_1_ppc64le(unittest.TestCase):
 		self.assertEqual('PPC_64', info['arch'])
 		self.assertEqual(64, info['bits'])
 		self.assertEqual(2, info['count'])
-		self.assertEqual('32K', info['l1_instruction_cache_size'])
-		self.assertEqual('32K', info['l1_data_cache_size'])
+		self.assertEqual('32 KB', info['l1_instruction_cache_size'])
+		self.assertEqual('32 KB', info['l1_data_cache_size'])
 		self.assertEqual('ppc64le', info['raw_arch_string'])
 		self.assertEqual(
 			['dabr', 'dabrx', 'dsisr', 'fpu', 'lp', 'mmu', 'pp', 'rislb', 'run', 'slb', 'sprg3'],

@@ -348,6 +348,23 @@ def to_hz_string(ticks):
 
 	return ticks
 
+def to_friendly_bytes(input):
+	if not input:
+		return input
+
+	formats = {
+		r"^[0-9]+B$" : 'B',
+		r"^[0-9]+K$" : 'KB',
+		r"^[0-9]+M$" : 'MB',
+		r"^[0-9]+G$" : 'GB'
+	}
+
+	for pattern, friendly_size in formats.items():
+		if re.match(pattern, input):
+			return "{0} {1}".format(input[ : -1].strip(), friendly_size)
+
+	return input
+
 def _parse_cpu_string(cpu_string):
 	# Get location of fields at end of string
 	fields_index = cpu_string.find('(', cpu_string.find('@'))
@@ -1084,7 +1101,7 @@ def actual_get_cpu_info_from_cpuid():
 	'hz_advertised_raw' : to_raw_hz(hz_advertised, scale),
 	'hz_actual_raw' : to_raw_hz(hz_actual, 6),
 
-	'l2_cache_size' : cache_info['size_kb'],
+	'l2_cache_size' : to_friendly_bytes(cache_info['size_kb']),
 	'l2_cache_line_size' : cache_info['line_size_b'],
 	'l2_cache_associativity' : hex(cache_info['associativity']),
 
@@ -1168,7 +1185,7 @@ def _get_cpu_info_from_proc_cpuinfo():
 		'hardware' : hardware,
 		'brand' : processor_brand,
 
-		'l3_cache_size' : cache_size,
+		'l3_cache_size' : to_friendly_bytes(cache_size),
 		'flags' : flags,
 		'vendor_id' : vendor_id,
 		'stepping' : stepping,
@@ -1287,19 +1304,19 @@ def _get_cpu_info_from_lscpu():
 
 		l1_data_cache_size = _get_field(False, output, None, None, 'L1d cache')
 		if l1_data_cache_size:
-			info['l1_data_cache_size'] = l1_data_cache_size
+			info['l1_data_cache_size'] = to_friendly_bytes(l1_data_cache_size)
 
 		l1_instruction_cache_size = _get_field(False, output, None, None, 'L1i cache')
 		if l1_instruction_cache_size:
-			info['l1_instruction_cache_size'] = l1_instruction_cache_size
+			info['l1_instruction_cache_size'] = to_friendly_bytes(l1_instruction_cache_size)
 
 		l2_cache_size = _get_field(False, output, None, None, 'L2 cache')
 		if l2_cache_size:
-			info['l2_cache_size'] = l2_cache_size
+			info['l2_cache_size'] = to_friendly_bytes(l2_cache_size)
 
 		l3_cache_size = _get_field(False, output, None, None, 'L3 cache')
 		if l3_cache_size:
-			info['l3_cache_size'] = l3_cache_size
+			info['l3_cache_size'] = to_friendly_bytes(l3_cache_size)
 
 		# Flags
 		flags = _get_field(False, output, None, None, 'flags', 'Features')
@@ -1514,7 +1531,7 @@ def _get_cpu_info_from_sysctl():
 		'hz_advertised_raw' : to_raw_hz(hz_advertised, scale),
 		'hz_actual_raw' : to_raw_hz(hz_actual, 0),
 
-		'l2_cache_size' : cache_size,
+		'l2_cache_size' : to_friendly_bytes(cache_size),
 
 		'stepping' : stepping,
 		'model' : model,
@@ -1571,7 +1588,7 @@ def _get_cpu_info_from_sysinfo():
 		'hz_advertised_raw' : to_raw_hz(hz_advertised, scale),
 		'hz_actual_raw' : to_raw_hz(hz_actual, scale),
 
-		'l2_cache_size' : cache_size,
+		'l2_cache_size' : to_friendly_bytes(cache_size),
 
 		'stepping' : stepping,
 		'model' : model,

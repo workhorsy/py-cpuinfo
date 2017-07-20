@@ -1,5 +1,6 @@
 * Release 4.0.0
 	* Fixed Bug #77: Get L1, L2, and L3 cache info from lscpu
+	* Fixed Bug #79: Byte formats are inconsistent
 
 06/10/2017 Release 3.3.0
 	* Fixed Bug #70: subprocess.Popen breaks under Windows GUI app
