@@ -351,6 +351,7 @@ def to_hz_string(ticks):
 def to_friendly_bytes(input):
 	if not input:
 		return input
+	input = "{0}".format(input)
 
 	formats = {
 		r"^[0-9]+B$" : 'B',
