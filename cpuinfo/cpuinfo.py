@@ -1931,6 +1931,9 @@ def main():
 
 
 if __name__ == '__main__':
+	from multiprocessing import freeze_support
+	freeze_support()
+	print("!!! called multiprocessing.freeze_support()")
 	main()
 else:
 	_check_arch()
