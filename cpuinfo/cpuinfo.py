@@ -48,6 +48,38 @@ except ImportError as err:
 
 PY2 = sys.version_info[0] == 2
 
+# Load hacks for Windows
+if platform.system().lower() == 'windows':
+	# Monkey patch multiprocessing's Popen to fork properly on Windows Pyinstaller
+	# https://github.com/pyinstaller/pyinstaller/wiki/Recipe-Multiprocessing
+	try:
+		import multiprocessing.popen_spawn_win32 as forking
+	except ImportError as err:
+		try:
+			import multiprocessing.popen_fork as forking
+		except ImportError as err:
+			import multiprocessing.forking as forking
+
+	class _Popen(forking.Popen):
+		def __init__(self, *args, **kw):
+			if hasattr(sys, 'frozen'):
+				# We have to set original _MEIPASS2 value from sys._MEIPASS
+				# to get --onefile mode working.
+				os.putenv('_MEIPASS2', sys._MEIPASS)
+			try:
+				super(_Popen, self).__init__(*args, **kw)
+			finally:
+				if hasattr(sys, 'frozen'):
+					# On some platforms (e.g. AIX) 'os.unsetenv()' is not
+					# available. In those cases we cannot delete the variable
+					# but only set it to the empty string. The bootloader
+					# can handle this case.
+					if hasattr(os, 'unsetenv'):
+						os.unsetenv('_MEIPASS2')
+					else:
+						os.putenv('_MEIPASS2', '')
+
+	forking.Popen = _Popen
 
 class DataSource(object):
 	bits = platform.architecture()[0]
@@ -1061,23 +1093,30 @@ class CPUID(object):
 
 		return ticks
 
-def actual_get_cpu_info_from_cpuid():
+def _actual_get_cpu_info_from_cpuid(queue):
 	'''
 	Warning! This function has the potential to crash the Python runtime.
 	Do not call it directly. Use the _get_cpu_info_from_cpuid function instead.
 	It will safely call this function in another process.
 	'''
+
+	# Pipe all output to nothing
+	sys.stdout = open(os.devnull, 'w')
+	sys.stderr = open(os.devnull, 'w')
+
 	# Get the CPU arch and bits
 	arch, bits = parse_arch(DataSource.raw_arch_string)
 
 	# Return none if this is not an X86 CPU
 	if not arch in ['X86_32', 'X86_64']:
-		return obj_to_b64({})
+		queue.put(obj_to_b64({}))
+		return
 
 	# Return none if SE Linux is in enforcing mode
 	cpuid = CPUID()
 	if cpuid.is_selinux_enforcing:
-		return obj_to_b64({})
+		queue.put(obj_to_b64({}))
+		return
 
 	# Get the cpu info from the CPUID register
 	max_extension_support = cpuid.get_max_extension_support()
@@ -1116,7 +1155,7 @@ def actual_get_cpu_info_from_cpuid():
 	}
 
 	info = {k: v for k, v in info.items() if v}
-	return obj_to_b64(info)
+	queue.put(obj_to_b64(info))
 
 def _get_cpu_info_from_cpuid():
 	'''
@@ -1124,6 +1163,7 @@ def _get_cpu_info_from_cpuid():
 	Returns {} on non X86 cpus.
 	Returns {} if SELinux is in enforcing mode.
 	'''
+	from multiprocessing import Process, Queue
 
 	# Return {} if can't cpuid
 	if not DataSource.can_cpuid:
@@ -1136,11 +1176,29 @@ def _get_cpu_info_from_cpuid():
 	if not arch in ['X86_32', 'X86_64']:
 		return {}
 
-	returncode, output = run_and_get_stdout([sys.executable, "-c", "import cpuinfo; print(cpuinfo.actual_get_cpu_info_from_cpuid())"])
-	if returncode != 0:
-		return {}
-	info = b64_to_obj(output)
-	return info
+	try:
+		# Start running the function in a subprocess
+		queue = Queue()
+		p = Process(target=_actual_get_cpu_info_from_cpuid, args=(queue,))
+		p.start()
+
+		# Wait for the process to end, while it is still alive
+		while p.is_alive():
+			p.join(0)
+
+		# Return {} if it failed
+		if p.exitcode != 0:
+			return {}
+
+		# Return the result, only if there is something to read
+		if not queue.empty():
+			output = queue.get()
+			return b64_to_obj(output)
+	except:
+		pass
+
+	# Return {} if everything failed
+	return {}
 
 def _get_cpu_info_from_proc_cpuinfo():
 	'''
@@ -1871,6 +1929,8 @@ def main():
 
 
 if __name__ == '__main__':
+	from multiprocessing import freeze_support
+	freeze_support()
 	main()
 else:
 	_check_arch()
