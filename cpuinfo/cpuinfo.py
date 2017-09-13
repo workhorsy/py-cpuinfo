@@ -1100,9 +1100,10 @@ def _actual_get_cpu_info_from_cpuid(queue):
 	It will safely call this function in another process.
 	'''
 
+	print("!!! calling _actual_get_cpu_info_from_cpuid ...")
 	# Pipe all output to nothing
-	sys.stdout = open(os.devnull, 'w')
-	sys.stderr = open(os.devnull, 'w')
+	#sys.stdout = open(os.devnull, 'w')
+	#sys.stderr = open(os.devnull, 'w')
 
 	# Get the CPU arch and bits
 	arch, bits = parse_arch(DataSource.raw_arch_string)
@@ -1156,6 +1157,7 @@ def _actual_get_cpu_info_from_cpuid(queue):
 
 	info = {k: v for k, v in info.items() if v}
 	queue.put(obj_to_b64(info))
+	print("!!! calling _actual_get_cpu_info_from_cpuid done")
 
 def _get_cpu_info_from_cpuid():
 	'''
