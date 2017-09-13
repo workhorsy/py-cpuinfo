@@ -102,9 +102,21 @@ $ python -m cpuinfo
 Run as a library
 -----
 ~~~python
-import cpuinfo
-info = cpuinfo.get_cpu_info()
-print(info)
+if __name__ == '__main__':
+    import cpuinfo
+    info = cpuinfo.get_cpu_info()
+    print(info)
+~~~
+
+Run under Pyinstaller
+-----
+~~~python
+if __name__ == '__main__':
+    import cpuinfo
+    from multiprocessing import freeze_support
+    freeze_support() # NOTE: Needed for Pyinstaller
+    info = cpuinfo.get_cpu_info()
+    print(info)
 ~~~
 
 Install instructions
