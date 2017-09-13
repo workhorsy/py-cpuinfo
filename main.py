@@ -1,4 +1,12 @@
 
+'''
+TODO:
+* Make sure it works on
+* Python 2 Windows Pyinstaller
+* Python 2 Fedora(SE Linux) VM
+* Ubuntu python 2/3 imported and run as script
+'''
+
 print("!!!!!!!!!! main.py")
 # main.py
 # Put everything in a main guard or it may execute twice when the process forks
