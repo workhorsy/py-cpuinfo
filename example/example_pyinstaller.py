@@ -1,4 +1,8 @@
 
+import sys
+
+# Import cpuinfo.py from up one directory
+sys.path.append('../cpuinfo')
 
 if __name__ == '__main__':
 	from multiprocessing import freeze_support
