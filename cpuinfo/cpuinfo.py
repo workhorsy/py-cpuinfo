@@ -638,24 +638,26 @@ class CPUID(object):
 		else:
 			# Allocate a memory segment the size of the byte code
 			size = len(byte_code)
-			address = ctypes.pythonapi.valloc(size)
+			pfnvalloc = ctypes.pythonapi.valloc
+			pfnvalloc.restype = ctypes.c_void_p
+			address = pfnvalloc(ctypes.c_size_t(size))
 			if not address:
 				raise Exception("Failed to valloc")
 
 			# Mark the memory segment as writeable only
 			if not self.is_selinux_enforcing:
 				WRITE = 0x2
-				if ctypes.pythonapi.mprotect(address, size, WRITE) < 0:
+				if ctypes.pythonapi.mprotect(ctypes.c_void_p(address), size, WRITE) < 0:
 					raise Exception("Failed to mprotect")
 
 			# Copy the byte code into the memory segment
-			if ctypes.pythonapi.memmove(address, byte_code, size) < 0:
+			if ctypes.pythonapi.memmove(ctypes.c_void_p(address), byte_code, ctypes.c_size_t(size)) < 0:
 				raise Exception("Failed to memmove")
 
 			# Mark the memory segment as writeable and executable only
 			if not self.is_selinux_enforcing:
 				WRITE_EXECUTE = 0x2 | 0x4
-				if ctypes.pythonapi.mprotect(address, size, WRITE_EXECUTE) < 0:
+				if ctypes.pythonapi.mprotect(ctypes.c_void_p(address), size, WRITE_EXECUTE) < 0:
 					raise Exception("Failed to mprotect")
 
 		# Cast the memory segment into a function
@@ -665,11 +667,7 @@ class CPUID(object):
 
 	def _run_asm(self, *byte_code):
 		# Convert the byte code into a function that returns an int
-		restype = None
-		if DataSource.bits == '64bit':
-			restype = ctypes.c_uint64
-		else:
-			restype = ctypes.c_uint32
+		restype = ctypes.c_uint32
 		argtypes = ()
 		func, address = self._asm_func(restype, argtypes, byte_code)
 
@@ -686,10 +684,10 @@ class CPUID(object):
 		else:
 			# Remove the executable tag on the memory
 			READ_WRITE = 0x1 | 0x2
-			if ctypes.pythonapi.mprotect(address, size, READ_WRITE) < 0:
+			if ctypes.pythonapi.mprotect(ctypes.c_void_p(address), size, READ_WRITE) < 0:
 				raise Exception("Failed to mprotect")
 
-			ctypes.pythonapi.free(address)
+			ctypes.pythonapi.free(ctypes.c_void_p(address))
 
 		return retval
 
@@ -700,6 +698,10 @@ class CPUID(object):
 			b"\x31\xC0"         # xor eax,eax
 		)
 
+	def _zero_ecx(self):
+		return (
+			b"\x31\xC9"         # xor ecx,ecx
+		)
 	def _one_eax(self):
 		return (
 			b"\xB8\x01\x00\x00\x00" # mov eax,0x1"
@@ -871,6 +873,7 @@ class CPUID(object):
 		if max_extension_support >= 7:
 			# EBX
 			ebx = self._run_asm(
+				self._zero_ecx(),
 				b"\xB8\x07\x00\x00\x00" # mov eax,7
 				b"\x0f\xa2"         # cpuid
 				b"\x89\xD8"         # mov ax,bx
@@ -879,6 +882,7 @@ class CPUID(object):
 
 			# ECX
 			ecx = self._run_asm(
+				self._zero_ecx(),
 				b"\xB8\x07\x00\x00\x00" # mov eax,7
 				b"\x0f\xa2"         # cpuid
 				b"\x89\xC8"         # mov ax,cx
