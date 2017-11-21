@@ -3,6 +3,7 @@
 	* Fixed Bug #77: Get L1, L2, and L3 cache info from lscpu
 	* Fixed Bug #79: Byte formats are inconsistent
 	* Fixed Bug #81: Byte formatter breaks on non strings
+	* Fixed Bug #84: Fixed wrong setup of CPUID machine code and added more flags
 
 06/10/2017 Release 3.3.0
 	* Fixed Bug #70: subprocess.Popen breaks under Windows GUI app
