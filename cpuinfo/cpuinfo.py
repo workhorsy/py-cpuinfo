@@ -581,6 +581,8 @@ def is_bit_set(reg, bit):
 
 class CPUID(object):
 	def __init__(self):
+		self.prochandle = None
+
 		# Figure out if SE Linux is on and in enforcing mode
 		self.is_selinux_enforcing = False
 
@@ -600,9 +602,13 @@ class CPUID(object):
 		if DataSource.is_windows:
 			# Allocate a memory segment the size of the byte code, and make it executable
 			size = len(byte_code)
+			# Alloc at least 1 page to ensure we own all pages that we want to change protection on
+			if size < 0x1000: size = 0x1000
 			MEM_COMMIT = ctypes.c_ulong(0x1000)
-			PAGE_EXECUTE_READWRITE = ctypes.c_ulong(0x40)
-			address = ctypes.windll.kernel32.VirtualAlloc(ctypes.c_int(0), ctypes.c_size_t(size), MEM_COMMIT, PAGE_EXECUTE_READWRITE)
+			PAGE_READWRITE = ctypes.c_ulong(0x4)
+			pfnVirtualAlloc = ctypes.windll.kernel32.VirtualAlloc
+			pfnVirtualAlloc.restype = ctypes.c_void_p
+			address = pfnVirtualAlloc(None, ctypes.c_size_t(size), MEM_COMMIT, PAGE_READWRITE)
 			if not address:
 				raise Exception("Failed to VirtualAlloc")
 
@@ -610,27 +616,48 @@ class CPUID(object):
 			memmove = ctypes.CFUNCTYPE(ctypes.c_void_p, ctypes.c_void_p, ctypes.c_void_p, ctypes.c_size_t)(ctypes._memmove_addr)
 			if memmove(address, byte_code, size) < 0:
 				raise Exception("Failed to memmove")
+
+			# Enable execute permissions
+			PAGE_EXECUTE = ctypes.c_ulong(0x10)
+			old_protect = ctypes.c_ulong(0)
+			pfnVirtualProtect = ctypes.windll.kernel32.VirtualProtect
+			res = pfnVirtualProtect(ctypes.c_void_p(address), ctypes.c_size_t(size), PAGE_EXECUTE, ctypes.byref(old_protect))
+			if not res:
+				raise Exception("Failed VirtualProtect")
+
+			# Flush Instruction Cache
+			# First, get process Handle
+			if not self.prochandle:
+				pfnGetCurrentProcess = ctypes.windll.kernel32.GetCurrentProcess
+				pfnGetCurrentProcess.restype = ctypes.c_void_p
+				self.prochandle = ctypes.c_void_p(pfnGetCurrentProcess())
+			# Actually flush cache
+			res = ctypes.windll.kernel32.FlushInstructionCache(self.prochandle, ctypes.c_void_p(address), ctypes.c_size_t(size))
+			if not res:
+				raise Exception("Failed FlushInstructionCache")
 		else:
 			# Allocate a memory segment the size of the byte code
 			size = len(byte_code)
-			address = ctypes.pythonapi.valloc(size)
+			pfnvalloc = ctypes.pythonapi.valloc
+			pfnvalloc.restype = ctypes.c_void_p
+			address = pfnvalloc(ctypes.c_size_t(size))
 			if not address:
 				raise Exception("Failed to valloc")
 
 			# Mark the memory segment as writeable only
 			if not self.is_selinux_enforcing:
 				WRITE = 0x2
-				if ctypes.pythonapi.mprotect(address, size, WRITE) < 0:
+				if ctypes.pythonapi.mprotect(ctypes.c_void_p(address), size, WRITE) < 0:
 					raise Exception("Failed to mprotect")
 
 			# Copy the byte code into the memory segment
-			if ctypes.pythonapi.memmove(address, byte_code, size) < 0:
+			if ctypes.pythonapi.memmove(ctypes.c_void_p(address), byte_code, ctypes.c_size_t(size)) < 0:
 				raise Exception("Failed to memmove")
 
 			# Mark the memory segment as writeable and executable only
 			if not self.is_selinux_enforcing:
 				WRITE_EXECUTE = 0x2 | 0x4
-				if ctypes.pythonapi.mprotect(address, size, WRITE_EXECUTE) < 0:
+				if ctypes.pythonapi.mprotect(ctypes.c_void_p(address), size, WRITE_EXECUTE) < 0:
 					raise Exception("Failed to mprotect")
 
 		# Cast the memory segment into a function
@@ -640,55 +667,45 @@ class CPUID(object):
 
 	def _run_asm(self, *byte_code):
 		# Convert the byte code into a function that returns an int
-		restype = None
-		if DataSource.bits == '64bit':
-			restype = ctypes.c_uint64
-		else:
-			restype = ctypes.c_uint32
+		restype = ctypes.c_uint32
 		argtypes = ()
 		func, address = self._asm_func(restype, argtypes, byte_code)
 
 		# Call the byte code like a function
 		retval = func()
 
+		byte_code = bytes.join(b'', byte_code)
 		size = ctypes.c_size_t(len(byte_code))
 
 		# Free the function memory segment
 		if DataSource.is_windows:
 			MEM_RELEASE = ctypes.c_ulong(0x8000)
-			ctypes.windll.kernel32.VirtualFree(address, size, MEM_RELEASE)
+			ctypes.windll.kernel32.VirtualFree(ctypes.c_void_p(address), ctypes.c_size_t(0), MEM_RELEASE)
 		else:
 			# Remove the executable tag on the memory
 			READ_WRITE = 0x1 | 0x2
-			if ctypes.pythonapi.mprotect(address, size, READ_WRITE) < 0:
+			if ctypes.pythonapi.mprotect(ctypes.c_void_p(address), size, READ_WRITE) < 0:
 				raise Exception("Failed to mprotect")
 
-			ctypes.pythonapi.free(address)
+			ctypes.pythonapi.free(ctypes.c_void_p(address))
 
 		return retval
 
 	# FIXME: We should not have to use different instructions to
 	# set eax to 0 or 1, on 32bit and 64bit machines.
 	def _zero_eax(self):
-		if DataSource.bits == '64bit':
-			return (
-				b"\x66\xB8\x00\x00" # mov eax,0x0"
-			)
-		else:
-			return (
-				b"\x31\xC0"         # xor ax,ax
-			)
+		return (
+			b"\x31\xC0"         # xor eax,eax
+		)
 
+	def _zero_ecx(self):
+		return (
+			b"\x31\xC9"         # xor ecx,ecx
+		)
 	def _one_eax(self):
-		if DataSource.bits == '64bit':
-			return (
-				b"\x66\xB8\x01\x00" # mov eax,0x1"
-			)
-		else:
-			return (
-				b"\x31\xC0"         # xor ax,ax
-				b"\x40"             # inc ax
-			)
+		return (
+			b"\xB8\x01\x00\x00\x00" # mov eax,0x1"
+		)
 
 	# http://en.wikipedia.org/wiki/CPUID#EAX.3D0:_Get_vendor_ID
 	def get_vendor_id(self):
@@ -852,18 +869,102 @@ class CPUID(object):
 		# Get a list of only the flags that are true
 		flags = [k for k, v in flags.items() if v]
 
-		# Get the Extended CPU flags
-		extended_flags = {}
-
 		# http://en.wikipedia.org/wiki/CPUID#EAX.3D7.2C_ECX.3D0:_Extended_Features
-		if max_extension_support == 7:
-			pass
-			# FIXME: Are we missing all these flags too?
-			# avx2 et cetera ...
+		if max_extension_support >= 7:
+			# EBX
+			ebx = self._run_asm(
+				self._zero_ecx(),
+				b"\xB8\x07\x00\x00\x00" # mov eax,7
+				b"\x0f\xa2"         # cpuid
+				b"\x89\xD8"         # mov ax,bx
+				b"\xC3"             # ret
+			)
+
+			# ECX
+			ecx = self._run_asm(
+				self._zero_ecx(),
+				b"\xB8\x07\x00\x00\x00" # mov eax,7
+				b"\x0f\xa2"         # cpuid
+				b"\x89\xC8"         # mov ax,cx
+				b"\xC3"             # ret
+			)
+
+			# Get the extended CPU flags
+			extended_flags = {
+				#'fsgsbase' : is_bit_set(ebx, 0),
+				#'IA32_TSC_ADJUST' : is_bit_set(ebx, 1),
+				'sgx' : is_bit_set(ebx, 2),
+				'bmi1' : is_bit_set(ebx, 3),
+				'hle' : is_bit_set(ebx, 4),
+				'avx2' : is_bit_set(ebx, 5),
+				#'reserved' : is_bit_set(ebx, 6),
+				'smep' : is_bit_set(ebx, 7),
+				'bmi2' : is_bit_set(ebx, 8),
+				'erms' : is_bit_set(ebx, 9),
+				'invpcid' : is_bit_set(ebx, 10),
+				'rtm' : is_bit_set(ebx, 11),
+				'pqm' : is_bit_set(ebx, 12),
+				#'FPU CS and FPU DS deprecated' : is_bit_set(ebx, 13),
+				'mpx' : is_bit_set(ebx, 14),
+				'pqe' : is_bit_set(ebx, 15),
+				'avx512f' : is_bit_set(ebx, 16),
+				'avx512dq' : is_bit_set(ebx, 17),
+				'rdseed' : is_bit_set(ebx, 18),
+				'adx' : is_bit_set(ebx, 19),
+				'smap' : is_bit_set(ebx, 20),
+				'avx512ifma' : is_bit_set(ebx, 21),
+				'pcommit' : is_bit_set(ebx, 22),
+				'clflushopt' : is_bit_set(ebx, 23),
+				'clwb' : is_bit_set(ebx, 24),
+				'intel_pt' : is_bit_set(ebx, 25),
+				'avx512pf' : is_bit_set(ebx, 26),
+				'avx512er' : is_bit_set(ebx, 27),
+				'avx512cd' : is_bit_set(ebx, 28),
+				'sha' : is_bit_set(ebx, 29),
+				'avx512bw' : is_bit_set(ebx, 30),
+				'avx512vl' : is_bit_set(ebx, 31),
+
+				'prefetchwt1' : is_bit_set(ecx, 0),
+				'avx512vbmi' : is_bit_set(ecx, 1),
+				'umip' : is_bit_set(ecx, 2),
+				'pku' : is_bit_set(ecx, 3),
+				'ospke' : is_bit_set(ecx, 4),
+				#'reserved' : is_bit_set(ecx, 5),
+				'avx512vbmi2' : is_bit_set(ecx, 6),
+				#'reserved' : is_bit_set(ecx, 7),
+				'gfni' : is_bit_set(ecx, 8),
+				'vaes' : is_bit_set(ecx, 9),
+				'vpclmulqdq' : is_bit_set(ecx, 10),
+				'avx512vnni' : is_bit_set(ecx, 11),
+				'avx512bitalg' : is_bit_set(ecx, 12),
+				#'reserved' : is_bit_set(ecx, 13),
+				'avx512vpopcntdq' : is_bit_set(ecx, 14),
+				#'reserved' : is_bit_set(ecx, 15),
+				#'reserved' : is_bit_set(ecx, 16),
+				#'mpx0' : is_bit_set(ecx, 17),
+				#'mpx1' : is_bit_set(ecx, 18),
+				#'mpx2' : is_bit_set(ecx, 19),
+				#'mpx3' : is_bit_set(ecx, 20),
+				#'mpx4' : is_bit_set(ecx, 21),
+				'rdpid' : is_bit_set(ecx, 22),
+				#'reserved' : is_bit_set(ecx, 23),
+				#'reserved' : is_bit_set(ecx, 24),
+				#'reserved' : is_bit_set(ecx, 25),
+				#'reserved' : is_bit_set(ecx, 26),
+				#'reserved' : is_bit_set(ecx, 27),
+				#'reserved' : is_bit_set(ecx, 28),
+				#'reserved' : is_bit_set(ecx, 29),
+				'sgx_lc' : is_bit_set(ecx, 30),
+				#'reserved' : is_bit_set(ecx, 31)
+			}
+
+			# Get a list of only the flags that are true
+			extended_flags = [k for k, v in extended_flags.items() if v]
+			flags += extended_flags
 
 		# http://en.wikipedia.org/wiki/CPUID#EAX.3D80000001h:_Extended_Processor_Info_and_Feature_Bits
 		if max_extension_support >= 0x80000001:
-			# EBX # FIXME: This may need to be EDX instead
+			# EBX
 			ebx = self._run_asm(
 				b"\xB8\x01\x00\x00\x80" # mov ax,0x80000001
 				b"\x0f\xa2"         # cpuid
@@ -948,9 +1049,9 @@ class CPUID(object):
 				#'reserved' : is_bit_set(ecx, 31)
 			}
 
-		# Get a list of only the flags that are true
-		extended_flags = [k for k, v in extended_flags.items() if v]
-		flags += extended_flags
+			# Get a list of only the flags that are true
+			extended_flags = [k for k, v in extended_flags.items() if v]
+			flags += extended_flags
 
 		flags.sort()
 		return flags
@@ -1828,7 +1929,10 @@ def CopyNewFields(info, new_info):
 	for key in keys:
 		if new_info.get(key, None) and not info.get(key, None):
 			info[key] = new_info[key]
-
+		elif key == 'flags' and new_info.get('flags'):
+			for f in new_info['flags']:
+				if f not in info['flags']: info['flags'].append(f)
+			info['flags'].sort()
 def get_cpu_info():
 	'''
 	Returns the CPU info by using the best sources of information for your OS.
