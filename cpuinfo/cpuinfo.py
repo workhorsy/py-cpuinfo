@@ -133,6 +133,10 @@ class DataSource(object):
 		return len(program_paths('lsprop')) > 0
 
 	@staticmethod
+	def has_wmic():
+		return len(program_paths('wmic', 'os', 'get', 'Version')) > 0
+
+	@staticmethod
 	def cat_proc_cpuinfo():
 		return run_and_get_stdout(['cat', '/proc/cpuinfo'])
 
@@ -181,6 +185,10 @@ class DataSource(object):
 		ibm_features = glob.glob('/proc/device-tree/cpus/*/ibm,pa-features')
 		if ibm_features:
 			return run_and_get_stdout(['lsprop', ibm_features[0]])
+
+	@staticmethod
+	def wmic_cpu():
+		return run_and_get_stdout(['wmic', 'cpu', 'get', '/format:list'])
 
 	@staticmethod
 	def winreg_processor_brand():
@@ -1761,6 +1769,30 @@ def _get_cpu_info_from_sysinfo():
 	except:
 		return {}
 
+def _get_cpu_info_from_wmic():
+	'''
+	Returns the CPU info gathered from WMI.
+	Returns {} if not on Windows, or wmic is not installed.
+	'''
+
+	# Just return {} if not on Windows
+	if not DataSource.is_windows:
+		return {}
+
+	returncode, output = DataSource.wmic_cpu()
+	if output == None or returncode != 0:
+		return {}
+
+	for n in output.split("\n"):
+		value = n.split('=')
+		print(value)
+
+	info = {
+	}
+
+	info = {k: v for k, v in info.items() if v}
+	return info
+
 def _get_cpu_info_from_registry():
 	'''
 	FIXME: Is missing many of the newer CPU flags like sse3
@@ -1933,6 +1965,7 @@ def CopyNewFields(info, new_info):
 			for f in new_info['flags']:
 				if f not in info['flags']: info['flags'].append(f)
 			info['flags'].sort()
+
 def get_cpu_info():
 	'''
 	Returns the CPU info by using the best sources of information for your OS.
@@ -1950,6 +1983,9 @@ def get_cpu_info():
 		'raw_arch_string' : DataSource.raw_arch_string,
 	}
 
+	# Try the Windows wmic
+	CopyNewFields(info, _get_cpu_info_from_wmic())
+	'''
 	# Try the Windows registry
 	CopyNewFields(info, _get_cpu_info_from_registry())
 
@@ -1982,7 +2018,7 @@ def get_cpu_info():
 
 	# Try querying the CPU cpuid register
 	CopyNewFields(info, _get_cpu_info_from_cpuid())
-
+	'''
 	return info
 
 # Make sure we are running on a supported system
