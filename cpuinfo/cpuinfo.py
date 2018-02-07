@@ -1775,23 +1775,54 @@ def _get_cpu_info_from_wmic():
 	Returns {} if not on Windows, or wmic is not installed.
 	'''
 
-	# Just return {} if not on Windows
-	if not DataSource.is_windows:
+	try:
+		# Just return {} if not on Windows
+		if not DataSource.is_windows:
+			return {}
+
+		returncode, output = DataSource.wmic_cpu()
+		if output == None or returncode != 0:
+			return {}
+
+		print('============================================')
+		print(output)
+		print('============================================')
+
+		# Break the list into key values pairs
+		value = output.split("\n")
+		value = [s.rstrip().split('=') for s in value if '=' in s]
+		value = {k: v for k, v in value if v}
+
+		print('============================================')
+		for k, v in value.items():
+			print(k, v)
+		print('============================================')
+
+		hz_advertised = value.get('MaxClockSpeed')
+		hz_advertised = to_hz_string(hz_advertised)
+		scale = 3
+
+		l3_cache_size = value.get('L3CacheSize')
+		if l3_cache_size:
+			l3_cache_size = to_friendly_bytes(l3_cache_size)
+
+		info = {
+			'vendor_id' : value.get('Manufacturer'),
+			'brand' : value.get('Name'),
+
+			'hz_advertised' : to_friendly_hz(hz_advertised, scale),
+			'hz_actual' : to_friendly_hz(hz_advertised, scale),
+			'hz_advertised_raw' : to_raw_hz(hz_advertised, scale),
+			'hz_actual_raw' : to_raw_hz(hz_advertised, scale),
+
+			'l3_cache_size' : l3_cache_size,
+		}
+
+		info = {k: v for k, v in info.items() if v}
+		return info
+	except:
+		raise # NOTE: To have this throw on error, uncomment this line
 		return {}
-
-	returncode, output = DataSource.wmic_cpu()
-	if output == None or returncode != 0:
-		return {}
-
-	for n in output.split("\n"):
-		value = n.split('=')
-		print(value)
-
-	info = {
-	}
-
-	info = {k: v for k, v in info.items() if v}
-	return info
 
 def _get_cpu_info_from_registry():
 	'''
