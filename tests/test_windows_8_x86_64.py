@@ -47,6 +47,7 @@ class TestWindows_8_X86_64(unittest.TestCase):
 	Make sure calls return the expected number of fields.
 	'''
 	def test_returns(self):
+		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_wmic()));
 		self.assertEqual(7, len(cpuinfo._get_cpu_info_from_registry()))
 		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_cpufreq_info()))
 		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_lscpu()))
@@ -59,6 +60,9 @@ class TestWindows_8_X86_64(unittest.TestCase):
 		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_sysinfo()))
 		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_cpuid()))
 		self.assertEqual(12, len(cpuinfo.get_cpu_info()))
+
+	def test_get_cpu_info_from_wmic(self):
+		if "logger" in dir(unittest): unittest.logger("FIXME: Add wmic from Windows 8 machine")
 
 	def test_get_cpu_info_from_registry(self):
 		info = cpuinfo._get_cpu_info_from_registry()

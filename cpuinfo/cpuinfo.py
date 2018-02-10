@@ -25,6 +25,14 @@
 # TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
+'''
+TODO:
+1. Update all tests to check for wmic
+2. update get_system_info.py to include wmic
+3. Check for other fields such as cache and flags
+4. Add wmic from Windows 8 machine, not just Windows 10
+'''
+
 CPUINFO_VERSION = (3, 3, 0)
 
 import os, sys
@@ -134,7 +142,8 @@ class DataSource(object):
 
 	@staticmethod
 	def has_wmic():
-		return len(program_paths('wmic', 'os', 'get', 'Version')) > 0
+		returncode, output = run_and_get_stdout(['wmic', 'os', 'get', 'Version'])
+		return returncode == 0 and len(output) > 0
 
 	@staticmethod
 	def cat_proc_cpuinfo():
@@ -1776,43 +1785,37 @@ def _get_cpu_info_from_wmic():
 	'''
 
 	try:
-		# Just return {} if not on Windows
-		if not DataSource.is_windows:
+		# Just return {} if not Windows or there is no wmic
+		if not DataSource.is_windows or not DataSource.has_wmic():
 			return {}
 
 		returncode, output = DataSource.wmic_cpu()
 		if output == None or returncode != 0:
 			return {}
 
-		print('============================================')
-		print(output)
-		print('============================================')
-
 		# Break the list into key values pairs
 		value = output.split("\n")
 		value = [s.rstrip().split('=') for s in value if '=' in s]
 		value = {k: v for k, v in value if v}
 
-		print('============================================')
-		for k, v in value.items():
-			print(k, v)
-		print('============================================')
+		# Get the advertised MHz
+		processor_brand = value.get('Name')
+		scale_advertised, hz_advertised = _get_hz_string_from_brand(processor_brand)
 
-
-		# Get the CPU MHz
-		scale = 3
+		# Get the actual MHz
 		hz_actual = value.get('CurrentClockSpeed')
+		scale_actual = 6
 		if hz_actual:
 			hz_actual = to_hz_string(hz_actual)
 
-		hz_advertised = value.get('MaxClockSpeed')
-		if hz_advertised:
-			hz_advertised = to_hz_string(hz_advertised)
-
 		# Get cache sizes
+		l2_cache_size = value.get('L2CacheSize')
+		if l2_cache_size:
+			l2_cache_size = l2_cache_size + ' KB'
+
 		l3_cache_size = value.get('L3CacheSize')
 		if l3_cache_size:
-			l3_cache_size = to_friendly_bytes(l3_cache_size)
+			l3_cache_size = l3_cache_size + ' KB'
 
 		# Get family, model, and stepping
 		family, model, stepping = '', '', ''
@@ -1821,25 +1824,26 @@ def _get_cpu_info_from_wmic():
 
 		if 'Family' in entries and entries.index('Family') < len(entries)-1:
 			i = entries.index('Family')
-			family = entries[i + 1]
+			family = int(entries[i + 1])
 
 		if 'Model' in entries and entries.index('Model') < len(entries)-1:
 			i = entries.index('Model')
-			model = entries[i + 1]
+			model = int(entries[i + 1])
 
 		if 'Stepping' in entries and entries.index('Stepping') < len(entries)-1:
 			i = entries.index('Stepping')
-			stepping = entries[i + 1]
+			stepping = int(entries[i + 1])
 
 		info = {
 			'vendor_id' : value.get('Manufacturer'),
-			'brand' : value.get('Name'),
+			'brand' : processor_brand,
 
-			'hz_advertised' : to_friendly_hz(hz_advertised, scale),
-			'hz_actual' : to_friendly_hz(hz_actual, scale),
-			'hz_advertised_raw' : to_raw_hz(hz_advertised, scale),
-			'hz_actual_raw' : to_raw_hz(hz_actual, scale),
+			'hz_advertised' : to_friendly_hz(hz_advertised, scale_advertised),
+			'hz_actual' : to_friendly_hz(hz_actual, scale_actual),
+			'hz_advertised_raw' : to_raw_hz(hz_advertised, scale_advertised),
+			'hz_actual_raw' : to_raw_hz(hz_actual, scale_actual),
 
+			'l2_cache_size' : l2_cache_size,
 			'l3_cache_size' : l3_cache_size,
 
 			'stepping' : stepping,
@@ -1850,7 +1854,7 @@ def _get_cpu_info_from_wmic():
 		info = {k: v for k, v in info.items() if v}
 		return info
 	except:
-		raise # NOTE: To have this throw on error, uncomment this line
+		#raise # NOTE: To have this throw on error, uncomment this line
 		return {}
 
 def _get_cpu_info_from_registry():
@@ -2045,7 +2049,7 @@ def get_cpu_info():
 
 	# Try the Windows wmic
 	CopyNewFields(info, _get_cpu_info_from_wmic())
-	'''
+
 	# Try the Windows registry
 	CopyNewFields(info, _get_cpu_info_from_registry())
 
@@ -2078,7 +2082,7 @@ def get_cpu_info():
 
 	# Try querying the CPU cpuid register
 	CopyNewFields(info, _get_cpu_info_from_cpuid())
-	'''
+
 	return info
 
 # Make sure we are running on a supported system
