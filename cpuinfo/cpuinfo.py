@@ -27,10 +27,9 @@
 
 '''
 TODO:
-1. Update all tests to check for wmic
-2. update get_system_info.py to include wmic
-3. Check for other fields such as cache and flags
-4. Add wmic from Windows 8 machine, not just Windows 10
+. Update all tests to check for wmic
+. Check for other fields such as cache and flags
+. Add wmic from Windows 8 machine, not just Windows 10
 '''
 
 CPUINFO_VERSION = (3, 3, 0)
