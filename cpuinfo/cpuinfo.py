@@ -196,7 +196,7 @@ class DataSource(object):
 
 	@staticmethod
 	def wmic_cpu():
-		return run_and_get_stdout(['wmic', 'cpu', 'get', 'Name,CurrentClockSpeed,L2CacheSize,L3CacheSize,Description,Caption,Manufacturer ', '/format:list'])
+		return run_and_get_stdout(['wmic', 'cpu', 'get', 'Name,CurrentClockSpeed,L2CacheSize,L3CacheSize,Description,Caption,Manufacturer', '/format:list'])
 
 	@staticmethod
 	def winreg_processor_brand():
