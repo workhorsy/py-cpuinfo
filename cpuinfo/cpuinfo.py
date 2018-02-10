@@ -1798,24 +1798,53 @@ def _get_cpu_info_from_wmic():
 			print(k, v)
 		print('============================================')
 
-		hz_advertised = value.get('MaxClockSpeed')
-		hz_advertised = to_hz_string(hz_advertised)
-		scale = 3
 
+		# Get the CPU MHz
+		scale = 3
+		hz_actual = value.get('CurrentClockSpeed')
+		if hz_actual:
+			hz_actual = to_hz_string(hz_actual)
+
+		hz_advertised = value.get('MaxClockSpeed')
+		if hz_advertised:
+			hz_advertised = to_hz_string(hz_advertised)
+
+		# Get cache sizes
 		l3_cache_size = value.get('L3CacheSize')
 		if l3_cache_size:
 			l3_cache_size = to_friendly_bytes(l3_cache_size)
+
+		# Get family, model, and stepping
+		family, model, stepping = '', '', ''
+		description = value.get('Description') or value.get('Caption')
+		entries = description.split(' ')
+
+		if 'Family' in entries and entries.index('Family') < len(entries)-1:
+			i = entries.index('Family')
+			family = entries[i + 1]
+
+		if 'Model' in entries and entries.index('Model') < len(entries)-1:
+			i = entries.index('Model')
+			model = entries[i + 1]
+
+		if 'Stepping' in entries and entries.index('Stepping') < len(entries)-1:
+			i = entries.index('Stepping')
+			stepping = entries[i + 1]
 
 		info = {
 			'vendor_id' : value.get('Manufacturer'),
 			'brand' : value.get('Name'),
 
 			'hz_advertised' : to_friendly_hz(hz_advertised, scale),
-			'hz_actual' : to_friendly_hz(hz_advertised, scale),
+			'hz_actual' : to_friendly_hz(hz_actual, scale),
 			'hz_advertised_raw' : to_raw_hz(hz_advertised, scale),
-			'hz_actual_raw' : to_raw_hz(hz_advertised, scale),
+			'hz_actual_raw' : to_raw_hz(hz_actual, scale),
 
 			'l3_cache_size' : l3_cache_size,
+
+			'stepping' : stepping,
+			'model' : model,
+			'family' : family,
 		}
 
 		info = {k: v for k, v in info.items() if v}
