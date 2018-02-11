@@ -25,13 +25,6 @@
 # TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-'''
-TODO:
-. Update all tests to check for wmic
-. Check for other fields such as cache and flags
-. Add wmic from Windows 8 machine, not just Windows 10
-'''
-
 CPUINFO_VERSION = (3, 3, 0)
 
 import os, sys
