@@ -13,6 +13,25 @@ class MockDataSource(object):
 	can_cpuid = False
 
 	@staticmethod
+	def has_wmic():
+		return True
+
+	@staticmethod
+	def wmic_cpu():
+		returncode = 0
+		output = '''
+Caption=Intel64 Family 6 Model 30 Stepping 5
+CurrentClockSpeed=2934
+Description=Intel64 Family 6 Model 30 Stepping 5
+L2CacheSize=256
+L3CacheSize=8192
+Manufacturer=GenuineIntel
+Name=Intel(R) Core(TM) i7 CPU         870  @ 2.93GHz
+
+'''
+		return returncode, output
+
+	@staticmethod
 	def winreg_processor_brand():
 		return 'Intel(R) Core(TM) i7 CPU         870  @ 2.93GHz'
 
