@@ -118,8 +118,6 @@ def _actual_monkey_patch_data_source(cpuinfo, NewDataSource):
 		cpuinfo.DataSource.raw_arch_string = NewDataSource.raw_arch_string
 	if hasattr(NewDataSource, 'can_cpuid'):
 		cpuinfo.DataSource.can_cpuid = NewDataSource.can_cpuid
-	if hasattr(NewDataSource, 'has_wmic'):
-		cpuinfo.DataSource.has_wmic = NewDataSource.has_wmic
 
 	if hasattr(NewDataSource, 'has_proc_cpuinfo'):
 		cpuinfo.DataSource.has_proc_cpuinfo = staticmethod(NewDataSource.has_proc_cpuinfo)
@@ -141,6 +139,8 @@ def _actual_monkey_patch_data_source(cpuinfo, NewDataSource):
 		cpuinfo.DataSource.has_sysinfo = staticmethod(NewDataSource.has_sysinfo)
 	if hasattr(NewDataSource, 'has_ibm_pa_features'):
 		cpuinfo.DataSource.has_ibm_pa_features = staticmethod(NewDataSource.has_ibm_pa_features)
+	if hasattr(NewDataSource, 'has_wmic'):
+		cpuinfo.DataSource.has_wmic = staticmethod(NewDataSource.has_wmic)
 	if hasattr(NewDataSource, 'has_lscpu'):
 		cpuinfo.DataSource.has_lscpu = staticmethod(NewDataSource.has_lscpu)
 	if hasattr(NewDataSource, 'cat_proc_cpuinfo'):
