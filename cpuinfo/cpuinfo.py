@@ -133,6 +133,11 @@ class DataSource(object):
 		return len(program_paths('lsprop')) > 0
 
 	@staticmethod
+	def has_wmic():
+		returncode, output = run_and_get_stdout(['wmic', 'os', 'get', 'Version'])
+		return returncode == 0 and len(output) > 0
+
+	@staticmethod
 	def cat_proc_cpuinfo():
 		return run_and_get_stdout(['cat', '/proc/cpuinfo'])
 
@@ -181,6 +186,10 @@ class DataSource(object):
 		ibm_features = glob.glob('/proc/device-tree/cpus/*/ibm,pa-features')
 		if ibm_features:
 			return run_and_get_stdout(['lsprop', ibm_features[0]])
+
+	@staticmethod
+	def wmic_cpu():
+		return run_and_get_stdout(['wmic', 'cpu', 'get', 'Name,CurrentClockSpeed,L2CacheSize,L3CacheSize,Description,Caption,Manufacturer', '/format:list'])
 
 	@staticmethod
 	def winreg_processor_brand():
@@ -1761,6 +1770,85 @@ def _get_cpu_info_from_sysinfo():
 	except:
 		return {}
 
+def _get_cpu_info_from_wmic():
+	'''
+	Returns the CPU info gathered from WMI.
+	Returns {} if not on Windows, or wmic is not installed.
+	'''
+
+	try:
+		# Just return {} if not Windows or there is no wmic
+		if not DataSource.is_windows or not DataSource.has_wmic():
+			return {}
+
+		returncode, output = DataSource.wmic_cpu()
+		if output == None or returncode != 0:
+			return {}
+
+		# Break the list into key values pairs
+		value = output.split("\n")
+		value = [s.rstrip().split('=') for s in value if '=' in s]
+		value = {k: v for k, v in value if v}
+
+		# Get the advertised MHz
+		processor_brand = value.get('Name')
+		scale_advertised, hz_advertised = _get_hz_string_from_brand(processor_brand)
+
+		# Get the actual MHz
+		hz_actual = value.get('CurrentClockSpeed')
+		scale_actual = 6
+		if hz_actual:
+			hz_actual = to_hz_string(hz_actual)
+
+		# Get cache sizes
+		l2_cache_size = value.get('L2CacheSize')
+		if l2_cache_size:
+			l2_cache_size = l2_cache_size + ' KB'
+
+		l3_cache_size = value.get('L3CacheSize')
+		if l3_cache_size:
+			l3_cache_size = l3_cache_size + ' KB'
+
+		# Get family, model, and stepping
+		family, model, stepping = '', '', ''
+		description = value.get('Description') or value.get('Caption')
+		entries = description.split(' ')
+
+		if 'Family' in entries and entries.index('Family') < len(entries)-1:
+			i = entries.index('Family')
+			family = int(entries[i + 1])
+
+		if 'Model' in entries and entries.index('Model') < len(entries)-1:
+			i = entries.index('Model')
+			model = int(entries[i + 1])
+
+		if 'Stepping' in entries and entries.index('Stepping') < len(entries)-1:
+			i = entries.index('Stepping')
+			stepping = int(entries[i + 1])
+
+		info = {
+			'vendor_id' : value.get('Manufacturer'),
+			'brand' : processor_brand,
+
+			'hz_advertised' : to_friendly_hz(hz_advertised, scale_advertised),
+			'hz_actual' : to_friendly_hz(hz_actual, scale_actual),
+			'hz_advertised_raw' : to_raw_hz(hz_advertised, scale_advertised),
+			'hz_actual_raw' : to_raw_hz(hz_actual, scale_actual),
+
+			'l2_cache_size' : l2_cache_size,
+			'l3_cache_size' : l3_cache_size,
+
+			'stepping' : stepping,
+			'model' : model,
+			'family' : family,
+		}
+
+		info = {k: v for k, v in info.items() if v}
+		return info
+	except:
+		#raise # NOTE: To have this throw on error, uncomment this line
+		return {}
+
 def _get_cpu_info_from_registry():
 	'''
 	FIXME: Is missing many of the newer CPU flags like sse3
@@ -1933,6 +2021,7 @@ def CopyNewFields(info, new_info):
 			for f in new_info['flags']:
 				if f not in info['flags']: info['flags'].append(f)
 			info['flags'].sort()
+
 def get_cpu_info():
 	'''
 	Returns the CPU info by using the best sources of information for your OS.
@@ -1949,6 +2038,9 @@ def get_cpu_info():
 		'count' : DataSource.cpu_count,
 		'raw_arch_string' : DataSource.raw_arch_string,
 	}
+
+	# Try the Windows wmic
+	CopyNewFields(info, _get_cpu_info_from_wmic())
 
 	# Try the Windows registry
 	CopyNewFields(info, _get_cpu_info_from_registry())

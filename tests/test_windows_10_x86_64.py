@@ -13,6 +13,25 @@ class MockDataSource(object):
 	can_cpuid = False
 
 	@staticmethod
+	def has_wmic():
+		return True
+
+	@staticmethod
+	def wmic_cpu():
+		returncode = 0
+		output = '''
+Caption=Intel64 Family 6 Model 69 Stepping 1
+CurrentClockSpeed=2494
+Description=Intel64 Family 6 Model 69 Stepping 1
+L2CacheSize=512
+L3CacheSize=3072
+Manufacturer=GenuineIntel
+Name=Intel(R) Core(TM) i5-4300U CPU @ 1.90GHz
+
+'''
+		return returncode, output
+
+	@staticmethod
 	def winreg_processor_brand():
 		return 'Intel(R) Core(TM) i5-4300U CPU @ 1.90GHz'
 
@@ -47,6 +66,7 @@ class TestWindows_10_X86_64(unittest.TestCase):
 	Make sure calls return the expected number of fields.
 	'''
 	def test_returns(self):
+		self.assertEqual(11, len(cpuinfo._get_cpu_info_from_wmic()));
 		self.assertEqual(7, len(cpuinfo._get_cpu_info_from_registry()))
 		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_cpufreq_info()))
 		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_lscpu()))
@@ -58,7 +78,24 @@ class TestWindows_10_X86_64(unittest.TestCase):
 		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_ibm_pa_features()))
 		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_sysinfo()))
 		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_cpuid()))
-		self.assertEqual(12, len(cpuinfo.get_cpu_info()))
+		self.assertEqual(17, len(cpuinfo.get_cpu_info()))
+
+	def test_get_cpu_info_from_wmic(self):
+		info = cpuinfo._get_cpu_info_from_wmic()
+
+		self.assertEqual('GenuineIntel', info['vendor_id'])
+		self.assertEqual('Intel(R) Core(TM) i5-4300U CPU @ 1.90GHz', info['brand'])
+		self.assertEqual('1.9000 GHz', info['hz_advertised'])
+		self.assertEqual('2.4940 GHz', info['hz_actual'])
+		self.assertEqual((1900000000, 0), info['hz_advertised_raw'])
+		self.assertEqual((2494000000, 0), info['hz_actual_raw'])
+
+		self.assertEqual(1, info['stepping'])
+		self.assertEqual(69, info['model'])
+		self.assertEqual(6, info['family'])
+
+		self.assertEqual('512 KB', info['l2_cache_size'])
+		self.assertEqual('3072 KB', info['l3_cache_size'])
 
 	def test_get_cpu_info_from_registry(self):
 		info = cpuinfo._get_cpu_info_from_registry()
@@ -94,6 +131,13 @@ class TestWindows_10_X86_64(unittest.TestCase):
 		self.assertEqual(4, info['count'])
 
 		self.assertEqual('AMD64', info['raw_arch_string'])
+
+		self.assertEqual(1, info['stepping'])
+		self.assertEqual(69, info['model'])
+		self.assertEqual(6, info['family'])
+
+		self.assertEqual('512 KB', info['l2_cache_size'])
+		self.assertEqual('3072 KB', info['l3_cache_size'])
 
 		if "logger" in dir(unittest): unittest.logger("FIXME: Missing flags such as sse3 and sse4")
 
