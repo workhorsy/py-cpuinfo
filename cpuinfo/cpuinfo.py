@@ -1455,10 +1455,6 @@ def _get_cpu_info_from_lscpu():
 		if brand:
 			info['brand'] = brand
 
-		brand = _get_field(False, output, None, None, 'Model name')
-		if brand:
-			info['brand'] = brand
-
 		family = _get_field(False, output, None, None, 'CPU family')
 		if family and family.isdigit():
 			info['family'] = int(family)
