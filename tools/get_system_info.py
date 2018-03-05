@@ -158,7 +158,7 @@ if returncode == 0 and len(output) > 0:
 	if returncode == 0 and len(output) > 0:
 		print_output('wmic cpu get Name,CurrentClockSpeed,L2CacheSize,L3CacheSize,Description,Caption,Manufacturer /format:list', output)
 
-if 'winreg' in sys.modules:
+if 'winreg' in sys.modules or '_winreg' in sys.modules:
 	key = winreg.OpenKey(winreg.HKEY_LOCAL_MACHINE, r"Hardware\Description\System\CentralProcessor\0")
 	processor_brand = winreg.QueryValueEx(key, "ProcessorNameString")[0]
 	winreg.CloseKey(key)
