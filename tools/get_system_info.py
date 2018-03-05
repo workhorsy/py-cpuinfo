@@ -85,6 +85,14 @@ print_output('sys.executable', sys.executable)
 
 print_output('sys.version_info', sys.version_info)
 
+if hasattr(sys, 'maxsize'):
+	sizes = {
+		2**31-1: '32 bit',
+		2**63-1: '64 bit',
+	}
+	friendly_maxsize = sizes.get(sys.maxsize) or 'unknown'
+	print_output('sys.maxsize', "{0} ({1})".format(sys.maxsize, friendly_maxsize))
+
 print_output('multiprocessing.cpu_count', multiprocessing.cpu_count())
 
 print_output('platform.uname', platform.uname())
