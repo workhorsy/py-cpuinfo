@@ -2027,7 +2027,11 @@ def get_cpu_info():
 	# Get the CPU arch and bits
 	arch, bits = parse_arch(DataSource.raw_arch_string)
 
+	friendly_maxsize = { 2**31-1: '32 bit', 2**63-1: '64 bit' }.get(sys.maxsize) or 'unknown bits'
+	PYTHON_VERSION = "{0} ({1})".format(sys.version, friendly_maxsize)
+
 	info = {
+		'python_version' : PYTHON_VERSION,
 		'cpuinfo_version' : CPUINFO_VERSION,
 		'arch' : arch,
 		'bits' : bits,
@@ -2088,6 +2092,7 @@ def main():
 
 	info = get_cpu_info()
 	if info:
+		print('python version: {0}'.format(info.get('python_version', '')))
 		print('cpuinfo version: {0}'.format(info.get('cpuinfo_version', '')))
 		print('Vendor ID: {0}'.format(info.get('vendor_id', '')))
 		print('Hardware Raw: {0}'.format(info.get('hardware', '')))

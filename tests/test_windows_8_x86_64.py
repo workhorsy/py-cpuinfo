@@ -78,7 +78,7 @@ class TestWindows_8_X86_64(unittest.TestCase):
 		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_ibm_pa_features()))
 		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_sysinfo()))
 		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_cpuid()))
-		self.assertEqual(17, len(cpuinfo.get_cpu_info()))
+		self.assertEqual(18, len(cpuinfo.get_cpu_info()))
 
 	def test_get_cpu_info_from_wmic(self):
 		info = cpuinfo._get_cpu_info_from_wmic()

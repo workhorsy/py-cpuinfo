@@ -74,7 +74,7 @@ class TestHaiku(unittest.TestCase):
 		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_ibm_pa_features()))
 		self.assertEqual(9, len(cpuinfo._get_cpu_info_from_sysinfo()))
 		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_cpuid()))
-		self.assertEqual(14, len(cpuinfo.get_cpu_info()))
+		self.assertEqual(15, len(cpuinfo.get_cpu_info()))
 
 	def test_get_cpu_info_from_sysinfo(self):
 		info = cpuinfo._get_cpu_info_from_sysinfo()
