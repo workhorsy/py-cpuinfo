@@ -2028,7 +2028,8 @@ def get_cpu_info():
 	arch, bits = parse_arch(DataSource.raw_arch_string)
 
 	friendly_maxsize = { 2**31-1: '32 bit', 2**63-1: '64 bit' }.get(sys.maxsize) or 'unknown bits'
-	PYTHON_VERSION = "{0} ({1})".format(sys.version, friendly_maxsize)
+	friendly_version = "{0}.{1}.{2}.{3}.{4}".format(*sys.version_info)
+	PYTHON_VERSION = "{0} ({1})".format(friendly_version, friendly_maxsize)
 
 	info = {
 		'python_version' : PYTHON_VERSION,
