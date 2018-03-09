@@ -1,7 +1,6 @@
 py-cpuinfo
 ==========
 
-[![Downloads](https://img.shields.io/pypi/dm/py-cpuinfo.svg)](https://pypi.python.org/pypi/py-cpuinfo/)
 [![Latest Version](https://img.shields.io/pypi/v/py-cpuinfo.svg)](https://pypi.python.org/pypi/py-cpuinfo/)
 [![License](https://img.shields.io/pypi/l/py-cpuinfo.svg)](https://pypi.python.org/pypi/py-cpuinfo/)
 [![License](https://img.shields.io/pypi/pyversions/py-cpuinfo.svg)](https://pypi.python.org/pypi/py-cpuinfo/)
