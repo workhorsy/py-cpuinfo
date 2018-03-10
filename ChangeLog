@@ -10,6 +10,7 @@
 	* Fixed Bug #87: lscpu gets brand field twice
 	* Fixed Bug #96: Include Python version in output
 	* Fixed Bug #85: CPUID HZ measurement is scaled wrong
+	* Fixed Bug #100: Officially drop support for Python 2.6
 
 06/10/2017 Release 3.3.0
 	* Fixed Bug #70: subprocess.Popen breaks under Windows GUI app
