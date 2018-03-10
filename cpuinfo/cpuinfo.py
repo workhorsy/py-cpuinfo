@@ -1247,9 +1247,9 @@ def _actual_get_cpu_info_from_cpuid(queue):
 	'brand' : processor_brand,
 
 	'hz_advertised' : to_friendly_hz(hz_advertised, scale),
-	'hz_actual' : to_friendly_hz(hz_actual, 6),
+	'hz_actual' : to_friendly_hz(hz_actual, 0),
 	'hz_advertised_raw' : to_raw_hz(hz_advertised, scale),
-	'hz_actual_raw' : to_raw_hz(hz_actual, 6),
+	'hz_actual_raw' : to_raw_hz(hz_actual, 0),
 
 	'l2_cache_size' : to_friendly_bytes(cache_info['size_kb']),
 	'l2_cache_line_size' : cache_info['line_size_b'],
