@@ -11,6 +11,7 @@
 	* Fixed Bug #96: Include Python version in output
 	* Fixed Bug #85: CPUID HZ measurement is scaled wrong
 	* Fixed Bug #100: Officially drop support for Python 2.6
+	* Fixed Bug #101: Made it only check the dmesg boot log on Linux
 
 06/10/2017 Release 3.3.0
 	* Fixed Bug #70: subprocess.Popen breaks under Windows GUI app
