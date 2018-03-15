@@ -98,7 +98,8 @@ class DataSource(object):
 
 	@staticmethod
 	def has_var_run_dmesg_boot():
-		return os.path.exists('/var/run/dmesg.boot')
+		uname = platform.system().strip().strip('"').strip("'").strip().lower()
+		return 'linux' in uname and os.path.exists('/var/run/dmesg.boot')
 
 	@staticmethod
 	def has_cpufreq_info():
