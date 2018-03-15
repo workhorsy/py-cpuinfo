@@ -72,12 +72,14 @@ class TestHaiku_x86_64(unittest.TestCase):
 		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_dmesg()))
 		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_cat_var_run_dmesg_boot()))
 		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_ibm_pa_features()))
-		self.assertEqual(9, len(cpuinfo._get_cpu_info_from_sysinfo()))
+		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_sysinfo()))
+		self.assertEqual(9, len(cpuinfo._get_cpu_info_from_sysinfo2()))
 		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_cpuid()))
 		self.assertEqual(15, len(cpuinfo.get_cpu_info()))
 
 	def test_get_cpu_info_from_sysinfo(self):
 		info = cpuinfo._get_cpu_info_from_sysinfo()
+		info.update(cpuinfo._get_cpu_info_from_sysinfo2())
 
 		self.assertEqual('Intel(R) Core(TM) i7 CPU         870  @ 2.93GHz', info['brand'])
 		self.assertEqual('2.9300 GHz', info['hz_advertised'])
@@ -89,9 +91,10 @@ class TestHaiku_x86_64(unittest.TestCase):
 		self.assertEqual(30, info['model'])
 		self.assertEqual(6, info['family'])
 		self.assertEqual(
-			['apic', 'cflush', 'cmov', 'cx8', 'de', 'fpu', 'fxstr', 'htt',
-			'mca', 'mce', 'mmx', 'msr', 'mtrr', 'pat', 'pge', 'pse', 'pse36',
-			'rdtscp', 'sep', 'sse', 'sse2', 'sse3', 'ssse3', 'tsc', 'vme']
+			['64', 'apic', 'cflush', 'cmov', 'cx8', 'de', 'fpu', 'fxstr',
+			'mca', 'mce', 'mmx', 'monitor', 'msr', 'mtrr', 'nx', 'pae',
+			'pat', 'pge', 'pse', 'pse36', 'rdtscp', 'sce', 'sep', 'sse',
+			'sse2', 'sse3', 'sse4.1', 'sse4.2', 'ssse3', 'tsc', 'vme']
 			,
 			info['flags']
 		)
@@ -114,9 +117,10 @@ class TestHaiku_x86_64(unittest.TestCase):
 		self.assertEqual(30, info['model'])
 		self.assertEqual(6, info['family'])
 		self.assertEqual(
-			['apic', 'cflush', 'cmov', 'cx8', 'de', 'fpu', 'fxstr', 'htt',
-			'mca', 'mce', 'mmx', 'msr', 'mtrr', 'pat', 'pge', 'pse', 'pse36',
-			'rdtscp', 'sep', 'sse', 'sse2', 'sse3', 'ssse3', 'tsc', 'vme']
+			['64', 'apic', 'cflush', 'cmov', 'cx8', 'de', 'fpu', 'fxstr',
+			'mca', 'mce', 'mmx', 'monitor', 'msr', 'mtrr', 'nx', 'pae',
+			'pat', 'pge', 'pse', 'pse36', 'rdtscp', 'sce', 'sep', 'sse',
+			'sse2', 'sse3', 'sse4.1', 'sse4.2', 'ssse3', 'tsc', 'vme']
 			,
 			info['flags']
 		)
