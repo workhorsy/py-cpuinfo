@@ -1710,7 +1710,17 @@ def _get_cpu_info_from_sysctl():
 	except:
 		return {}
 
+
 def _get_cpu_info_from_sysinfo():
+	'''
+	Returns the CPU info gathered from sysinfo.
+	Returns {} if sysinfo is not found.
+	'''
+	info = _get_cpu_info_from_sysinfo_v1()
+	info.update(_get_cpu_info_from_sysinfo_v2())
+	return info
+
+def _get_cpu_info_from_sysinfo_v1():
 	'''
 	Returns the CPU info gathered from sysinfo.
 	Returns {} if sysinfo is not found.
@@ -1767,7 +1777,7 @@ def _get_cpu_info_from_sysinfo():
 	except:
 		return {}
 
-def _get_cpu_info_from_sysinfo2():
+def _get_cpu_info_from_sysinfo_v2():
 	'''
 	Returns the CPU info gathered from sysinfo.
 	Returns {} if sysinfo is not found.
@@ -2138,7 +2148,6 @@ def get_cpu_info():
 
 	# Try sysinfo
 	CopyNewFields(info, _get_cpu_info_from_sysinfo())
-	CopyNewFields(info, _get_cpu_info_from_sysinfo2())
 
 	# Try querying the CPU cpuid register
 	CopyNewFields(info, _get_cpu_info_from_cpuid())
