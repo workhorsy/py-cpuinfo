@@ -1710,7 +1710,17 @@ def _get_cpu_info_from_sysctl():
 	except:
 		return {}
 
+
 def _get_cpu_info_from_sysinfo():
+	'''
+	Returns the CPU info gathered from sysinfo.
+	Returns {} if sysinfo is not found.
+	'''
+	info = _get_cpu_info_from_sysinfo_v1()
+	info.update(_get_cpu_info_from_sysinfo_v2())
+	return info
+
+def _get_cpu_info_from_sysinfo_v1():
 	'''
 	Returns the CPU info gathered from sysinfo.
 	Returns {} if sysinfo is not found.
@@ -1739,6 +1749,71 @@ def _get_cpu_info_from_sysinfo():
 			if line.startswith('\t\t'):
 				for flag in line.strip().lower().split():
 					flags.append(flag)
+		flags.sort()
+
+		# Convert from GHz/MHz string to Hz
+		scale, hz_advertised = _get_hz_string_from_brand(processor_brand)
+		hz_actual = hz_advertised
+
+		info = {
+		'vendor_id' : vendor_id,
+		'brand' : processor_brand,
+
+		'hz_advertised' : to_friendly_hz(hz_advertised, scale),
+		'hz_actual' : to_friendly_hz(hz_actual, scale),
+		'hz_advertised_raw' : to_raw_hz(hz_advertised, scale),
+		'hz_actual_raw' : to_raw_hz(hz_actual, scale),
+
+		'l2_cache_size' : to_friendly_bytes(cache_size),
+
+		'stepping' : stepping,
+		'model' : model,
+		'family' : family,
+		'flags' : flags
+		}
+
+		info = {k: v for k, v in info.items() if v}
+		return info
+	except:
+		return {}
+
+def _get_cpu_info_from_sysinfo_v2():
+	'''
+	Returns the CPU info gathered from sysinfo.
+	Returns {} if sysinfo is not found.
+	'''
+	try:
+		# Just return {} if there is no sysinfo
+		if not DataSource.has_sysinfo():
+			return {}
+
+		# If sysinfo fails return {}
+		returncode, output = DataSource.sysinfo_cpu()
+		if output == None or returncode != 0:
+			return {}
+
+		# Various fields
+		vendor_id = '' #_get_field(False, output, None, None, 'CPU #0: ')
+		processor_brand = output.split('CPU #0: "')[1].split('"\n')[0]
+		cache_size = '' #_get_field(False, output, None, None, 'machdep.cpu.cache.size')
+		signature = output.split('Signature:')[1].split('\n')[0].strip()
+		#
+		stepping = int(signature.split('stepping ')[1].split(',')[0].strip())
+		model = int(signature.split('model ')[1].split(',')[0].strip())
+		family = int(signature.split('family ')[1].split(',')[0].strip())
+
+		# Flags
+		def get_subsection_flags(output):
+			retval = []
+			for line in output.split('\n')[1:]:
+				if not line.startswith('                '): break
+				for entry in line.strip().lower().split(' '):
+					retval.append(entry)
+			return retval
+
+		flags = get_subsection_flags(output.split('Features: ')[1]) + \
+				get_subsection_flags(output.split('Extended Features (0x00000001): ')[1]) + \
+				get_subsection_flags(output.split('Extended Features (0x80000001): ')[1])
 		flags.sort()
 
 		# Convert from GHz/MHz string to Hz

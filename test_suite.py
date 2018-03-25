@@ -57,7 +57,8 @@ from test_free_bsd_11_x86_64 import TestFreeBSD_11_X86_64
 from test_osx_10_9_x86_64 import TestOSX_10_9
 from test_osx_10_12_x86_64 import TestOSX_10_12
 from test_solaris_11_x86_32 import TestSolaris
-from test_haiku_x86_32 import TestHaiku
+from test_haiku_x86_32 import TestHaiku_x86_32
+from test_haiku_x86_64 import TestHaiku_x86_64
 from test_windows_8_x86_64 import TestWindows_8_X86_64
 from test_windows_10_x86_64 import TestWindows_10_X86_64
 from test_cpuid import TestCPUID
@@ -93,7 +94,8 @@ if __name__ == '__main__':
 		TestOSX_10_9,
 		TestOSX_10_12,
 		TestSolaris,
-		TestHaiku,
+		TestHaiku_x86_32,
+		TestHaiku_x86_64,
 		TestWindows_8_X86_64,
 		TestWindows_10_X86_64,
 		TestCPUID,
