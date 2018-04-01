@@ -11,7 +11,7 @@ with open(os.path.join(os.getcwd(), 'README.rst'), 'r') as f:
 
 setup(
     name = "py-cpuinfo",
-    version = "3.3.0",
+    version = "4.0.0",
     author = "Matthew Brennan Jones",
     author_email = "matthew.brennan.jones@gmail.com",
     description = "Get CPU info with pure Python 2 & 3",
