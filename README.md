@@ -45,6 +45,8 @@ Output
 -----
 | key                           | Example value   |
 | :---------------------------- | :-------------- |
+| python_version                | 2.7.12.final.0 (64 bit) |
+| cpuinfo_version               | (4, 0, 0) |
 | vendor_id                     | "GenuineIntel"  |
 | hardware                      | "BCM2708" |
 | brand                         | "Intel(R) Core(TM) i7 CPU         870  @ 2.93GHz" |
