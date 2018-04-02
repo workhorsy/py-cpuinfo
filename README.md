@@ -2,7 +2,7 @@ py-cpuinfo
 ==========
 
 [![Latest Version](https://img.shields.io/pypi/v/py-cpuinfo.svg)](https://pypi.org/project/py-cpuinfo/)
-[![License](https://img.shields.io/pypi/l/py-cpuinfo.svg)](https://pypi.org/project/py-cpuinfo/)
+[![License](https://img.shields.io/pypi/l/py-cpuinfo.svg)](https://github.com/workhorsy/py-cpuinfo/blob/master/LICENSE)
 [![License](https://img.shields.io/pypi/pyversions/py-cpuinfo.svg)](https://pypi.org/project/py-cpuinfo/)
 
 Py-cpuinfo gets CPU info with pure Python. Py-cpuinfo should work without any
