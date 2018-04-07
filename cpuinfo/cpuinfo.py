@@ -2169,8 +2169,8 @@ def main():
 
 	info = get_cpu_info()
 	if info:
-		print('python version: {0}'.format(info.get('python_version', '')))
-		print('cpuinfo version: {0}'.format(info.get('cpuinfo_version', '')))
+		print('Python Version: {0}'.format(info.get('python_version', '')))
+		print('Cpuinfo Version: {0}'.format(info.get('cpuinfo_version', '')))
 		print('Vendor ID: {0}'.format(info.get('vendor_id', '')))
 		print('Hardware Raw: {0}'.format(info.get('hardware', '')))
 		print('Brand: {0}'.format(info.get('brand', '')))
