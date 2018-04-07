@@ -7,10 +7,10 @@ import helpers
 
 
 class MockDataSource(object):
-	bits = '64bit'
-	cpu_count = 1
+	bits = '32bit'
+	cpu_count = 4
 	is_windows = False
-	raw_arch_string = 'x86_64'
+	raw_arch_string = 'armv7l'
 	can_cpuid = False
 
 	@staticmethod
@@ -64,52 +64,43 @@ class TestLinuxDebian_8_arm_cortex_a57(unittest.TestCase):
 	def test_get_cpu_info_from_proc_cpuinfo(self):
 		info = cpuinfo._get_cpu_info_from_proc_cpuinfo()
 
-		self.assertEqual('GenuineIntel', info['vendor_id'])
-		self.assertEqual('Intel(R) Core(TM) i7 CPU         870  @ 2.93GHz', info['brand'])
-		self.assertEqual('2.9300 GHz', info['hz_advertised'])
-		self.assertEqual('2.9283 GHz', info['hz_actual'])
-		self.assertEqual((2930000000, 0), info['hz_advertised_raw'])
-		self.assertEqual((2928283000, 0), info['hz_actual_raw'])
+		self.assertEqual('ARMv7 Processor rev 3 (v7l)', info['brand'])
+		self.assertEqual('ODROID-XU3', info['hardware'])
+		self.assertEqual('1.4000 GHz', info['hz_advertised'])
+		self.assertEqual('1.4000 GHz', info['hz_actual'])
+		self.assertEqual((1400000000, 0), info['hz_advertised_raw'])
+		self.assertEqual((1400000000, 0), info['hz_actual_raw'])
+		self.assertEqual('ARM_7', info['arch'])
+		self.assertEqual(32, info['bits'])
+		self.assertEqual(8, info['count'])
 
-		self.assertEqual('6144 KB', info['l3_cache_size'])
+		self.assertEqual('armv7l', info['raw_arch_string'])
 
-		self.assertEqual(5, info['stepping'])
-		self.assertEqual(30, info['model'])
-		self.assertEqual(6, info['family'])
 		self.assertEqual(
-			['apic', 'clflush', 'cmov', 'constant_tsc', 'cx8', 'de', 'fpu',
-			'fxsr', 'ht', 'lahf_lm', 'lm', 'mca', 'mce', 'mmx', 'msr', 'mtrr',
-			'nopl', 'nx', 'pae', 'pat', 'pge', 'pni', 'pse', 'pse36', 'rdtscp',
-			'rep_good', 'sep', 'sse', 'sse2', 'ssse3', 'syscall', 'tsc', 'vme']
-			,
+			['aes', 'asimd', 'cpuid', 'crc32', 'evtstrm', 'fp',
+			'pmull', 'sha1', 'sha2'],
 			info['flags']
 		)
 
 	def test_all(self):
 		info = cpuinfo.get_cpu_info()
 
-		self.assertEqual('GenuineIntel', info['vendor_id'])
-		self.assertEqual('Intel(R) Core(TM) i7 CPU         870  @ 2.93GHz', info['brand'])
-		self.assertEqual('2.9300 GHz', info['hz_advertised'])
-		self.assertEqual('2.9283 GHz', info['hz_actual'])
-		self.assertEqual((2930000000, 0), info['hz_advertised_raw'])
-		self.assertEqual((2928283000, 0), info['hz_actual_raw'])
-		self.assertEqual('X86_64', info['arch'])
-		self.assertEqual(64, info['bits'])
-		self.assertEqual(1, info['count'])
+		if "logger" in dir(unittest): unittest.logger("FIXME: Add other data sources")
 
-		self.assertEqual('x86_64', info['raw_arch_string'])
+		self.assertEqual('ARMv7 Processor rev 3 (v7l)', info['brand'])
+		self.assertEqual('ODROID-XU3', info['hardware'])
+		self.assertEqual('1.4000 GHz', info['hz_advertised'])
+		self.assertEqual('1.4000 GHz', info['hz_actual'])
+		self.assertEqual((1400000000, 0), info['hz_advertised_raw'])
+		self.assertEqual((1400000000, 0), info['hz_actual_raw'])
+		self.assertEqual('ARM_7', info['arch'])
+		self.assertEqual(32, info['bits'])
+		self.assertEqual(8, info['count'])
 
-		self.assertEqual('6144 KB', info['l3_cache_size'])
+		self.assertEqual('armv7l', info['raw_arch_string'])
 
-		self.assertEqual(5, info['stepping'])
-		self.assertEqual(30, info['model'])
-		self.assertEqual(6, info['family'])
 		self.assertEqual(
-			['apic', 'clflush', 'cmov', 'constant_tsc', 'cx8', 'de', 'fpu',
-			'fxsr', 'ht', 'lahf_lm', 'lm', 'mca', 'mce', 'mmx', 'msr', 'mtrr',
-			'nopl', 'nx', 'pae', 'pat', 'pge', 'pni', 'pse', 'pse36', 'rdtscp',
-			'rep_good', 'sep', 'sse', 'sse2', 'ssse3', 'syscall', 'tsc', 'vme']
-			,
+			['aes', 'asimd', 'cpuid', 'crc32', 'evtstrm', 'fp',
+			'pmull', 'sha1', 'sha2'],
 			info['flags']
 		)
