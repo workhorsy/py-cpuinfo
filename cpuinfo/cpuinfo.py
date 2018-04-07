@@ -1311,6 +1311,38 @@ def _get_cpu_info_from_cpuid():
 	# Return {} if everything failed
 	return {}
 
+def _hex_string_to_int(x):
+	'''
+	Helper used to get hex values as integer during in _get_field()
+	'''
+	return int(x, 16)
+
+def _arm_hardware_string(impl, part, variant, revision):
+	'''
+	Try to generate a raw hardware string from a list of known
+	implementors and part numbers.
+	Returns a line with the values in hexadecimal format if none match.
+	'''
+	implementors = {0x41: 'ARM',
+			0x43: 'Cavium'}
+	parts = {# ARM
+		 0xd03: 'Cortex-A53',
+		 0xd07: 'Cortex-A57',
+		 0xd08: 'Cortex-A72',
+		 0xd08: 'Cortex-A73',
+		 # Cavium
+		 0x0a1: 'ThunderX CN88XX',
+		 0x0af: 'ThunderX2 CN99XX'}
+
+	try:
+		return implementors[impl], \
+		       parts[part], \
+		       '{} {} PASS {:d}.{:d}'.format(implementors[impl], parts[part],
+						     variant, revision)
+	except KeyError:
+		return None, None, '0x{:x} 0x{:x} PASS {:d}.{:d}'.format(vendor_id, part,
+							     variant, revision)
+
 def _get_cpu_info_from_proc_cpuinfo():
 	'''
 	Returns the CPU info gathered from /proc/cpuinfo.
@@ -1320,6 +1352,9 @@ def _get_cpu_info_from_proc_cpuinfo():
 		# Just return {} if there is no cpuinfo
 		if not DataSource.has_proc_cpuinfo():
 			return {}
+
+		# Get the CPU arch and bits
+		arch, bits = parse_arch(DataSource.raw_arch_string)
 
 		returncode, output = DataSource.cat_proc_cpuinfo()
 		if returncode != 0:
@@ -1333,6 +1368,18 @@ def _get_cpu_info_from_proc_cpuinfo():
 		model = _get_field(False, output, int, 0, 'model')
 		family = _get_field(False, output, int, 0, 'cpu family')
 		hardware = _get_field(False, output, None, '', 'Hardware')
+
+		# arm /pro/cpuinfo terminology is different from the x86 one
+		if arch in ['ARM']:
+			# try to get a hardware_raw value from the combination of the
+			# cpu implementer, part, variant, and revision
+			# eg: ARM Cortex-A57 PASS 1.2
+			impl = _get_field(False, output, _hex_string_to_int, 0, 'CPU implementer')
+			part = _get_field(False, output, _hex_string_to_int, 0, 'CPU part')
+			variant = _get_field(False, output, _hex_string_to_int, 0, 'CPU variant')
+			revision = _get_field(False, output, int, 0, 'CPU revision')
+			processor_brand, model, hardware = _arm_hardware_string(impl, part, variant, revision)
+
 		# Flags
 		flags = _get_field(False, output, None, None, 'flags', 'Features')
 		if flags:
