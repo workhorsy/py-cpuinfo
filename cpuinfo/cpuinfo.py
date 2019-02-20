@@ -2169,7 +2169,7 @@ def _get_cpu_info_internal():
 def get_cpu_info_json():
 	'''
 	Returns the CPU info by using the best sources of information for your OS.
-	Returns {} if nothing is found.
+	Returns the result in a json string
 	'''
 
 	command = [sys.executable, __file__, '--json']
@@ -2177,7 +2177,7 @@ def get_cpu_info_json():
 	output = p1.communicate()[0]
 
 	if p1.returncode != 0:
-		return {}
+		return "{}"
 
 	if not PY2:
 		output = output.decode(encoding='UTF-8')
@@ -2187,7 +2187,7 @@ def get_cpu_info_json():
 def get_cpu_info():
 	'''
 	Returns the CPU info by using the best sources of information for your OS.
-	Returns {} if nothing is found.
+	Returns the result in a dict
 	'''
 
 	output = get_cpu_info_json()
