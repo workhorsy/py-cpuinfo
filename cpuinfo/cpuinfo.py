@@ -2102,7 +2102,7 @@ def _utf_to_str(input):
 		return [_utf_to_str(element) for element in input]
 	elif isinstance(input, dict):
 		return {_utf_to_str(key): _utf_to_str(value)
-			for key, value in input.iteritems()}
+			for key, value in input.items()}
 	else:
 		return input
 
