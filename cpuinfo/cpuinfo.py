@@ -2096,7 +2096,7 @@ def CopyNewFields(info, new_info):
 			info['flags'].sort()
 
 def _utf_to_str(input):
-	if isinstance(input, unicode):
+	if PY2 and isinstance(input, unicode):
 		return input.encode('utf-8')
 	elif isinstance(input, list):
 		return [_utf_to_str(element) for element in input]
