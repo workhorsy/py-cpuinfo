@@ -161,11 +161,11 @@ if program_paths('lsprop'):
 		print_output('lsprop /proc/device-tree/cpus/*/ibm,pa-features', output)
 
 if program_paths('wmic'):
-    returncode, output = run_and_get_stdout(['wmic', 'os', 'get', 'Version'])
-    if returncode == 0 and len(output) > 0:
-        returncode, output = run_and_get_stdout(['wmic', 'cpu', 'get', 'Name,CurrentClockSpeed,L2CacheSize,L3CacheSize,Description,Caption,Manufacturer', '/format:list'])
-        if returncode == 0 and len(output) > 0:
-            print_output('wmic cpu get Name,CurrentClockSpeed,L2CacheSize,L3CacheSize,Description,Caption,Manufacturer /format:list', output)
+	returncode, output = run_and_get_stdout(['wmic', 'os', 'get', 'Version'])
+	if returncode == 0 and len(output) > 0:
+		returncode, output = run_and_get_stdout(['wmic', 'cpu', 'get', 'Name,CurrentClockSpeed,L2CacheSize,L3CacheSize,Description,Caption,Manufacturer', '/format:list'])
+		if returncode == 0 and len(output) > 0:
+			print_output('wmic cpu get Name,CurrentClockSpeed,L2CacheSize,L3CacheSize,Description,Caption,Manufacturer /format:list', output)
 
 if 'winreg' in sys.modules or '_winreg' in sys.modules:
 	key = winreg.OpenKey(winreg.HKEY_LOCAL_MACHINE, r"Hardware\Description\System\CentralProcessor\0")
