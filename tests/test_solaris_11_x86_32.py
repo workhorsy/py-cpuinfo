@@ -102,7 +102,7 @@ class TestSolaris(unittest.TestCase):
 		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_ibm_pa_features()))
 		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_sysinfo()))
 		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_cpuid()))
-		self.assertEqual(16, len(cpuinfo.get_cpu_info()))
+		self.assertEqual(16, len(cpuinfo._get_cpu_info_internal()))
 
 	def test_get_cpu_info_from_kstat(self):
 		info = cpuinfo._get_cpu_info_from_kstat()
@@ -124,7 +124,7 @@ class TestSolaris(unittest.TestCase):
 		)
 
 	def test_all(self):
-		info = cpuinfo.get_cpu_info()
+		info = cpuinfo._get_cpu_info_internal()
 
 		self.assertEqual('GenuineIntel', info['vendor_id'])
 		self.assertEqual('Intel(r) Core(tm) i7 CPU         870  @ 2.93GHz', info['brand'])

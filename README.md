@@ -35,9 +35,15 @@ API
 ~~~python
 '''
 Returns the CPU info by using the best sources of information for your OS.
-Returns {} if nothing is found.
+Returns the result in a dict
 '''
 get_cpu_info()
+
+'''
+Returns the CPU info by using the best sources of information for your OS.
+Returns the result in a json string
+'''
+get_cpu_info_json()
 ~~~
 
 

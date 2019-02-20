@@ -173,7 +173,7 @@ class TestLinux_Odroid_C2_Aarch_64(unittest.TestCase):
 		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_ibm_pa_features()))
 		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_sysinfo()))
 		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_cpuid()))
-		self.assertEqual(12, len(cpuinfo.get_cpu_info()))
+		self.assertEqual(12, len(cpuinfo._get_cpu_info_internal()))
 
 	def test_get_cpu_info_from_cpufreq_info(self):
 		info = cpuinfo._get_cpu_info_from_cpufreq_info()
@@ -202,7 +202,7 @@ class TestLinux_Odroid_C2_Aarch_64(unittest.TestCase):
 		)
 
 	def test_all(self):
-		info = cpuinfo.get_cpu_info()
+		info = cpuinfo._get_cpu_info_internal()
 
 		self.assertEqual('ODROID-C2', info['hardware'])
 		self.assertEqual('1.5400 GHz', info['hz_advertised'])

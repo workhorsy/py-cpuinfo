@@ -151,4 +151,4 @@ class TestParseErrors(unittest.TestCase):
 
 		#self.assertEqual({}, cpuinfo._get_cpu_info_from_cpuid())
 
-		#self.assertEqual({}, cpuinfo.get_cpu_info())
+		#self.assertEqual({}, cpuinfo._get_cpu_info_internal())
