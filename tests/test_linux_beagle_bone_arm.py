@@ -87,7 +87,7 @@ class TestLinux_BeagleBone(unittest.TestCase):
 		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_ibm_pa_features()))
 		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_sysinfo()))
 		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_cpuid()))
-		self.assertEqual(13, len(cpuinfo.get_cpu_info()))
+		self.assertEqual(13, len(cpuinfo._get_cpu_info_internal()))
 
 	def test_get_cpu_info_from_cpufreq_info(self):
 		info = cpuinfo._get_cpu_info_from_cpufreq_info()
@@ -110,7 +110,7 @@ class TestLinux_BeagleBone(unittest.TestCase):
 		)
 
 	def test_all(self):
-		info = cpuinfo.get_cpu_info()
+		info = cpuinfo._get_cpu_info_internal()
 
 		self.assertEqual('BCM2708', info['hardware'])
 		self.assertEqual('ARMv6-compatible processor rev 7 (v6l)', info['brand'])

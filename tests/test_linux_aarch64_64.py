@@ -126,7 +126,7 @@ class TestLinux_Aarch_64(unittest.TestCase):
 		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_ibm_pa_features()))
 		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_sysinfo()))
 		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_cpuid()))
-		self.assertEqual(10, len(cpuinfo.get_cpu_info()))
+		self.assertEqual(10, len(cpuinfo._get_cpu_info_internal()))
 
 	def test_get_cpu_info_from_lscpu(self):
 		info = cpuinfo._get_cpu_info_from_lscpu()
@@ -150,7 +150,7 @@ class TestLinux_Aarch_64(unittest.TestCase):
 
 	@unittest.skip("FIXME: This fails because it does not have a way to get CPU brand string and Hz.")
 	def test_all(self):
-		info = cpuinfo.get_cpu_info()
+		info = cpuinfo._get_cpu_info_internal()
 
 		self.assertEqual('', info['vendor_id'])
 		self.assertEqual('FIXME', info['hardware'])

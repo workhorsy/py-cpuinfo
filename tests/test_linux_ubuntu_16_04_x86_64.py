@@ -465,7 +465,7 @@ class TestLinuxUbuntu_16_04_X86_64(unittest.TestCase):
 		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_ibm_pa_features()))
 		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_sysinfo()))
 		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_cpuid()))
-		self.assertEqual(20, len(cpuinfo.get_cpu_info()))
+		self.assertEqual(20, len(cpuinfo._get_cpu_info_internal()))
 
 	def test_get_cpu_info_from_lscpu(self):
 		info = cpuinfo._get_cpu_info_from_lscpu()
@@ -546,7 +546,7 @@ class TestLinuxUbuntu_16_04_X86_64(unittest.TestCase):
 		)
 
 	def test_all(self):
-		info = cpuinfo.get_cpu_info()
+		info = cpuinfo._get_cpu_info_internal()
 
 		self.assertEqual('GenuineIntel', info['vendor_id'])
 		self.assertEqual('Intel(R) Pentium(R) CPU G640 @ 2.80GHz', info['brand'])
