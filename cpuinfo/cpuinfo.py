@@ -2077,7 +2077,7 @@ def _get_cpu_info_from_kstat():
 	except:
 		return {}
 
-def CopyNewFields(info, new_info):
+def _copy_new_fields(info, new_info):
 	keys = [
 		'vendor_id', 'hardware', 'brand', 'hz_advertised', 'hz_actual',
 		'hz_advertised_raw', 'hz_actual_raw', 'arch', 'bits', 'count',
@@ -2129,40 +2129,40 @@ def _get_cpu_info_internal():
 	}
 
 	# Try the Windows wmic
-	CopyNewFields(info, _get_cpu_info_from_wmic())
+	_copy_new_fields(info, _get_cpu_info_from_wmic())
 
 	# Try the Windows registry
-	CopyNewFields(info, _get_cpu_info_from_registry())
+	_copy_new_fields(info, _get_cpu_info_from_registry())
 
 	# Try /proc/cpuinfo
-	CopyNewFields(info, _get_cpu_info_from_proc_cpuinfo())
+	_copy_new_fields(info, _get_cpu_info_from_proc_cpuinfo())
 
 	# Try cpufreq-info
-	CopyNewFields(info, _get_cpu_info_from_cpufreq_info())
+	_copy_new_fields(info, _get_cpu_info_from_cpufreq_info())
 
 	# Try LSCPU
-	CopyNewFields(info, _get_cpu_info_from_lscpu())
+	_copy_new_fields(info, _get_cpu_info_from_lscpu())
 
 	# Try sysctl
-	CopyNewFields(info, _get_cpu_info_from_sysctl())
+	_copy_new_fields(info, _get_cpu_info_from_sysctl())
 
 	# Try kstat
-	CopyNewFields(info, _get_cpu_info_from_kstat())
+	_copy_new_fields(info, _get_cpu_info_from_kstat())
 
 	# Try dmesg
-	CopyNewFields(info, _get_cpu_info_from_dmesg())
+	_copy_new_fields(info, _get_cpu_info_from_dmesg())
 
 	# Try /var/run/dmesg.boot
-	CopyNewFields(info, _get_cpu_info_from_cat_var_run_dmesg_boot())
+	_copy_new_fields(info, _get_cpu_info_from_cat_var_run_dmesg_boot())
 
 	# Try lsprop ibm,pa-features
-	CopyNewFields(info, _get_cpu_info_from_ibm_pa_features())
+	_copy_new_fields(info, _get_cpu_info_from_ibm_pa_features())
 
 	# Try sysinfo
-	CopyNewFields(info, _get_cpu_info_from_sysinfo())
+	_copy_new_fields(info, _get_cpu_info_from_sysinfo())
 
 	# Try querying the CPU cpuid register
-	CopyNewFields(info, _get_cpu_info_from_cpuid())
+	_copy_new_fields(info, _get_cpu_info_from_cpuid())
 
 	return info
 
