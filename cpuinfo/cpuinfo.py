@@ -136,62 +136,62 @@ class DataSource(object):
 
 	@staticmethod
 	def has_wmic():
-		returncode, output = run_and_get_stdout(['wmic', 'os', 'get', 'Version'])
+		returncode, output = _run_and_get_stdout(['wmic', 'os', 'get', 'Version'])
 		return returncode == 0 and len(output) > 0
 
 	@staticmethod
 	def cat_proc_cpuinfo():
-		return run_and_get_stdout(['cat', '/proc/cpuinfo'])
+		return _run_and_get_stdout(['cat', '/proc/cpuinfo'])
 
 	@staticmethod
 	def cpufreq_info():
-		return run_and_get_stdout(['cpufreq-info'])
+		return _run_and_get_stdout(['cpufreq-info'])
 
 	@staticmethod
 	def sestatus_allow_execheap():
-		return run_and_get_stdout(['sestatus', '-b'], ['grep', '-i', '"allow_execheap"'])[1].strip().lower().endswith('on')
+		return _run_and_get_stdout(['sestatus', '-b'], ['grep', '-i', '"allow_execheap"'])[1].strip().lower().endswith('on')
 
 	@staticmethod
 	def sestatus_allow_execmem():
-		return run_and_get_stdout(['sestatus', '-b'], ['grep', '-i', '"allow_execmem"'])[1].strip().lower().endswith('on')
+		return _run_and_get_stdout(['sestatus', '-b'], ['grep', '-i', '"allow_execmem"'])[1].strip().lower().endswith('on')
 
 	@staticmethod
 	def dmesg_a():
-		return run_and_get_stdout(['dmesg', '-a'])
+		return _run_and_get_stdout(['dmesg', '-a'])
 
 	@staticmethod
 	def cat_var_run_dmesg_boot():
-		return run_and_get_stdout(['cat', '/var/run/dmesg.boot'])
+		return _run_and_get_stdout(['cat', '/var/run/dmesg.boot'])
 
 	@staticmethod
 	def sysctl_machdep_cpu_hw_cpufrequency():
-		return run_and_get_stdout(['sysctl', 'machdep.cpu', 'hw.cpufrequency'])
+		return _run_and_get_stdout(['sysctl', 'machdep.cpu', 'hw.cpufrequency'])
 
 	@staticmethod
 	def isainfo_vb():
-		return run_and_get_stdout(['isainfo', '-vb'])
+		return _run_and_get_stdout(['isainfo', '-vb'])
 
 	@staticmethod
 	def kstat_m_cpu_info():
-		return run_and_get_stdout(['kstat', '-m', 'cpu_info'])
+		return _run_and_get_stdout(['kstat', '-m', 'cpu_info'])
 
 	@staticmethod
 	def sysinfo_cpu():
-		return run_and_get_stdout(['sysinfo', '-cpu'])
+		return _run_and_get_stdout(['sysinfo', '-cpu'])
 
 	@staticmethod
 	def lscpu():
-		return run_and_get_stdout(['lscpu'])
+		return _run_and_get_stdout(['lscpu'])
 
 	@staticmethod
 	def ibm_pa_features():
 		ibm_features = glob.glob('/proc/device-tree/cpus/*/ibm,pa-features')
 		if ibm_features:
-			return run_and_get_stdout(['lsprop', ibm_features[0]])
+			return _run_and_get_stdout(['lsprop', ibm_features[0]])
 
 	@staticmethod
 	def wmic_cpu():
-		return run_and_get_stdout(['wmic', 'cpu', 'get', 'Name,CurrentClockSpeed,L2CacheSize,L3CacheSize,Description,Caption,Manufacturer', '/format:list'])
+		return _run_and_get_stdout(['wmic', 'cpu', 'get', 'Name,CurrentClockSpeed,L2CacheSize,L3CacheSize,Description,Caption,Manufacturer', '/format:list'])
 
 	@staticmethod
 	def winreg_processor_brand():
@@ -219,7 +219,7 @@ class DataSource(object):
 		key = winreg.OpenKey(winreg.HKEY_LOCAL_MACHINE, r"Hardware\Description\System\CentralProcessor\0")
 		hz_actual = winreg.QueryValueEx(key, "~Mhz")[0]
 		winreg.CloseKey(key)
-		hz_actual = to_hz_string(hz_actual)
+		hz_actual = _to_hz_string(hz_actual)
 		return hz_actual
 
 	@staticmethod
@@ -229,14 +229,14 @@ class DataSource(object):
 		winreg.CloseKey(key)
 		return feature_bits
 
-def obj_to_b64(thing):
+def _obj_to_b64(thing):
 	a = thing
 	b = pickle.dumps(a)
 	c = base64.b64encode(b)
 	d = c.decode('utf8')
 	return d
 
-def b64_to_obj(thing):
+def _b64_to_obj(thing):
 	try:
 		a = base64.b64decode(thing)
 		b = pickle.loads(a)
@@ -244,7 +244,7 @@ def b64_to_obj(thing):
 	except:
 		return {}
 
-def run_and_get_stdout(command, pipe_command=None):
+def _run_and_get_stdout(command, pipe_command=None):
 	if not pipe_command:
 		p1 = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, stdin=subprocess.PIPE)
 		output = p1.communicate()[0]
@@ -326,7 +326,7 @@ def _get_hz_string_from_brand(processor_brand):
 		hz_brand = hz_brand.rsplit(None, 1)[1]
 
 	hz_brand = hz_brand.rstrip('mhz').rstrip('ghz').strip()
-	hz_brand = to_hz_string(hz_brand)
+	hz_brand = _to_hz_string(hz_brand)
 
 	return (scale, hz_brand)
 
@@ -374,7 +374,7 @@ def to_raw_hz(ticks, scale):
 	left, right = int(left), int(right)
 	return (left, right)
 
-def to_hz_string(ticks):
+def _to_hz_string(ticks):
 	# Convert to string
 	ticks = '{0}'.format(ticks)
 
@@ -391,7 +391,7 @@ def to_hz_string(ticks):
 
 	return ticks
 
-def to_friendly_bytes(input):
+def _to_friendly_bytes(input):
 	if not input:
 		return input
 	input = "{0}".format(input)
@@ -584,7 +584,7 @@ def parse_arch(raw_arch_string):
 
 	return (arch, bits)
 
-def is_bit_set(reg, bit):
+def _is_bit_set(reg, bit):
 	mask = 1 << bit
 	is_set = reg & mask > 0
 	return is_set
@@ -810,71 +810,71 @@ class CPUID(object):
 
 		# Get the CPU flags
 		flags = {
-			'fpu' : is_bit_set(edx, 0),
-			'vme' : is_bit_set(edx, 1),
-			'de' : is_bit_set(edx, 2),
-			'pse' : is_bit_set(edx, 3),
-			'tsc' : is_bit_set(edx, 4),
-			'msr' : is_bit_set(edx, 5),
-			'pae' : is_bit_set(edx, 6),
-			'mce' : is_bit_set(edx, 7),
-			'cx8' : is_bit_set(edx, 8),
-			'apic' : is_bit_set(edx, 9),
-			#'reserved1' : is_bit_set(edx, 10),
-			'sep' : is_bit_set(edx, 11),
-			'mtrr' : is_bit_set(edx, 12),
-			'pge' : is_bit_set(edx, 13),
-			'mca' : is_bit_set(edx, 14),
-			'cmov' : is_bit_set(edx, 15),
-			'pat' : is_bit_set(edx, 16),
-			'pse36' : is_bit_set(edx, 17),
-			'pn' : is_bit_set(edx, 18),
-			'clflush' : is_bit_set(edx, 19),
-			#'reserved2' : is_bit_set(edx, 20),
-			'dts' : is_bit_set(edx, 21),
-			'acpi' : is_bit_set(edx, 22),
-			'mmx' : is_bit_set(edx, 23),
-			'fxsr' : is_bit_set(edx, 24),
-			'sse' : is_bit_set(edx, 25),
-			'sse2' : is_bit_set(edx, 26),
-			'ss' : is_bit_set(edx, 27),
-			'ht' : is_bit_set(edx, 28),
-			'tm' : is_bit_set(edx, 29),
-			'ia64' : is_bit_set(edx, 30),
-			'pbe' : is_bit_set(edx, 31),
+			'fpu' : _is_bit_set(edx, 0),
+			'vme' : _is_bit_set(edx, 1),
+			'de' : _is_bit_set(edx, 2),
+			'pse' : _is_bit_set(edx, 3),
+			'tsc' : _is_bit_set(edx, 4),
+			'msr' : _is_bit_set(edx, 5),
+			'pae' : _is_bit_set(edx, 6),
+			'mce' : _is_bit_set(edx, 7),
+			'cx8' : _is_bit_set(edx, 8),
+			'apic' : _is_bit_set(edx, 9),
+			#'reserved1' : _is_bit_set(edx, 10),
+			'sep' : _is_bit_set(edx, 11),
+			'mtrr' : _is_bit_set(edx, 12),
+			'pge' : _is_bit_set(edx, 13),
+			'mca' : _is_bit_set(edx, 14),
+			'cmov' : _is_bit_set(edx, 15),
+			'pat' : _is_bit_set(edx, 16),
+			'pse36' : _is_bit_set(edx, 17),
+			'pn' : _is_bit_set(edx, 18),
+			'clflush' : _is_bit_set(edx, 19),
+			#'reserved2' : _is_bit_set(edx, 20),
+			'dts' : _is_bit_set(edx, 21),
+			'acpi' : _is_bit_set(edx, 22),
+			'mmx' : _is_bit_set(edx, 23),
+			'fxsr' : _is_bit_set(edx, 24),
+			'sse' : _is_bit_set(edx, 25),
+			'sse2' : _is_bit_set(edx, 26),
+			'ss' : _is_bit_set(edx, 27),
+			'ht' : _is_bit_set(edx, 28),
+			'tm' : _is_bit_set(edx, 29),
+			'ia64' : _is_bit_set(edx, 30),
+			'pbe' : _is_bit_set(edx, 31),
 
-			'pni' : is_bit_set(ecx, 0),
-			'pclmulqdq' : is_bit_set(ecx, 1),
-			'dtes64' : is_bit_set(ecx, 2),
-			'monitor' : is_bit_set(ecx, 3),
-			'ds_cpl' : is_bit_set(ecx, 4),
-			'vmx' : is_bit_set(ecx, 5),
-			'smx' : is_bit_set(ecx, 6),
-			'est' : is_bit_set(ecx, 7),
-			'tm2' : is_bit_set(ecx, 8),
-			'ssse3' : is_bit_set(ecx, 9),
-			'cid' : is_bit_set(ecx, 10),
-			#'reserved3' : is_bit_set(ecx, 11),
-			'fma' : is_bit_set(ecx, 12),
-			'cx16' : is_bit_set(ecx, 13),
-			'xtpr' : is_bit_set(ecx, 14),
-			'pdcm' : is_bit_set(ecx, 15),
-			#'reserved4' : is_bit_set(ecx, 16),
-			'pcid' : is_bit_set(ecx, 17),
-			'dca' : is_bit_set(ecx, 18),
-			'sse4_1' : is_bit_set(ecx, 19),
-			'sse4_2' : is_bit_set(ecx, 20),
-			'x2apic' : is_bit_set(ecx, 21),
-			'movbe' : is_bit_set(ecx, 22),
-			'popcnt' : is_bit_set(ecx, 23),
-			'tscdeadline' : is_bit_set(ecx, 24),
-			'aes' : is_bit_set(ecx, 25),
-			'xsave' : is_bit_set(ecx, 26),
-			'osxsave' : is_bit_set(ecx, 27),
-			'avx' : is_bit_set(ecx, 28),
-			'f16c' : is_bit_set(ecx, 29),
-			'rdrnd' : is_bit_set(ecx, 30),
-			'hypervisor' : is_bit_set(ecx, 31)
+			'pni' : _is_bit_set(ecx, 0),
+			'pclmulqdq' : _is_bit_set(ecx, 1),
+			'dtes64' : _is_bit_set(ecx, 2),
+			'monitor' : _is_bit_set(ecx, 3),
+			'ds_cpl' : _is_bit_set(ecx, 4),
+			'vmx' : _is_bit_set(ecx, 5),
+			'smx' : _is_bit_set(ecx, 6),
+			'est' : _is_bit_set(ecx, 7),
+			'tm2' : _is_bit_set(ecx, 8),
+			'ssse3' : _is_bit_set(ecx, 9),
+			'cid' : _is_bit_set(ecx, 10),
+			#'reserved3' : _is_bit_set(ecx, 11),
+			'fma' : _is_bit_set(ecx, 12),
+			'cx16' : _is_bit_set(ecx, 13),
+			'xtpr' : _is_bit_set(ecx, 14),
+			'pdcm' : _is_bit_set(ecx, 15),
+			#'reserved4' : _is_bit_set(ecx, 16),
+			'pcid' : _is_bit_set(ecx, 17),
+			'dca' : _is_bit_set(ecx, 18),
+			'sse4_1' : _is_bit_set(ecx, 19),
+			'sse4_2' : _is_bit_set(ecx, 20),
+			'x2apic' : _is_bit_set(ecx, 21),
+			'movbe' : _is_bit_set(ecx, 22),
+			'popcnt' : _is_bit_set(ecx, 23),
+			'tscdeadline' : _is_bit_set(ecx, 24),
+			'aes' : _is_bit_set(ecx, 25),
+			'xsave' : _is_bit_set(ecx, 26),
+			'osxsave' : _is_bit_set(ecx, 27),
+			'avx' : _is_bit_set(ecx, 28),
+			'f16c' : _is_bit_set(ecx, 29),
+			'rdrnd' : _is_bit_set(ecx, 30),
+			'hypervisor' : _is_bit_set(ecx, 31)
 		}
 
 		# Get a list of only the flags that are true
@@ -902,71 +902,71 @@ class CPUID(object):
 
 			# Get the extended CPU flags
 			extended_flags = {
-				#'fsgsbase' : is_bit_set(ebx, 0),
-				#'IA32_TSC_ADJUST' : is_bit_set(ebx, 1),
-				'sgx' : is_bit_set(ebx, 2),
-				'bmi1' : is_bit_set(ebx, 3),
-				'hle' : is_bit_set(ebx, 4),
-				'avx2' : is_bit_set(ebx, 5),
-				#'reserved' : is_bit_set(ebx, 6),
-				'smep' : is_bit_set(ebx, 7),
-				'bmi2' : is_bit_set(ebx, 8),
-				'erms' : is_bit_set(ebx, 9),
-				'invpcid' : is_bit_set(ebx, 10),
-				'rtm' : is_bit_set(ebx, 11),
-				'pqm' : is_bit_set(ebx, 12),
-				#'FPU CS and FPU DS deprecated' : is_bit_set(ebx, 13),
-				'mpx' : is_bit_set(ebx, 14),
-				'pqe' : is_bit_set(ebx, 15),
-				'avx512f' : is_bit_set(ebx, 16),
-				'avx512dq' : is_bit_set(ebx, 17),
-				'rdseed' : is_bit_set(ebx, 18),
-				'adx' : is_bit_set(ebx, 19),
-				'smap' : is_bit_set(ebx, 20),
-				'avx512ifma' : is_bit_set(ebx, 21),
-				'pcommit' : is_bit_set(ebx, 22),
-				'clflushopt' : is_bit_set(ebx, 23),
-				'clwb' : is_bit_set(ebx, 24),
-				'intel_pt' : is_bit_set(ebx, 25),
-				'avx512pf' : is_bit_set(ebx, 26),
-				'avx512er' : is_bit_set(ebx, 27),
-				'avx512cd' : is_bit_set(ebx, 28),
-				'sha' : is_bit_set(ebx, 29),
-				'avx512bw' : is_bit_set(ebx, 30),
-				'avx512vl' : is_bit_set(ebx, 31),
+				#'fsgsbase' : _is_bit_set(ebx, 0),
+				#'IA32_TSC_ADJUST' : _is_bit_set(ebx, 1),
+				'sgx' : _is_bit_set(ebx, 2),
+				'bmi1' : _is_bit_set(ebx, 3),
+				'hle' : _is_bit_set(ebx, 4),
+				'avx2' : _is_bit_set(ebx, 5),
+				#'reserved' : _is_bit_set(ebx, 6),
+				'smep' : _is_bit_set(ebx, 7),
+				'bmi2' : _is_bit_set(ebx, 8),
+				'erms' : _is_bit_set(ebx, 9),
+				'invpcid' : _is_bit_set(ebx, 10),
+				'rtm' : _is_bit_set(ebx, 11),
+				'pqm' : _is_bit_set(ebx, 12),
+				#'FPU CS and FPU DS deprecated' : _is_bit_set(ebx, 13),
+				'mpx' : _is_bit_set(ebx, 14),
+				'pqe' : _is_bit_set(ebx, 15),
+				'avx512f' : _is_bit_set(ebx, 16),
+				'avx512dq' : _is_bit_set(ebx, 17),
+				'rdseed' : _is_bit_set(ebx, 18),
+				'adx' : _is_bit_set(ebx, 19),
+				'smap' : _is_bit_set(ebx, 20),
+				'avx512ifma' : _is_bit_set(ebx, 21),
+				'pcommit' : _is_bit_set(ebx, 22),
+				'clflushopt' : _is_bit_set(ebx, 23),
+				'clwb' : _is_bit_set(ebx, 24),
+				'intel_pt' : _is_bit_set(ebx, 25),
+				'avx512pf' : _is_bit_set(ebx, 26),
+				'avx512er' : _is_bit_set(ebx, 27),
+				'avx512cd' : _is_bit_set(ebx, 28),
+				'sha' : _is_bit_set(ebx, 29),
+				'avx512bw' : _is_bit_set(ebx, 30),
+				'avx512vl' : _is_bit_set(ebx, 31),
 
-				'prefetchwt1' : is_bit_set(ecx, 0),
-				'avx512vbmi' : is_bit_set(ecx, 1),
-				'umip' : is_bit_set(ecx, 2),
-				'pku' : is_bit_set(ecx, 3),
-				'ospke' : is_bit_set(ecx, 4),
-				#'reserved' : is_bit_set(ecx, 5),
-				'avx512vbmi2' : is_bit_set(ecx, 6),
-				#'reserved' : is_bit_set(ecx, 7),
-				'gfni' : is_bit_set(ecx, 8),
-				'vaes' : is_bit_set(ecx, 9),
-				'vpclmulqdq' : is_bit_set(ecx, 10),
-				'avx512vnni' : is_bit_set(ecx, 11),
-				'avx512bitalg' : is_bit_set(ecx, 12),
-				#'reserved' : is_bit_set(ecx, 13),
-				'avx512vpopcntdq' : is_bit_set(ecx, 14),
-				#'reserved' : is_bit_set(ecx, 15),
-				#'reserved' : is_bit_set(ecx, 16),
-				#'mpx0' : is_bit_set(ecx, 17),
-				#'mpx1' : is_bit_set(ecx, 18),
-				#'mpx2' : is_bit_set(ecx, 19),
-				#'mpx3' : is_bit_set(ecx, 20),
-				#'mpx4' : is_bit_set(ecx, 21),
-				'rdpid' : is_bit_set(ecx, 22),
-				#'reserved' : is_bit_set(ecx, 23),
-				#'reserved' : is_bit_set(ecx, 24),
-				#'reserved' : is_bit_set(ecx, 25),
-				#'reserved' : is_bit_set(ecx, 26),
-				#'reserved' : is_bit_set(ecx, 27),
-				#'reserved' : is_bit_set(ecx, 28),
-				#'reserved' : is_bit_set(ecx, 29),
-				'sgx_lc' : is_bit_set(ecx, 30),
-				#'reserved' : is_bit_set(ecx, 31)
+				'prefetchwt1' : _is_bit_set(ecx, 0),
+				'avx512vbmi' : _is_bit_set(ecx, 1),
+				'umip' : _is_bit_set(ecx, 2),
+				'pku' : _is_bit_set(ecx, 3),
+				'ospke' : _is_bit_set(ecx, 4),
+				#'reserved' : _is_bit_set(ecx, 5),
+				'avx512vbmi2' : _is_bit_set(ecx, 6),
+				#'reserved' : _is_bit_set(ecx, 7),
+				'gfni' : _is_bit_set(ecx, 8),
+				'vaes' : _is_bit_set(ecx, 9),
+				'vpclmulqdq' : _is_bit_set(ecx, 10),
+				'avx512vnni' : _is_bit_set(ecx, 11),
+				'avx512bitalg' : _is_bit_set(ecx, 12),
+				#'reserved' : _is_bit_set(ecx, 13),
+				'avx512vpopcntdq' : _is_bit_set(ecx, 14),
+				#'reserved' : _is_bit_set(ecx, 15),
+				#'reserved' : _is_bit_set(ecx, 16),
+				#'mpx0' : _is_bit_set(ecx, 17),
+				#'mpx1' : _is_bit_set(ecx, 18),
+				#'mpx2' : _is_bit_set(ecx, 19),
+				#'mpx3' : _is_bit_set(ecx, 20),
+				#'mpx4' : _is_bit_set(ecx, 21),
+				'rdpid' : _is_bit_set(ecx, 22),
+				#'reserved' : _is_bit_set(ecx, 23),
+				#'reserved' : _is_bit_set(ecx, 24),
+				#'reserved' : _is_bit_set(ecx, 25),
+				#'reserved' : _is_bit_set(ecx, 26),
+				#'reserved' : _is_bit_set(ecx, 27),
+				#'reserved' : _is_bit_set(ecx, 28),
+				#'reserved' : _is_bit_set(ecx, 29),
+				'sgx_lc' : _is_bit_set(ecx, 30),
+				#'reserved' : _is_bit_set(ecx, 31)
 			}
 
 			# Get a list of only the flags that are true
@@ -993,71 +993,71 @@ class CPUID(object):
 
 			# Get the extended CPU flags
 			extended_flags = {
-				'fpu' : is_bit_set(ebx, 0),
-				'vme' : is_bit_set(ebx, 1),
-				'de' : is_bit_set(ebx, 2),
-				'pse' : is_bit_set(ebx, 3),
-				'tsc' : is_bit_set(ebx, 4),
-				'msr' : is_bit_set(ebx, 5),
-				'pae' : is_bit_set(ebx, 6),
-				'mce' : is_bit_set(ebx, 7),
-				'cx8' : is_bit_set(ebx, 8),
-				'apic' : is_bit_set(ebx, 9),
-				#'reserved' : is_bit_set(ebx, 10),
-				'syscall' : is_bit_set(ebx, 11),
-				'mtrr' : is_bit_set(ebx, 12),
-				'pge' : is_bit_set(ebx, 13),
-				'mca' : is_bit_set(ebx, 14),
-				'cmov' : is_bit_set(ebx, 15),
-				'pat' : is_bit_set(ebx, 16),
-				'pse36' : is_bit_set(ebx, 17),
-				#'reserved' : is_bit_set(ebx, 18),
-				'mp' : is_bit_set(ebx, 19),
-				'nx' : is_bit_set(ebx, 20),
-				#'reserved' : is_bit_set(ebx, 21),
-				'mmxext' : is_bit_set(ebx, 22),
-				'mmx' : is_bit_set(ebx, 23),
-				'fxsr' : is_bit_set(ebx, 24),
-				'fxsr_opt' : is_bit_set(ebx, 25),
-				'pdpe1gp' : is_bit_set(ebx, 26),
-				'rdtscp' : is_bit_set(ebx, 27),
-				#'reserved' : is_bit_set(ebx, 28),
-				'lm' : is_bit_set(ebx, 29),
-				'3dnowext' : is_bit_set(ebx, 30),
-				'3dnow' : is_bit_set(ebx, 31),
+				'fpu' : _is_bit_set(ebx, 0),
+				'vme' : _is_bit_set(ebx, 1),
+				'de' : _is_bit_set(ebx, 2),
+				'pse' : _is_bit_set(ebx, 3),
+				'tsc' : _is_bit_set(ebx, 4),
+				'msr' : _is_bit_set(ebx, 5),
+				'pae' : _is_bit_set(ebx, 6),
+				'mce' : _is_bit_set(ebx, 7),
+				'cx8' : _is_bit_set(ebx, 8),
+				'apic' : _is_bit_set(ebx, 9),
+				#'reserved' : _is_bit_set(ebx, 10),
+				'syscall' : _is_bit_set(ebx, 11),
+				'mtrr' : _is_bit_set(ebx, 12),
+				'pge' : _is_bit_set(ebx, 13),
+				'mca' : _is_bit_set(ebx, 14),
+				'cmov' : _is_bit_set(ebx, 15),
+				'pat' : _is_bit_set(ebx, 16),
+				'pse36' : _is_bit_set(ebx, 17),
+				#'reserved' : _is_bit_set(ebx, 18),
+				'mp' : _is_bit_set(ebx, 19),
+				'nx' : _is_bit_set(ebx, 20),
+				#'reserved' : _is_bit_set(ebx, 21),
+				'mmxext' : _is_bit_set(ebx, 22),
+				'mmx' : _is_bit_set(ebx, 23),
+				'fxsr' : _is_bit_set(ebx, 24),
+				'fxsr_opt' : _is_bit_set(ebx, 25),
+				'pdpe1gp' : _is_bit_set(ebx, 26),
+				'rdtscp' : _is_bit_set(ebx, 27),
+				#'reserved' : _is_bit_set(ebx, 28),
+				'lm' : _is_bit_set(ebx, 29),
+				'3dnowext' : _is_bit_set(ebx, 30),
+				'3dnow' : _is_bit_set(ebx, 31),
 
-				'lahf_lm' : is_bit_set(ecx, 0),
-				'cmp_legacy' : is_bit_set(ecx, 1),
-				'svm' : is_bit_set(ecx, 2),
-				'extapic' : is_bit_set(ecx, 3),
-				'cr8_legacy' : is_bit_set(ecx, 4),
-				'abm' : is_bit_set(ecx, 5),
-				'sse4a' : is_bit_set(ecx, 6),
-				'misalignsse' : is_bit_set(ecx, 7),
-				'3dnowprefetch' : is_bit_set(ecx, 8),
-				'osvw' : is_bit_set(ecx, 9),
-				'ibs' : is_bit_set(ecx, 10),
-				'xop' : is_bit_set(ecx, 11),
-				'skinit' : is_bit_set(ecx, 12),
-				'wdt' : is_bit_set(ecx, 13),
-				#'reserved' : is_bit_set(ecx, 14),
-				'lwp' : is_bit_set(ecx, 15),
-				'fma4' : is_bit_set(ecx, 16),
-				'tce' : is_bit_set(ecx, 17),
-				#'reserved' : is_bit_set(ecx, 18),
-				'nodeid_msr' : is_bit_set(ecx, 19),
-				#'reserved' : is_bit_set(ecx, 20),
-				'tbm' : is_bit_set(ecx, 21),
-				'topoext' : is_bit_set(ecx, 22),
-				'perfctr_core' : is_bit_set(ecx, 23),
-				'perfctr_nb' : is_bit_set(ecx, 24),
-				#'reserved' : is_bit_set(ecx, 25),
-				'dbx' : is_bit_set(ecx, 26),
-				'perftsc' : is_bit_set(ecx, 27),
-				'pci_l2i' : is_bit_set(ecx, 28),
-				#'reserved' : is_bit_set(ecx, 29),
-				#'reserved' : is_bit_set(ecx, 30),
-				#'reserved' : is_bit_set(ecx, 31)
+				'lahf_lm' : _is_bit_set(ecx, 0),
+				'cmp_legacy' : _is_bit_set(ecx, 1),
+				'svm' : _is_bit_set(ecx, 2),
+				'extapic' : _is_bit_set(ecx, 3),
+				'cr8_legacy' : _is_bit_set(ecx, 4),
+				'abm' : _is_bit_set(ecx, 5),
+				'sse4a' : _is_bit_set(ecx, 6),
+				'misalignsse' : _is_bit_set(ecx, 7),
+				'3dnowprefetch' : _is_bit_set(ecx, 8),
+				'osvw' : _is_bit_set(ecx, 9),
+				'ibs' : _is_bit_set(ecx, 10),
+				'xop' : _is_bit_set(ecx, 11),
+				'skinit' : _is_bit_set(ecx, 12),
+				'wdt' : _is_bit_set(ecx, 13),
+				#'reserved' : _is_bit_set(ecx, 14),
+				'lwp' : _is_bit_set(ecx, 15),
+				'fma4' : _is_bit_set(ecx, 16),
+				'tce' : _is_bit_set(ecx, 17),
+				#'reserved' : _is_bit_set(ecx, 18),
+				'nodeid_msr' : _is_bit_set(ecx, 19),
+				#'reserved' : _is_bit_set(ecx, 20),
+				'tbm' : _is_bit_set(ecx, 21),
+				'topoext' : _is_bit_set(ecx, 22),
+				'perfctr_core' : _is_bit_set(ecx, 23),
+				'perfctr_nb' : _is_bit_set(ecx, 24),
+				#'reserved' : _is_bit_set(ecx, 25),
+				'dbx' : _is_bit_set(ecx, 26),
+				'perftsc' : _is_bit_set(ecx, 27),
+				'pci_l2i' : _is_bit_set(ecx, 28),
+				#'reserved' : _is_bit_set(ecx, 29),
+				#'reserved' : _is_bit_set(ecx, 30),
+				#'reserved' : _is_bit_set(ecx, 31)
 			}
 
 			# Get a list of only the flags that are true
@@ -1221,13 +1221,13 @@ def _actual_get_cpu_info_from_cpuid(queue):
 
 	# Return none if this is not an X86 CPU
 	if not arch in ['X86_32', 'X86_64']:
-		queue.put(obj_to_b64({}))
+		queue.put(_obj_to_b64({}))
 		return
 
 	# Return none if SE Linux is in enforcing mode
 	cpuid = CPUID()
 	if cpuid.is_selinux_enforcing:
-		queue.put(obj_to_b64({}))
+		queue.put(_obj_to_b64({}))
 		return
 
 	# Get the cpu info from the CPUID register
@@ -1239,7 +1239,7 @@ def _actual_get_cpu_info_from_cpuid(queue):
 
 	# Get the Hz and scale
 	hz_actual = cpuid.get_raw_hz()
-	hz_actual = to_hz_string(hz_actual)
+	hz_actual = _to_hz_string(hz_actual)
 
 	# Get the Hz and scale
 	scale, hz_advertised = _get_hz_string_from_brand(processor_brand)
@@ -1253,7 +1253,7 @@ def _actual_get_cpu_info_from_cpuid(queue):
 	'hz_advertised_raw' : to_raw_hz(hz_advertised, scale),
 	'hz_actual_raw' : to_raw_hz(hz_actual, 0),
 
-	'l2_cache_size' : to_friendly_bytes(cache_info['size_kb']),
+	'l2_cache_size' : _to_friendly_bytes(cache_info['size_kb']),
 	'l2_cache_line_size' : cache_info['line_size_b'],
 	'l2_cache_associativity' : hex(cache_info['associativity']),
 
@@ -1267,7 +1267,7 @@ def _actual_get_cpu_info_from_cpuid(queue):
 	}
 
 	info = {k: v for k, v in info.items() if v}
-	queue.put(obj_to_b64(info))
+	queue.put(_obj_to_b64(info))
 
 def _get_cpu_info_from_cpuid():
 	'''
@@ -1305,7 +1305,7 @@ def _get_cpu_info_from_cpuid():
 		# Return the result, only if there is something to read
 		if not queue.empty():
 			output = queue.get()
-			return b64_to_obj(output)
+			return _b64_to_obj(output)
 	except:
 		pass
 
@@ -1343,7 +1343,7 @@ def _get_cpu_info_from_proc_cpuinfo():
 		# Convert from MHz string to Hz
 		hz_actual = _get_field(False, output, None, '', 'cpu MHz', 'cpu speed', 'clock')
 		hz_actual = hz_actual.lower().rstrip('mhz').strip()
-		hz_actual = to_hz_string(hz_actual)
+		hz_actual = _to_hz_string(hz_actual)
 
 		# Convert from GHz/MHz string to Hz
 		scale, hz_advertised = (0, None)
@@ -1356,7 +1356,7 @@ def _get_cpu_info_from_proc_cpuinfo():
 		'hardware' : hardware,
 		'brand' : processor_brand,
 
-		'l3_cache_size' : to_friendly_bytes(cache_size),
+		'l3_cache_size' : _to_friendly_bytes(cache_size),
 		'flags' : flags,
 		'vendor_id' : vendor_id,
 		'stepping' : stepping,
@@ -1410,7 +1410,7 @@ def _get_cpu_info_from_cpufreq_info():
 		elif hz_brand.endswith('ghz'):
 			scale = 9
 		hz_brand = hz_brand.rstrip('mhz').rstrip('ghz').strip()
-		hz_brand = to_hz_string(hz_brand)
+		hz_brand = _to_hz_string(hz_brand)
 
 		info = {
 			'hz_advertised' : to_friendly_hz(hz_brand, scale),
@@ -1442,7 +1442,7 @@ def _get_cpu_info_from_lscpu():
 
 		new_hz = _get_field(False, output, None, None, 'CPU max MHz', 'CPU MHz')
 		if new_hz:
-			new_hz = to_hz_string(new_hz)
+			new_hz = _to_hz_string(new_hz)
 			scale = 6
 			info['hz_advertised'] = to_friendly_hz(new_hz, scale)
 			info['hz_actual'] = to_friendly_hz(new_hz, scale)
@@ -1471,19 +1471,19 @@ def _get_cpu_info_from_lscpu():
 
 		l1_data_cache_size = _get_field(False, output, None, None, 'L1d cache')
 		if l1_data_cache_size:
-			info['l1_data_cache_size'] = to_friendly_bytes(l1_data_cache_size)
+			info['l1_data_cache_size'] = _to_friendly_bytes(l1_data_cache_size)
 
 		l1_instruction_cache_size = _get_field(False, output, None, None, 'L1i cache')
 		if l1_instruction_cache_size:
-			info['l1_instruction_cache_size'] = to_friendly_bytes(l1_instruction_cache_size)
+			info['l1_instruction_cache_size'] = _to_friendly_bytes(l1_instruction_cache_size)
 
 		l2_cache_size = _get_field(False, output, None, None, 'L2 cache')
 		if l2_cache_size:
-			info['l2_cache_size'] = to_friendly_bytes(l2_cache_size)
+			info['l2_cache_size'] = _to_friendly_bytes(l2_cache_size)
 
 		l3_cache_size = _get_field(False, output, None, None, 'L3 cache')
 		if l3_cache_size:
-			info['l3_cache_size'] = to_friendly_bytes(l3_cache_size)
+			info['l3_cache_size'] = _to_friendly_bytes(l3_cache_size)
 
 		# Flags
 		flags = _get_field(False, output, None, None, 'flags', 'Features')
@@ -1544,84 +1544,84 @@ def _get_cpu_info_from_ibm_pa_features():
 		# Get the CPU flags
 		flags = {
 			# Byte 0
-			'mmu' : is_bit_set(left, 0),
-			'fpu' : is_bit_set(left, 1),
-			'slb' : is_bit_set(left, 2),
-			'run' : is_bit_set(left, 3),
-			#'reserved' : is_bit_set(left, 4),
-			'dabr' : is_bit_set(left, 5),
-			'ne' : is_bit_set(left, 6),
-			'wtr' : is_bit_set(left, 7),
+			'mmu' : _is_bit_set(left, 0),
+			'fpu' : _is_bit_set(left, 1),
+			'slb' : _is_bit_set(left, 2),
+			'run' : _is_bit_set(left, 3),
+			#'reserved' : _is_bit_set(left, 4),
+			'dabr' : _is_bit_set(left, 5),
+			'ne' : _is_bit_set(left, 6),
+			'wtr' : _is_bit_set(left, 7),
 
 			# Byte 1
-			'mcr' : is_bit_set(left, 8),
-			'dsisr' : is_bit_set(left, 9),
-			'lp' : is_bit_set(left, 10),
-			'ri' : is_bit_set(left, 11),
-			'dabrx' : is_bit_set(left, 12),
-			'sprg3' : is_bit_set(left, 13),
-			'rislb' : is_bit_set(left, 14),
-			'pp' : is_bit_set(left, 15),
+			'mcr' : _is_bit_set(left, 8),
+			'dsisr' : _is_bit_set(left, 9),
+			'lp' : _is_bit_set(left, 10),
+			'ri' : _is_bit_set(left, 11),
+			'dabrx' : _is_bit_set(left, 12),
+			'sprg3' : _is_bit_set(left, 13),
+			'rislb' : _is_bit_set(left, 14),
+			'pp' : _is_bit_set(left, 15),
 
 			# Byte 2
-			'vpm' : is_bit_set(left, 16),
-			'dss_2.05' : is_bit_set(left, 17),
-			#'reserved' : is_bit_set(left, 18),
-			'dar' : is_bit_set(left, 19),
-			#'reserved' : is_bit_set(left, 20),
-			'ppr' : is_bit_set(left, 21),
-			'dss_2.02' : is_bit_set(left, 22),
-			'dss_2.06' : is_bit_set(left, 23),
+			'vpm' : _is_bit_set(left, 16),
+			'dss_2.05' : _is_bit_set(left, 17),
+			#'reserved' : _is_bit_set(left, 18),
+			'dar' : _is_bit_set(left, 19),
+			#'reserved' : _is_bit_set(left, 20),
+			'ppr' : _is_bit_set(left, 21),
+			'dss_2.02' : _is_bit_set(left, 22),
+			'dss_2.06' : _is_bit_set(left, 23),
 
 			# Byte 3
-			'lsd_in_dscr' : is_bit_set(left, 24),
-			'ugr_in_dscr' : is_bit_set(left, 25),
-			#'reserved' : is_bit_set(left, 26),
-			#'reserved' : is_bit_set(left, 27),
-			#'reserved' : is_bit_set(left, 28),
-			#'reserved' : is_bit_set(left, 29),
-			#'reserved' : is_bit_set(left, 30),
-			#'reserved' : is_bit_set(left, 31),
+			'lsd_in_dscr' : _is_bit_set(left, 24),
+			'ugr_in_dscr' : _is_bit_set(left, 25),
+			#'reserved' : _is_bit_set(left, 26),
+			#'reserved' : _is_bit_set(left, 27),
+			#'reserved' : _is_bit_set(left, 28),
+			#'reserved' : _is_bit_set(left, 29),
+			#'reserved' : _is_bit_set(left, 30),
+			#'reserved' : _is_bit_set(left, 31),
 
 			# Byte 4
-			'sso_2.06' : is_bit_set(right, 0),
-			#'reserved' : is_bit_set(right, 1),
-			#'reserved' : is_bit_set(right, 2),
-			#'reserved' : is_bit_set(right, 3),
-			#'reserved' : is_bit_set(right, 4),
-			#'reserved' : is_bit_set(right, 5),
-			#'reserved' : is_bit_set(right, 6),
-			#'reserved' : is_bit_set(right, 7),
+			'sso_2.06' : _is_bit_set(right, 0),
+			#'reserved' : _is_bit_set(right, 1),
+			#'reserved' : _is_bit_set(right, 2),
+			#'reserved' : _is_bit_set(right, 3),
+			#'reserved' : _is_bit_set(right, 4),
+			#'reserved' : _is_bit_set(right, 5),
+			#'reserved' : _is_bit_set(right, 6),
+			#'reserved' : _is_bit_set(right, 7),
 
 			# Byte 5
-			'le' : is_bit_set(right, 8),
-			'cfar' : is_bit_set(right, 9),
-			'eb' : is_bit_set(right, 10),
-			'lsq_2.07' : is_bit_set(right, 11),
-			#'reserved' : is_bit_set(right, 12),
-			#'reserved' : is_bit_set(right, 13),
-			#'reserved' : is_bit_set(right, 14),
-			#'reserved' : is_bit_set(right, 15),
+			'le' : _is_bit_set(right, 8),
+			'cfar' : _is_bit_set(right, 9),
+			'eb' : _is_bit_set(right, 10),
+			'lsq_2.07' : _is_bit_set(right, 11),
+			#'reserved' : _is_bit_set(right, 12),
+			#'reserved' : _is_bit_set(right, 13),
+			#'reserved' : _is_bit_set(right, 14),
+			#'reserved' : _is_bit_set(right, 15),
 
 			# Byte 6
-			'dss_2.07' : is_bit_set(right, 16),
-			#'reserved' : is_bit_set(right, 17),
-			#'reserved' : is_bit_set(right, 18),
-			#'reserved' : is_bit_set(right, 19),
-			#'reserved' : is_bit_set(right, 20),
-			#'reserved' : is_bit_set(right, 21),
-			#'reserved' : is_bit_set(right, 22),
-			#'reserved' : is_bit_set(right, 23),
+			'dss_2.07' : _is_bit_set(right, 16),
+			#'reserved' : _is_bit_set(right, 17),
+			#'reserved' : _is_bit_set(right, 18),
+			#'reserved' : _is_bit_set(right, 19),
+			#'reserved' : _is_bit_set(right, 20),
+			#'reserved' : _is_bit_set(right, 21),
+			#'reserved' : _is_bit_set(right, 22),
+			#'reserved' : _is_bit_set(right, 23),
 
 			# Byte 7
-			#'reserved' : is_bit_set(right, 24),
-			#'reserved' : is_bit_set(right, 25),
-			#'reserved' : is_bit_set(right, 26),
-			#'reserved' : is_bit_set(right, 27),
-			#'reserved' : is_bit_set(right, 28),
-			#'reserved' : is_bit_set(right, 29),
-			#'reserved' : is_bit_set(right, 30),
-			#'reserved' : is_bit_set(right, 31),
+			#'reserved' : _is_bit_set(right, 24),
+			#'reserved' : _is_bit_set(right, 25),
+			#'reserved' : _is_bit_set(right, 26),
+			#'reserved' : _is_bit_set(right, 27),
+			#'reserved' : _is_bit_set(right, 28),
+			#'reserved' : _is_bit_set(right, 29),
+			#'reserved' : _is_bit_set(right, 30),
+			#'reserved' : _is_bit_set(right, 31),
 		}
 
 		# Get a list of only the flags that are true
@@ -1687,7 +1687,7 @@ def _get_cpu_info_from_sysctl():
 		# Convert from GHz/MHz string to Hz
 		scale, hz_advertised = _get_hz_string_from_brand(processor_brand)
 		hz_actual = _get_field(False, output, None, None, 'hw.cpufrequency')
-		hz_actual = to_hz_string(hz_actual)
+		hz_actual = _to_hz_string(hz_actual)
 
 		info = {
 		'vendor_id' : vendor_id,
@@ -1698,7 +1698,7 @@ def _get_cpu_info_from_sysctl():
 		'hz_advertised_raw' : to_raw_hz(hz_advertised, scale),
 		'hz_actual_raw' : to_raw_hz(hz_actual, 0),
 
-		'l2_cache_size' : to_friendly_bytes(cache_size),
+		'l2_cache_size' : _to_friendly_bytes(cache_size),
 
 		'stepping' : stepping,
 		'model' : model,
@@ -1765,7 +1765,7 @@ def _get_cpu_info_from_sysinfo_v1():
 		'hz_advertised_raw' : to_raw_hz(hz_advertised, scale),
 		'hz_actual_raw' : to_raw_hz(hz_actual, scale),
 
-		'l2_cache_size' : to_friendly_bytes(cache_size),
+		'l2_cache_size' : _to_friendly_bytes(cache_size),
 
 		'stepping' : stepping,
 		'model' : model,
@@ -1830,7 +1830,7 @@ def _get_cpu_info_from_sysinfo_v2():
 		'hz_advertised_raw' : to_raw_hz(hz_advertised, scale),
 		'hz_actual_raw' : to_raw_hz(hz_actual, scale),
 
-		'l2_cache_size' : to_friendly_bytes(cache_size),
+		'l2_cache_size' : _to_friendly_bytes(cache_size),
 
 		'stepping' : stepping,
 		'model' : model,
@@ -1871,7 +1871,7 @@ def _get_cpu_info_from_wmic():
 		hz_actual = value.get('CurrentClockSpeed')
 		scale_actual = 6
 		if hz_actual:
-			hz_actual = to_hz_string(hz_actual)
+			hz_actual = _to_hz_string(hz_actual)
 
 		# Get cache sizes
 		l2_cache_size = value.get('L2CacheSize')
@@ -1945,7 +1945,7 @@ def _get_cpu_info_from_registry():
 
 		# Get the actual CPU Hz
 		hz_actual = DataSource.winreg_hz_actual()
-		hz_actual = to_hz_string(hz_actual)
+		hz_actual = _to_hz_string(hz_actual)
 
 		# Get the advertised CPU Hz
 		scale, hz_advertised = _get_hz_string_from_brand(processor_brand)
@@ -2051,11 +2051,11 @@ def _get_cpu_info_from_kstat():
 		# Convert from GHz/MHz string to Hz
 		scale = 6
 		hz_advertised = kstat.split('\tclock_MHz ')[1].split('\n')[0].strip()
-		hz_advertised = to_hz_string(hz_advertised)
+		hz_advertised = _to_hz_string(hz_advertised)
 
 		# Convert from GHz/MHz string to Hz
 		hz_actual = kstat.split('\tcurrent_clock_Hz ')[1].split('\n')[0].strip()
-		hz_actual = to_hz_string(hz_actual)
+		hz_actual = _to_hz_string(hz_actual)
 
 		info = {
 		'vendor_id' : vendor_id,
