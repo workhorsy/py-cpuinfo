@@ -229,20 +229,20 @@ class DataSource(object):
 		winreg.CloseKey(key)
 		return feature_bits
 
-def _obj_to_b64(thing):
-	a = thing
-	b = pickle.dumps(a)
-	c = base64.b64encode(b)
-	d = c.decode('utf8')
-	return d
 
-def _b64_to_obj(thing):
-	try:
-		a = base64.b64decode(thing)
-		b = pickle.loads(a)
-		return b
-	except:
-		return {}
+def program_paths(program_name):
+	paths = []
+	exts = filter(None, os.environ.get('PATHEXT', '').split(os.pathsep))
+	path = os.environ['PATH']
+	for p in os.environ['PATH'].split(os.pathsep):
+		p = os.path.join(p, program_name)
+		if os.access(p, os.X_OK):
+			paths.append(p)
+		for e in exts:
+			pext = p + e
+			if os.access(pext, os.X_OK):
+				paths.append(pext)
+	return paths
 
 def _run_and_get_stdout(command, pipe_command=None):
 	if not pipe_command:
@@ -260,20 +260,55 @@ def _run_and_get_stdout(command, pipe_command=None):
 			output = output.decode(encoding='UTF-8')
 		return p2.returncode, output
 
+# Make sure we are running on a supported system
+def _check_arch():
+	arch, bits = parse_arch(DataSource.raw_arch_string)
+	if not arch in ['X86_32', 'X86_64', 'ARM_7', 'ARM_8', 'PPC_64']:
+		raise Exception("py-cpuinfo currently only works on X86 and some PPC and ARM CPUs.")
 
-def program_paths(program_name):
-	paths = []
-	exts = filter(None, os.environ.get('PATHEXT', '').split(os.pathsep))
-	path = os.environ['PATH']
-	for p in os.environ['PATH'].split(os.pathsep):
-		p = os.path.join(p, program_name)
-		if os.access(p, os.X_OK):
-			paths.append(p)
-		for e in exts:
-			pext = p + e
-			if os.access(pext, os.X_OK):
-				paths.append(pext)
-	return paths
+def _obj_to_b64(thing):
+	a = thing
+	b = pickle.dumps(a)
+	c = base64.b64encode(b)
+	d = c.decode('utf8')
+	return d
+
+def _b64_to_obj(thing):
+	try:
+		a = base64.b64decode(thing)
+		b = pickle.loads(a)
+		return b
+	except:
+		return {}
+
+def _utf_to_str(input):
+	if PY2 and isinstance(input, unicode):
+		return input.encode('utf-8')
+	elif isinstance(input, list):
+		return [_utf_to_str(element) for element in input]
+	elif isinstance(input, dict):
+		return {_utf_to_str(key): _utf_to_str(value)
+			for key, value in input.items()}
+	else:
+		return input
+
+def _copy_new_fields(info, new_info):
+	keys = [
+		'vendor_id', 'hardware', 'brand', 'hz_advertised', 'hz_actual',
+		'hz_advertised_raw', 'hz_actual_raw', 'arch', 'bits', 'count',
+		'raw_arch_string', 'l2_cache_size', 'l2_cache_line_size',
+		'l2_cache_associativity', 'stepping', 'model', 'family',
+		'processor_type', 'extended_model', 'extended_family', 'flags',
+		'l3_cache_size', 'l1_data_cache_size', 'l1_instruction_cache_size'
+	]
+
+	for key in keys:
+		if new_info.get(key, None) and not info.get(key, None):
+			info[key] = new_info[key]
+		elif key == 'flags' and new_info.get('flags'):
+			for f in new_info['flags']:
+				if f not in info['flags']: info['flags'].append(f)
+			info['flags'].sort()
 
 def _get_field_actual(cant_be_number, raw_string, field_names):
 	for line in raw_string.splitlines():
@@ -2077,35 +2112,6 @@ def _get_cpu_info_from_kstat():
 	except:
 		return {}
 
-def _copy_new_fields(info, new_info):
-	keys = [
-		'vendor_id', 'hardware', 'brand', 'hz_advertised', 'hz_actual',
-		'hz_advertised_raw', 'hz_actual_raw', 'arch', 'bits', 'count',
-		'raw_arch_string', 'l2_cache_size', 'l2_cache_line_size',
-		'l2_cache_associativity', 'stepping', 'model', 'family',
-		'processor_type', 'extended_model', 'extended_family', 'flags',
-		'l3_cache_size', 'l1_data_cache_size', 'l1_instruction_cache_size'
-	]
-
-	for key in keys:
-		if new_info.get(key, None) and not info.get(key, None):
-			info[key] = new_info[key]
-		elif key == 'flags' and new_info.get('flags'):
-			for f in new_info['flags']:
-				if f not in info['flags']: info['flags'].append(f)
-			info['flags'].sort()
-
-def _utf_to_str(input):
-	if PY2 and isinstance(input, unicode):
-		return input.encode('utf-8')
-	elif isinstance(input, list):
-		return [_utf_to_str(element) for element in input]
-	elif isinstance(input, dict):
-		return {_utf_to_str(key): _utf_to_str(value)
-			for key, value in input.items()}
-	else:
-		return input
-
 def _get_cpu_info_internal():
 	'''
 	Returns the CPU info by using the best sources of information for your OS.
@@ -2196,12 +2202,6 @@ def get_cpu_info():
 	output = json.loads(output, object_hook = _utf_to_str)
 
 	return output
-
-# Make sure we are running on a supported system
-def _check_arch():
-	arch, bits = parse_arch(DataSource.raw_arch_string)
-	if not arch in ['X86_32', 'X86_64', 'ARM_7', 'ARM_8', 'PPC_64']:
-		raise Exception("py-cpuinfo currently only works on X86 and some PPC and ARM CPUs.")
 
 def main():
 	import argparse
