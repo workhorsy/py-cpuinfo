@@ -2177,16 +2177,9 @@ def get_cpu_info_json():
 	Returns the CPU info by using the best sources of information for your OS.
 	Returns the result in a json string
 	'''
-
-	command = [sys.executable, __file__, '--json']
-	p1 = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, stdin=subprocess.PIPE)
-	output = p1.communicate()[0]
-
-	if p1.returncode != 0:
-		return "{}"
-
-	if not PY2:
-		output = output.decode(encoding='UTF-8')
+	info = _get_cpu_info_internal()
+	output = json.dumps(info)
+	output = "{0}".format(output)
 
 	return output
 

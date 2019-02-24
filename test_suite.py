@@ -63,6 +63,7 @@ from test_windows_8_x86_64 import TestWindows_8_X86_64
 from test_windows_10_x86_64 import TestWindows_10_X86_64
 from test_cpuid import TestCPUID
 from test_actual import TestActual
+from test_cli import TestCLI
 
 if __name__ == '__main__':
 	def logger(msg):
@@ -99,7 +100,8 @@ if __name__ == '__main__':
 		TestWindows_8_X86_64,
 		TestWindows_10_X86_64,
 		TestCPUID,
-		TestActual
+		TestActual,
+		TestCLI
 	]
 
 	# Add the tests to the suite
