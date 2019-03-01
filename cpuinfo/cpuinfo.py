@@ -285,13 +285,13 @@ def _b64_to_obj(thing):
 	except:
 		return {}
 
-def _utf_to_str(input):
+def utf_to_str(input):
 	if PY2 and isinstance(input, unicode):
 		return input.encode('utf-8')
 	elif isinstance(input, list):
-		return [_utf_to_str(element) for element in input]
+		return [utf_to_str(element) for element in input]
 	elif isinstance(input, dict):
-		return {_utf_to_str(key): _utf_to_str(value)
+		return {utf_to_str(key): utf_to_str(value)
 			for key, value in input.items()}
 	else:
 		return input
@@ -2202,7 +2202,7 @@ def get_cpu_info():
 	output = get_cpu_info_json()
 
 	# Convert JSON to Python with non unicode strings
-	output = json.loads(output, object_hook = _utf_to_str)
+	output = json.loads(output, object_hook = utf_to_str)
 
 	return output
 
