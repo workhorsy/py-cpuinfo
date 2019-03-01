@@ -28,16 +28,10 @@
 CPUINFO_VERSION = (4, 0, 0)
 
 import os, sys
-import glob
 import json
-import re
-import time
 import platform
 import multiprocessing
 import ctypes
-import pickle
-import base64
-import subprocess
 
 try:
 	import _winreg as winreg
@@ -185,6 +179,8 @@ class DataSource(object):
 
 	@staticmethod
 	def ibm_pa_features():
+		import glob
+
 		ibm_features = glob.glob('/proc/device-tree/cpus/*/ibm,pa-features')
 		if ibm_features:
 			return _run_and_get_stdout(['lsprop', ibm_features[0]])
@@ -245,6 +241,8 @@ def program_paths(program_name):
 	return paths
 
 def _run_and_get_stdout(command, pipe_command=None):
+	import subprocess
+
 	if not pipe_command:
 		p1 = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, stdin=subprocess.PIPE)
 		output = p1.communicate()[0]
@@ -267,6 +265,9 @@ def _check_arch():
 		raise Exception("py-cpuinfo currently only works on X86 and some PPC and ARM CPUs.")
 
 def _obj_to_b64(thing):
+	import pickle
+	import base64
+
 	a = thing
 	b = pickle.dumps(a)
 	c = base64.b64encode(b)
@@ -274,6 +275,9 @@ def _obj_to_b64(thing):
 	return d
 
 def _b64_to_obj(thing):
+	import pickle
+	import base64
+
 	try:
 		a = base64.b64decode(thing)
 		b = pickle.loads(a)
@@ -427,6 +431,8 @@ def _to_hz_string(ticks):
 	return ticks
 
 def _to_friendly_bytes(input):
+	import re
+
 	if not input:
 		return input
 	input = "{0}".format(input)
@@ -582,6 +588,8 @@ def _parse_dmesg_output(output):
 	return {}
 
 def parse_arch(raw_arch_string):
+	import re
+
 	arch, bits = None, None
 	raw_arch_string = raw_arch_string.lower()
 
@@ -1230,6 +1238,8 @@ class CPUID(object):
 		return retval
 
 	def get_raw_hz(self):
+		import time
+
 		start = self.get_ticks()
 
 		time.sleep(1)
@@ -2197,10 +2207,10 @@ def get_cpu_info():
 	return output
 
 def main():
-	import argparse
+	from argparse import ArgumentParser
 
 	# Parse args
-	parser = argparse.ArgumentParser(description='Gets CPU info with pure Python 2 & 3')
+	parser = ArgumentParser(description='Gets CPU info with pure Python 2 & 3')
 	parser.add_argument('--json', action='store_true', help='Return the info in JSON format')
 	args = parser.parse_args()
 
