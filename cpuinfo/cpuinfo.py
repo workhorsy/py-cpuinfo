@@ -28,7 +28,6 @@
 CPUINFO_VERSION = (4, 0, 0)
 
 import os, sys
-import json
 import platform
 import multiprocessing
 import ctypes
@@ -2156,6 +2155,8 @@ def get_cpu_info_json():
 	Returns the result in a json string
 	'''
 
+	import json
+
 	output = None
 
 	# If running under pyinstaller, run normally
@@ -2187,6 +2188,8 @@ def get_cpu_info():
 	Returns the result in a dict
 	'''
 
+	import json
+
 	output = get_cpu_info_json()
 
 	# Convert JSON to Python with non unicode strings
@@ -2196,6 +2199,7 @@ def get_cpu_info():
 
 def main():
 	from argparse import ArgumentParser
+	import json
 
 	# Parse args
 	parser = ArgumentParser(description='Gets CPU info with pure Python 2 & 3')

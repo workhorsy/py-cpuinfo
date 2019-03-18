@@ -26,7 +26,6 @@
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 
-import platform
 
 class EmptyDataSource(object):
 	@staticmethod
@@ -78,6 +77,8 @@ class EmptyDataSource(object):
 		return False
 
 def get_os_type():
+	import platform
+
 	os_type = 'Unknown'
 
 	# Figure out the general OS type
