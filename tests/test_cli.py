@@ -22,7 +22,7 @@ class TestCLI(unittest.TestCase):
 
 		self.assertEqual(0, p1.returncode)
 
-		if not PY2:
+		if not IS_PY2:
 			output = output.decode(encoding='UTF-8')
 
 		info = json.loads(output, object_hook = cpuinfo._utf_to_str)
@@ -38,7 +38,7 @@ class TestCLI(unittest.TestCase):
 
 		self.assertEqual(0, p1.returncode)
 
-		if not PY2:
+		if not IS_PY2:
 			output = output.decode(encoding='UTF-8')
 
 		version = output.split('Cpuinfo Version: ')[1].split('\n')[0].strip()

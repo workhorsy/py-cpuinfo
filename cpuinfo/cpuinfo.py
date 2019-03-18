@@ -41,7 +41,7 @@ except ImportError as err:
 	except ImportError as err:
 		pass
 
-PY2 = sys.version_info[0] == 2
+IS_PY2 = sys.version_info[0] == 2
 
 
 class DataSource(object):
@@ -214,7 +214,7 @@ def _run_and_get_stdout(command, pipe_command=None):
 	if not pipe_command:
 		p1 = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, stdin=subprocess.PIPE)
 		output = p1.communicate()[0]
-		if not PY2:
+		if not IS_PY2:
 			output = output.decode(encoding='UTF-8')
 		return p1.returncode, output
 	else:
@@ -222,7 +222,7 @@ def _run_and_get_stdout(command, pipe_command=None):
 		p2 = subprocess.Popen(pipe_command, stdin=p1.stdout, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 		p1.stdout.close()
 		output = p2.communicate()[0]
-		if not PY2:
+		if not IS_PY2:
 			output = output.decode(encoding='UTF-8')
 		return p2.returncode, output
 
@@ -254,7 +254,7 @@ def _b64_to_obj(thing):
 		return {}
 
 def _utf_to_str(input):
-	if PY2 and isinstance(input, unicode):
+	if IS_PY2 and isinstance(input, unicode):
 		return input.encode('utf-8')
 	elif isinstance(input, list):
 		return [_utf_to_str(element) for element in input]
@@ -2176,7 +2176,7 @@ def get_cpu_info_json():
 		if p1.returncode != 0:
 			return "{}"
 
-		if not PY2:
+		if not IS_PY2:
 			output = output.decode(encoding='UTF-8')
 
 	return output
