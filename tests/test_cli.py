@@ -14,11 +14,11 @@ class TestCLI(unittest.TestCase):
 		helpers.restore_data_source(cpuinfo)
 
 	def test_json(self):
-		import subprocess
+		from subprocess import Popen, PIPE
 		import json
 
 		command = [sys.executable, 'cpuinfo/cpuinfo.py', '--json']
-		p1 = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, stdin=subprocess.PIPE)
+		p1 = Popen(command, stdout=PIPE, stderr=PIPE, stdin=PIPE)
 		output = p1.communicate()[0]
 
 		self.assertEqual(0, p1.returncode)
@@ -31,10 +31,10 @@ class TestCLI(unittest.TestCase):
 		self.assertEqual(list(cpuinfo.CPUINFO_VERSION), info['cpuinfo_version'])
 
 	def test_default(self):
-		import subprocess
+		from subprocess import Popen, PIPE
 
 		command = [sys.executable, 'cpuinfo/cpuinfo.py']
-		p1 = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, stdin=subprocess.PIPE)
+		p1 = Popen(command, stdout=PIPE, stderr=PIPE, stdin=PIPE)
 		output = p1.communicate()[0]
 
 		self.assertEqual(0, p1.returncode)
