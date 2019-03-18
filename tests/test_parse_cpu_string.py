@@ -63,31 +63,31 @@ class TestParseCPUString(unittest.TestCase):
 		scale, hz_brand = cpuinfo._get_hz_string_from_brand('Intel(R) Pentium(R) CPU G640 @ 2.80GHz')
 		self.assertEqual(9, scale)
 		self.assertEqual('2.8', hz_brand)
-		self.assertEqual('2.8000 GHz', to_friendly_hz(hz_brand, scale))
+		self.assertEqual('2.8000 GHz', cpuinfo._to_friendly_hz(hz_brand, scale))
 
 		scale, hz_brand = cpuinfo._get_hz_string_from_brand('Intel(R) Pentium(R) CPU @ 1.20MHz')
 		self.assertEqual(6, scale)
 		self.assertEqual('1.2', hz_brand)
-		self.assertEqual('1.2000 MHz', to_friendly_hz(hz_brand, scale))
+		self.assertEqual('1.2000 MHz', cpuinfo._to_friendly_hz(hz_brand, scale))
 
 		scale, hz_brand = cpuinfo._get_hz_string_from_brand('Intel(R) Pentium(R) D CPU 3.20GHz')
 		self.assertEqual(9, scale)
 		self.assertEqual('3.2', hz_brand)
-		self.assertEqual('3.2000 GHz', to_friendly_hz(hz_brand, scale))
+		self.assertEqual('3.2000 GHz', cpuinfo._to_friendly_hz(hz_brand, scale))
 
 	def test_to_raw_hz(self):
 		scale, hz_brand = cpuinfo._get_hz_string_from_brand('Intel(R) Pentium(R) CPU G640 @ 2.80GHz')
 		self.assertEqual(9, scale)
 		self.assertEqual('2.8', hz_brand)
-		self.assertEqual((2800000000, 0), to_raw_hz(hz_brand, scale))
+		self.assertEqual((2800000000, 0), cpuinfo._to_raw_hz(hz_brand, scale))
 
 		scale, hz_brand = cpuinfo._get_hz_string_from_brand('Intel(R) Pentium(R) CPU @ 1.20MHz')
 		self.assertEqual(6, scale)
 		self.assertEqual('1.2', hz_brand)
-		self.assertEqual((1200000, 0), to_raw_hz(hz_brand, scale))
+		self.assertEqual((1200000, 0), cpuinfo._to_raw_hz(hz_brand, scale))
 
 		# NOTE: No @ symbol
 		scale, hz_brand = cpuinfo._get_hz_string_from_brand('Intel(R) Pentium(R) D CPU 3.20GHz')
 		self.assertEqual(9, scale)
 		self.assertEqual('3.2', hz_brand)
-		self.assertEqual((3200000000, 0), to_raw_hz(hz_brand, scale))
+		self.assertEqual((3200000000, 0), cpuinfo._to_raw_hz(hz_brand, scale))

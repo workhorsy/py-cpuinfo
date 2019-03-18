@@ -22,7 +22,7 @@ class TestInvalidCPU(unittest.TestCase):
 
 	def test_arch_parse_unknown(self):
 		# If the arch is unknown, the result should be null
-		arch, bits = cpuinfo.parse_arch(DataSource.raw_arch_string)
+		arch, bits = cpuinfo._parse_arch(DataSource.raw_arch_string)
 		self.assertIsNone(arch)
 		self.assertIsNone(bits)
 

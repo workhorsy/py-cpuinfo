@@ -89,7 +89,7 @@ class DataSource(object):
 
 	@staticmethod
 	def has_dmesg():
-		return len(program_paths('dmesg')) > 0
+		return len(_program_paths('dmesg')) > 0
 
 	@staticmethod
 	def has_var_run_dmesg_boot():
@@ -98,35 +98,35 @@ class DataSource(object):
 
 	@staticmethod
 	def has_cpufreq_info():
-		return len(program_paths('cpufreq-info')) > 0
+		return len(_program_paths('cpufreq-info')) > 0
 
 	@staticmethod
 	def has_sestatus():
-		return len(program_paths('sestatus')) > 0
+		return len(_program_paths('sestatus')) > 0
 
 	@staticmethod
 	def has_sysctl():
-		return len(program_paths('sysctl')) > 0
+		return len(_program_paths('sysctl')) > 0
 
 	@staticmethod
 	def has_isainfo():
-		return len(program_paths('isainfo')) > 0
+		return len(_program_paths('isainfo')) > 0
 
 	@staticmethod
 	def has_kstat():
-		return len(program_paths('kstat')) > 0
+		return len(_program_paths('kstat')) > 0
 
 	@staticmethod
 	def has_sysinfo():
-		return len(program_paths('sysinfo')) > 0
+		return len(_program_paths('sysinfo')) > 0
 
 	@staticmethod
 	def has_lscpu():
-		return len(program_paths('lscpu')) > 0
+		return len(_program_paths('lscpu')) > 0
 
 	@staticmethod
 	def has_ibm_pa_features():
-		return len(program_paths('lsprop')) > 0
+		return len(_program_paths('lsprop')) > 0
 
 	@staticmethod
 	def has_wmic():
@@ -226,7 +226,7 @@ class DataSource(object):
 		return feature_bits
 
 
-def program_paths(program_name):
+def _program_paths(program_name):
 	paths = []
 	exts = filter(None, os.environ.get('PATHEXT', '').split(os.pathsep))
 	path = os.environ['PATH']
@@ -260,7 +260,7 @@ def _run_and_get_stdout(command, pipe_command=None):
 
 # Make sure we are running on a supported system
 def _check_arch():
-	arch, bits = parse_arch(DataSource.raw_arch_string)
+	arch, bits = _parse_arch(DataSource.raw_arch_string)
 	if not arch in ['X86_32', 'X86_64', 'ARM_7', 'ARM_8', 'PPC_64']:
 		raise Exception("py-cpuinfo currently only works on X86 and some PPC and ARM CPUs.")
 
@@ -285,13 +285,13 @@ def _b64_to_obj(thing):
 	except:
 		return {}
 
-def utf_to_str(input):
+def _utf_to_str(input):
 	if PY2 and isinstance(input, unicode):
 		return input.encode('utf-8')
 	elif isinstance(input, list):
-		return [utf_to_str(element) for element in input]
+		return [_utf_to_str(element) for element in input]
 	elif isinstance(input, dict):
-		return {utf_to_str(key): utf_to_str(value)
+		return {_utf_to_str(key): _utf_to_str(value)
 			for key, value in input.items()}
 	else:
 		return input
@@ -369,9 +369,9 @@ def _get_hz_string_from_brand(processor_brand):
 
 	return (scale, hz_brand)
 
-def to_friendly_hz(ticks, scale):
+def _to_friendly_hz(ticks, scale):
 	# Get the raw Hz as a string
-	left, right = to_raw_hz(ticks, scale)
+	left, right = _to_raw_hz(ticks, scale)
 	ticks = '{0}.{1}'.format(left, right)
 
 	# Get the location of the dot, and remove said dot
@@ -401,7 +401,7 @@ def to_friendly_hz(ticks, scale):
 
 	return ticks
 
-def to_raw_hz(ticks, scale):
+def _to_raw_hz(ticks, scale):
 	# Scale the numbers
 	ticks = ticks.lstrip('0')
 	old_index = ticks.index('.')
@@ -573,12 +573,12 @@ def _parse_dmesg_output(output):
 		}
 
 		if hz_advertised and hz_advertised != '0.0':
-			info['hz_advertised'] = to_friendly_hz(hz_advertised, scale)
-			info['hz_actual'] = to_friendly_hz(hz_actual, scale)
+			info['hz_advertised'] = _to_friendly_hz(hz_advertised, scale)
+			info['hz_actual'] = _to_friendly_hz(hz_actual, scale)
 
 		if hz_advertised and hz_advertised != '0.0':
-			info['hz_advertised_raw'] = to_raw_hz(hz_advertised, scale)
-			info['hz_actual_raw'] = to_raw_hz(hz_actual, scale)
+			info['hz_advertised_raw'] = _to_raw_hz(hz_advertised, scale)
+			info['hz_actual_raw'] = _to_raw_hz(hz_actual, scale)
 
 		return {k: v for k, v in info.items() if v}
 	except:
@@ -587,7 +587,7 @@ def _parse_dmesg_output(output):
 
 	return {}
 
-def parse_arch(raw_arch_string):
+def _parse_arch(raw_arch_string):
 	import re
 
 	arch, bits = None, None
@@ -1262,7 +1262,7 @@ def _actual_get_cpu_info_from_cpuid(queue):
 	sys.stderr = open(os.devnull, 'w')
 
 	# Get the CPU arch and bits
-	arch, bits = parse_arch(DataSource.raw_arch_string)
+	arch, bits = _parse_arch(DataSource.raw_arch_string)
 
 	# Return none if this is not an X86 CPU
 	if not arch in ['X86_32', 'X86_64']:
@@ -1293,10 +1293,10 @@ def _actual_get_cpu_info_from_cpuid(queue):
 	'hardware' : '',
 	'brand' : processor_brand,
 
-	'hz_advertised' : to_friendly_hz(hz_advertised, scale),
-	'hz_actual' : to_friendly_hz(hz_actual, 0),
-	'hz_advertised_raw' : to_raw_hz(hz_advertised, scale),
-	'hz_actual_raw' : to_raw_hz(hz_actual, 0),
+	'hz_advertised' : _to_friendly_hz(hz_advertised, scale),
+	'hz_actual' : _to_friendly_hz(hz_actual, 0),
+	'hz_advertised_raw' : _to_raw_hz(hz_advertised, scale),
+	'hz_actual_raw' : _to_raw_hz(hz_actual, 0),
 
 	'l2_cache_size' : _to_friendly_bytes(cache_info['size_kb']),
 	'l2_cache_line_size' : cache_info['line_size_b'],
@@ -1327,7 +1327,7 @@ def _get_cpu_info_from_cpuid():
 		return {}
 
 	# Get the CPU arch and bits
-	arch, bits = parse_arch(DataSource.raw_arch_string)
+	arch, bits = _parse_arch(DataSource.raw_arch_string)
 
 	# Return {} if this is not an X86 CPU
 	if not arch in ['X86_32', 'X86_64']:
@@ -1417,12 +1417,12 @@ def _get_cpu_info_from_proc_cpuinfo():
 			hz_actual = hz_advertised
 
 		# Add the Hz if there is one
-		if to_raw_hz(hz_advertised, scale) > (0, 0):
-			info['hz_advertised'] = to_friendly_hz(hz_advertised, scale)
-			info['hz_advertised_raw'] = to_raw_hz(hz_advertised, scale)
-		if to_raw_hz(hz_actual, scale) > (0, 0):
-			info['hz_actual'] = to_friendly_hz(hz_actual, 6)
-			info['hz_actual_raw'] = to_raw_hz(hz_actual, 6)
+		if _to_raw_hz(hz_advertised, scale) > (0, 0):
+			info['hz_advertised'] = _to_friendly_hz(hz_advertised, scale)
+			info['hz_advertised_raw'] = _to_raw_hz(hz_advertised, scale)
+		if _to_raw_hz(hz_actual, scale) > (0, 0):
+			info['hz_actual'] = _to_friendly_hz(hz_actual, 6)
+			info['hz_actual_raw'] = _to_raw_hz(hz_actual, 6)
 
 		info = {k: v for k, v in info.items() if v}
 		return info
@@ -1458,10 +1458,10 @@ def _get_cpu_info_from_cpufreq_info():
 		hz_brand = _to_hz_string(hz_brand)
 
 		info = {
-			'hz_advertised' : to_friendly_hz(hz_brand, scale),
-			'hz_actual' : to_friendly_hz(hz_brand, scale),
-			'hz_advertised_raw' : to_raw_hz(hz_brand, scale),
-			'hz_actual_raw' : to_raw_hz(hz_brand, scale),
+			'hz_advertised' : _to_friendly_hz(hz_brand, scale),
+			'hz_actual' : _to_friendly_hz(hz_brand, scale),
+			'hz_advertised_raw' : _to_raw_hz(hz_brand, scale),
+			'hz_actual_raw' : _to_raw_hz(hz_brand, scale),
 		}
 
 		info = {k: v for k, v in info.items() if v}
@@ -1489,10 +1489,10 @@ def _get_cpu_info_from_lscpu():
 		if new_hz:
 			new_hz = _to_hz_string(new_hz)
 			scale = 6
-			info['hz_advertised'] = to_friendly_hz(new_hz, scale)
-			info['hz_actual'] = to_friendly_hz(new_hz, scale)
-			info['hz_advertised_raw'] = to_raw_hz(new_hz, scale)
-			info['hz_actual_raw'] = to_raw_hz(new_hz, scale)
+			info['hz_advertised'] = _to_friendly_hz(new_hz, scale)
+			info['hz_actual'] = _to_friendly_hz(new_hz, scale)
+			info['hz_advertised_raw'] = _to_raw_hz(new_hz, scale)
+			info['hz_actual_raw'] = _to_raw_hz(new_hz, scale)
 
 		vendor_id = _get_field(False, output, None, None, 'Vendor ID')
 		if vendor_id:
@@ -1738,10 +1738,10 @@ def _get_cpu_info_from_sysctl():
 		'vendor_id' : vendor_id,
 		'brand' : processor_brand,
 
-		'hz_advertised' : to_friendly_hz(hz_advertised, scale),
-		'hz_actual' : to_friendly_hz(hz_actual, 0),
-		'hz_advertised_raw' : to_raw_hz(hz_advertised, scale),
-		'hz_actual_raw' : to_raw_hz(hz_actual, 0),
+		'hz_advertised' : _to_friendly_hz(hz_advertised, scale),
+		'hz_actual' : _to_friendly_hz(hz_actual, 0),
+		'hz_advertised_raw' : _to_raw_hz(hz_advertised, scale),
+		'hz_actual_raw' : _to_raw_hz(hz_actual, 0),
 
 		'l2_cache_size' : _to_friendly_bytes(cache_size),
 
@@ -1805,10 +1805,10 @@ def _get_cpu_info_from_sysinfo_v1():
 		'vendor_id' : vendor_id,
 		'brand' : processor_brand,
 
-		'hz_advertised' : to_friendly_hz(hz_advertised, scale),
-		'hz_actual' : to_friendly_hz(hz_actual, scale),
-		'hz_advertised_raw' : to_raw_hz(hz_advertised, scale),
-		'hz_actual_raw' : to_raw_hz(hz_actual, scale),
+		'hz_advertised' : _to_friendly_hz(hz_advertised, scale),
+		'hz_actual' : _to_friendly_hz(hz_actual, scale),
+		'hz_advertised_raw' : _to_raw_hz(hz_advertised, scale),
+		'hz_actual_raw' : _to_raw_hz(hz_actual, scale),
 
 		'l2_cache_size' : _to_friendly_bytes(cache_size),
 
@@ -1870,10 +1870,10 @@ def _get_cpu_info_from_sysinfo_v2():
 		'vendor_id' : vendor_id,
 		'brand' : processor_brand,
 
-		'hz_advertised' : to_friendly_hz(hz_advertised, scale),
-		'hz_actual' : to_friendly_hz(hz_actual, scale),
-		'hz_advertised_raw' : to_raw_hz(hz_advertised, scale),
-		'hz_actual_raw' : to_raw_hz(hz_actual, scale),
+		'hz_advertised' : _to_friendly_hz(hz_advertised, scale),
+		'hz_actual' : _to_friendly_hz(hz_actual, scale),
+		'hz_advertised_raw' : _to_raw_hz(hz_advertised, scale),
+		'hz_actual_raw' : _to_raw_hz(hz_actual, scale),
 
 		'l2_cache_size' : _to_friendly_bytes(cache_size),
 
@@ -1948,10 +1948,10 @@ def _get_cpu_info_from_wmic():
 			'vendor_id' : value.get('Manufacturer'),
 			'brand' : processor_brand,
 
-			'hz_advertised' : to_friendly_hz(hz_advertised, scale_advertised),
-			'hz_actual' : to_friendly_hz(hz_actual, scale_actual),
-			'hz_advertised_raw' : to_raw_hz(hz_advertised, scale_advertised),
-			'hz_actual_raw' : to_raw_hz(hz_actual, scale_actual),
+			'hz_advertised' : _to_friendly_hz(hz_advertised, scale_advertised),
+			'hz_actual' : _to_friendly_hz(hz_actual, scale_actual),
+			'hz_advertised_raw' : _to_raw_hz(hz_advertised, scale_advertised),
+			'hz_actual_raw' : _to_raw_hz(hz_actual, scale_actual),
 
 			'l2_cache_size' : l2_cache_size,
 			'l3_cache_size' : l3_cache_size,
@@ -1986,7 +1986,7 @@ def _get_cpu_info_from_registry():
 
 		# Get the CPU arch and bits
 		raw_arch_string = DataSource.winreg_raw_arch_string()
-		arch, bits = parse_arch(raw_arch_string)
+		arch, bits = _parse_arch(raw_arch_string)
 
 		# Get the actual CPU Hz
 		hz_actual = DataSource.winreg_hz_actual()
@@ -2049,10 +2049,10 @@ def _get_cpu_info_from_registry():
 		'vendor_id' : vendor_id,
 		'brand' : processor_brand,
 
-		'hz_advertised' : to_friendly_hz(hz_advertised, scale),
-		'hz_actual' : to_friendly_hz(hz_actual, 6),
-		'hz_advertised_raw' : to_raw_hz(hz_advertised, scale),
-		'hz_actual_raw' : to_raw_hz(hz_actual, 6),
+		'hz_advertised' : _to_friendly_hz(hz_advertised, scale),
+		'hz_actual' : _to_friendly_hz(hz_actual, 6),
+		'hz_advertised_raw' : _to_raw_hz(hz_advertised, scale),
+		'hz_actual_raw' : _to_raw_hz(hz_actual, 6),
 
 		'flags' : flags
 		}
@@ -2106,10 +2106,10 @@ def _get_cpu_info_from_kstat():
 		'vendor_id' : vendor_id,
 		'brand' : processor_brand,
 
-		'hz_advertised' : to_friendly_hz(hz_advertised, scale),
-		'hz_actual' : to_friendly_hz(hz_actual, 0),
-		'hz_advertised_raw' : to_raw_hz(hz_advertised, scale),
-		'hz_actual_raw' : to_raw_hz(hz_actual, 0),
+		'hz_advertised' : _to_friendly_hz(hz_advertised, scale),
+		'hz_actual' : _to_friendly_hz(hz_actual, 0),
+		'hz_advertised_raw' : _to_raw_hz(hz_advertised, scale),
+		'hz_actual_raw' : _to_raw_hz(hz_actual, 0),
 
 		'stepping' : stepping,
 		'model' : model,
@@ -2129,7 +2129,7 @@ def _get_cpu_info_internal():
 	'''
 
 	# Get the CPU arch and bits
-	arch, bits = parse_arch(DataSource.raw_arch_string)
+	arch, bits = _parse_arch(DataSource.raw_arch_string)
 
 	friendly_maxsize = { 2**31-1: '32 bit', 2**63-1: '64 bit' }.get(sys.maxsize) or 'unknown bits'
 	friendly_version = "{0}.{1}.{2}.{3}.{4}".format(*sys.version_info)
@@ -2222,7 +2222,7 @@ def get_cpu_info():
 	output = get_cpu_info_json()
 
 	# Convert JSON to Python with non unicode strings
-	output = json.loads(output, object_hook = utf_to_str)
+	output = json.loads(output, object_hook = _utf_to_str)
 
 	return output
 
