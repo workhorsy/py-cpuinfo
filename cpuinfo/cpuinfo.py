@@ -2187,9 +2187,29 @@ def get_cpu_info_json():
 	Returns the CPU info by using the best sources of information for your OS.
 	Returns the result in a json string
 	'''
-	info = _get_cpu_info_internal()
-	output = json.dumps(info)
-	output = "{0}".format(output)
+
+	output = None
+
+	# If running under pyinstaller, run normally
+	if getattr(sys, 'frozen', False):
+		info = _get_cpu_info_internal()
+		output = json.dumps(info)
+		output = "{0}".format(output)
+	# if not running under pyinstaller, run in another process.
+	# This is done because multiprocesing has a design flaw that
+	# causes non main programs to run multiple times on Windows.
+	else:
+		from subprocess import Popen, PIPE
+
+		command = [sys.executable, __file__, '--json']
+		p1 = Popen(command, stdout=PIPE, stderr=PIPE, stdin=PIPE)
+		output = p1.communicate()[0]
+
+		if p1.returncode != 0:
+			return "{}"
+
+		if not PY2:
+			output = output.decode(encoding='UTF-8')
 
 	return output
 
@@ -2260,8 +2280,6 @@ def main():
 
 
 if __name__ == '__main__':
-	from multiprocessing import freeze_support
-	freeze_support()
 	main()
 else:
 	_check_arch()

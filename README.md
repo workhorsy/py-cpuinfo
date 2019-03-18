@@ -118,10 +118,13 @@ if __name__ == '__main__':
 Run under Pyinstaller
 -----
 ~~~python
+# NOTE: Pyinstaller may spawn infinite processes if __main__ is not used
 if __name__ == '__main__':
     import cpuinfo
     from multiprocessing import freeze_support
-    freeze_support() # NOTE: Needed for Pyinstaller
+
+    # NOTE: Pyinstaller also requires freeze_support
+    freeze_support()
     info = cpuinfo.get_cpu_info()
     print(info)
 ~~~
