@@ -1,4 +1,5 @@
 * Release 4.1.0
+	* Fixed Bug #117: Remove PyInstaller hacks
 	* Fixed Bug #108: Client script runs multiple times without __main__
 	* Fixed Bug #113: Add option to return results in json
 	* Fixed Bug #110: Always tries to run wmic in get_system_info.py
