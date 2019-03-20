@@ -25,6 +25,15 @@ build: clean
 	rm -f -rf py_cpuinfo.egg-info
 	rm -f -rf dist
 
+release:
+	# Create release
+	git commit -a -m "Release $(VERSION)"
+	git push
+
+	# Create and push tag
+	git tag v$(VERSION) -m "Release $(VERSION)"
+	git push --tags
+
 upload: clean
 	python setup.py sdist --formats=gztar,zip
 	twine upload dist/py-cpuinfo-$(VERSION).tar.gz
