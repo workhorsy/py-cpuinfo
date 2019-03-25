@@ -95,6 +95,19 @@ if hasattr(sys, 'maxsize'):
 
 print_output('multiprocessing.cpu_count', multiprocessing.cpu_count())
 
+if hasattr(os, 'cpu_count'):
+	print_output('os.cpu_count', os.cpu_count())
+
+if 'NUMBER_OF_PROCESSORS' in os.environ:
+	print_output("os.environ['NUMBER_OF_PROCESSORS']", os.environ['NUMBER_OF_PROCESSORS'])
+
+if hasattr(os, 'sysconf'):
+	print_output("os.sysconf('SC_NPROCESSORS_ONLN')", os.sysconf('SC_NPROCESSORS_ONLN'))
+
+if program_paths('sysctl'):
+	returncode, output = run_and_get_stdout(['sysctl', '-n', 'hw.ncpu'])
+	print_output('sysctl -n hw.ncpu', output)
+
 print_output('platform.uname', platform.uname())
 
 print_output('platform.architecture', platform.architecture())
