@@ -61,6 +61,7 @@ from test_haiku_x86_32 import TestHaiku_x86_32
 from test_haiku_x86_64 import TestHaiku_x86_64
 from test_windows_8_x86_64 import TestWindows_8_X86_64
 from test_windows_10_x86_64 import TestWindows_10_X86_64
+from test_windows_10_x86_64_ryzen_7 import TestWindows_10_X86_64_Ryzen7
 from test_cpuid import TestCPUID
 from test_actual import TestActual
 from test_cli import TestCLI
@@ -99,6 +100,7 @@ if __name__ == '__main__':
 		TestHaiku_x86_64,
 		TestWindows_8_X86_64,
 		TestWindows_10_X86_64,
+		TestWindows_10_X86_64_Ryzen7,
 		TestCPUID,
 		TestActual,
 		TestCLI
