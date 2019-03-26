@@ -48,6 +48,7 @@ class DataSource(object):
 	cpu_count = multiprocessing.cpu_count()
 	is_windows = platform.system().lower() == 'windows'
 	raw_arch_string = platform.machine()
+	raw_uname_string = platform.uname()[5]
 	can_cpuid = True
 
 	@staticmethod
@@ -267,8 +268,9 @@ def _copy_new_fields(info, new_info):
 	keys = [
 		'vendor_id', 'hardware', 'brand', 'hz_advertised', 'hz_actual',
 		'hz_advertised_raw', 'hz_actual_raw', 'arch', 'bits', 'count',
-		'raw_arch_string', 'l2_cache_size', 'l2_cache_line_size',
-		'l2_cache_associativity', 'stepping', 'model', 'family',
+		'raw_arch_string', 'raw_uname_string',
+		'l2_cache_size', 'l2_cache_line_size', 'l2_cache_associativity',
+		'stepping', 'model', 'family',
 		'processor_type', 'extended_model', 'extended_family', 'flags',
 		'l3_cache_size', 'l1_data_cache_size', 'l1_instruction_cache_size'
 	]
@@ -2089,6 +2091,35 @@ def _get_cpu_info_from_kstat():
 	except:
 		return {}
 
+def _get_cpu_info_from_platform_uname():
+	try:
+		uname = DataSource.raw_uname_string.split(',')[0]
+
+		family, model, stepping = (None, None, None)
+		entries = uname.split(' ')
+
+		if 'Family' in entries and entries.index('Family') < len(entries)-1:
+			i = entries.index('Family')
+			family = int(entries[i + 1])
+
+		if 'Model' in entries and entries.index('Model') < len(entries)-1:
+			i = entries.index('Model')
+			model = int(entries[i + 1])
+
+		if 'Stepping' in entries and entries.index('Stepping') < len(entries)-1:
+			i = entries.index('Stepping')
+			stepping = int(entries[i + 1])
+
+		info = {
+			'family' : family,
+			'model' : model,
+			'stepping' : stepping
+		}
+		info = {k: v for k, v in info.items() if v}
+		return info
+	except:
+		return {}
+
 def _get_cpu_info_internal():
 	'''
 	Returns the CPU info by using the best sources of information for your OS.
@@ -2146,6 +2177,9 @@ def _get_cpu_info_internal():
 
 	# Try querying the CPU cpuid register
 	_copy_new_fields(info, _get_cpu_info_from_cpuid())
+
+	# Try platform.uname
+	_copy_new_fields(info, _get_cpu_info_from_platform_uname())
 
 	return info
 

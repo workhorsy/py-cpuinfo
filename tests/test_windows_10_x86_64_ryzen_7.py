@@ -10,6 +10,7 @@ class MockDataSource(object):
 	cpu_count = 16
 	is_windows = True
 	raw_arch_string = 'AMD64'
+	raw_uname_string = 'AMD64 Family 23 Model 8 Stepping 2, AuthenticAMD'
 	can_cpuid = False
 
 	@staticmethod
@@ -59,7 +60,15 @@ class TestWindows_10_X86_64_Ryzen7(unittest.TestCase):
 		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_ibm_pa_features()))
 		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_sysinfo()))
 		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_cpuid()))
-		self.assertEqual(13, len(cpuinfo._get_cpu_info_internal()))
+		self.assertEqual(3, len(cpuinfo._get_cpu_info_from_platform_uname()))
+		self.assertEqual(16, len(cpuinfo._get_cpu_info_internal()))
+
+	def test_get_cpu_info_from_platform_uname(self):
+		info = cpuinfo._get_cpu_info_from_platform_uname()
+
+		self.assertEqual(2, info['stepping'])
+		self.assertEqual(8, info['model'])
+		self.assertEqual(23, info['family'])
 
 	def test_get_cpu_info_from_registry(self):
 		info = cpuinfo._get_cpu_info_from_registry()
@@ -96,9 +105,9 @@ class TestWindows_10_X86_64_Ryzen7(unittest.TestCase):
 
 		self.assertEqual('AMD64', info['raw_arch_string'])
 
-		#FIXME self.assertEqual(1, info['stepping'])
-		#FIXME self.assertEqual(69, info['model'])
-		#FIXME self.assertEqual(6, info['family'])
+		self.assertEqual(2, info['stepping'])
+		self.assertEqual(8, info['model'])
+		self.assertEqual(23, info['family'])
 
 		#FIXME self.assertEqual('512 KB', info['l2_cache_size'])
 		#FIXME self.assertEqual('3072 KB', info['l3_cache_size'])
