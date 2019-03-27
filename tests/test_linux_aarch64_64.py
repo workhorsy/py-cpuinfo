@@ -10,6 +10,7 @@ class MockDataSource(object):
 	cpu_count = 6
 	is_windows = False
 	raw_arch_string = 'aarch64'
+	raw_uname_string = ''
 	can_cpuid = False
 
 	@staticmethod

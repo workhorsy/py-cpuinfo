@@ -10,6 +10,7 @@ class MockDataSource(object):
 	cpu_count = 1
 	is_windows = False
 	raw_arch_string = 'armv7l'
+	raw_uname_string = ''
 
 	@staticmethod
 	def has_proc_cpuinfo():
