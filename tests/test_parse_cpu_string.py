@@ -8,6 +8,7 @@ import helpers
 
 class TestParseCPUString(unittest.TestCase):
 	def test_parse_cpu_string(self):
+		'''
 		processor_brand, hz_actual, scale, vendor_id, stepping, model, family = \
 		cpuinfo._parse_cpu_string("Intel(R) Pentium(R) CPU G640 @ 2.80GHz (fam: 06, model: 2a, stepping: 07)")
 		self.assertEqual('Intel(R) Pentium(R) CPU G640 @ 2.80GHz', processor_brand)
@@ -58,6 +59,19 @@ class TestParseCPUString(unittest.TestCase):
 		self.assertEqual(None, stepping)
 		self.assertEqual(None, model)
 		self.assertEqual(None, family)
+		'''
+		# NOTE: No @ symbol or Hz
+		# FIXME: change cpu string to "AMD Ryzen 7 2700X Eight-Core Processor          (3693.15-MHz K8-class CPU)")
+		# FIXME: Parsing this CPU brand string fails, because it is missing the @ and includes the Hz in quotes
+		processor_brand, hz_actual, scale, vendor_id, stepping, model, family = \
+		cpuinfo._parse_cpu_string("Intel(R) Pentium(C) AMD Ryzen 7 2700X Eight-Core Processor          (3693.15-MHz K8-class CPU) (fam: 06, model: 2a, stepping: 07)")
+		self.assertEqual("AMD Ryzen 7 2700X Eight-Core Processor", processor_brand)
+		self.assertEqual('3.693', hz_actual)
+		self.assertEqual(9, scale)
+		self.assertEqual(None, vendor_id)
+		self.assertEqual(None, stepping)
+		self.assertEqual(None, model)
+		self.assertEqual(None, family)
 
 	def test_to_friendly_hz(self):
 		scale, hz_brand = cpuinfo._get_hz_string_from_brand('Intel(R) Pentium(R) CPU G640 @ 2.80GHz')
@@ -70,10 +84,17 @@ class TestParseCPUString(unittest.TestCase):
 		self.assertEqual('1.2', hz_brand)
 		self.assertEqual('1.2000 MHz', cpuinfo._to_friendly_hz(hz_brand, scale))
 
+		# NOTE: No @ symbol
 		scale, hz_brand = cpuinfo._get_hz_string_from_brand('Intel(R) Pentium(R) D CPU 3.20GHz')
 		self.assertEqual(9, scale)
 		self.assertEqual('3.2', hz_brand)
 		self.assertEqual('3.2000 GHz', cpuinfo._to_friendly_hz(hz_brand, scale))
+
+		# NOTE: No @ symbol or Hz
+		scale, hz_brand = cpuinfo._get_hz_string_from_brand('AMD Ryzen 7 2700X Eight-Core Processor')
+		self.assertEqual(1, scale)
+		self.assertEqual('0.0', hz_brand)
+		self.assertEqual('0.0000 Hz', cpuinfo._to_friendly_hz(hz_brand, scale))
 
 	def test_to_raw_hz(self):
 		scale, hz_brand = cpuinfo._get_hz_string_from_brand('Intel(R) Pentium(R) CPU G640 @ 2.80GHz')
@@ -91,3 +112,9 @@ class TestParseCPUString(unittest.TestCase):
 		self.assertEqual(9, scale)
 		self.assertEqual('3.2', hz_brand)
 		self.assertEqual((3200000000, 0), cpuinfo._to_raw_hz(hz_brand, scale))
+
+		# NOTE: No @ symbol or Hz
+		scale, hz_brand = cpuinfo._get_hz_string_from_brand('AMD Ryzen 7 2700X Eight-Core Processor')
+		self.assertEqual(1, scale)
+		self.assertEqual('0.0', hz_brand)
+		self.assertEqual((0, 0), cpuinfo._to_raw_hz(hz_brand, scale))
