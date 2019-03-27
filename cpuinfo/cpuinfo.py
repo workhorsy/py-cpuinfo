@@ -1790,6 +1790,7 @@ def _get_cpu_info_from_sysinfo_v1():
 		info = {k: v for k, v in info.items() if v}
 		return info
 	except:
+		#raise # NOTE: To have this throw on error, uncomment this line
 		return {}
 
 def _get_cpu_info_from_sysinfo_v2():
@@ -1821,7 +1822,7 @@ def _get_cpu_info_from_sysinfo_v2():
 		def get_subsection_flags(output):
 			retval = []
 			for line in output.split('\n')[1:]:
-				if not line.startswith('                '): break
+				if not line.startswith('                ') and not line.startswith('		'): break
 				for entry in line.strip().lower().split(' '):
 					retval.append(entry)
 			return retval
@@ -1832,8 +1833,17 @@ def _get_cpu_info_from_sysinfo_v2():
 		flags.sort()
 
 		# Convert from GHz/MHz string to Hz
-		scale, hz_advertised = _get_hz_string_from_brand(processor_brand)
+		lines = [n for n in output.split('\n') if n]
+		raw_hz = lines[0].split('running at ')[1].strip().lower()
+		hz_advertised = raw_hz.rstrip('mhz').rstrip('ghz').strip()
+		hz_advertised = _to_hz_string(hz_advertised)
 		hz_actual = hz_advertised
+
+		scale = 1
+		if raw_hz.endswith('mhz'):
+			scale = 6
+		elif raw_hz.endswith('ghz'):
+			scale = 9
 
 		info = {
 		'vendor_id' : vendor_id,
@@ -1855,6 +1865,7 @@ def _get_cpu_info_from_sysinfo_v2():
 		info = {k: v for k, v in info.items() if v}
 		return info
 	except:
+		#raise # NOTE: To have this throw on error, uncomment this line
 		return {}
 
 def _get_cpu_info_from_wmic():
