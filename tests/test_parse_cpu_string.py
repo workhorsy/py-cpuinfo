@@ -120,6 +120,16 @@ class TestParseCPUString(unittest.TestCase):
 		self.assertEqual('0.0', hz_brand)
 		self.assertEqual((0, 0), cpuinfo._to_raw_hz(hz_brand, scale))
 	'''
+
+	def test_to_hz_string(self):
+		self.assertEqual('2.8', cpuinfo._to_hz_string('2.80'))
+		self.assertEqual('2.0', cpuinfo._to_hz_string('2'))
+		self.assertEqual('3.0', cpuinfo._to_hz_string(3))
+		self.assertEqual('6.5', cpuinfo._to_hz_string(6.5))
+		self.assertEqual('7.002', cpuinfo._to_hz_string(7.002))
+		self.assertEqual('4.0000000000001', cpuinfo._to_hz_string('4.0000000000001'))
+		self.assertEqual('5.0', cpuinfo._to_hz_string('5.000000000000'))
+
 	def test_parse_hz(self):
 		'''
 		scale, hz = cpuinfo._parse_hz(None)
