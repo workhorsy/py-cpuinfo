@@ -338,6 +338,27 @@ def _get_hz_string_from_brand(processor_brand):
 
 	return (scale, hz_brand)
 
+def _to_decimal_string(ticks):
+	# Convert to string
+	ticks = '{0}'.format(ticks)
+
+	ticks = "".join(n for n in ticks if n.isdigit() or n=='.').strip()
+	if ticks == '':
+		ticks = '0'
+
+	# Add decimal if missing
+	if '.' not in ticks:
+		ticks = '{0}.0'.format(ticks)
+
+	# Remove trailing zeros
+	ticks = ticks.rstrip('0')
+
+	# Add one trailing zero for empty right side
+	if ticks.endswith('.'):
+		ticks = '{0}0'.format(ticks)
+
+	return ticks
+
 def _to_friendly_hz(ticks, scale):
 	# Get the raw Hz as a string
 	left, right = _to_raw_hz(ticks, scale)
@@ -381,27 +402,6 @@ def _to_raw_hz(ticks, scale):
 	left, right = ticks.split('.')
 	left, right = int(left), int(right)
 	return (left, right)
-
-def _to_decimal_string(ticks):
-	# Convert to string
-	ticks = '{0}'.format(ticks)
-
-	ticks = "".join(n for n in ticks if n.isdigit() or n=='.').strip()
-	if ticks == '':
-		ticks = '0'
-
-	# Add decimal if missing
-	if '.' not in ticks:
-		ticks = '{0}.0'.format(ticks)
-
-	# Remove trailing zeros
-	ticks = ticks.rstrip('0')
-
-	# Add one trailing zero for empty right side
-	if ticks.endswith('.'):
-		ticks = '{0}0'.format(ticks)
-
-	return ticks
 
 def _parse_hz(hz_string):
 	hz_string = hz_string.strip().lower()
