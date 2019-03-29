@@ -386,6 +386,10 @@ def _to_hz_string(ticks):
 	# Convert to string
 	ticks = '{0}'.format(ticks)
 
+	ticks = "".join(n for n in ticks if n.isdigit() or n=='.').strip()
+	if ticks == '':
+		ticks = '0'
+
 	# Add decimal if missing
 	if '.' not in ticks:
 		ticks = '{0}.0'.format(ticks)
