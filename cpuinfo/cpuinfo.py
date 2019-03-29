@@ -183,7 +183,7 @@ class DataSource(object):
 		key = winreg.OpenKey(winreg.HKEY_LOCAL_MACHINE, r"Hardware\Description\System\CentralProcessor\0")
 		hz_actual = winreg.QueryValueEx(key, "~Mhz")[0]
 		winreg.CloseKey(key)
-		hz_actual = _to_hz_string(hz_actual)
+		hz_actual = _to_decimal_string(hz_actual)
 		return hz_actual
 
 	@staticmethod
@@ -334,7 +334,7 @@ def _get_hz_string_from_brand(processor_brand):
 		hz_brand = hz_brand.rsplit(None, 1)[1]
 
 	hz_brand = hz_brand.rstrip('mhz').rstrip('ghz').strip()
-	hz_brand = _to_hz_string(hz_brand)
+	hz_brand = _to_decimal_string(hz_brand)
 
 	return (scale, hz_brand)
 
@@ -382,7 +382,7 @@ def _to_raw_hz(ticks, scale):
 	left, right = int(left), int(right)
 	return (left, right)
 
-def _to_hz_string(ticks):
+def _to_decimal_string(ticks):
 	# Convert to string
 	ticks = '{0}'.format(ticks)
 
@@ -1300,7 +1300,7 @@ def _actual_get_cpu_info_from_cpuid(queue):
 
 	# Get the Hz and scale
 	hz_actual = cpuid.get_raw_hz()
-	hz_actual = _to_hz_string(hz_actual)
+	hz_actual = _to_decimal_string(hz_actual)
 
 	# Get the Hz and scale
 	scale, hz_advertised = _get_hz_string_from_brand(processor_brand)
@@ -1404,7 +1404,7 @@ def _get_cpu_info_from_proc_cpuinfo():
 		# Convert from MHz string to Hz
 		hz_actual = _get_field(False, output, None, '', 'cpu MHz', 'cpu speed', 'clock')
 		hz_actual = hz_actual.lower().rstrip('mhz').strip()
-		hz_actual = _to_hz_string(hz_actual)
+		hz_actual = _to_decimal_string(hz_actual)
 
 		# Convert from GHz/MHz string to Hz
 		scale, hz_advertised = (0, None)
@@ -1471,7 +1471,7 @@ def _get_cpu_info_from_cpufreq_info():
 		elif hz_brand.endswith('ghz'):
 			scale = 9
 		hz_brand = hz_brand.rstrip('mhz').rstrip('ghz').strip()
-		hz_brand = _to_hz_string(hz_brand)
+		hz_brand = _to_decimal_string(hz_brand)
 
 		info = {
 			'hz_advertised' : _to_friendly_hz(hz_brand, scale),
@@ -1503,7 +1503,7 @@ def _get_cpu_info_from_lscpu():
 
 		new_hz = _get_field(False, output, None, None, 'CPU max MHz', 'CPU MHz')
 		if new_hz:
-			new_hz = _to_hz_string(new_hz)
+			new_hz = _to_decimal_string(new_hz)
 			scale = 6
 			info['hz_advertised'] = _to_friendly_hz(new_hz, scale)
 			info['hz_actual'] = _to_friendly_hz(new_hz, scale)
@@ -1748,7 +1748,7 @@ def _get_cpu_info_from_sysctl():
 		# Convert from GHz/MHz string to Hz
 		scale, hz_advertised = _get_hz_string_from_brand(processor_brand)
 		hz_actual = _get_field(False, output, None, None, 'hw.cpufrequency')
-		hz_actual = _to_hz_string(hz_actual)
+		hz_actual = _to_decimal_string(hz_actual)
 
 		info = {
 		'vendor_id' : vendor_id,
@@ -1883,7 +1883,7 @@ def _get_cpu_info_from_sysinfo_v2():
 		lines = [n for n in output.split('\n') if n]
 		raw_hz = lines[0].split('running at ')[1].strip().lower()
 		hz_advertised = raw_hz.rstrip('mhz').rstrip('ghz').strip()
-		hz_advertised = _to_hz_string(hz_advertised)
+		hz_advertised = _to_decimal_string(hz_advertised)
 		hz_actual = hz_advertised
 
 		scale = 1
@@ -1943,7 +1943,7 @@ def _get_cpu_info_from_wmic():
 		hz_actual = value.get('CurrentClockSpeed')
 		scale_actual = 6
 		if hz_actual:
-			hz_actual = _to_hz_string(hz_actual)
+			hz_actual = _to_decimal_string(hz_actual)
 
 		# Get cache sizes
 		l2_cache_size = value.get('L2CacheSize')
@@ -2017,7 +2017,7 @@ def _get_cpu_info_from_registry():
 
 		# Get the actual CPU Hz
 		hz_actual = DataSource.winreg_hz_actual()
-		hz_actual = _to_hz_string(hz_actual)
+		hz_actual = _to_decimal_string(hz_actual)
 
 		# Get the advertised CPU Hz
 		scale, hz_advertised = _get_hz_string_from_brand(processor_brand)
@@ -2123,11 +2123,11 @@ def _get_cpu_info_from_kstat():
 		# Convert from GHz/MHz string to Hz
 		scale = 6
 		hz_advertised = kstat.split('\tclock_MHz ')[1].split('\n')[0].strip()
-		hz_advertised = _to_hz_string(hz_advertised)
+		hz_advertised = _to_decimal_string(hz_advertised)
 
 		# Convert from GHz/MHz string to Hz
 		hz_actual = kstat.split('\tcurrent_clock_Hz ')[1].split('\n')[0].strip()
-		hz_actual = _to_hz_string(hz_actual)
+		hz_actual = _to_decimal_string(hz_actual)
 
 		info = {
 		'vendor_id' : vendor_id,
