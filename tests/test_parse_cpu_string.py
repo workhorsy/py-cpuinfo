@@ -7,8 +7,8 @@ import helpers
 
 
 class TestParseCPUString(unittest.TestCase):
+	'''
 	def test_parse_cpu_string(self):
-		'''
 		processor_brand, hz_actual, scale, vendor_id, stepping, model, family = \
 		cpuinfo._parse_cpu_string("Intel(R) Pentium(R) CPU G640 @ 2.80GHz (fam: 06, model: 2a, stepping: 07)")
 		self.assertEqual('Intel(R) Pentium(R) CPU G640 @ 2.80GHz', processor_brand)
@@ -59,12 +59,12 @@ class TestParseCPUString(unittest.TestCase):
 		self.assertEqual(None, stepping)
 		self.assertEqual(None, model)
 		self.assertEqual(None, family)
-		'''
+
 		# NOTE: No @ symbol or Hz
 		# FIXME: change cpu string to "AMD Ryzen 7 2700X Eight-Core Processor          (3693.15-MHz K8-class CPU)")
 		# FIXME: Parsing this CPU brand string fails, because it is missing the @ and includes the Hz in quotes
 		processor_brand, hz_actual, scale, vendor_id, stepping, model, family = \
-		cpuinfo._parse_cpu_string("Intel(R) Pentium(C) AMD Ryzen 7 2700X Eight-Core Processor          (3693.15-MHz K8-class CPU) (fam: 06, model: 2a, stepping: 07)")
+		cpuinfo._parse_cpu_string("AMD Ryzen 7 2700X Eight-Core Processor          (3693.15-MHz K8-class CPU) (fam: 06, model: 2a, stepping: 07)")
 		self.assertEqual("AMD Ryzen 7 2700X Eight-Core Processor", processor_brand)
 		self.assertEqual('3.693', hz_actual)
 		self.assertEqual(9, scale)
@@ -72,7 +72,8 @@ class TestParseCPUString(unittest.TestCase):
 		self.assertEqual(None, stepping)
 		self.assertEqual(None, model)
 		self.assertEqual(None, family)
-
+	'''
+	'''
 	def test_to_friendly_hz(self):
 		scale, hz_brand = cpuinfo._get_hz_string_from_brand('Intel(R) Pentium(R) CPU G640 @ 2.80GHz')
 		self.assertEqual(9, scale)
@@ -118,3 +119,26 @@ class TestParseCPUString(unittest.TestCase):
 		self.assertEqual(1, scale)
 		self.assertEqual('0.0', hz_brand)
 		self.assertEqual((0, 0), cpuinfo._to_raw_hz(hz_brand, scale))
+	'''
+	def test_parse_hz(self):
+		'''
+		scale, hz = cpuinfo._parse_hz(None)
+		self.assertEqual((1, '0.0'), (scale, hz))
+
+		scale, hz = cpuinfo._parse_hz('')
+		self.assertEqual((1, '0.0'), (scale, hz))
+
+		scale, hz = cpuinfo._parse_hz('8.778.9')
+		self.assertEqual((1, '0.0'), (scale, hz))
+		'''
+		scale, hz = cpuinfo._parse_hz('2.80GHz')
+		self.assertEqual((9, '2.8000'), (scale, hz))
+
+		scale, hz = cpuinfo._parse_hz('1.20 mHz')
+		self.assertEqual((6, '1.2000'), (scale, hz))
+
+		scale, hz = cpuinfo._parse_hz('3693.15-MHz')
+		self.assertEqual((9, '3.6931'), (scale, hz))
+
+		scale, hz = cpuinfo._parse_hz('12 GHz')
+		self.assertEqual((9, '12.0000'), (scale, hz))

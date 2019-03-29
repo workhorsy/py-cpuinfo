@@ -399,6 +399,26 @@ def _to_hz_string(ticks):
 
 	return ticks
 
+def _parse_hz(hz_string):
+	hz_string = hz_string.strip().lower()
+	scale, hz = (None, None)
+
+	if hz_string.endswith('ghz'):
+		scale = 9
+	elif hz_string.endswith('mhz'):
+		scale = 6
+	elif hz_string.endswith('hz'):
+		scale = 1
+
+	hz = "".join(n for n in hz_string if n.isdigit()).strip() + '.0'
+	if not '.' in hz:
+		hz += '.0'
+	print('!!!! hz', (hz,))
+	hz = _to_raw_hz(hz, scale)
+	print('!!!! hz', (hz,))
+
+	return (scale, hz)
+
 def _to_friendly_bytes(input):
 	import re
 
@@ -422,7 +442,7 @@ def _to_friendly_bytes(input):
 def _parse_cpu_string(cpu_string):
 	import re
 
-	# Get all the things inside brackets ()
+	# Find all the strings inside brackets ()
 	starts = [m.start() for m in re.finditer('\(', cpu_string)]
 	ends = [m.start() for m in re.finditer('\)', cpu_string)]
 	print('!!! starts: ', starts)
@@ -432,7 +452,7 @@ def _parse_cpu_string(cpu_string):
 	insides = [cpu_string[start+1 : end] for start, end in insides.items()]
 	print('!!!!!!!!!!!!!!!!! insides: ', insides)
 
-	# Various fields
+	# Find all the fields
 	vendor_id, stepping, model, family = (None, None, None, None)
 	for inside in insides:
 		for pair in inside.split(','):
@@ -449,20 +469,33 @@ def _parse_cpu_string(cpu_string):
 					family = int(value.lstrip('0x'), 16)
 	print('!!!!!!!!!!!!!!!!! (vendor_id, stepping, model, family): ', (vendor_id, stepping, model, family))
 
-	# Processor Brand
-	processor_brand = cpu_string
-	if fields_index != -1:
-		processor_brand = cpu_string[0 : fields_index].strip()
-	print('!!! processor_brand: ', processor_brand)
+	# Find the Processor Brand
+	# Strip off extra strings in brackets at end
+	processor_brand = cpu_string.strip()
+	is_working = True
+	while is_working:
+		print('!!! looping ...')
+		print('!!! processor_brand: ', (processor_brand,))
+		is_working = False
+		for inside in insides:
+			full = "({0})".format(inside)
+			print('!!! full: ', full)
+			if processor_brand.endswith(full):
+				processor_brand = processor_brand[ :-len(full)].strip()
+				is_working = True
+	print('!!! processor_brand: ', (processor_brand,))
 
-	fields = None
-	if fields_index != -1:
-		fields = cpu_string[fields_index : ]
-	print('fields: ', fields)
-
-	# Hz
+	# Find the Hz after @
 	scale, hz_brand = _get_hz_string_from_brand(processor_brand)
 	print('!!! scale, hz_brand: ', (scale, hz_brand))
+
+	# Find Hz inside brackets ()
+	if hz_brand == '0.0':
+		for inside in insides:
+			for entry in inside.split(' '):
+				print('!!! entry: ', (entry, ))
+				scale, hz_brand = _parse_hz(entry)
+				print('!!! fuuuu', (scale, hz_brand))
 
 	return (processor_brand, hz_brand, scale, vendor_id, stepping, model, family)
 
