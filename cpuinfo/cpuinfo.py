@@ -375,7 +375,7 @@ def _parse_hz(hz_string):
 		elif hz_string.endswith('hz'):
 			scale = 1
 
-		hz = "".join(n for n in hz_string if n.isdigit()).strip() + '.0'
+		hz = "".join(n for n in hz_string if n.isdigit() or n=='.').strip()
 		if not '.' in hz:
 			hz += '.0'
 		print('!!!!!!!! hz', (hz, scale, hz_string))
@@ -508,17 +508,21 @@ def _parse_cpu_string(cpu_string):
 				is_working = True
 	print('!!! processor_brand: ', (processor_brand,))
 
-	# Find the Hz after @
+	# Find the Hz in the brand string
 	scale, hz_brand = _get_hz_string_from_brand(processor_brand)
 	print('!!! scale, hz_brand: ', (scale, hz_brand))
 
-	# Find Hz inside brackets ()
+	# Find Hz inside brackets () after the brand string
 	if hz_brand == '0.0':
 		for inside in insides:
-			for entry in inside.split(' '):
-				print('!!! entry: ', (entry, ))
-				scale, hz_brand = _parse_hz(entry)
-				print('!!! fuuuu', (scale, hz_brand))
+			hz = inside
+			for entry in ['GHz', 'MHz', 'Hz']:
+				if entry in hz:
+					hz = "CPU @ " + hz[ : hz.find(entry) + len(entry)]
+					print("!!!!!!!!!!!!!!!!!!!! hz:", hz)
+					scale, hz_brand = _get_hz_string_from_brand(hz)
+					print("!!!!!!!!!!!!!!!!!!!! scale, hz_brand:", (scale, hz_brand))
+					break
 
 	return (processor_brand, hz_brand, scale, vendor_id, stepping, model, family)
 
