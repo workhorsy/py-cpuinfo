@@ -109,13 +109,6 @@ if __name__ == '__main__':
 		TestActual,
 		TestCLI
 	]
-	tests = [
-		TestParseCPUString,
-		TestTrueOS_18_X86_64_Ryzen7
-	]
-	tests = [
-		TestParseCPUString,
-	]
 
 	# Add the tests to the suite
 	suite = unittest.TestSuite()

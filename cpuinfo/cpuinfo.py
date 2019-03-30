@@ -378,9 +378,8 @@ def _parse_hz(hz_string):
 		hz = "".join(n for n in hz_string if n.isdigit() or n=='.').strip()
 		if not '.' in hz:
 			hz += '.0'
-		print('!!!!!!!! hz', (hz, scale, hz_string))
+
 		hz, scale = _to_raw_hz(hz, scale)
-		print('!!!!!!!! hz', (hz, scale, hz_string))
 
 		return (scale, hz)
 	except:
@@ -468,12 +467,8 @@ def _parse_cpu_string(cpu_string):
 	# Find all the strings inside brackets ()
 	starts = [m.start() for m in re.finditer('\(', cpu_string)]
 	ends = [m.start() for m in re.finditer('\)', cpu_string)]
-	print('!!! starts: ', starts)
-	print('!!! ends: ', ends)
 	insides = {k: v for k, v in zip(starts, ends)}
-	print('!!!!!!!!!!!!!!!!! insides: ', insides)
 	insides = [cpu_string[start+1 : end] for start, end in insides.items()]
-	print('!!!!!!!!!!!!!!!!! insides: ', insides)
 
 	# Find all the fields
 	vendor_id, stepping, model, family = (None, None, None, None)
@@ -490,27 +485,21 @@ def _parse_cpu_string(cpu_string):
 					model = int(value.lstrip('0x'), 16)
 				elif name in ['fam', 'family']:
 					family = int(value.lstrip('0x'), 16)
-	print('!!!!!!!!!!!!!!!!! (vendor_id, stepping, model, family): ', (vendor_id, stepping, model, family))
 
 	# Find the Processor Brand
 	# Strip off extra strings in brackets at end
 	processor_brand = cpu_string.strip()
 	is_working = True
 	while is_working:
-		print('!!! looping ...')
-		print('!!! processor_brand: ', (processor_brand,))
 		is_working = False
 		for inside in insides:
 			full = "({0})".format(inside)
-			print('!!! full: ', full)
 			if processor_brand.endswith(full):
 				processor_brand = processor_brand[ :-len(full)].strip()
 				is_working = True
-	print('!!! processor_brand: ', (processor_brand,))
 
 	# Find the Hz in the brand string
 	scale, hz_brand = _get_hz_string_from_brand(processor_brand)
-	print('!!! scale, hz_brand: ', (scale, hz_brand))
 
 	# Find Hz inside brackets () after the brand string
 	if hz_brand == '0.0':
@@ -519,9 +508,7 @@ def _parse_cpu_string(cpu_string):
 			for entry in ['GHz', 'MHz', 'Hz']:
 				if entry in hz:
 					hz = "CPU @ " + hz[ : hz.find(entry) + len(entry)]
-					print("!!!!!!!!!!!!!!!!!!!! hz:", hz)
 					scale, hz_brand = _get_hz_string_from_brand(hz)
-					print("!!!!!!!!!!!!!!!!!!!! scale, hz_brand:", (scale, hz_brand))
 					break
 
 	return (processor_brand, hz_brand, scale, vendor_id, stepping, model, family)
@@ -536,11 +523,9 @@ def _parse_dmesg_output(output):
 				output.split('\nCPU1:')[1:] + \
 				output.split('\nCPU:')[1:]
 		lines = [l.split('\n')[0].strip() for l in lines]
-		print('!!!! lines:', lines)
 
 		# Convert the lines to CPU strings
 		cpu_strings = [_parse_cpu_string(l) for l in lines]
-		print('!!! cpu_strings:', cpu_strings)
 
 		# Find the CPU string that has the most fields
 		best_string = None
@@ -550,15 +535,12 @@ def _parse_dmesg_output(output):
 			if count > highest_count:
 				highest_count = count
 				best_string = cpu_string
-		print('!!!!! best_string:', best_string)
 
 		# If no CPU string was found, return {}
 		if not best_string:
 			return {}
 
 		processor_brand, hz_actual, scale, vendor_id, stepping, model, family = best_string
-		print('!!! multiple ...', (processor_brand, hz_actual, scale, vendor_id, stepping, model, family))
-		print('!!!!!!!!!!!!!!!! hz_actual:', hz_actual)
 
 		# Origin
 		if '  Origin=' in output:
@@ -566,12 +548,11 @@ def _parse_dmesg_output(output):
 			fields = fields.strip().split()
 			fields = [n.strip().split('=') for n in fields]
 			fields = [{n[0].strip().lower() : n[1].strip()} for n in fields]
-			print('!!! fields: ', fields)
-			#print('fields: ', fields)
+
 			for field in fields:
 				name = list(field.keys())[0]
 				value = list(field.values())[0]
-				#print('name:{0}, value:{1}'.format(name, value))
+
 				if name == 'origin':
 					vendor_id = value.strip('"')
 				elif name == 'stepping':
@@ -580,8 +561,6 @@ def _parse_dmesg_output(output):
 					model = int(value.lstrip('0x'), 16)
 				elif name in ['fam', 'family']:
 					family = int(value.lstrip('0x'), 16)
-		#print('FIELDS: ', (vendor_id, stepping, model, family))
-		print('!!! multiple ...', (processor_brand, hz_actual, scale, vendor_id, stepping, model, family))
 
 		# Features
 		flag_lines = []
@@ -595,11 +574,9 @@ def _parse_dmesg_output(output):
 			for flag in line.split(','):
 				flags.append(flag)
 		flags.sort()
-		print('!!! flags:', flags)
 
 		# Convert from GHz/MHz string to Hz
 		scale, hz_advertised = _get_hz_string_from_brand(processor_brand)
-		print('!!! (scale, hz_advertised)', (scale, hz_advertised))
 
 		info = {
 		'vendor_id' : vendor_id,
@@ -621,7 +598,7 @@ def _parse_dmesg_output(output):
 
 		return {k: v for k, v in info.items() if v}
 	except:
-		raise
+		#raise
 		pass
 
 	return {}
