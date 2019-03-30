@@ -4,6 +4,14 @@ import unittest
 from cpuinfo import *
 import helpers
 
+'''
+_to_decimal_string
+_to_raw_hz
+_parse_hz
+_to_friendly_hz
+_get_hz_string_from_brand
+_parse_cpu_string
+'''
 
 
 class TestParseCPUString(unittest.TestCase):
@@ -17,8 +25,49 @@ class TestParseCPUString(unittest.TestCase):
 		self.assertEqual('5.0', cpuinfo._to_decimal_string('5.000000000000'))
 
 		self.assertEqual('0.0', cpuinfo._to_decimal_string('invalid'))
+		self.assertEqual('0.0', cpuinfo._to_decimal_string('8.778.9'))
 		self.assertEqual('0.0', cpuinfo._to_decimal_string(''))
 		self.assertEqual('0.0', cpuinfo._to_decimal_string(None))
+
+	def test_to_raw_hz(self):
+		self.assertEqual((2800000000, 0), cpuinfo._to_raw_hz('2.8', 9))
+		self.assertEqual((1200000, 0), cpuinfo._to_raw_hz('1.2', 6))
+		self.assertEqual((3200000000, 0), cpuinfo._to_raw_hz('3.2', 9))
+		self.assertEqual((0, 0), cpuinfo._to_raw_hz('0.0', 1))
+
+		self.assertEqual((0, 0), cpuinfo._to_raw_hz('invalid', 1))
+		self.assertEqual((0, 0), cpuinfo._to_raw_hz('8.778.9', 1))
+		self.assertEqual((0, 0), cpuinfo._to_raw_hz('', 1))
+		self.assertEqual((0, 0), cpuinfo._to_raw_hz(None, 1))
+
+	def test_parse_hz(self):
+		self.assertEqual((0, 2800000000), cpuinfo._parse_hz('2.80GHz'))
+		self.assertEqual((0, 1200000), cpuinfo._parse_hz('1.20 mHz'))
+		self.assertEqual((0, 3693150000), cpuinfo._parse_hz('3693.15-MHz'))
+		self.assertEqual((0, 12000000000), cpuinfo._parse_hz('12 GHz'))
+
+		self.assertEqual((0, 0), cpuinfo._parse_hz('invalid'))
+		self.assertEqual((0, 0), cpuinfo._parse_hz('8.778.9'))
+		self.assertEqual((0, 0), cpuinfo._parse_hz(''))
+		self.assertEqual((0, 0), cpuinfo._parse_hz(None))
+
+	def test_to_friendly_hz(self):
+		self.assertEqual('2.8000 GHz', cpuinfo._to_friendly_hz('2.8', 9))
+		self.assertEqual('1.2000 MHz', cpuinfo._to_friendly_hz('1.2', 6))
+		self.assertEqual('3.2000 GHz', cpuinfo._to_friendly_hz('3.2', 9))
+		self.assertEqual('0.0000 Hz', cpuinfo._to_friendly_hz('0.0', 1))
+
+		self.assertEqual('0.0000 Hz', cpuinfo._to_friendly_hz('invalid', 0))
+		self.assertEqual('0.0000 Hz', cpuinfo._to_friendly_hz('8.778.9', 0))
+		self.assertEqual('0.0000 Hz', cpuinfo._to_friendly_hz('', 0))
+		self.assertEqual('0.0000 Hz', cpuinfo._to_friendly_hz(None, 0))
+
+	def test_get_hz_string_from_brand(self):
+		pass
+
+	def test_parse_cpu_string(self):
+		pass
+
 	'''
 	def test_parse_cpu_string(self):
 		processor_brand, hz_actual, scale, vendor_id, stepping, model, family = \
@@ -84,9 +133,8 @@ class TestParseCPUString(unittest.TestCase):
 		self.assertEqual(None, stepping)
 		self.assertEqual(None, model)
 		self.assertEqual(None, family)
-	'''
-	'''
-	def test_to_friendly_hz(self):
+
+	def test_get_hz_string_from_brand(self):
 		scale, hz_brand = cpuinfo._get_hz_string_from_brand('Intel(R) Pentium(R) CPU G640 @ 2.80GHz')
 		self.assertEqual(9, scale)
 		self.assertEqual('2.8', hz_brand)
@@ -132,26 +180,3 @@ class TestParseCPUString(unittest.TestCase):
 		self.assertEqual('0.0', hz_brand)
 		self.assertEqual((0, 0), cpuinfo._to_raw_hz(hz_brand, scale))
 	'''
-
-	def test_parse_hz(self):
-		'''
-		scale, hz = cpuinfo._parse_hz(None)
-		self.assertEqual((1, '0.0'), (scale, hz))
-
-		scale, hz = cpuinfo._parse_hz('')
-		self.assertEqual((1, '0.0'), (scale, hz))
-
-		scale, hz = cpuinfo._parse_hz('8.778.9')
-		self.assertEqual((1, '0.0'), (scale, hz))
-		'''
-		scale, hz = cpuinfo._parse_hz('2.80GHz')
-		self.assertEqual((9, '2.8000'), (scale, hz))
-
-		scale, hz = cpuinfo._parse_hz('1.20 mHz')
-		self.assertEqual((6, '1.2000'), (scale, hz))
-
-		scale, hz = cpuinfo._parse_hz('3693.15-MHz')
-		self.assertEqual((9, '3.6931'), (scale, hz))
-
-		scale, hz = cpuinfo._parse_hz('12 GHz')
-		self.assertEqual((9, '12.0000'), (scale, hz))

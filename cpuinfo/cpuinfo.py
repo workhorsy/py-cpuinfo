@@ -316,6 +316,130 @@ def _get_field(cant_be_number, raw_string, convert_to, default_value, *field_nam
 
 	return retval
 
+def _to_decimal_string(ticks):
+	try:
+		# Convert to string
+		ticks = '{0}'.format(ticks)
+
+		# Strip off non numbers and decimal places
+		ticks = "".join(n for n in ticks if n.isdigit() or n=='.').strip()
+		if ticks == '':
+			ticks = '0'
+
+		# Add decimal if missing
+		if '.' not in ticks:
+			ticks = '{0}.0'.format(ticks)
+
+		# Remove trailing zeros
+		ticks = ticks.rstrip('0')
+
+		# Add one trailing zero for empty right side
+		if ticks.endswith('.'):
+			ticks = '{0}0'.format(ticks)
+
+		# Make sure the number can be converted to a float
+		ticks = float(ticks)
+		ticks = '{0}'.format(ticks)
+		return ticks
+	except:
+		return '0.0'
+
+def _to_raw_hz(ticks, scale):
+	try:
+		# Make sure the number can be converted to a float
+		ticks = float(ticks)
+		ticks = '{0}'.format(ticks)
+
+		# Scale the numbers
+		hz = ticks.lstrip('0')
+		old_index = hz.index('.')
+		hz = hz.replace('.', '')
+		hz = hz.ljust(scale + old_index+1, '0')
+		new_index = old_index + scale
+		hz = '{0}.{1}'.format(hz[:new_index], hz[new_index:])
+		left, right = hz.split('.')
+		left, right = int(left), int(right)
+		return (left, right)
+	except:
+		return (0, 0)
+
+def _parse_hz(hz_string):
+	try:
+		hz_string = hz_string.strip().lower()
+		scale, hz = (None, None)
+
+		if hz_string.endswith('ghz'):
+			scale = 9
+		elif hz_string.endswith('mhz'):
+			scale = 6
+		elif hz_string.endswith('hz'):
+			scale = 1
+
+		hz = "".join(n for n in hz_string if n.isdigit()).strip() + '.0'
+		if not '.' in hz:
+			hz += '.0'
+		print('!!!!!!!! hz', (hz, scale, hz_string))
+		hz, scale = _to_raw_hz(hz, scale)
+		print('!!!!!!!! hz', (hz, scale, hz_string))
+
+		return (scale, hz)
+	except:
+		return (0, 0)
+
+def _to_friendly_hz(ticks, scale):
+	try:
+		# Get the raw Hz as a string
+		left, right = _to_raw_hz(ticks, scale)
+		result = '{0}.{1}'.format(left, right)
+
+		# Get the location of the dot, and remove said dot
+		dot_index = result.index('.')
+		result = result.replace('.', '')
+
+		# Get the Hz symbol and scale
+		symbol = "Hz"
+		scale = 0
+		if dot_index > 9:
+			symbol = "GHz"
+			scale = 9
+		elif dot_index > 6:
+			symbol = "MHz"
+			scale = 6
+		elif dot_index > 3:
+			symbol = "KHz"
+			scale = 3
+
+		# Get the Hz with the dot at the new scaled point
+		result = '{0}.{1}'.format(result[:-scale-1], result[-scale-1:])
+
+		# Format the ticks to have 4 numbers after the decimal
+		# and remove any superfluous zeroes.
+		result = '{0:.4f} {1}'.format(float(result), symbol)
+		result = result.rstrip('0')
+		return result
+	except:
+		return '0.0000 Hz'
+
+def _to_friendly_bytes(input):
+	import re
+
+	if not input:
+		return input
+	input = "{0}".format(input)
+
+	formats = {
+		r"^[0-9]+B$" : 'B',
+		r"^[0-9]+K$" : 'KB',
+		r"^[0-9]+M$" : 'MB',
+		r"^[0-9]+G$" : 'GB'
+	}
+
+	for pattern, friendly_size in formats.items():
+		if re.match(pattern, input):
+			return "{0} {1}".format(input[ : -1].strip(), friendly_size)
+
+	return input
+
 def _get_hz_string_from_brand(processor_brand):
 	# Just return 0 if the processor brand does not have the Hz
 	if not 'hz' in processor_brand.lower():
@@ -337,111 +461,6 @@ def _get_hz_string_from_brand(processor_brand):
 	hz_brand = _to_decimal_string(hz_brand)
 
 	return (scale, hz_brand)
-
-def _to_decimal_string(ticks):
-	# Convert to string
-	ticks = '{0}'.format(ticks)
-
-	ticks = "".join(n for n in ticks if n.isdigit() or n=='.').strip()
-	if ticks == '':
-		ticks = '0'
-
-	# Add decimal if missing
-	if '.' not in ticks:
-		ticks = '{0}.0'.format(ticks)
-
-	# Remove trailing zeros
-	ticks = ticks.rstrip('0')
-
-	# Add one trailing zero for empty right side
-	if ticks.endswith('.'):
-		ticks = '{0}0'.format(ticks)
-
-	return ticks
-
-def _to_friendly_hz(ticks, scale):
-	# Get the raw Hz as a string
-	left, right = _to_raw_hz(ticks, scale)
-	ticks = '{0}.{1}'.format(left, right)
-
-	# Get the location of the dot, and remove said dot
-	dot_index = ticks.index('.')
-	ticks = ticks.replace('.', '')
-
-	# Get the Hz symbol and scale
-	symbol = "Hz"
-	scale = 0
-	if dot_index > 9:
-		symbol = "GHz"
-		scale = 9
-	elif dot_index > 6:
-		symbol = "MHz"
-		scale = 6
-	elif dot_index > 3:
-		symbol = "KHz"
-		scale = 3
-
-	# Get the Hz with the dot at the new scaled point
-	ticks = '{0}.{1}'.format(ticks[:-scale-1], ticks[-scale-1:])
-
-	# Format the ticks to have 4 numbers after the decimal
-	# and remove any superfluous zeroes.
-	ticks = '{0:.4f} {1}'.format(float(ticks), symbol)
-	ticks = ticks.rstrip('0')
-
-	return ticks
-
-def _to_raw_hz(ticks, scale):
-	# Scale the numbers
-	ticks = ticks.lstrip('0')
-	old_index = ticks.index('.')
-	ticks = ticks.replace('.', '')
-	ticks = ticks.ljust(scale + old_index+1, '0')
-	new_index = old_index + scale
-	ticks = '{0}.{1}'.format(ticks[:new_index], ticks[new_index:])
-	left, right = ticks.split('.')
-	left, right = int(left), int(right)
-	return (left, right)
-
-def _parse_hz(hz_string):
-	hz_string = hz_string.strip().lower()
-	scale, hz = (None, None)
-
-	if hz_string.endswith('ghz'):
-		scale = 9
-	elif hz_string.endswith('mhz'):
-		scale = 6
-	elif hz_string.endswith('hz'):
-		scale = 1
-
-	hz = "".join(n for n in hz_string if n.isdigit()).strip() + '.0'
-	if not '.' in hz:
-		hz += '.0'
-	print('!!!! hz', (hz,))
-	hz = _to_raw_hz(hz, scale)
-	print('!!!! hz', (hz,))
-
-	return (scale, hz)
-
-def _to_friendly_bytes(input):
-	import re
-
-	if not input:
-		return input
-	input = "{0}".format(input)
-
-	formats = {
-		r"^[0-9]+B$" : 'B',
-		r"^[0-9]+K$" : 'KB',
-		r"^[0-9]+M$" : 'MB',
-		r"^[0-9]+G$" : 'GB'
-	}
-
-	for pattern, friendly_size in formats.items():
-		if re.match(pattern, input):
-			return "{0} {1}".format(input[ : -1].strip(), friendly_size)
-
-	return input
 
 def _parse_cpu_string(cpu_string):
 	import re
