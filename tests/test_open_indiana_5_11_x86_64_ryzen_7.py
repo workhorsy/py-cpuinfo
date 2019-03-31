@@ -6,11 +6,11 @@ import helpers
 
 
 class MockDataSource(object):
-	bits = '64bit'
+	bits = '32bit'
 	cpu_count = 8
 	is_windows = False
 	raw_arch_string = 'i86pc'
-	raw_uname_string = 'x86_32'
+	raw_uname_string = 'i386'
 	can_cpuid = False
 
 	@staticmethod
@@ -64,7 +64,8 @@ name:   cpu_info0                       class:    misc
 	stepping                        2
 	supported_frequencies_Hz        3692643590
 	supported_max_cstates           0
-vendor_id AuthenticAMD
+	vendor_id                       AuthenticAMD
+
 
 '''
 		return returncode, output
@@ -99,18 +100,18 @@ class TestOpenIndiana_5_11_Ryzen_7(unittest.TestCase):
 	def test_get_cpu_info_from_kstat(self):
 		info = cpuinfo._get_cpu_info_from_kstat()
 
-		self.assertEqual('GenuineIntel', info['vendor_id'])
-		self.assertEqual('Intel(r) Core(tm) i7 CPU         870  @ 2.93GHz', info['brand'])
-		self.assertEqual('2.9310 GHz', info['hz_advertised'])
-		self.assertEqual('2.9305 GHz', info['hz_actual'])
-		self.assertEqual((2931000000, 0), info['hz_advertised_raw'])
-		self.assertEqual((2930505167, 0), info['hz_actual_raw'])
+		self.assertEqual('AuthenticAMD', info['vendor_id'])
+		self.assertEqual('AMD Ryzen 7 2700X Eight-Core Processor', info['brand'])
+		self.assertEqual('3.6930 GHz', info['hz_advertised'])
+		self.assertEqual('3.6926 GHz', info['hz_actual'])
+		self.assertEqual((3693000000, 0), info['hz_advertised_raw'])
+		self.assertEqual((3692643590, 0), info['hz_actual_raw'])
 
-		self.assertEqual(5, info['stepping'])
-		self.assertEqual(30, info['model'])
-		self.assertEqual(6, info['family'])
+		self.assertEqual(2, info['stepping'])
+		self.assertEqual(8, info['model'])
+		self.assertEqual(23, info['family'])
 		self.assertEqual(
-			['ahf', 'amd_sysc', 'cmov', 'cx8', 'fpu', 'fxsr', 'mmx', 'sse', 'sse2', 'sse3', 'ssse3', 'tsc', 'tscp']
+			['amd_mmx', 'amd_sysc', 'cmov', 'cx8', 'fpu', 'mmx', 'tsc']
 			,
 			info['flags']
 		)
@@ -118,23 +119,23 @@ class TestOpenIndiana_5_11_Ryzen_7(unittest.TestCase):
 	def test_all(self):
 		info = cpuinfo._get_cpu_info_internal()
 
-		self.assertEqual('GenuineIntel', info['vendor_id'])
-		self.assertEqual('Intel(r) Core(tm) i7 CPU         870  @ 2.93GHz', info['brand'])
-		self.assertEqual('2.9310 GHz', info['hz_advertised'])
-		self.assertEqual('2.9305 GHz', info['hz_actual'])
-		self.assertEqual((2931000000, 0), info['hz_advertised_raw'])
-		self.assertEqual((2930505167, 0), info['hz_actual_raw'])
+		self.assertEqual('AuthenticAMD', info['vendor_id'])
+		self.assertEqual('AMD Ryzen 7 2700X Eight-Core Processor', info['brand'])
+		self.assertEqual('3.6930 GHz', info['hz_advertised'])
+		self.assertEqual('3.6926 GHz', info['hz_actual'])
+		self.assertEqual((3693000000, 0), info['hz_advertised_raw'])
+		self.assertEqual((3692643590, 0), info['hz_actual_raw'])
 		self.assertEqual('X86_32', info['arch'])
 		self.assertEqual(32, info['bits'])
-		self.assertEqual(4, info['count'])
+		self.assertEqual(8, info['count'])
 
 		self.assertEqual('i86pc', info['raw_arch_string'])
 
-		self.assertEqual(5, info['stepping'])
-		self.assertEqual(30, info['model'])
-		self.assertEqual(6, info['family'])
+		self.assertEqual(2, info['stepping'])
+		self.assertEqual(8, info['model'])
+		self.assertEqual(23, info['family'])
 		self.assertEqual(
-			['ahf', 'amd_sysc', 'cmov', 'cx8', 'fpu', 'fxsr', 'mmx', 'sse', 'sse2', 'sse3', 'ssse3', 'tsc', 'tscp']
+			['amd_mmx', 'amd_sysc', 'cmov', 'cx8', 'fpu', 'mmx', 'tsc']
 			,
 			info['flags']
 		)

@@ -67,7 +67,6 @@ class TestTrueOS_18_X86_64_Ryzen7(unittest.TestCase):
 
 	def test_get_cpu_info_from_dmesg(self):
 		info = cpuinfo._get_cpu_info_from_dmesg()
-		print(info)
 
 		self.assertEqual('AMD Ryzen 7 2700X Eight-Core Processor', info['brand'])
 		self.assertEqual('3.69300 GHz', info['hz_advertised'])
@@ -89,7 +88,6 @@ class TestTrueOS_18_X86_64_Ryzen7(unittest.TestCase):
 
 	def test_all(self):
 		info = cpuinfo._get_cpu_info_internal()
-		print(info)
 
 		self.assertEqual('AMD Ryzen 7 2700X Eight-Core Processor', info['brand'])
 		self.assertEqual('3.69300 GHz', info['hz_advertised'])
