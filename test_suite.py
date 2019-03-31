@@ -57,6 +57,7 @@ from test_free_bsd_11_x86_64 import TestFreeBSD_11_X86_64
 from test_osx_10_9_x86_64 import TestOSX_10_9
 from test_osx_10_12_x86_64 import TestOSX_10_12
 from test_solaris_11_x86_32 import TestSolaris_11
+from test_open_indiana_5_11_x86_64_ryzen_7 import TestOpenIndiana_5_11_Ryzen_7
 from test_haiku_x86_32 import TestHaiku_x86_32
 from test_haiku_x86_64 import TestHaiku_x86_64
 from test_haiku_x86_64_beta_1_ryzen_7 import TestHaiku_x86_64_Beta_1_Ryzen7
@@ -98,6 +99,7 @@ if __name__ == '__main__':
 		TestOSX_10_9,
 		TestOSX_10_12,
 		TestSolaris_11,
+		TestOpenIndiana_5_11_Ryzen_7,
 		TestHaiku_x86_32,
 		TestHaiku_x86_64,
 		TestHaiku_x86_64_Beta_1_Ryzen7,
