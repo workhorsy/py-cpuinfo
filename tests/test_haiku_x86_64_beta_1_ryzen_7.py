@@ -50,7 +50,7 @@ CPU #0: "AMD Ryzen 7 2700X Eight-Core Processor         "
 
 
 
-class TestHaiku_x86_64_Beta_1(unittest.TestCase):
+class TestHaiku_x86_64_Beta_1_Ryzen7(unittest.TestCase):
 	def setUp(self):
 		helpers.backup_data_source(cpuinfo)
 		helpers.monkey_patch_data_source(cpuinfo, MockDataSource)
@@ -78,11 +78,11 @@ class TestHaiku_x86_64_Beta_1(unittest.TestCase):
 	def test_get_cpu_info_from_sysinfo(self):
 		info = cpuinfo._get_cpu_info_from_sysinfo()
 
-		self.assertEqual('AMD Ryzen 7 2700X Eight-Core Processor         ', info['brand'])
-		#self.assertEqual('3.6930 GHz', info['hz_advertised'])
-		#self.assertEqual('3.6930 GHz', info['hz_actual'])
-		#self.assertEqual((3693000000, 0), info['hz_advertised_raw'])
-		#self.assertEqual((3693000000, 0), info['hz_actual_raw'])
+		self.assertEqual('AMD Ryzen 7 2700X Eight-Core Processor', info['brand'])
+		#FIXMEself.assertEqual('3.6930 GHz', info['hz_advertised'])
+		#FIXMEself.assertEqual('3.6930 GHz', info['hz_actual'])
+		#FIXMEself.assertEqual((3693000000, 0), info['hz_advertised_raw'])
+		#FIXMEself.assertEqual((3693000000, 0), info['hz_actual_raw'])
 
 		self.assertEqual(2, info['stepping'])
 		self.assertEqual(8, info['model'])
@@ -101,11 +101,11 @@ class TestHaiku_x86_64_Beta_1(unittest.TestCase):
 	def test_all(self):
 		info = cpuinfo._get_cpu_info_internal()
 
-		self.assertEqual('AMD Ryzen 7 2700X Eight-Core Processor         ', info['brand'])
-		#self.assertEqual('3.6930 GHz', info['hz_advertised'])
-		#self.assertEqual('3.6930 GHz', info['hz_actual'])
-		#self.assertEqual((3693000000, 0), info['hz_advertised_raw'])
-		#self.assertEqual((3693000000, 0), info['hz_actual_raw'])
+		self.assertEqual('AMD Ryzen 7 2700X Eight-Core Processor', info['brand'])
+		#FIXMEself.assertEqual('3.6930 GHz', info['hz_advertised'])
+		#FIXMEself.assertEqual('3.6930 GHz', info['hz_actual'])
+		#FIXMEself.assertEqual((3693000000, 0), info['hz_advertised_raw'])
+		#FIXMEself.assertEqual((3693000000, 0), info['hz_actual_raw'])
 		self.assertEqual('X86_32', info['arch'])
 		self.assertEqual(32, info['bits'])
 		self.assertEqual(2, info['count'])

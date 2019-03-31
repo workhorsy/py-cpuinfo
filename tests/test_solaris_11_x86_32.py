@@ -80,7 +80,7 @@ name:   cpu_info0                       class:    misc
 
 
 
-class TestSolaris(unittest.TestCase):
+class TestSolaris_11(unittest.TestCase):
 	def setUp(self):
 		helpers.backup_data_source(cpuinfo)
 		helpers.monkey_patch_data_source(cpuinfo, MockDataSource)

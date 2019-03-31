@@ -76,16 +76,20 @@ class TestTrueOS_18_X86_64_Ryzen7(unittest.TestCase):
 		self.assertEqual((3693000000, 0), info['hz_actual_raw'])
 
 		self.assertEqual(
-			['apic', 'clflush', 'cmov', 'cx8', 'de', 'fpu', 'fxsr', 'lahf',
-			'lm', 'mca', 'mce', 'mmx', 'mon', 'msr', 'mtrr', 'nx', 'pae',
-			'pat', 'pge', 'pse', 'pse36', 'rdtscp', 'sep', 'sse', 'sse2',
-			'sse3', 'ssse3', 'syscall', 'tsc', 'vme']
+			['abm', 'aesni', 'apic', 'avx', 'cmov', 'cmp', 'cr8', 'cx16',
+			'cx8', 'de', 'ffxsr', 'fpu', 'fxsr', 'htt', 'lahf', 'lm', 'mas',
+			'mca', 'mce', 'mmx', 'mmx+', 'movbe', 'msr', 'mtrr', 'nx',
+			'osxsave', 'pae', 'pat', 'pclmulqdq', 'pge', 'popcnt', 'prefetch',
+			'pse', 'pse36', 'rdrand', 'rdtscp', 'sep', 'sse', 'sse2', 'sse3',
+			'sse4.1', 'sse4.2', 'sse4a', 'ssse3', 'syscall', 'tsc', 'vme',
+			'xsave']
 			,
 			info['flags']
 		)
 
 	def test_all(self):
 		info = cpuinfo._get_cpu_info_internal()
+		print(info)
 
 		self.assertEqual('AMD Ryzen 7 2700X Eight-Core Processor', info['brand'])
 		self.assertEqual('3.69300 GHz', info['hz_advertised'])
@@ -99,10 +103,13 @@ class TestTrueOS_18_X86_64_Ryzen7(unittest.TestCase):
 		self.assertEqual('amd64', info['raw_arch_string'])
 
 		self.assertEqual(
-			['apic', 'clflush', 'cmov', 'cx8', 'de', 'fpu', 'fxsr', 'lahf',
-			'lm', 'mca', 'mce', 'mmx', 'mon', 'msr', 'mtrr', 'nx', 'pae',
-			'pat', 'pge', 'pse', 'pse36', 'rdtscp', 'sep', 'sse', 'sse2',
-			'sse3', 'ssse3', 'syscall', 'tsc', 'vme']
+			['abm', 'aesni', 'apic', 'avx', 'cmov', 'cmp', 'cr8', 'cx16',
+			'cx8', 'de', 'ffxsr', 'fpu', 'fxsr', 'htt', 'lahf', 'lm', 'mas',
+			'mca', 'mce', 'mmx', 'mmx+', 'movbe', 'msr', 'mtrr', 'nx',
+			'osxsave', 'pae', 'pat', 'pclmulqdq', 'pge', 'popcnt', 'prefetch',
+			'pse', 'pse36', 'rdrand', 'rdtscp', 'sep', 'sse', 'sse2', 'sse3',
+			'sse4.1', 'sse4.2', 'sse4a', 'ssse3', 'syscall', 'tsc', 'vme',
+			'xsave']
 			,
 			info['flags']
 		)

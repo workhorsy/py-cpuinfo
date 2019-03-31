@@ -162,7 +162,7 @@ class DataSource(object):
 		key = winreg.OpenKey(winreg.HKEY_LOCAL_MACHINE, r"Hardware\Description\System\CentralProcessor\0")
 		processor_brand = winreg.QueryValueEx(key, "ProcessorNameString")[0]
 		winreg.CloseKey(key)
-		return processor_brand
+		return processor_brand.strip()
 
 	@staticmethod
 	def winreg_vendor_id():
@@ -1799,7 +1799,7 @@ def _get_cpu_info_from_sysinfo_v1():
 
 		# Various fields
 		vendor_id = '' #_get_field(False, output, None, None, 'CPU #0: ')
-		processor_brand = output.split('CPU #0: "')[1].split('"\n')[0]
+		processor_brand = output.split('CPU #0: "')[1].split('"\n')[0].strip()
 		cache_size = '' #_get_field(False, output, None, None, 'machdep.cpu.cache.size')
 		stepping = int(output.split(', stepping ')[1].split(',')[0].strip())
 		model = int(output.split(', model ')[1].split(',')[0].strip())
@@ -1857,7 +1857,7 @@ def _get_cpu_info_from_sysinfo_v2():
 
 		# Various fields
 		vendor_id = '' #_get_field(False, output, None, None, 'CPU #0: ')
-		processor_brand = output.split('CPU #0: "')[1].split('"\n')[0]
+		processor_brand = output.split('CPU #0: "')[1].split('"\n')[0].strip()
 		cache_size = '' #_get_field(False, output, None, None, 'machdep.cpu.cache.size')
 		signature = output.split('Signature:')[1].split('\n')[0].strip()
 		#
@@ -2006,7 +2006,7 @@ def _get_cpu_info_from_registry():
 			return {}
 
 		# Get the CPU name
-		processor_brand = DataSource.winreg_processor_brand()
+		processor_brand = DataSource.winreg_processor_brand().strip()
 
 		# Get the CPU vendor id
 		vendor_id = DataSource.winreg_vendor_id()
