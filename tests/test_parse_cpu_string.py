@@ -4,14 +4,7 @@ import unittest
 from cpuinfo import *
 import helpers
 
-'''
-_to_decimal_string
-_to_raw_hz
-_parse_hz
-_to_friendly_hz
-_get_hz_string_from_brand
-_parse_cpu_string
-'''
+
 
 
 class TestParseCPUString(unittest.TestCase):
