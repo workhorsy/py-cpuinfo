@@ -28,6 +28,7 @@ class TestParseCPUString(unittest.TestCase):
 		self.assertEqual((3200000000, 0), cpuinfo._to_raw_hz('3.2', 9))
 		self.assertEqual((9001200000, 0), cpuinfo._to_raw_hz('9001.2', 6))
 		self.assertEqual((0, 0), cpuinfo._to_raw_hz('0.0', 1))
+		self.assertEqual((2, 87), cpuinfo._to_raw_hz('2.87', 0))
 
 		self.assertEqual((0, 0), cpuinfo._to_raw_hz('invalid', 1))
 		self.assertEqual((0, 0), cpuinfo._to_raw_hz('8.778.9', 1))
