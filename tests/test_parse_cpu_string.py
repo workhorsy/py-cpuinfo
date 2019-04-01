@@ -76,40 +76,40 @@ class TestParseCPUString(unittest.TestCase):
 		self.assertEqual((hz, scale), ('0.0', 0))
 
 	def test_parse_cpu_brand_string_dx(self):
-		processor_brand, hz, scale, vendor_id, stepping, model, family = \
+		brand, hz, scale, vendor_id, stepping, model, family = \
 		cpuinfo._parse_cpu_brand_string_dx("Intel(R) Pentium(R) CPU G640 @ 2.80GHz (fam: 06, model: 2a, stepping: 07)")
-		self.assertEqual('Intel(R) Pentium(R) CPU G640 @ 2.80GHz', processor_brand)
+		self.assertEqual('Intel(R) Pentium(R) CPU G640 @ 2.80GHz', brand)
 		self.assertEqual((scale, hz), (9, '2.8'))
 		self.assertEqual((vendor_id, stepping, model, family), (None, 7, 42, 6))
 
-		processor_brand, hz, scale, vendor_id, stepping, model, family = \
+		brand, hz, scale, vendor_id, stepping, model, family = \
 		cpuinfo._parse_cpu_brand_string_dx("Intel(R) Pentium(R) CPU G640 @ 2.80GHz (family: 0x6, model: 0x2a, stepping: 0x7)")
-		self.assertEqual('Intel(R) Pentium(R) CPU G640 @ 2.80GHz', processor_brand)
+		self.assertEqual('Intel(R) Pentium(R) CPU G640 @ 2.80GHz', brand)
 		self.assertEqual((scale, hz), (9, '2.8'))
 		self.assertEqual((vendor_id, stepping, model, family), (None, 7, 42, 6))
 
-		processor_brand, hz, scale, vendor_id, stepping, model, family = \
+		brand, hz, scale, vendor_id, stepping, model, family = \
 		cpuinfo._parse_cpu_brand_string_dx("Intel(R) Core(TM) i7 CPU         870  @ 2.93GHz")
-		self.assertEqual("Intel(R) Core(TM) i7 CPU         870  @ 2.93GHz", processor_brand)
+		self.assertEqual("Intel(R) Core(TM) i7 CPU         870  @ 2.93GHz", brand)
 		self.assertEqual((scale, hz), (9, '2.93'))
 		self.assertEqual((vendor_id, stepping, model, family), (None, None, None, None))
 
-		processor_brand, hz, scale, vendor_id, stepping, model, family = \
+		brand, hz, scale, vendor_id, stepping, model, family = \
 		cpuinfo._parse_cpu_brand_string_dx("Intel(R) Pentium(R) CPU G640 @ 2.80GHz (2793.73-MHz K8-class CPU)")
-		self.assertEqual("Intel(R) Pentium(R) CPU G640 @ 2.80GHz", processor_brand)
+		self.assertEqual("Intel(R) Pentium(R) CPU G640 @ 2.80GHz", brand)
 		self.assertEqual((scale, hz), (9, '2.8'))
 		self.assertEqual((vendor_id, stepping, model, family), (None, None, None, None))
 
 		# NOTE: No @ symbol
-		processor_brand, hz, scale, vendor_id, stepping, model, family = \
+		brand, hz, scale, vendor_id, stepping, model, family = \
 		cpuinfo._parse_cpu_brand_string_dx("Intel(R) Pentium(R) D CPU 3.20GHz")
-		self.assertEqual("Intel(R) Pentium(R) D CPU 3.20GHz", processor_brand)
+		self.assertEqual("Intel(R) Pentium(R) D CPU 3.20GHz", brand)
 		self.assertEqual((scale, hz), (9, '3.2'))
 		self.assertEqual((vendor_id, stepping, model, family), (None, None, None, None))
 
 		# NOTE: No @ symbol and no Hz
-		processor_brand, hz, scale, vendor_id, stepping, model, family = \
+		brand, hz, scale, vendor_id, stepping, model, family = \
 		cpuinfo._parse_cpu_brand_string_dx("AMD Ryzen 7 2700X Eight-Core Processor          (3693.15-MHz K8-class CPU) (fam: 06, model: 2a, stepping: 07)")
-		self.assertEqual("AMD Ryzen 7 2700X Eight-Core Processor", processor_brand)
+		self.assertEqual("AMD Ryzen 7 2700X Eight-Core Processor", brand)
 		self.assertEqual((scale, hz), (6, '3693.15'))
 		self.assertEqual((vendor_id, stepping, model, family), (None, 7, 42, 6))

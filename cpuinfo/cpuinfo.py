@@ -439,27 +439,27 @@ def _to_friendly_bytes(input):
 
 	return input
 
-def _parse_cpu_brand_string(processor_brand):
+def _parse_cpu_brand_string(cpu_string):
 	# Just return 0 if the processor brand does not have the Hz
-	if not 'hz' in processor_brand.lower():
+	if not 'hz' in cpu_string.lower():
 		return ('0.0', 0)
 
-	hz_brand = processor_brand.lower()
+	hz = cpu_string.lower()
 	scale = 0
 
-	if hz_brand.endswith('mhz'):
+	if hz.endswith('mhz'):
 		scale = 6
-	elif hz_brand.endswith('ghz'):
+	elif hz.endswith('ghz'):
 		scale = 9
-	if '@' in hz_brand:
-		hz_brand = hz_brand.split('@')[1]
+	if '@' in hz:
+		hz = hz.split('@')[1]
 	else:
-		hz_brand = hz_brand.rsplit(None, 1)[1]
+		hz = hz.rsplit(None, 1)[1]
 
-	hz_brand = hz_brand.rstrip('mhz').rstrip('ghz').strip()
-	hz_brand = _to_decimal_string(hz_brand)
+	hz = hz.rstrip('mhz').rstrip('ghz').strip()
+	hz = _to_decimal_string(hz)
 
-	return (hz_brand, scale)
+	return (hz, scale)
 
 def _parse_cpu_brand_string_dx(cpu_string):
 	import re
@@ -488,18 +488,18 @@ def _parse_cpu_brand_string_dx(cpu_string):
 
 	# Find the Processor Brand
 	# Strip off extra strings in brackets at end
-	processor_brand = cpu_string.strip()
+	brand = cpu_string.strip()
 	is_working = True
 	while is_working:
 		is_working = False
 		for inside in insides:
 			full = "({0})".format(inside)
-			if processor_brand.endswith(full):
-				processor_brand = processor_brand[ :-len(full)].strip()
+			if brand.endswith(full):
+				brand = brand[ :-len(full)].strip()
 				is_working = True
 
 	# Find the Hz in the brand string
-	hz_brand, scale = _parse_cpu_brand_string(processor_brand)
+	hz_brand, scale = _parse_cpu_brand_string(brand)
 
 	# Find Hz inside brackets () after the brand string
 	if hz_brand == '0.0':
@@ -511,7 +511,7 @@ def _parse_cpu_brand_string_dx(cpu_string):
 					hz_brand, scale = _parse_cpu_brand_string(hz)
 					break
 
-	return (processor_brand, hz_brand, scale, vendor_id, stepping, model, family)
+	return (brand, hz_brand, scale, vendor_id, stepping, model, family)
 
 def _parse_dmesg_output(output):
 	try:
