@@ -366,7 +366,7 @@ def _to_raw_hz(ticks, scale):
 def _parse_hz(hz_string):
 	try:
 		hz_string = hz_string.strip().lower()
-		scale, hz = (None, None)
+		hz, scale = (None, None)
 
 		if hz_string.endswith('ghz'):
 			scale = 9
@@ -381,7 +381,7 @@ def _parse_hz(hz_string):
 
 		hz, scale = _to_raw_hz(hz, scale)
 
-		return (scale, hz)
+		return (hz, scale)
 	except:
 		return (0, 0)
 

@@ -36,10 +36,11 @@ class TestParseCPUString(unittest.TestCase):
 		self.assertEqual((0, 0), cpuinfo._to_raw_hz(None, 0))
 
 	def test_parse_hz(self):
-		self.assertEqual((0, 2800000000), cpuinfo._parse_hz('2.80GHz'))
-		self.assertEqual((0, 1200000), cpuinfo._parse_hz('1.20 mHz'))
-		self.assertEqual((0, 3693150000), cpuinfo._parse_hz('3693.15-MHz'))
-		self.assertEqual((0, 12000000000), cpuinfo._parse_hz('12 GHz'))
+		self.assertEqual((2800000000, 0), cpuinfo._parse_hz('2.80GHz'))
+		self.assertEqual((1200000, 0), cpuinfo._parse_hz('1.20 mHz'))
+		self.assertEqual((3693150000, 0), cpuinfo._parse_hz('3693.15-MHz'))
+		self.assertEqual((12000000000, 0), cpuinfo._parse_hz('12 GHz'))
+		self.assertEqual((2, 6), cpuinfo._parse_hz('2.6 Hz'))
 
 		self.assertEqual((0, 0), cpuinfo._parse_hz('invalid'))
 		self.assertEqual((0, 0), cpuinfo._parse_hz('8.778.9'))
