@@ -511,7 +511,7 @@ def _parse_cpu_brand_string_dx(cpu_string):
 					hz_brand, scale = _parse_cpu_brand_string(hz)
 					break
 
-	return (brand, hz_brand, scale, vendor_id, stepping, model, family)
+	return (hz_brand, scale, brand, vendor_id, stepping, model, family)
 
 def _parse_dmesg_output(output):
 	try:
@@ -540,7 +540,7 @@ def _parse_dmesg_output(output):
 		if not best_string:
 			return {}
 
-		processor_brand, hz_actual, scale, vendor_id, stepping, model, family = best_string
+		hz_actual, scale, processor_brand, vendor_id, stepping, model, family = best_string
 
 		# Origin
 		if '  Origin=' in output:
