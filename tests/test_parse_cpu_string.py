@@ -27,13 +27,13 @@ class TestParseCPUString(unittest.TestCase):
 		self.assertEqual((1200000, 0), cpuinfo._to_raw_hz('1.2', 6))
 		self.assertEqual((3200000000, 0), cpuinfo._to_raw_hz('3.2', 9))
 		self.assertEqual((9001200000, 0), cpuinfo._to_raw_hz('9001.2', 6))
-		self.assertEqual((0, 0), cpuinfo._to_raw_hz('0.0', 1))
+		self.assertEqual((0, 0), cpuinfo._to_raw_hz('0.0', 0))
 		self.assertEqual((2, 87), cpuinfo._to_raw_hz('2.87', 0))
 
-		self.assertEqual((0, 0), cpuinfo._to_raw_hz('invalid', 1))
-		self.assertEqual((0, 0), cpuinfo._to_raw_hz('8.778.9', 1))
-		self.assertEqual((0, 0), cpuinfo._to_raw_hz('', 1))
-		self.assertEqual((0, 0), cpuinfo._to_raw_hz(None, 1))
+		self.assertEqual((0, 0), cpuinfo._to_raw_hz('invalid', 0))
+		self.assertEqual((0, 0), cpuinfo._to_raw_hz('8.778.9', 0))
+		self.assertEqual((0, 0), cpuinfo._to_raw_hz('', 0))
+		self.assertEqual((0, 0), cpuinfo._to_raw_hz(None, 0))
 
 	def test_parse_hz(self):
 		self.assertEqual((0, 2800000000), cpuinfo._parse_hz('2.80GHz'))
@@ -50,7 +50,8 @@ class TestParseCPUString(unittest.TestCase):
 		self.assertEqual('2.8000 GHz', cpuinfo._to_friendly_hz('2.8', 9))
 		self.assertEqual('1.2000 MHz', cpuinfo._to_friendly_hz('1.2', 6))
 		self.assertEqual('3.2000 GHz', cpuinfo._to_friendly_hz('3.2', 9))
-		self.assertEqual('0.0000 Hz', cpuinfo._to_friendly_hz('0.0', 1))
+		self.assertEqual('1.3000 Hz', cpuinfo._to_friendly_hz('1.3', 0))
+		self.assertEqual('0.0000 Hz', cpuinfo._to_friendly_hz('0.0', 0))
 
 		self.assertEqual('0.0000 Hz', cpuinfo._to_friendly_hz('invalid', 0))
 		self.assertEqual('0.0000 Hz', cpuinfo._to_friendly_hz('8.778.9', 0))
@@ -70,7 +71,7 @@ class TestParseCPUString(unittest.TestCase):
 
 		# NOTE: No @ symbol and no Hz
 		scale, hz = cpuinfo._get_hz_string_from_brand('AMD Ryzen 7 2700X Eight-Core Processor')
-		self.assertEqual((scale, hz), (1, '0.0'))
+		self.assertEqual((scale, hz), (0, '0.0'))
 
 	def test_parse_cpu_string(self):
 		processor_brand, hz, scale, vendor_id, stepping, model, family = \

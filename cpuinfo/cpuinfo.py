@@ -373,7 +373,7 @@ def _parse_hz(hz_string):
 		elif hz_string.endswith('mhz'):
 			scale = 6
 		elif hz_string.endswith('hz'):
-			scale = 1
+			scale = 0
 
 		hz = "".join(n for n in hz_string if n.isdigit() or n=='.').strip()
 		if not '.' in hz:
@@ -442,10 +442,10 @@ def _to_friendly_bytes(input):
 def _get_hz_string_from_brand(processor_brand):
 	# Just return 0 if the processor brand does not have the Hz
 	if not 'hz' in processor_brand.lower():
-		return (1, '0.0')
+		return (0, '0.0')
 
 	hz_brand = processor_brand.lower()
-	scale = 1
+	scale = 0
 
 	if hz_brand.endswith('mhz'):
 		scale = 6
@@ -1452,7 +1452,7 @@ def _get_cpu_info_from_cpufreq_info():
 	Returns {} if cpufreq-info is not found.
 	'''
 	try:
-		scale, hz_brand = 1, '0.0'
+		scale, hz_brand = 0, '0.0'
 
 		if not DataSource.has_cpufreq_info():
 			return {}
@@ -1886,7 +1886,7 @@ def _get_cpu_info_from_sysinfo_v2():
 		hz_advertised = _to_decimal_string(hz_advertised)
 		hz_actual = hz_advertised
 
-		scale = 1
+		scale = 0
 		if raw_hz.endswith('mhz'):
 			scale = 6
 		elif raw_hz.endswith('ghz'):
