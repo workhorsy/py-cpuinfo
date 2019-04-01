@@ -442,7 +442,7 @@ def _to_friendly_bytes(input):
 def _get_hz_string_from_brand(processor_brand):
 	# Just return 0 if the processor brand does not have the Hz
 	if not 'hz' in processor_brand.lower():
-		return (0, '0.0')
+		return ('0.0', 0)
 
 	hz_brand = processor_brand.lower()
 	scale = 0
@@ -459,7 +459,7 @@ def _get_hz_string_from_brand(processor_brand):
 	hz_brand = hz_brand.rstrip('mhz').rstrip('ghz').strip()
 	hz_brand = _to_decimal_string(hz_brand)
 
-	return (scale, hz_brand)
+	return (hz_brand, scale)
 
 def _parse_cpu_string(cpu_string):
 	import re
@@ -499,7 +499,7 @@ def _parse_cpu_string(cpu_string):
 				is_working = True
 
 	# Find the Hz in the brand string
-	scale, hz_brand = _get_hz_string_from_brand(processor_brand)
+	hz_brand, scale = _get_hz_string_from_brand(processor_brand)
 
 	# Find Hz inside brackets () after the brand string
 	if hz_brand == '0.0':
@@ -508,7 +508,7 @@ def _parse_cpu_string(cpu_string):
 			for entry in ['GHz', 'MHz', 'Hz']:
 				if entry in hz:
 					hz = "CPU @ " + hz[ : hz.find(entry) + len(entry)]
-					scale, hz_brand = _get_hz_string_from_brand(hz)
+					hz_brand, scale = _get_hz_string_from_brand(hz)
 					break
 
 	return (processor_brand, hz_brand, scale, vendor_id, stepping, model, family)
@@ -576,7 +576,7 @@ def _parse_dmesg_output(output):
 		flags.sort()
 
 		# Convert from GHz/MHz string to Hz
-		scale, hz_advertised = _get_hz_string_from_brand(processor_brand)
+		hz_advertised, scale = _get_hz_string_from_brand(processor_brand)
 
 		info = {
 		'vendor_id' : vendor_id,
@@ -1303,7 +1303,7 @@ def _actual_get_cpu_info_from_cpuid(queue):
 	hz_actual = _to_decimal_string(hz_actual)
 
 	# Get the Hz and scale
-	scale, hz_advertised = _get_hz_string_from_brand(processor_brand)
+	hz_advertised, scale = _get_hz_string_from_brand(processor_brand)
 	info = {
 	'vendor_id' : cpuid.get_vendor_id(),
 	'hardware' : '',
@@ -1407,9 +1407,9 @@ def _get_cpu_info_from_proc_cpuinfo():
 		hz_actual = _to_decimal_string(hz_actual)
 
 		# Convert from GHz/MHz string to Hz
-		scale, hz_advertised = (0, None)
+		hz_advertised, scale = (None, 0)
 		try:
-			scale, hz_advertised = _get_hz_string_from_brand(processor_brand)
+			hz_advertised, scale = _get_hz_string_from_brand(processor_brand)
 		except Exception:
 			pass
 
@@ -1452,7 +1452,7 @@ def _get_cpu_info_from_cpufreq_info():
 	Returns {} if cpufreq-info is not found.
 	'''
 	try:
-		scale, hz_brand = 0, '0.0'
+		hz_brand, scale = '0.0', 0
 
 		if not DataSource.has_cpufreq_info():
 			return {}
@@ -1746,7 +1746,7 @@ def _get_cpu_info_from_sysctl():
 		flags.sort()
 
 		# Convert from GHz/MHz string to Hz
-		scale, hz_advertised = _get_hz_string_from_brand(processor_brand)
+		hz_advertised, scale = _get_hz_string_from_brand(processor_brand)
 		hz_actual = _get_field(False, output, None, None, 'hw.cpufrequency')
 		hz_actual = _to_decimal_string(hz_actual)
 
@@ -1814,7 +1814,7 @@ def _get_cpu_info_from_sysinfo_v1():
 		flags.sort()
 
 		# Convert from GHz/MHz string to Hz
-		scale, hz_advertised = _get_hz_string_from_brand(processor_brand)
+		hz_advertised, scale = _get_hz_string_from_brand(processor_brand)
 		hz_actual = hz_advertised
 
 		info = {
@@ -1937,7 +1937,7 @@ def _get_cpu_info_from_wmic():
 
 		# Get the advertised MHz
 		processor_brand = value.get('Name')
-		scale_advertised, hz_advertised = _get_hz_string_from_brand(processor_brand)
+		hz_advertised, scale_advertised = _get_hz_string_from_brand(processor_brand)
 
 		# Get the actual MHz
 		hz_actual = value.get('CurrentClockSpeed')
@@ -2020,7 +2020,7 @@ def _get_cpu_info_from_registry():
 		hz_actual = _to_decimal_string(hz_actual)
 
 		# Get the advertised CPU Hz
-		scale, hz_advertised = _get_hz_string_from_brand(processor_brand)
+		hz_advertised, scale = _get_hz_string_from_brand(processor_brand)
 
 		# Get the CPU features
 		feature_bits = DataSource.winreg_feature_bits()

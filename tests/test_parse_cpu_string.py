@@ -41,6 +41,7 @@ class TestParseCPUString(unittest.TestCase):
 		self.assertEqual((3693150000, 0), cpuinfo._parse_hz('3693.15-MHz'))
 		self.assertEqual((12000000000, 0), cpuinfo._parse_hz('12 GHz'))
 		self.assertEqual((2, 6), cpuinfo._parse_hz('2.6 Hz'))
+		self.assertEqual((0, 0), cpuinfo._parse_hz('0 Hz'))
 
 		self.assertEqual((0, 0), cpuinfo._parse_hz('invalid'))
 		self.assertEqual((0, 0), cpuinfo._parse_hz('8.778.9'))
@@ -60,19 +61,19 @@ class TestParseCPUString(unittest.TestCase):
 		self.assertEqual('0.0000 Hz', cpuinfo._to_friendly_hz(None, 0))
 
 	def test_get_hz_string_from_brand(self):
-		scale, hz = cpuinfo._get_hz_string_from_brand('Intel(R) Pentium(R) CPU G640 @ 2.80GHz')
-		self.assertEqual((scale, hz), (9, '2.8'))
+		hz, scale = cpuinfo._get_hz_string_from_brand('Intel(R) Pentium(R) CPU G640 @ 2.80GHz')
+		self.assertEqual((hz, scale), ('2.8', 9))
 
-		scale, hz = cpuinfo._get_hz_string_from_brand('Intel(R) Pentium(R) CPU @ 1.20MHz')
-		self.assertEqual((scale, hz), (6, '1.2'))
+		hz, scale = cpuinfo._get_hz_string_from_brand('Intel(R) Pentium(R) CPU @ 1.20MHz')
+		self.assertEqual((hz, scale), ('1.2', 6))
 
 		# NOTE: No @ symbol
-		scale, hz = cpuinfo._get_hz_string_from_brand('Intel(R) Pentium(R) D CPU 3.20GHz')
-		self.assertEqual((scale, hz), (9, '3.2'))
+		hz, scale = cpuinfo._get_hz_string_from_brand('Intel(R) Pentium(R) D CPU 3.20GHz')
+		self.assertEqual((hz, scale), ('3.2', 9))
 
 		# NOTE: No @ symbol and no Hz
-		scale, hz = cpuinfo._get_hz_string_from_brand('AMD Ryzen 7 2700X Eight-Core Processor')
-		self.assertEqual((scale, hz), (0, '0.0'))
+		hz, scale = cpuinfo._get_hz_string_from_brand('AMD Ryzen 7 2700X Eight-Core Processor')
+		self.assertEqual((hz, scale), ('0.0', 0))
 
 	def test_parse_cpu_string(self):
 		processor_brand, hz, scale, vendor_id, stepping, model, family = \
