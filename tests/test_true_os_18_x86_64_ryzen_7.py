@@ -58,21 +58,26 @@ class TestTrueOS_18_X86_64_Ryzen7(unittest.TestCase):
 		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_proc_cpuinfo()))
 		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_sysctl()))
 		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_kstat()))
-		self.assertEqual(6, len(cpuinfo._get_cpu_info_from_dmesg()))
+		self.assertEqual(10, len(cpuinfo._get_cpu_info_from_dmesg()))
 		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_cat_var_run_dmesg_boot()))
 		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_ibm_pa_features()))
 		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_sysinfo()))
 		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_cpuid()))
-		self.assertEqual(12, len(cpuinfo._get_cpu_info_internal()))
+		self.assertEqual(16, len(cpuinfo._get_cpu_info_internal()))
 
 	def test_get_cpu_info_from_dmesg(self):
 		info = cpuinfo._get_cpu_info_from_dmesg()
 
+		self.assertEqual('AuthenticAMD', info['vendor_id'])
 		self.assertEqual('AMD Ryzen 7 2700X Eight-Core Processor', info['brand'])
-		#FIXME self.assertEqual('3.69300 GHz', info['hz_advertised'])
-		#FIXME self.assertEqual('3.69300 GHz', info['hz_actual'])
-		#FIXME self.assertEqual((3693000000, 0), info['hz_advertised_raw'])
-		#FIXME self.assertEqual((3693000000, 0), info['hz_actual_raw'])
+		self.assertEqual('3.6932 GHz', info['hz_advertised'])
+		self.assertEqual('3.6932 GHz', info['hz_actual'])
+		self.assertEqual((3693150000, 0), info['hz_advertised_raw'])
+		self.assertEqual((3693150000, 0), info['hz_actual_raw'])
+
+		self.assertEqual(2, info['stepping'])
+		self.assertEqual(8, info['model'])
+		self.assertEqual(23, info['family'])
 
 		self.assertEqual(
 			['abm', 'aesni', 'apic', 'avx', 'cmov', 'cmp', 'cr8', 'cx16',
@@ -89,16 +94,21 @@ class TestTrueOS_18_X86_64_Ryzen7(unittest.TestCase):
 	def test_all(self):
 		info = cpuinfo._get_cpu_info_internal()
 
+		self.assertEqual('AuthenticAMD', info['vendor_id'])
 		self.assertEqual('AMD Ryzen 7 2700X Eight-Core Processor', info['brand'])
-		#FIXME self.assertEqual('3.69300 GHz', info['hz_advertised'])
-		#FIXME self.assertEqual('3.69300 GHz', info['hz_actual'])
-		#FIXME self.assertEqual((3693000000, 0), info['hz_advertised_raw'])
-		#FIXME self.assertEqual((3693000000, 0), info['hz_actual_raw'])
+		self.assertEqual('3.6932 GHz', info['hz_advertised'])
+		self.assertEqual('3.6932 GHz', info['hz_actual'])
+		self.assertEqual((3693150000, 0), info['hz_advertised_raw'])
+		self.assertEqual((3693150000, 0), info['hz_actual_raw'])
+
 		self.assertEqual('X86_64', info['arch'])
 		self.assertEqual(64, info['bits'])
 		self.assertEqual(8, info['count'])
-
 		self.assertEqual('amd64', info['raw_arch_string'])
+
+		self.assertEqual(2, info['stepping'])
+		self.assertEqual(8, info['model'])
+		self.assertEqual(23, info['family'])
 
 		self.assertEqual(
 			['abm', 'aesni', 'apic', 'avx', 'cmov', 'cmp', 'cr8', 'cx16',

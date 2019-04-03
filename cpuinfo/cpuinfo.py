@@ -578,6 +578,11 @@ def _parse_dmesg_output(output):
 		# Convert from GHz/MHz string to Hz
 		hz_advertised, scale = _parse_cpu_brand_string(processor_brand)
 
+		# If advertised hz not found, use the actual hz
+		if hz_advertised == '0.0':
+			scale = 6
+			hz_advertised = _to_decimal_string(hz_actual)
+
 		info = {
 		'vendor_id' : vendor_id,
 		'brand' : processor_brand,
