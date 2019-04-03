@@ -45,6 +45,7 @@ from test_linux_debian_8_7_1_ppc64le import TestLinuxDebian_8_7_1_ppc64le
 from test_linux_ubuntu_16_04_x86_64 import TestLinuxUbuntu_16_04_X86_64
 from test_linux_fedora_24_x86_64 import TestLinuxFedora_24_X86_64
 from test_linux_fedora_24_ppc64le import TestLinuxFedora_24_ppc64le
+from test_linux_fedora_29_x86_64_ryzen_7 import Test_Linux_Fedora_29_X86_64_Ryzen_7
 from test_linux_aarch64_64 import TestLinux_Aarch_64
 from test_linux_gentoo_2_2_x86_64 import TestLinuxGentoo_2_2_X86_64
 from test_linux_rhel_7_3_ppc64le import TestLinuxRHEL_7_3_ppc64le
@@ -87,6 +88,7 @@ if __name__ == '__main__':
 		TestLinuxUbuntu_16_04_X86_64,
 		TestLinuxFedora_24_X86_64,
 		TestLinuxFedora_24_ppc64le,
+		Test_Linux_Fedora_29_X86_64_Ryzen_7,
 		TestLinux_Aarch_64,
 		TestLinuxGentoo_2_2_X86_64,
 		TestLinuxRHEL_7_3_ppc64le,
