@@ -2022,6 +2022,11 @@ def _get_cpu_info_from_registry():
 		# Get the advertised CPU Hz
 		hz_advertised, scale = _parse_cpu_brand_string(processor_brand)
 
+		# If advertised hz not found, use the actual hz
+		if hz_advertised == '0.0':
+			scale = 6
+			hz_advertised = _to_decimal_string(hz_actual)
+
 		# Get the CPU features
 		feature_bits = DataSource.winreg_feature_bits()
 
