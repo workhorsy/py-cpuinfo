@@ -14,7 +14,7 @@ class TestParseCPUString(unittest.TestCase):
 		self.assertEqual('3.0', cpuinfo._to_decimal_string(3))
 		self.assertEqual('6.5', cpuinfo._to_decimal_string(6.5))
 		self.assertEqual('7.002', cpuinfo._to_decimal_string(7.002))
-		self.assertEqual('4.0000000000001', cpuinfo._to_decimal_string('4.0000000000001'))
+		self.assertEqual('4.00000000001', cpuinfo._to_decimal_string('4.00000000001'))
 		self.assertEqual('5.0', cpuinfo._to_decimal_string('5.000000000000'))
 
 		self.assertEqual('0.0', cpuinfo._to_decimal_string('invalid'))
