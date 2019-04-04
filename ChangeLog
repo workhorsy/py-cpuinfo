@@ -1,9 +1,11 @@
+* Release 6.0.0
+	* Fixed Bug #115: Missing data on Ryzen CPUs
+
 03/20/2019 Release 5.0.0
 	* Fixed Bug #117: Remove PyInstaller hacks
 	* Fixed Bug #108: Client script runs multiple times without __main__
 	* Fixed Bug #113: Add option to return results in json
 	* Fixed Bug #110: Always tries to run wmic in get_system_info.py
-	* Fixed Bug #115: Missing data on Ryzen CPUs
 
 04/01/2018 Release 4.0.0
 	* Fixed Bug #80: Broken when using Pyinstaller
