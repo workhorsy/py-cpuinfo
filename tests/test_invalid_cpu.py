@@ -10,6 +10,7 @@ class MockDataSource(object):
 	cpu_count = 1
 	is_windows = False
 	raw_arch_string = 'unknown_cpu'
+	raw_uname_string = 'unknown_cpu'
 
 
 class TestInvalidCPU(unittest.TestCase):

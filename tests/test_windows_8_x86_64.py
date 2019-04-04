@@ -10,6 +10,7 @@ class MockDataSource(object):
 	cpu_count = 4
 	is_windows = True
 	raw_arch_string = 'AMD64'
+	raw_uname_string = 'AMD64 Family 6 Model 30 Stepping 5, GenuineIntel'
 	can_cpuid = False
 
 	@staticmethod
@@ -78,7 +79,15 @@ class TestWindows_8_X86_64(unittest.TestCase):
 		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_ibm_pa_features()))
 		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_sysinfo()))
 		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_cpuid()))
+		self.assertEqual(3, len(cpuinfo._get_cpu_info_from_platform_uname()))
 		self.assertEqual(18, len(cpuinfo._get_cpu_info_internal()))
+
+	def test_get_cpu_info_from_platform_uname(self):
+		info = cpuinfo._get_cpu_info_from_platform_uname()
+
+		self.assertEqual(5, info['stepping'])
+		self.assertEqual(30, info['model'])
+		self.assertEqual(6, info['family'])
 
 	def test_get_cpu_info_from_wmic(self):
 		info = cpuinfo._get_cpu_info_from_wmic()

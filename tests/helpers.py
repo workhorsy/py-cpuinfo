@@ -117,6 +117,8 @@ def _actual_monkey_patch_data_source(cpuinfo, NewDataSource):
 		cpuinfo.DataSource.is_windows = NewDataSource.is_windows
 	if hasattr(NewDataSource, 'raw_arch_string'):
 		cpuinfo.DataSource.raw_arch_string = NewDataSource.raw_arch_string
+	if hasattr(NewDataSource, 'raw_uname_string'):
+		cpuinfo.DataSource.raw_uname_string = NewDataSource.raw_uname_string
 	if hasattr(NewDataSource, 'can_cpuid'):
 		cpuinfo.DataSource.can_cpuid = NewDataSource.can_cpuid
 
@@ -188,6 +190,7 @@ def backup_data_source(cpuinfo):
 	cpuinfo.BackupDataSource.cpu_count = cpuinfo.DataSource.cpu_count
 	cpuinfo.BackupDataSource.is_windows = cpuinfo.DataSource.is_windows
 	cpuinfo.BackupDataSource.raw_arch_string = cpuinfo.DataSource.raw_arch_string
+	cpuinfo.BackupDataSource.raw_uname_string = cpuinfo.DataSource.raw_uname_string
 	cpuinfo.BackupDataSource.can_cpuid = cpuinfo.DataSource.can_cpuid
 
 	cpuinfo.BackupDataSource.has_proc_cpuinfo = staticmethod(cpuinfo.DataSource.has_proc_cpuinfo)
@@ -226,6 +229,7 @@ def restore_data_source(cpuinfo):
 	cpuinfo.DataSource.cpu_count = cpuinfo.BackupDataSource.cpu_count
 	cpuinfo.DataSource.is_windows = cpuinfo.BackupDataSource.is_windows
 	cpuinfo.DataSource.raw_arch_string = cpuinfo.BackupDataSource.raw_arch_string
+	cpuinfo.DataSource.raw_uname_string = cpuinfo.BackupDataSource.raw_uname_string
 	cpuinfo.DataSource.can_cpuid = cpuinfo.BackupDataSource.can_cpuid
 
 	cpuinfo.DataSource.has_proc_cpuinfo = cpuinfo.BackupDataSource.has_proc_cpuinfo

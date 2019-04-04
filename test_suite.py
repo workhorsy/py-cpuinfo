@@ -45,6 +45,7 @@ from test_linux_debian_8_7_1_ppc64le import TestLinuxDebian_8_7_1_ppc64le
 from test_linux_ubuntu_16_04_x86_64 import TestLinuxUbuntu_16_04_X86_64
 from test_linux_fedora_24_x86_64 import TestLinuxFedora_24_X86_64
 from test_linux_fedora_24_ppc64le import TestLinuxFedora_24_ppc64le
+from test_linux_fedora_29_x86_64_ryzen_7 import Test_Linux_Fedora_29_X86_64_Ryzen_7
 from test_linux_aarch64_64 import TestLinux_Aarch_64
 from test_linux_gentoo_2_2_x86_64 import TestLinuxGentoo_2_2_X86_64
 from test_linux_rhel_7_3_ppc64le import TestLinuxRHEL_7_3_ppc64le
@@ -56,11 +57,15 @@ from test_pcbsd_10_x86_64 import TestPCBSD
 from test_free_bsd_11_x86_64 import TestFreeBSD_11_X86_64
 from test_osx_10_9_x86_64 import TestOSX_10_9
 from test_osx_10_12_x86_64 import TestOSX_10_12
-from test_solaris_11_x86_32 import TestSolaris
+from test_solaris_11_x86_32 import TestSolaris_11
+from test_open_indiana_5_11_x86_64_ryzen_7 import TestOpenIndiana_5_11_Ryzen_7
 from test_haiku_x86_32 import TestHaiku_x86_32
 from test_haiku_x86_64 import TestHaiku_x86_64
+from test_haiku_x86_64_beta_1_ryzen_7 import TestHaiku_x86_64_Beta_1_Ryzen7
+from test_true_os_18_x86_64_ryzen_7 import TestTrueOS_18_X86_64_Ryzen7
 from test_windows_8_x86_64 import TestWindows_8_X86_64
 from test_windows_10_x86_64 import TestWindows_10_X86_64
+from test_windows_10_x86_64_ryzen_7 import TestWindows_10_X86_64_Ryzen7
 from test_cpuid import TestCPUID
 from test_actual import TestActual
 from test_cli import TestCLI
@@ -83,6 +88,7 @@ if __name__ == '__main__':
 		TestLinuxUbuntu_16_04_X86_64,
 		TestLinuxFedora_24_X86_64,
 		TestLinuxFedora_24_ppc64le,
+		Test_Linux_Fedora_29_X86_64_Ryzen_7,
 		TestLinux_Aarch_64,
 		TestLinuxGentoo_2_2_X86_64,
 		TestLinuxRHEL_7_3_ppc64le,
@@ -94,11 +100,15 @@ if __name__ == '__main__':
 		TestPCBSD,
 		TestOSX_10_9,
 		TestOSX_10_12,
-		TestSolaris,
+		TestSolaris_11,
+		TestOpenIndiana_5_11_Ryzen_7,
 		TestHaiku_x86_32,
 		TestHaiku_x86_64,
+		TestHaiku_x86_64_Beta_1_Ryzen7,
+		TestTrueOS_18_X86_64_Ryzen7,
 		TestWindows_8_X86_64,
 		TestWindows_10_X86_64,
+		TestWindows_10_X86_64_Ryzen7,
 		TestCPUID,
 		TestActual,
 		TestCLI
