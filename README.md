@@ -15,11 +15,11 @@ OS Support
 | OS            | Tested and should work                                 | Untested        |
 | :------------ | :----------------------------------------------------- | :-------------- |
 | Android       |                                                        | Everything      |
-| BSD           | FreeBSD, PC-BSD                                        | OpenBSD, NetBSD |
+| BSD           | FreeBSD, PC-BSD, TrueOS                                | OpenBSD, NetBSD |
 | Cygwin        | Windows                                                |                 |
 | Haiku         | Haiku Nightly                                          | BeOS            |
 | Linux         | Arch, Centos, Debian, Fedora, Gentoo, OpenSuse, Ubuntu |                 |
-| OS X          | 10.8 - 10.12                                           |                 |
+| OS X          | 10.8 - 10.14                                           |                 |
 | Solaris       | Oracle Solaris, OpenIndiana                            |                 |
 | Windows       | XP, Vista, 7, 8, 10                                    | RT              |
 
