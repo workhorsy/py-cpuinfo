@@ -95,7 +95,7 @@ class TestOSX_10_9(unittest.TestCase):
 		info = cpuinfo._get_cpu_info_from_sysctl()
 
 		self.assertEqual('GenuineIntel', info['vendor_id_raw'])
-		self.assertEqual('Intel(R) Core(TM) i5-4440 CPU @ 3.10GHz', info['brand'])
+		self.assertEqual('Intel(R) Core(TM) i5-4440 CPU @ 3.10GHz', info['brand_raw'])
 		self.assertEqual('3.1000 GHz', info['hz_advertised'])
 		self.assertEqual('2.8900 GHz', info['hz_actual'])
 		self.assertEqual((3100000000, 0), info['hz_advertised_raw'])
@@ -120,7 +120,7 @@ class TestOSX_10_9(unittest.TestCase):
 		info = cpuinfo._get_cpu_info_internal()
 
 		self.assertEqual('GenuineIntel', info['vendor_id_raw'])
-		self.assertEqual('Intel(R) Core(TM) i5-4440 CPU @ 3.10GHz', info['brand'])
+		self.assertEqual('Intel(R) Core(TM) i5-4440 CPU @ 3.10GHz', info['brand_raw'])
 		self.assertEqual('3.1000 GHz', info['hz_advertised'])
 		self.assertEqual('2.8900 GHz', info['hz_actual'])
 		self.assertEqual((3100000000, 0), info['hz_advertised_raw'])

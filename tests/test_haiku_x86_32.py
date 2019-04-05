@@ -80,7 +80,7 @@ class TestHaiku_x86_32(unittest.TestCase):
 	def test_get_cpu_info_from_sysinfo(self):
 		info = cpuinfo._get_cpu_info_from_sysinfo()
 
-		self.assertEqual('Intel(R) Core(TM) i7 CPU         870  @ 2.93GHz', info['brand'])
+		self.assertEqual('Intel(R) Core(TM) i7 CPU         870  @ 2.93GHz', info['brand_raw'])
 		self.assertEqual('2.9300 GHz', info['hz_advertised'])
 		self.assertEqual('2.9300 GHz', info['hz_actual'])
 		self.assertEqual((2930000000, 0), info['hz_advertised_raw'])
@@ -100,7 +100,7 @@ class TestHaiku_x86_32(unittest.TestCase):
 	def test_all(self):
 		info = cpuinfo._get_cpu_info_internal()
 
-		self.assertEqual('Intel(R) Core(TM) i7 CPU         870  @ 2.93GHz', info['brand'])
+		self.assertEqual('Intel(R) Core(TM) i7 CPU         870  @ 2.93GHz', info['brand_raw'])
 		self.assertEqual('2.9300 GHz', info['hz_advertised'])
 		self.assertEqual('2.9300 GHz', info['hz_actual'])
 		self.assertEqual((2930000000, 0), info['hz_advertised_raw'])

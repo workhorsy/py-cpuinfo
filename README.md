@@ -55,7 +55,7 @@ Output
 | cpuinfo_version               | (4, 0, 0) |
 | vendor_id_raw                 | "GenuineIntel"  |
 | hardware_raw                  | "BCM2708" |
-| brand                         | "Intel(R) Core(TM) i7 CPU         870  @ 2.93GHz" |
+| brand_raw                     | "Intel(R) Core(TM) i7 CPU         870  @ 2.93GHz" |
 | hz_advertised                 | "2.9300 GHz" |
 | hz_actual                     | "1.7330 GHz" |
 | hz_advertised_raw             | (2930000000, 0)|

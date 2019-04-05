@@ -155,7 +155,7 @@ class TestLinux_Aarch_64(unittest.TestCase):
 
 		self.assertEqual('', info['vendor_id_raw'])
 		self.assertEqual('FIXME', info['hardware_raw'])
-		self.assertEqual('FIXME', info['brand'])
+		self.assertEqual('FIXME', info['brand_raw'])
 		self.assertEqual('FIXME', info['hz_advertised'])
 		self.assertEqual('FIXME', info['hz_actual'])
 		self.assertEqual((1000000000, 0), info['hz_advertised_raw'])

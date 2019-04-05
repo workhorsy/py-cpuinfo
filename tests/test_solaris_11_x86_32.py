@@ -109,7 +109,7 @@ class TestSolaris_11(unittest.TestCase):
 		info = cpuinfo._get_cpu_info_from_kstat()
 
 		self.assertEqual('GenuineIntel', info['vendor_id_raw'])
-		self.assertEqual('Intel(r) Core(tm) i7 CPU         870  @ 2.93GHz', info['brand'])
+		self.assertEqual('Intel(r) Core(tm) i7 CPU         870  @ 2.93GHz', info['brand_raw'])
 		self.assertEqual('2.9310 GHz', info['hz_advertised'])
 		self.assertEqual('2.9305 GHz', info['hz_actual'])
 		self.assertEqual((2931000000, 0), info['hz_advertised_raw'])
@@ -128,7 +128,7 @@ class TestSolaris_11(unittest.TestCase):
 		info = cpuinfo._get_cpu_info_internal()
 
 		self.assertEqual('GenuineIntel', info['vendor_id_raw'])
-		self.assertEqual('Intel(r) Core(tm) i7 CPU         870  @ 2.93GHz', info['brand'])
+		self.assertEqual('Intel(r) Core(tm) i7 CPU         870  @ 2.93GHz', info['brand_raw'])
 		self.assertEqual('2.9310 GHz', info['hz_advertised'])
 		self.assertEqual('2.9305 GHz', info['hz_actual'])
 		self.assertEqual((2931000000, 0), info['hz_advertised_raw'])

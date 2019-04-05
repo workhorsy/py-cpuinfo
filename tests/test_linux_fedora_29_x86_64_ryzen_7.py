@@ -120,7 +120,7 @@ class Test_Linux_Fedora_29_X86_64_Ryzen_7(unittest.TestCase):
 		info = cpuinfo._get_cpu_info_from_lscpu()
 
 		self.assertEqual('AuthenticAMD', info['vendor_id_raw'])
-		self.assertEqual('AMD Ryzen 7 2700X Eight-Core Processor', info['brand'])
+		self.assertEqual('AMD Ryzen 7 2700X Eight-Core Processor', info['brand_raw'])
 		self.assertEqual('3.6931 GHz', info['hz_advertised'])
 		self.assertEqual('3.6931 GHz', info['hz_actual'])
 		self.assertEqual((3693060000, 0), info['hz_advertised_raw'])
@@ -154,7 +154,7 @@ class Test_Linux_Fedora_29_X86_64_Ryzen_7(unittest.TestCase):
 		info = cpuinfo._get_cpu_info_from_proc_cpuinfo()
 
 		self.assertEqual('AuthenticAMD', info['vendor_id_raw'])
-		self.assertEqual('AMD Ryzen 7 2700X Eight-Core Processor', info['brand'])
+		self.assertEqual('AMD Ryzen 7 2700X Eight-Core Processor', info['brand_raw'])
 		self.assertEqual('3.6931 GHz', info['hz_advertised'])
 		self.assertEqual('3.6931 GHz', info['hz_actual'])
 		self.assertEqual((3693060000, 0), info['hz_advertised_raw'])
@@ -185,7 +185,7 @@ class Test_Linux_Fedora_29_X86_64_Ryzen_7(unittest.TestCase):
 		info = cpuinfo._get_cpu_info_internal()
 
 		self.assertEqual('AuthenticAMD', info['vendor_id_raw'])
-		self.assertEqual('AMD Ryzen 7 2700X Eight-Core Processor', info['brand'])
+		self.assertEqual('AMD Ryzen 7 2700X Eight-Core Processor', info['brand_raw'])
 		self.assertEqual('3.6931 GHz', info['hz_advertised'])
 		self.assertEqual('3.6931 GHz', info['hz_actual'])
 		self.assertEqual((3693060000, 0), info['hz_advertised_raw'])

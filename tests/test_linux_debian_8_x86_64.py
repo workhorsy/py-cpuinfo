@@ -82,7 +82,7 @@ class TestLinuxDebian_8_X86_64(unittest.TestCase):
 		info = cpuinfo._get_cpu_info_from_proc_cpuinfo()
 
 		self.assertEqual('GenuineIntel', info['vendor_id_raw'])
-		self.assertEqual('Intel(R) Core(TM) i7 CPU         870  @ 2.93GHz', info['brand'])
+		self.assertEqual('Intel(R) Core(TM) i7 CPU         870  @ 2.93GHz', info['brand_raw'])
 		self.assertEqual('2.9300 GHz', info['hz_advertised'])
 		self.assertEqual('2.9283 GHz', info['hz_actual'])
 		self.assertEqual((2930000000, 0), info['hz_advertised_raw'])
@@ -106,7 +106,7 @@ class TestLinuxDebian_8_X86_64(unittest.TestCase):
 		info = cpuinfo._get_cpu_info_internal()
 
 		self.assertEqual('GenuineIntel', info['vendor_id_raw'])
-		self.assertEqual('Intel(R) Core(TM) i7 CPU         870  @ 2.93GHz', info['brand'])
+		self.assertEqual('Intel(R) Core(TM) i7 CPU         870  @ 2.93GHz', info['brand_raw'])
 		self.assertEqual('2.9300 GHz', info['hz_advertised'])
 		self.assertEqual('2.9283 GHz', info['hz_actual'])
 		self.assertEqual((2930000000, 0), info['hz_advertised_raw'])

@@ -266,7 +266,7 @@ def _utf_to_str(input):
 
 def _copy_new_fields(info, new_info):
 	keys = [
-		'vendor_id_raw', 'hardware_raw', 'brand', 'hz_advertised', 'hz_actual',
+		'vendor_id_raw', 'hardware_raw', 'brand_raw', 'hz_advertised', 'hz_actual',
 		'hz_advertised_raw', 'hz_actual_raw', 'arch', 'bits', 'count',
 		'raw_arch_string', 'raw_uname_string',
 		'l2_cache_size', 'l2_cache_line_size', 'l2_cache_associativity',
@@ -585,7 +585,7 @@ def _parse_dmesg_output(output):
 
 		info = {
 		'vendor_id_raw' : vendor_id,
-		'brand' : processor_brand,
+		'brand_raw' : processor_brand,
 
 		'stepping' : stepping,
 		'model' : model,
@@ -1312,7 +1312,7 @@ def _actual_get_cpu_info_from_cpuid(queue):
 	info = {
 	'vendor_id_raw' : cpuid.get_vendor_id(),
 	'hardware_raw' : '',
-	'brand' : processor_brand,
+	'brand_raw' : processor_brand,
 
 	'hz_advertised' : _hz_short_to_friendly(hz_advertised, scale),
 	'hz_actual' : _hz_short_to_friendly(hz_actual, 0),
@@ -1420,7 +1420,7 @@ def _get_cpu_info_from_proc_cpuinfo():
 
 		info = {
 		'hardware_raw' : hardware,
-		'brand' : processor_brand,
+		'brand_raw' : processor_brand,
 
 		'l3_cache_size' : _to_friendly_bytes(cache_size),
 		'flags' : flags,
@@ -1521,7 +1521,7 @@ def _get_cpu_info_from_lscpu():
 
 		brand = _get_field(False, output, None, None, 'Model name')
 		if brand:
-			info['brand'] = brand
+			info['brand_raw'] = brand
 
 		family = _get_field(False, output, None, None, 'CPU family')
 		if family and family.isdigit():
@@ -1757,7 +1757,7 @@ def _get_cpu_info_from_sysctl():
 
 		info = {
 		'vendor_id_raw' : vendor_id,
-		'brand' : processor_brand,
+		'brand_raw' : processor_brand,
 
 		'hz_advertised' : _hz_short_to_friendly(hz_advertised, scale),
 		'hz_actual' : _hz_short_to_friendly(hz_actual, 0),
@@ -1824,7 +1824,7 @@ def _get_cpu_info_from_sysinfo_v1():
 
 		info = {
 		'vendor_id_raw' : vendor_id,
-		'brand' : processor_brand,
+		'brand_raw' : processor_brand,
 
 		'hz_advertised' : _hz_short_to_friendly(hz_advertised, scale),
 		'hz_actual' : _hz_short_to_friendly(hz_actual, scale),
@@ -1899,7 +1899,7 @@ def _get_cpu_info_from_sysinfo_v2():
 
 		info = {
 		'vendor_id_raw' : vendor_id,
-		'brand' : processor_brand,
+		'brand_raw' : processor_brand,
 
 		'hz_advertised' : _hz_short_to_friendly(hz_advertised, scale),
 		'hz_actual' : _hz_short_to_friendly(hz_actual, scale),
@@ -1978,7 +1978,7 @@ def _get_cpu_info_from_wmic():
 
 		info = {
 			'vendor_id_raw' : value.get('Manufacturer'),
-			'brand' : processor_brand,
+			'brand_raw' : processor_brand,
 
 			'hz_advertised' : _hz_short_to_friendly(hz_advertised, scale_advertised),
 			'hz_actual' : _hz_short_to_friendly(hz_actual, scale_actual),
@@ -2084,7 +2084,7 @@ def _get_cpu_info_from_registry():
 
 		info = {
 		'vendor_id_raw' : vendor_id,
-		'brand' : processor_brand,
+		'brand_raw' : processor_brand,
 
 		'hz_advertised' : _hz_short_to_friendly(hz_advertised, scale),
 		'hz_actual' : _hz_short_to_friendly(hz_actual, 6),
@@ -2141,7 +2141,7 @@ def _get_cpu_info_from_kstat():
 
 		info = {
 		'vendor_id_raw' : vendor_id,
-		'brand' : processor_brand,
+		'brand_raw' : processor_brand,
 
 		'hz_advertised' : _hz_short_to_friendly(hz_advertised, scale),
 		'hz_actual' : _hz_short_to_friendly(hz_actual, 0),
@@ -2327,7 +2327,7 @@ def main():
 		print('Cpuinfo Version: {0}'.format(info.get('cpuinfo_version', '')))
 		print('Vendor ID Raw: {0}'.format(info.get('vendor_id_raw', '')))
 		print('Hardware Raw: {0}'.format(info.get('hardware_raw', '')))
-		print('Brand: {0}'.format(info.get('brand', '')))
+		print('Brand Raw: {0}'.format(info.get('brand_raw', '')))
 		print('Hz Advertised: {0}'.format(info.get('hz_advertised', '')))
 		print('Hz Actual: {0}'.format(info.get('hz_actual', '')))
 		print('Hz Advertised Raw: {0}'.format(info.get('hz_advertised_raw', '')))
@@ -2335,9 +2335,7 @@ def main():
 		print('Arch: {0}'.format(info.get('arch', '')))
 		print('Bits: {0}'.format(info.get('bits', '')))
 		print('Count: {0}'.format(info.get('count', '')))
-
 		print('Raw Arch String: {0}'.format(info.get('raw_arch_string', '')))
-
 		print('L1 Data Cache Size: {0}'.format(info.get('l1_data_cache_size', '')))
 		print('L1 Instruction Cache Size: {0}'.format(info.get('l1_instruction_cache_size', '')))
 		print('L2 Cache Size: {0}'.format(info.get('l2_cache_size', '')))
