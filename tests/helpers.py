@@ -174,8 +174,8 @@ def _actual_monkey_patch_data_source(cpuinfo, NewDataSource):
 		cpuinfo.DataSource.sysinfo_cpu = staticmethod(NewDataSource.sysinfo_cpu)
 	if hasattr(NewDataSource, 'winreg_processor_brand'):
 		cpuinfo.DataSource.winreg_processor_brand = staticmethod(NewDataSource.winreg_processor_brand)
-	if hasattr(NewDataSource, 'winreg_vendor_id'):
-		cpuinfo.DataSource.winreg_vendor_id = staticmethod(NewDataSource.winreg_vendor_id)
+	if hasattr(NewDataSource, 'winreg_vendor_id_raw'):
+		cpuinfo.DataSource.winreg_vendor_id_raw = staticmethod(NewDataSource.winreg_vendor_id_raw)
 	if hasattr(NewDataSource, 'winreg_raw_arch_string'):
 		cpuinfo.DataSource.winreg_raw_arch_string = staticmethod(NewDataSource.winreg_raw_arch_string)
 	if hasattr(NewDataSource, 'winreg_hz_actual'):
@@ -219,7 +219,7 @@ def backup_data_source(cpuinfo):
 	cpuinfo.BackupDataSource.wmic_cpu = staticmethod(cpuinfo.DataSource.wmic_cpu)
 	cpuinfo.BackupDataSource.sysinfo_cpu = staticmethod(cpuinfo.DataSource.sysinfo_cpu)
 	cpuinfo.BackupDataSource.winreg_processor_brand = staticmethod(cpuinfo.DataSource.winreg_processor_brand)
-	cpuinfo.BackupDataSource.winreg_vendor_id = staticmethod(cpuinfo.DataSource.winreg_vendor_id)
+	cpuinfo.BackupDataSource.winreg_vendor_id_raw = staticmethod(cpuinfo.DataSource.winreg_vendor_id_raw)
 	cpuinfo.BackupDataSource.winreg_raw_arch_string = staticmethod(cpuinfo.DataSource.winreg_raw_arch_string)
 	cpuinfo.BackupDataSource.winreg_hz_actual = staticmethod(cpuinfo.DataSource.winreg_hz_actual)
 	cpuinfo.BackupDataSource.winreg_feature_bits = staticmethod(cpuinfo.DataSource.winreg_feature_bits)
@@ -258,7 +258,7 @@ def restore_data_source(cpuinfo):
 	cpuinfo.DataSource.wmic_cpu = cpuinfo.BackupDataSource.wmic_cpu
 	cpuinfo.DataSource.sysinfo_cpu = cpuinfo.BackupDataSource.sysinfo_cpu
 	cpuinfo.DataSource.winreg_processor_brand = cpuinfo.BackupDataSource.winreg_processor_brand
-	cpuinfo.DataSource.winreg_vendor_id = cpuinfo.BackupDataSource.winreg_vendor_id
+	cpuinfo.DataSource.winreg_vendor_id_raw = cpuinfo.BackupDataSource.winreg_vendor_id_raw
 	cpuinfo.DataSource.winreg_raw_arch_string = cpuinfo.BackupDataSource.winreg_raw_arch_string
 	cpuinfo.DataSource.winreg_hz_actual = cpuinfo.BackupDataSource.winreg_hz_actual
 	cpuinfo.DataSource.winreg_feature_bits = cpuinfo.BackupDataSource.winreg_feature_bits

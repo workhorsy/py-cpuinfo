@@ -100,7 +100,7 @@ class TestOpenIndiana_5_11_Ryzen_7(unittest.TestCase):
 	def test_get_cpu_info_from_kstat(self):
 		info = cpuinfo._get_cpu_info_from_kstat()
 
-		self.assertEqual('AuthenticAMD', info['vendor_id'])
+		self.assertEqual('AuthenticAMD', info['vendor_id_raw'])
 		self.assertEqual('AMD Ryzen 7 2700X Eight-Core Processor', info['brand'])
 		self.assertEqual('3.6930 GHz', info['hz_advertised'])
 		self.assertEqual('3.6926 GHz', info['hz_actual'])
@@ -119,7 +119,7 @@ class TestOpenIndiana_5_11_Ryzen_7(unittest.TestCase):
 	def test_all(self):
 		info = cpuinfo._get_cpu_info_internal()
 
-		self.assertEqual('AuthenticAMD', info['vendor_id'])
+		self.assertEqual('AuthenticAMD', info['vendor_id_raw'])
 		self.assertEqual('AMD Ryzen 7 2700X Eight-Core Processor', info['brand'])
 		self.assertEqual('3.6930 GHz', info['hz_advertised'])
 		self.assertEqual('3.6926 GHz', info['hz_actual'])

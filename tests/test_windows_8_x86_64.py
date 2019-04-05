@@ -37,7 +37,7 @@ Name=Intel(R) Core(TM) i7 CPU         870  @ 2.93GHz
 		return 'Intel(R) Core(TM) i7 CPU         870  @ 2.93GHz'
 
 	@staticmethod
-	def winreg_vendor_id():
+	def winreg_vendor_id_raw():
 		return 'GenuineIntel'
 
 	@staticmethod
@@ -92,7 +92,7 @@ class TestWindows_8_X86_64(unittest.TestCase):
 	def test_get_cpu_info_from_wmic(self):
 		info = cpuinfo._get_cpu_info_from_wmic()
 
-		self.assertEqual('GenuineIntel', info['vendor_id'])
+		self.assertEqual('GenuineIntel', info['vendor_id_raw'])
 		self.assertEqual('Intel(R) Core(TM) i7 CPU         870  @ 2.93GHz', info['brand'])
 		self.assertEqual('2.9300 GHz', info['hz_advertised'])
 		self.assertEqual('2.9330 GHz', info['hz_actual'])
@@ -109,7 +109,7 @@ class TestWindows_8_X86_64(unittest.TestCase):
 	def test_get_cpu_info_from_registry(self):
 		info = cpuinfo._get_cpu_info_from_registry()
 
-		self.assertEqual('GenuineIntel', info['vendor_id'])
+		self.assertEqual('GenuineIntel', info['vendor_id_raw'])
 		self.assertEqual('Intel(R) Core(TM) i7 CPU         870  @ 2.93GHz', info['brand'])
 		self.assertEqual('2.9300 GHz', info['hz_advertised'])
 		self.assertEqual('2.9330 GHz', info['hz_actual'])
@@ -129,7 +129,7 @@ class TestWindows_8_X86_64(unittest.TestCase):
 	def test_all(self):
 		info = cpuinfo._get_cpu_info_internal()
 
-		self.assertEqual('GenuineIntel', info['vendor_id'])
+		self.assertEqual('GenuineIntel', info['vendor_id_raw'])
 		self.assertEqual('Intel(R) Core(TM) i7 CPU         870  @ 2.93GHz', info['brand'])
 		self.assertEqual('2.9300 GHz', info['hz_advertised'])
 		self.assertEqual('2.9330 GHz', info['hz_actual'])

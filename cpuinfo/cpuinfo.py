@@ -165,11 +165,11 @@ class DataSource(object):
 		return processor_brand.strip()
 
 	@staticmethod
-	def winreg_vendor_id():
+	def winreg_vendor_id_raw():
 		key = winreg.OpenKey(winreg.HKEY_LOCAL_MACHINE, r"Hardware\Description\System\CentralProcessor\0")
-		vendor_id = winreg.QueryValueEx(key, "VendorIdentifier")[0]
+		vendor_id_raw = winreg.QueryValueEx(key, "VendorIdentifier")[0]
 		winreg.CloseKey(key)
-		return vendor_id
+		return vendor_id_raw
 
 	@staticmethod
 	def winreg_raw_arch_string():
@@ -266,7 +266,7 @@ def _utf_to_str(input):
 
 def _copy_new_fields(info, new_info):
 	keys = [
-		'vendor_id', 'hardware', 'brand', 'hz_advertised', 'hz_actual',
+		'vendor_id_raw', 'hardware', 'brand', 'hz_advertised', 'hz_actual',
 		'hz_advertised_raw', 'hz_actual_raw', 'arch', 'bits', 'count',
 		'raw_arch_string', 'raw_uname_string',
 		'l2_cache_size', 'l2_cache_line_size', 'l2_cache_associativity',
@@ -584,7 +584,7 @@ def _parse_dmesg_output(output):
 			hz_advertised = _to_decimal_string(hz_actual)
 
 		info = {
-		'vendor_id' : vendor_id,
+		'vendor_id_raw' : vendor_id,
 		'brand' : processor_brand,
 
 		'stepping' : stepping,
@@ -1310,7 +1310,7 @@ def _actual_get_cpu_info_from_cpuid(queue):
 	# Get the Hz and scale
 	hz_advertised, scale = _parse_cpu_brand_string(processor_brand)
 	info = {
-	'vendor_id' : cpuid.get_vendor_id(),
+	'vendor_id_raw' : cpuid.get_vendor_id(),
 	'hardware' : '',
 	'brand' : processor_brand,
 
@@ -1424,7 +1424,7 @@ def _get_cpu_info_from_proc_cpuinfo():
 
 		'l3_cache_size' : _to_friendly_bytes(cache_size),
 		'flags' : flags,
-		'vendor_id' : vendor_id,
+		'vendor_id_raw' : vendor_id,
 		'stepping' : stepping,
 		'model' : model,
 		'family' : family,
@@ -1517,7 +1517,7 @@ def _get_cpu_info_from_lscpu():
 
 		vendor_id = _get_field(False, output, None, None, 'Vendor ID')
 		if vendor_id:
-			info['vendor_id'] = vendor_id
+			info['vendor_id_raw'] = vendor_id
 
 		brand = _get_field(False, output, None, None, 'Model name')
 		if brand:
@@ -1756,7 +1756,7 @@ def _get_cpu_info_from_sysctl():
 		hz_actual = _to_decimal_string(hz_actual)
 
 		info = {
-		'vendor_id' : vendor_id,
+		'vendor_id_raw' : vendor_id,
 		'brand' : processor_brand,
 
 		'hz_advertised' : _hz_short_to_friendly(hz_advertised, scale),
@@ -1823,7 +1823,7 @@ def _get_cpu_info_from_sysinfo_v1():
 		hz_actual = hz_advertised
 
 		info = {
-		'vendor_id' : vendor_id,
+		'vendor_id_raw' : vendor_id,
 		'brand' : processor_brand,
 
 		'hz_advertised' : _hz_short_to_friendly(hz_advertised, scale),
@@ -1898,7 +1898,7 @@ def _get_cpu_info_from_sysinfo_v2():
 			scale = 9
 
 		info = {
-		'vendor_id' : vendor_id,
+		'vendor_id_raw' : vendor_id,
 		'brand' : processor_brand,
 
 		'hz_advertised' : _hz_short_to_friendly(hz_advertised, scale),
@@ -1977,7 +1977,7 @@ def _get_cpu_info_from_wmic():
 			stepping = int(entries[i + 1])
 
 		info = {
-			'vendor_id' : value.get('Manufacturer'),
+			'vendor_id_raw' : value.get('Manufacturer'),
 			'brand' : processor_brand,
 
 			'hz_advertised' : _hz_short_to_friendly(hz_advertised, scale_advertised),
@@ -2014,7 +2014,7 @@ def _get_cpu_info_from_registry():
 		processor_brand = DataSource.winreg_processor_brand().strip()
 
 		# Get the CPU vendor id
-		vendor_id = DataSource.winreg_vendor_id()
+		vendor_id = DataSource.winreg_vendor_id_raw()
 
 		# Get the CPU arch and bits
 		raw_arch_string = DataSource.winreg_raw_arch_string()
@@ -2083,7 +2083,7 @@ def _get_cpu_info_from_registry():
 		flags.sort()
 
 		info = {
-		'vendor_id' : vendor_id,
+		'vendor_id_raw' : vendor_id,
 		'brand' : processor_brand,
 
 		'hz_advertised' : _hz_short_to_friendly(hz_advertised, scale),
@@ -2140,7 +2140,7 @@ def _get_cpu_info_from_kstat():
 		hz_actual = _to_decimal_string(hz_actual)
 
 		info = {
-		'vendor_id' : vendor_id,
+		'vendor_id_raw' : vendor_id,
 		'brand' : processor_brand,
 
 		'hz_advertised' : _hz_short_to_friendly(hz_advertised, scale),
@@ -2325,7 +2325,7 @@ def main():
 	else:
 		print('Python Version: {0}'.format(info.get('python_version', '')))
 		print('Cpuinfo Version: {0}'.format(info.get('cpuinfo_version', '')))
-		print('Vendor ID: {0}'.format(info.get('vendor_id', '')))
+		print('Vendor ID Raw: {0}'.format(info.get('vendor_id_raw', '')))
 		print('Hardware Raw: {0}'.format(info.get('hardware', '')))
 		print('Brand: {0}'.format(info.get('brand', '')))
 		print('Hz Advertised: {0}'.format(info.get('hz_advertised', '')))

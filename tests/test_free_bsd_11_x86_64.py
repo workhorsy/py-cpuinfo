@@ -87,7 +87,7 @@ class TestFreeBSD_11_X86_64(unittest.TestCase):
 	def test_get_cpu_info_from_dmesg(self):
 		info = cpuinfo._get_cpu_info_from_dmesg()
 
-		self.assertEqual('GenuineIntel', info['vendor_id'])
+		self.assertEqual('GenuineIntel', info['vendor_id_raw'])
 		self.assertEqual('Intel(R) Pentium(R) CPU G640 @ 2.80GHz', info['brand'])
 		self.assertEqual('2.8000 GHz', info['hz_advertised'])
 		self.assertEqual('2.8000 GHz', info['hz_actual'])
@@ -110,7 +110,7 @@ class TestFreeBSD_11_X86_64(unittest.TestCase):
 	def test_get_cpu_info_from_cat_var_run_dmesg_boot(self):
 		info = cpuinfo._get_cpu_info_from_cat_var_run_dmesg_boot()
 
-		self.assertEqual('GenuineIntel', info['vendor_id'])
+		self.assertEqual('GenuineIntel', info['vendor_id_raw'])
 		self.assertEqual('Intel(R) Pentium(R) CPU G640 @ 2.80GHz', info['brand'])
 		self.assertEqual('2.8000 GHz', info['hz_advertised'])
 		self.assertEqual('2.8000 GHz', info['hz_actual'])
@@ -133,7 +133,7 @@ class TestFreeBSD_11_X86_64(unittest.TestCase):
 	def test_all(self):
 		info = cpuinfo._get_cpu_info_internal()
 
-		self.assertEqual('GenuineIntel', info['vendor_id'])
+		self.assertEqual('GenuineIntel', info['vendor_id_raw'])
 		self.assertEqual('Intel(R) Pentium(R) CPU G640 @ 2.80GHz', info['brand'])
 		self.assertEqual('2.8000 GHz', info['hz_advertised'])
 		self.assertEqual('2.8000 GHz', info['hz_actual'])

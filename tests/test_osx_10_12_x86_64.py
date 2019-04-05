@@ -114,7 +114,7 @@ class TestOSX_10_12(unittest.TestCase):
 	def test_get_cpu_info_from_sysctl(self):
 		info = cpuinfo._get_cpu_info_from_sysctl()
 
-		self.assertEqual('GenuineIntel', info['vendor_id'])
+		self.assertEqual('GenuineIntel', info['vendor_id_raw'])
 		self.assertEqual('Intel(R) Core(TM) i5-2557M CPU @ 1.70GHz', info['brand'])
 		self.assertEqual('1.7000 GHz', info['hz_advertised'])
 		self.assertEqual('1.7000 GHz', info['hz_actual'])
@@ -143,7 +143,7 @@ class TestOSX_10_12(unittest.TestCase):
 	def test_all(self):
 		info = cpuinfo._get_cpu_info_internal()
 
-		self.assertEqual('GenuineIntel', info['vendor_id'])
+		self.assertEqual('GenuineIntel', info['vendor_id_raw'])
 		self.assertEqual('Intel(R) Core(TM) i5-2557M CPU @ 1.70GHz', info['brand'])
 		self.assertEqual('1.7000 GHz', info['hz_advertised'])
 		self.assertEqual('1.7000 GHz', info['hz_actual'])

@@ -101,7 +101,7 @@ class MockDataSource(object):
 		return None
 
 	@staticmethod
-	def winreg_vendor_id():
+	def winreg_vendor_id_raw():
 		return None
 
 	@staticmethod

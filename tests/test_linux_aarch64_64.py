@@ -153,7 +153,7 @@ class TestLinux_Aarch_64(unittest.TestCase):
 	def test_all(self):
 		info = cpuinfo._get_cpu_info_internal()
 
-		self.assertEqual('', info['vendor_id'])
+		self.assertEqual('', info['vendor_id_raw'])
 		self.assertEqual('FIXME', info['hardware'])
 		self.assertEqual('FIXME', info['brand'])
 		self.assertEqual('FIXME', info['hz_advertised'])

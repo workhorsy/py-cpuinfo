@@ -467,7 +467,7 @@ class TestLinuxFedora_24_X86_64(unittest.TestCase):
 	def test_get_cpu_info_from_lscpu(self):
 		info = cpuinfo._get_cpu_info_from_lscpu()
 
-		self.assertEqual('GenuineIntel', info['vendor_id'])
+		self.assertEqual('GenuineIntel', info['vendor_id_raw'])
 		self.assertEqual('Intel(R) Pentium(R) CPU G640 @ 2.80GHz', info['brand'])
 		self.assertEqual('2.7937 GHz', info['hz_advertised'])
 		self.assertEqual('2.7937 GHz', info['hz_actual'])
@@ -501,7 +501,7 @@ class TestLinuxFedora_24_X86_64(unittest.TestCase):
 	def test_get_cpu_info_from_proc_cpuinfo(self):
 		info = cpuinfo._get_cpu_info_from_proc_cpuinfo()
 
-		self.assertEqual('GenuineIntel', info['vendor_id'])
+		self.assertEqual('GenuineIntel', info['vendor_id_raw'])
 		self.assertEqual('Intel(R) Pentium(R) CPU G640 @ 2.80GHz', info['brand'])
 		self.assertEqual('2.8000 GHz', info['hz_advertised'])
 		self.assertEqual('2.7937 GHz', info['hz_actual'])
@@ -527,7 +527,7 @@ class TestLinuxFedora_24_X86_64(unittest.TestCase):
 	def test_all(self):
 		info = cpuinfo._get_cpu_info_internal()
 
-		self.assertEqual('GenuineIntel', info['vendor_id'])
+		self.assertEqual('GenuineIntel', info['vendor_id_raw'])
 		self.assertEqual('Intel(R) Pentium(R) CPU G640 @ 2.80GHz', info['brand'])
 		self.assertEqual('2.8000 GHz', info['hz_advertised'])
 		self.assertEqual('2.7937 GHz', info['hz_actual'])
