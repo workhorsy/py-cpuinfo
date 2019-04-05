@@ -9,7 +9,7 @@ class MockDataSource(object):
 	bits = '32bit'
 	cpu_count = 8
 	is_windows = False
-	raw_arch_string = 'i86pc'
+	arch_string_raw = 'i86pc'
 	raw_uname_string = 'i386'
 	can_cpuid = False
 
@@ -129,7 +129,7 @@ class TestOpenIndiana_5_11_Ryzen_7(unittest.TestCase):
 		self.assertEqual(32, info['bits'])
 		self.assertEqual(8, info['count'])
 
-		self.assertEqual('i86pc', info['raw_arch_string'])
+		self.assertEqual('i86pc', info['arch_string_raw'])
 
 		self.assertEqual(2, info['stepping'])
 		self.assertEqual(8, info['model'])

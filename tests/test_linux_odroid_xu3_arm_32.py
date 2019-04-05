@@ -9,7 +9,7 @@ class MockDataSource(object):
 	bits = '32bit'
 	cpu_count = 8
 	is_windows = False
-	raw_arch_string = 'armv7l'
+	arch_string_raw = 'armv7l'
 	raw_uname_string = ''
 	can_cpuid = False
 
@@ -309,7 +309,7 @@ class TestLinux_Odroid_XU3_arm_32(unittest.TestCase):
 		self.assertEqual(32, info['bits'])
 		self.assertEqual(8, info['count'])
 
-		self.assertEqual('armv7l', info['raw_arch_string'])
+		self.assertEqual('armv7l', info['arch_string_raw'])
 
 		self.assertEqual(
 			['edsp', 'fastmult', 'half', 'idiva', 'idivt', 'neon', 'swp',

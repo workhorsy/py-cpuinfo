@@ -9,7 +9,7 @@ class MockDataSource(object):
 	bits = '64bit'
 	cpu_count = 4
 	is_windows = False
-	raw_arch_string = 'aarch64'
+	arch_string_raw = 'aarch64'
 	raw_uname_string = 'x86_64'
 	can_cpuid = False
 
@@ -214,7 +214,7 @@ class TestLinux_Odroid_C2_Aarch_64(unittest.TestCase):
 		self.assertEqual(64, info['bits'])
 		self.assertEqual(4, info['count'])
 
-		self.assertEqual('aarch64', info['raw_arch_string'])
+		self.assertEqual('aarch64', info['arch_string_raw'])
 
 		self.assertEqual(
 			['asimd', 'crc32', 'fp'],

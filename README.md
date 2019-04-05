@@ -63,7 +63,7 @@ Output
 | arch                          | "X86_64" |
 | bits                          | 64 |
 | count                         | 4 |
-| raw_arch_string               | "x86_64" |
+| arch_string_raw               | "x86_64" |
 | l1_data_cache_size            | "32 KB" |
 | l1_instruction_cache_size     | "32 KB" |
 | l2_cache_size                 | "256 KB" |

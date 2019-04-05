@@ -9,7 +9,7 @@ class MockDataSource(object):
 	bits = '64bit'
 	cpu_count = 2
 	is_windows = False
-	raw_arch_string = 'ppc64le'
+	arch_string_raw = 'ppc64le'
 	raw_uname_string = ''
 	can_cpuid = False
 
@@ -469,7 +469,7 @@ class TestLinuxDebian_8_7_1_ppc64le(unittest.TestCase):
 		self.assertEqual(2, info['count'])
 		self.assertEqual('32 KB', info['l1_instruction_cache_size'])
 		self.assertEqual('32 KB', info['l1_data_cache_size'])
-		self.assertEqual('ppc64le', info['raw_arch_string'])
+		self.assertEqual('ppc64le', info['arch_string_raw'])
 		self.assertEqual(
 			['dabr', 'dabrx', 'dsisr', 'fpu', 'lp', 'mmu', 'pp', 'rislb', 'run', 'slb', 'sprg3'],
 			info['flags']

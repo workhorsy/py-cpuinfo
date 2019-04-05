@@ -9,7 +9,7 @@ class MockDataSource(object):
 	bits = '64bit'
 	cpu_count = 2
 	is_windows = False
-	raw_arch_string = 'ppc64le'
+	arch_string_raw = 'ppc64le'
 	raw_uname_string = ''
 	can_cpuid = False
 
@@ -404,7 +404,7 @@ class TestLinuxFedora_24_ppc64le(unittest.TestCase):
 		self.assertEqual(2, info['count'])
 		self.assertEqual('32 KB', info['l1_instruction_cache_size'])
 		self.assertEqual('64 KB', info['l1_data_cache_size'])
-		self.assertEqual('ppc64le', info['raw_arch_string'])
+		self.assertEqual('ppc64le', info['arch_string_raw'])
 		self.assertEqual(
 			['dss_2.02', 'dss_2.05', 'dss_2.06', 'fpu', 'lsd_in_dscr', 'ppr', 'slb', 'sso_2.06', 'ugr_in_dscr'],
 			info['flags']

@@ -9,7 +9,7 @@ class MockDataSource(object):
 	bits = '64bit'
 	cpu_count = 4
 	is_windows = True
-	raw_arch_string = 'AMD64'
+	arch_string_raw = 'AMD64'
 	raw_uname_string = 'AMD64 Family 6 Model 69 Stepping 1, GenuineIntel'
 	can_cpuid = False
 
@@ -41,7 +41,7 @@ Name=Intel(R) Core(TM) i5-4300U CPU @ 1.90GHz
 		return 'GenuineIntel'
 
 	@staticmethod
-	def winreg_raw_arch_string():
+	def winreg_arch_string_raw():
 		return 'AMD64'
 
 	@staticmethod
@@ -139,7 +139,7 @@ class TestWindows_10_X86_64(unittest.TestCase):
 		self.assertEqual(64, info['bits'])
 		self.assertEqual(4, info['count'])
 
-		self.assertEqual('AMD64', info['raw_arch_string'])
+		self.assertEqual('AMD64', info['arch_string_raw'])
 
 		self.assertEqual(1, info['stepping'])
 		self.assertEqual(69, info['model'])

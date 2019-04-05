@@ -9,7 +9,7 @@ class MockDataSource(object):
 	bits = '64bit'
 	cpu_count = 1
 	is_windows = False
-	raw_arch_string = 'x86_64'
+	arch_string_raw = 'x86_64'
 	raw_uname_string = 'x86_64'
 	can_cpuid = False
 
@@ -115,7 +115,7 @@ class TestLinuxDebian_8_X86_64(unittest.TestCase):
 		self.assertEqual(64, info['bits'])
 		self.assertEqual(1, info['count'])
 
-		self.assertEqual('x86_64', info['raw_arch_string'])
+		self.assertEqual('x86_64', info['arch_string_raw'])
 
 		self.assertEqual('6144 KB', info['l3_cache_size'])
 

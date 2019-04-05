@@ -9,7 +9,7 @@ class MockDataSource(object):
 	bits = '64bit'
 	cpu_count = 6
 	is_windows = False
-	raw_arch_string = 'aarch64'
+	arch_string_raw = 'aarch64'
 	raw_uname_string = ''
 	can_cpuid = False
 
@@ -164,7 +164,7 @@ class TestLinux_Aarch_64(unittest.TestCase):
 		self.assertEqual(64, info['bits'])
 		self.assertEqual(6, info['count'])
 
-		self.assertEqual('aarch64', info['raw_arch_string'])
+		self.assertEqual('aarch64', info['arch_string_raw'])
 
 		self.assertEqual('78K', info['l1_instruction_cache_size'])
 		self.assertEqual('32K', info['l1_data_cache_size'])

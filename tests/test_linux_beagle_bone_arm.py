@@ -9,7 +9,7 @@ class MockDataSource(object):
 	bits = '32bit'
 	cpu_count = 1
 	is_windows = False
-	raw_arch_string = 'armv7l'
+	arch_string_raw = 'armv7l'
 	raw_uname_string = ''
 
 	@staticmethod
@@ -123,7 +123,7 @@ class TestLinux_BeagleBone(unittest.TestCase):
 		self.assertEqual(32, info['bits'])
 		self.assertEqual(1, info['count'])
 
-		self.assertEqual('armv7l', info['raw_arch_string'])
+		self.assertEqual('armv7l', info['arch_string_raw'])
 
 		self.assertEqual(
 			['edsp', 'fastmult', 'half', 'java', 'swp', 'thumb', 'tls', 'vfp']

@@ -47,7 +47,7 @@ class DataSource(object):
 	bits = platform.architecture()[0]
 	cpu_count = multiprocessing.cpu_count()
 	is_windows = platform.system().lower() == 'windows'
-	raw_arch_string = platform.machine()
+	arch_string_raw = platform.machine()
 	raw_uname_string = platform.uname()[5]
 	can_cpuid = True
 
@@ -172,11 +172,11 @@ class DataSource(object):
 		return vendor_id_raw
 
 	@staticmethod
-	def winreg_raw_arch_string():
+	def winreg_arch_string_raw():
 		key = winreg.OpenKey(winreg.HKEY_LOCAL_MACHINE, r"SYSTEM\CurrentControlSet\Control\Session Manager\Environment")
-		raw_arch_string = winreg.QueryValueEx(key, "PROCESSOR_ARCHITECTURE")[0]
+		arch_string_raw = winreg.QueryValueEx(key, "PROCESSOR_ARCHITECTURE")[0]
 		winreg.CloseKey(key)
-		return raw_arch_string
+		return arch_string_raw
 
 	@staticmethod
 	def winreg_hz_actual():
@@ -228,7 +228,7 @@ def _run_and_get_stdout(command, pipe_command=None):
 
 # Make sure we are running on a supported system
 def _check_arch():
-	arch, bits = _parse_arch(DataSource.raw_arch_string)
+	arch, bits = _parse_arch(DataSource.arch_string_raw)
 	if not arch in ['X86_32', 'X86_64', 'ARM_7', 'ARM_8', 'PPC_64']:
 		raise Exception("py-cpuinfo currently only works on X86 and some PPC and ARM CPUs.")
 
@@ -268,7 +268,7 @@ def _copy_new_fields(info, new_info):
 	keys = [
 		'vendor_id_raw', 'hardware_raw', 'brand_raw', 'hz_advertised', 'hz_actual',
 		'hz_advertised_raw', 'hz_actual_raw', 'arch', 'bits', 'count',
-		'raw_arch_string', 'raw_uname_string',
+		'arch_string_raw', 'raw_uname_string',
 		'l2_cache_size', 'l2_cache_line_size', 'l2_cache_associativity',
 		'stepping', 'model', 'family',
 		'processor_type', 'extended_model', 'extended_family', 'flags',
@@ -608,41 +608,41 @@ def _parse_dmesg_output(output):
 
 	return {}
 
-def _parse_arch(raw_arch_string):
+def _parse_arch(arch_string_raw):
 	import re
 
 	arch, bits = None, None
-	raw_arch_string = raw_arch_string.lower()
+	arch_string_raw = arch_string_raw.lower()
 
 	# X86
-	if re.match('^i\d86$|^x86$|^x86_32$|^i86pc$|^ia32$|^ia-32$|^bepc$', raw_arch_string):
+	if re.match('^i\d86$|^x86$|^x86_32$|^i86pc$|^ia32$|^ia-32$|^bepc$', arch_string_raw):
 		arch = 'X86_32'
 		bits = 32
-	elif re.match('^x64$|^x86_64$|^x86_64t$|^i686-64$|^amd64$|^ia64$|^ia-64$', raw_arch_string):
+	elif re.match('^x64$|^x86_64$|^x86_64t$|^i686-64$|^amd64$|^ia64$|^ia-64$', arch_string_raw):
 		arch = 'X86_64'
 		bits = 64
 	# ARM
-	elif re.match('^armv8-a|aarch64$', raw_arch_string):
+	elif re.match('^armv8-a|aarch64$', arch_string_raw):
 		arch = 'ARM_8'
 		bits = 64
-	elif re.match('^armv7$|^armv7[a-z]$|^armv7-[a-z]$|^armv6[a-z]$', raw_arch_string):
+	elif re.match('^armv7$|^armv7[a-z]$|^armv7-[a-z]$|^armv6[a-z]$', arch_string_raw):
 		arch = 'ARM_7'
 		bits = 32
-	elif re.match('^armv8$|^armv8[a-z]$|^armv8-[a-z]$', raw_arch_string):
+	elif re.match('^armv8$|^armv8[a-z]$|^armv8-[a-z]$', arch_string_raw):
 		arch = 'ARM_8'
 		bits = 32
 	# PPC
-	elif re.match('^ppc32$|^prep$|^pmac$|^powermac$', raw_arch_string):
+	elif re.match('^ppc32$|^prep$|^pmac$|^powermac$', arch_string_raw):
 		arch = 'PPC_32'
 		bits = 32
-	elif re.match('^powerpc$|^ppc64$|^ppc64le$', raw_arch_string):
+	elif re.match('^powerpc$|^ppc64$|^ppc64le$', arch_string_raw):
 		arch = 'PPC_64'
 		bits = 64
 	# SPARC
-	elif re.match('^sparc32$|^sparc$', raw_arch_string):
+	elif re.match('^sparc32$|^sparc$', arch_string_raw):
 		arch = 'SPARC_32'
 		bits = 32
-	elif re.match('^sparc64$|^sun4u$|^sun4v$', raw_arch_string):
+	elif re.match('^sparc64$|^sun4u$|^sun4v$', arch_string_raw):
 		arch = 'SPARC_64'
 		bits = 64
 
@@ -1283,7 +1283,7 @@ def _actual_get_cpu_info_from_cpuid(queue):
 	sys.stderr = open(os.devnull, 'w')
 
 	# Get the CPU arch and bits
-	arch, bits = _parse_arch(DataSource.raw_arch_string)
+	arch, bits = _parse_arch(DataSource.arch_string_raw)
 
 	# Return none if this is not an X86 CPU
 	if not arch in ['X86_32', 'X86_64']:
@@ -1348,7 +1348,7 @@ def _get_cpu_info_from_cpuid():
 		return {}
 
 	# Get the CPU arch and bits
-	arch, bits = _parse_arch(DataSource.raw_arch_string)
+	arch, bits = _parse_arch(DataSource.arch_string_raw)
 
 	# Return {} if this is not an X86 CPU
 	if not arch in ['X86_32', 'X86_64']:
@@ -2017,8 +2017,8 @@ def _get_cpu_info_from_registry():
 		vendor_id = DataSource.winreg_vendor_id_raw()
 
 		# Get the CPU arch and bits
-		raw_arch_string = DataSource.winreg_raw_arch_string()
-		arch, bits = _parse_arch(raw_arch_string)
+		arch_string_raw = DataSource.winreg_arch_string_raw()
+		arch, bits = _parse_arch(arch_string_raw)
 
 		# Get the actual CPU Hz
 		hz_actual = DataSource.winreg_hz_actual()
@@ -2195,7 +2195,7 @@ def _get_cpu_info_internal():
 	'''
 
 	# Get the CPU arch and bits
-	arch, bits = _parse_arch(DataSource.raw_arch_string)
+	arch, bits = _parse_arch(DataSource.arch_string_raw)
 
 	friendly_maxsize = { 2**31-1: '32 bit', 2**63-1: '64 bit' }.get(sys.maxsize) or 'unknown bits'
 	friendly_version = "{0}.{1}.{2}.{3}.{4}".format(*sys.version_info)
@@ -2207,7 +2207,7 @@ def _get_cpu_info_internal():
 		'arch' : arch,
 		'bits' : bits,
 		'count' : DataSource.cpu_count,
-		'raw_arch_string' : DataSource.raw_arch_string,
+		'arch_string_raw' : DataSource.arch_string_raw,
 	}
 
 	# Try the Windows wmic
@@ -2335,7 +2335,7 @@ def main():
 		print('Arch: {0}'.format(info.get('arch', '')))
 		print('Bits: {0}'.format(info.get('bits', '')))
 		print('Count: {0}'.format(info.get('count', '')))
-		print('Raw Arch String: {0}'.format(info.get('raw_arch_string', '')))
+		print('Arch String Raw: {0}'.format(info.get('arch_string_raw', '')))
 		print('L1 Data Cache Size: {0}'.format(info.get('l1_data_cache_size', '')))
 		print('L1 Instruction Cache Size: {0}'.format(info.get('l1_instruction_cache_size', '')))
 		print('L2 Cache Size: {0}'.format(info.get('l2_cache_size', '')))

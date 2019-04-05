@@ -9,7 +9,7 @@ class MockDataSource(object):
 	bits = '32bit'
 	cpu_count = 4
 	is_windows = False
-	raw_arch_string = 'BePC'
+	arch_string_raw = 'BePC'
 	raw_uname_string = 'x86_32'
 	can_cpuid = False
 
@@ -109,7 +109,7 @@ class TestHaiku_x86_32(unittest.TestCase):
 		self.assertEqual(32, info['bits'])
 		self.assertEqual(4, info['count'])
 
-		self.assertEqual('BePC', info['raw_arch_string'])
+		self.assertEqual('BePC', info['arch_string_raw'])
 
 		self.assertEqual(5, info['stepping'])
 		self.assertEqual(30, info['model'])

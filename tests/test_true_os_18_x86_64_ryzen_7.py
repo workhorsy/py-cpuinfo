@@ -9,7 +9,7 @@ class MockDataSource(object):
 	bits = '64bit'
 	cpu_count = 8
 	is_windows = False
-	raw_arch_string = 'amd64'
+	arch_string_raw = 'amd64'
 	raw_uname_string = 'amd64'
 	can_cpuid = False
 
@@ -104,7 +104,7 @@ class TestTrueOS_18_X86_64_Ryzen7(unittest.TestCase):
 		self.assertEqual('X86_64', info['arch'])
 		self.assertEqual(64, info['bits'])
 		self.assertEqual(8, info['count'])
-		self.assertEqual('amd64', info['raw_arch_string'])
+		self.assertEqual('amd64', info['arch_string_raw'])
 
 		self.assertEqual(2, info['stepping'])
 		self.assertEqual(8, info['model'])

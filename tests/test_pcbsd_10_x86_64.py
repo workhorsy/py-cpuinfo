@@ -9,7 +9,7 @@ class MockDataSource(object):
 	bits = '64bit'
 	cpu_count = 1
 	is_windows = False
-	raw_arch_string = 'amd64'
+	arch_string_raw = 'amd64'
 	raw_uname_string = 'x86_64'
 	can_cpuid = False
 
@@ -95,7 +95,7 @@ class TestPCBSD(unittest.TestCase):
 		self.assertEqual(64, info['bits'])
 		self.assertEqual(1, info['count'])
 
-		self.assertEqual('amd64', info['raw_arch_string'])
+		self.assertEqual('amd64', info['arch_string_raw'])
 
 		self.assertEqual(
 			['apic', 'clflush', 'cmov', 'cx8', 'de', 'fpu', 'fxsr', 'lahf',

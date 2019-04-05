@@ -9,7 +9,7 @@ class MockDataSource(object):
 	bits = '32bit'
 	cpu_count = 4
 	is_windows = False
-	raw_arch_string = 'i86pc'
+	arch_string_raw = 'i86pc'
 	raw_uname_string = 'x86_32'
 	can_cpuid = False
 
@@ -137,7 +137,7 @@ class TestSolaris_11(unittest.TestCase):
 		self.assertEqual(32, info['bits'])
 		self.assertEqual(4, info['count'])
 
-		self.assertEqual('i86pc', info['raw_arch_string'])
+		self.assertEqual('i86pc', info['arch_string_raw'])
 
 		self.assertEqual(5, info['stepping'])
 		self.assertEqual(30, info['model'])

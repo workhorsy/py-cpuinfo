@@ -9,7 +9,7 @@ class MockDataSource(object):
 	bits = '64bit'
 	cpu_count = 8
 	is_windows = False
-	raw_arch_string = 'x86_64'
+	arch_string_raw = 'x86_64'
 	raw_uname_string = 'x86_64'
 	can_cpuid = False
 
@@ -194,7 +194,7 @@ class Test_Linux_Fedora_29_X86_64_Ryzen_7(unittest.TestCase):
 		self.assertEqual(64, info['bits'])
 		self.assertEqual(8, info['count'])
 
-		self.assertEqual('x86_64', info['raw_arch_string'])
+		self.assertEqual('x86_64', info['arch_string_raw'])
 
 		self.assertEqual('64 KB', info['l1_instruction_cache_size'])
 		self.assertEqual('32 KB', info['l1_data_cache_size'])
