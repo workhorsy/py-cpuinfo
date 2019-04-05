@@ -195,7 +195,7 @@ class TestLinux_Odroid_C2_Aarch_64(unittest.TestCase):
 	def test_get_cpu_info_from_proc_cpuinfo(self):
 		info = cpuinfo._get_cpu_info_from_proc_cpuinfo()
 
-		self.assertEqual('ODROID-C2', info['hardware'])
+		self.assertEqual('ODROID-C2', info['hardware_raw'])
 
 		self.assertEqual(
 			['asimd', 'crc32', 'fp'],
@@ -205,7 +205,7 @@ class TestLinux_Odroid_C2_Aarch_64(unittest.TestCase):
 	def test_all(self):
 		info = cpuinfo._get_cpu_info_internal()
 
-		self.assertEqual('ODROID-C2', info['hardware'])
+		self.assertEqual('ODROID-C2', info['hardware_raw'])
 		self.assertEqual('1.5400 GHz', info['hz_advertised'])
 		self.assertEqual('1.5400 GHz', info['hz_actual'])
 		self.assertEqual((1540000000, 0), info['hz_advertised_raw'])

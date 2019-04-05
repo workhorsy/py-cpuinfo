@@ -266,7 +266,7 @@ def _utf_to_str(input):
 
 def _copy_new_fields(info, new_info):
 	keys = [
-		'vendor_id_raw', 'hardware', 'brand', 'hz_advertised', 'hz_actual',
+		'vendor_id_raw', 'hardware_raw', 'brand', 'hz_advertised', 'hz_actual',
 		'hz_advertised_raw', 'hz_actual_raw', 'arch', 'bits', 'count',
 		'raw_arch_string', 'raw_uname_string',
 		'l2_cache_size', 'l2_cache_line_size', 'l2_cache_associativity',
@@ -1311,7 +1311,7 @@ def _actual_get_cpu_info_from_cpuid(queue):
 	hz_advertised, scale = _parse_cpu_brand_string(processor_brand)
 	info = {
 	'vendor_id_raw' : cpuid.get_vendor_id(),
-	'hardware' : '',
+	'hardware_raw' : '',
 	'brand' : processor_brand,
 
 	'hz_advertised' : _hz_short_to_friendly(hz_advertised, scale),
@@ -1419,7 +1419,7 @@ def _get_cpu_info_from_proc_cpuinfo():
 			pass
 
 		info = {
-		'hardware' : hardware,
+		'hardware_raw' : hardware,
 		'brand' : processor_brand,
 
 		'l3_cache_size' : _to_friendly_bytes(cache_size),
@@ -2326,7 +2326,7 @@ def main():
 		print('Python Version: {0}'.format(info.get('python_version', '')))
 		print('Cpuinfo Version: {0}'.format(info.get('cpuinfo_version', '')))
 		print('Vendor ID Raw: {0}'.format(info.get('vendor_id_raw', '')))
-		print('Hardware Raw: {0}'.format(info.get('hardware', '')))
+		print('Hardware Raw: {0}'.format(info.get('hardware_raw', '')))
 		print('Brand: {0}'.format(info.get('brand', '')))
 		print('Hz Advertised: {0}'.format(info.get('hz_advertised', '')))
 		print('Hz Actual: {0}'.format(info.get('hz_actual', '')))

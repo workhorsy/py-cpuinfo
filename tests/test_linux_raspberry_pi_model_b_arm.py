@@ -95,7 +95,7 @@ class TestLinux_RaspberryPiModelB(unittest.TestCase):
 	def test_get_cpu_info_from_proc_cpuinfo(self):
 		info = cpuinfo._get_cpu_info_from_proc_cpuinfo()
 
-		self.assertEqual('BCM2708', info['hardware'])
+		self.assertEqual('BCM2708', info['hardware_raw'])
 		self.assertEqual('ARMv6-compatible processor rev 7 (v6l)', info['brand'])
 
 		self.assertEqual(
@@ -107,7 +107,7 @@ class TestLinux_RaspberryPiModelB(unittest.TestCase):
 	def test_all(self):
 		info = cpuinfo._get_cpu_info_internal()
 
-		self.assertEqual('BCM2708', info['hardware'])
+		self.assertEqual('BCM2708', info['hardware_raw'])
 		self.assertEqual('ARMv6-compatible processor rev 7 (v6l)', info['brand'])
 		self.assertEqual('700.0000 MHz', info['hz_advertised'])
 		self.assertEqual('700.0000 MHz', info['hz_actual'])

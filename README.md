@@ -54,7 +54,7 @@ Output
 | python_version                | "2.7.12.final.0 (64 bit)" |
 | cpuinfo_version               | (4, 0, 0) |
 | vendor_id_raw                 | "GenuineIntel"  |
-| hardware                      | "BCM2708" |
+| hardware_raw                  | "BCM2708" |
 | brand                         | "Intel(R) Core(TM) i7 CPU         870  @ 2.93GHz" |
 | hz_advertised                 | "2.9300 GHz" |
 | hz_actual                     | "1.7330 GHz" |
