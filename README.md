@@ -10,25 +10,6 @@ extra programs or libraries, beyond what your OS provides. It does not require
 any compilation(C/C++, assembly, et cetera) to use. It works with Python 2
 and 3.
 
-OS Support
------
-| OS            | Tested and should work                                 | Untested        |
-| :------------ | :----------------------------------------------------- | :-------------- |
-| Android       |                                                        | Everything      |
-| BSD           | FreeBSD, PC-BSD, TrueOS                                | OpenBSD, NetBSD |
-| Cygwin        | Windows                                                |                 |
-| Haiku         | Haiku Nightly                                          | BeOS            |
-| Linux         | Arch, Centos, Debian, Fedora, Gentoo, OpenSuse, Ubuntu |                 |
-| OS X          | 10.8 - 10.14                                           |                 |
-| Solaris       | Oracle Solaris, OpenIndiana                            |                 |
-| Windows       | XP, Vista, 7, 8, 10                                    | RT              |
-
-
-CPU Support
------
-* X86 32bit and 64bit
-* Some ARM and PPC CPUs
-
 
 API
 -----
@@ -134,6 +115,26 @@ Install instructions
 ~~~bash
 $ python -m pip install -U py-cpuinfo
 ~~~
+
+
+OS Support
+-----
+| OS            | Tested and should work                                 | Untested        |
+| :------------ | :----------------------------------------------------- | :-------------- |
+| Android       |                                                        | Everything      |
+| BSD           | FreeBSD, PC-BSD, TrueOS                                | OpenBSD, NetBSD |
+| Cygwin        | Windows                                                |                 |
+| Haiku         | Haiku Nightly                                          | BeOS            |
+| Linux         | Arch, Centos, Debian, Fedora, Gentoo, OpenSuse, Ubuntu |                 |
+| OS X          | 10.8 - 10.14                                           |                 |
+| Solaris       | Oracle Solaris, OpenIndiana                            |                 |
+| Windows       | XP, Vista, 7, 8, 10                                    | RT              |
+
+
+CPU Support
+-----
+* X86 32bit and 64bit
+* Some ARM and PPC CPUs
 
 
 Bugs and Corrections
