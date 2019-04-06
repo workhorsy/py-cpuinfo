@@ -473,7 +473,7 @@ class TestLinuxGentoo_2_2_X86_64(unittest.TestCase):
 		self.assertEqual('GenuineIntel', info['vendor_id_raw'])
 		self.assertEqual('Intel(R) Pentium(R) CPU G640 @ 2.80GHz', info['brand_raw'])
 		self.assertEqual('2.7937 GHz', info['hz_advertised_friendly'])
-		self.assertEqual('2.7937 GHz', info['hz_actual'])
+		self.assertEqual('2.7937 GHz', info['hz_actual_friendly'])
 		self.assertEqual((2793652000, 0), info['hz_advertised_raw'])
 		self.assertEqual((2793652000, 0), info['hz_actual_raw'])
 
@@ -502,7 +502,7 @@ class TestLinuxGentoo_2_2_X86_64(unittest.TestCase):
 
 		self.assertEqual('Intel(R) Pentium(R) CPU G640 @ 2.80GHz', info['brand_raw'])
 		self.assertEqual('2.8000 GHz', info['hz_advertised_friendly'])
-		self.assertEqual('2.8000 GHz', info['hz_actual'])
+		self.assertEqual('2.8000 GHz', info['hz_actual_friendly'])
 		self.assertEqual((2800000000, 0), info['hz_advertised_raw'])
 		self.assertEqual((2800000000, 0), info['hz_actual_raw'])
 
@@ -516,7 +516,7 @@ class TestLinuxGentoo_2_2_X86_64(unittest.TestCase):
 		self.assertEqual('GenuineIntel', info['vendor_id_raw'])
 		self.assertEqual('Intel(R) Pentium(R) CPU G640 @ 2.80GHz', info['brand_raw'])
 		self.assertEqual('2.8000 GHz', info['hz_advertised_friendly'])
-		self.assertEqual('2.7937 GHz', info['hz_actual'])
+		self.assertEqual('2.7937 GHz', info['hz_actual_friendly'])
 		self.assertEqual((2800000000, 0), info['hz_advertised_raw'])
 		self.assertEqual((2793652000, 0), info['hz_actual_raw'])
 
@@ -542,7 +542,7 @@ class TestLinuxGentoo_2_2_X86_64(unittest.TestCase):
 		self.assertEqual('GenuineIntel', info['vendor_id_raw'])
 		self.assertEqual('Intel(R) Pentium(R) CPU G640 @ 2.80GHz', info['brand_raw'])
 		self.assertEqual('2.8000 GHz', info['hz_advertised_friendly'])
-		self.assertEqual('2.7937 GHz', info['hz_actual'])
+		self.assertEqual('2.7937 GHz', info['hz_actual_friendly'])
 		self.assertEqual((2800000000, 0), info['hz_advertised_raw'])
 		self.assertEqual((2793652000, 0), info['hz_actual_raw'])
 		self.assertEqual('X86_64', info['arch'])

@@ -271,7 +271,7 @@ class TestLinux_Odroid_XU3_arm_32(unittest.TestCase):
 		info = cpuinfo._get_cpu_info_from_cpufreq_info()
 
 		self.assertEqual('1.4000 GHz', info['hz_advertised_friendly'])
-		self.assertEqual('1.4000 GHz', info['hz_actual'])
+		self.assertEqual('1.4000 GHz', info['hz_actual_friendly'])
 		self.assertEqual((1400000000, 0), info['hz_advertised_raw'])
 		self.assertEqual((1400000000, 0), info['hz_actual_raw'])
 
@@ -280,7 +280,7 @@ class TestLinux_Odroid_XU3_arm_32(unittest.TestCase):
 
 		self.assertEqual('ARMv7 Processor rev 3 (v7l)', info['brand_raw'])
 		self.assertEqual('1.4000 GHz', info['hz_advertised_friendly'])
-		self.assertEqual('1.4000 GHz', info['hz_actual'])
+		self.assertEqual('1.4000 GHz', info['hz_actual_friendly'])
 		self.assertEqual((1400000000, 0), info['hz_advertised_raw'])
 		self.assertEqual((1400000000, 0), info['hz_actual_raw'])
 
@@ -302,7 +302,7 @@ class TestLinux_Odroid_XU3_arm_32(unittest.TestCase):
 		self.assertEqual('ARMv7 Processor rev 3 (v7l)', info['brand_raw'])
 		self.assertEqual('ODROID-XU3', info['hardware_raw'])
 		self.assertEqual('1.4000 GHz', info['hz_advertised_friendly'])
-		self.assertEqual('1.4000 GHz', info['hz_actual'])
+		self.assertEqual('1.4000 GHz', info['hz_actual_friendly'])
 		self.assertEqual((1400000000, 0), info['hz_advertised_raw'])
 		self.assertEqual((1400000000, 0), info['hz_actual_raw'])
 		self.assertEqual('ARM_7', info['arch'])

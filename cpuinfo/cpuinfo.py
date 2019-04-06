@@ -266,7 +266,7 @@ def _utf_to_str(input):
 
 def _copy_new_fields(info, new_info):
 	keys = [
-		'vendor_id_raw', 'hardware_raw', 'brand_raw', 'hz_advertised_friendly', 'hz_actual',
+		'vendor_id_raw', 'hardware_raw', 'brand_raw', 'hz_advertised_friendly', 'hz_actual_friendly',
 		'hz_advertised_raw', 'hz_actual_raw', 'arch', 'bits', 'count',
 		'arch_string_raw', 'uname_string_raw',
 		'l2_cache_size', 'l2_cache_line_size', 'l2_cache_associativity',
@@ -595,7 +595,7 @@ def _parse_dmesg_output(output):
 
 		if hz_advertised and hz_advertised != '0.0':
 			info['hz_advertised_friendly'] = _hz_short_to_friendly(hz_advertised, scale)
-			info['hz_actual'] = _hz_short_to_friendly(hz_actual, scale)
+			info['hz_actual_friendly'] = _hz_short_to_friendly(hz_actual, scale)
 
 		if hz_advertised and hz_advertised != '0.0':
 			info['hz_advertised_raw'] = _hz_short_to_raw(hz_advertised, scale)
@@ -1315,7 +1315,7 @@ def _actual_get_cpu_info_from_cpuid(queue):
 	'brand_raw' : processor_brand,
 
 	'hz_advertised_friendly' : _hz_short_to_friendly(hz_advertised, scale),
-	'hz_actual' : _hz_short_to_friendly(hz_actual, 0),
+	'hz_actual_friendly' : _hz_short_to_friendly(hz_actual, 0),
 	'hz_advertised_raw' : _hz_short_to_raw(hz_advertised, scale),
 	'hz_actual_raw' : _hz_short_to_raw(hz_actual, 0),
 
@@ -1442,7 +1442,7 @@ def _get_cpu_info_from_proc_cpuinfo():
 			info['hz_advertised_friendly'] = _hz_short_to_friendly(hz_advertised, scale)
 			info['hz_advertised_raw'] = _hz_short_to_raw(hz_advertised, scale)
 		if _hz_short_to_raw(hz_actual, scale) > (0, 0):
-			info['hz_actual'] = _hz_short_to_friendly(hz_actual, 6)
+			info['hz_actual_friendly'] = _hz_short_to_friendly(hz_actual, 6)
 			info['hz_actual_raw'] = _hz_short_to_raw(hz_actual, 6)
 
 		info = {k: v for k, v in info.items() if v}
@@ -1480,7 +1480,7 @@ def _get_cpu_info_from_cpufreq_info():
 
 		info = {
 			'hz_advertised_friendly' : _hz_short_to_friendly(hz_brand, scale),
-			'hz_actual' : _hz_short_to_friendly(hz_brand, scale),
+			'hz_actual_friendly' : _hz_short_to_friendly(hz_brand, scale),
 			'hz_advertised_raw' : _hz_short_to_raw(hz_brand, scale),
 			'hz_actual_raw' : _hz_short_to_raw(hz_brand, scale),
 		}
@@ -1511,7 +1511,7 @@ def _get_cpu_info_from_lscpu():
 			new_hz = _to_decimal_string(new_hz)
 			scale = 6
 			info['hz_advertised_friendly'] = _hz_short_to_friendly(new_hz, scale)
-			info['hz_actual'] = _hz_short_to_friendly(new_hz, scale)
+			info['hz_actual_friendly'] = _hz_short_to_friendly(new_hz, scale)
 			info['hz_advertised_raw'] = _hz_short_to_raw(new_hz, scale)
 			info['hz_actual_raw'] = _hz_short_to_raw(new_hz, scale)
 
@@ -1760,7 +1760,7 @@ def _get_cpu_info_from_sysctl():
 		'brand_raw' : processor_brand,
 
 		'hz_advertised_friendly' : _hz_short_to_friendly(hz_advertised, scale),
-		'hz_actual' : _hz_short_to_friendly(hz_actual, 0),
+		'hz_actual_friendly' : _hz_short_to_friendly(hz_actual, 0),
 		'hz_advertised_raw' : _hz_short_to_raw(hz_advertised, scale),
 		'hz_actual_raw' : _hz_short_to_raw(hz_actual, 0),
 
@@ -1827,7 +1827,7 @@ def _get_cpu_info_from_sysinfo_v1():
 		'brand_raw' : processor_brand,
 
 		'hz_advertised_friendly' : _hz_short_to_friendly(hz_advertised, scale),
-		'hz_actual' : _hz_short_to_friendly(hz_actual, scale),
+		'hz_actual_friendly' : _hz_short_to_friendly(hz_actual, scale),
 		'hz_advertised_raw' : _hz_short_to_raw(hz_advertised, scale),
 		'hz_actual_raw' : _hz_short_to_raw(hz_actual, scale),
 
@@ -1902,7 +1902,7 @@ def _get_cpu_info_from_sysinfo_v2():
 		'brand_raw' : processor_brand,
 
 		'hz_advertised_friendly' : _hz_short_to_friendly(hz_advertised, scale),
-		'hz_actual' : _hz_short_to_friendly(hz_actual, scale),
+		'hz_actual_friendly' : _hz_short_to_friendly(hz_actual, scale),
 		'hz_advertised_raw' : _hz_short_to_raw(hz_advertised, scale),
 		'hz_actual_raw' : _hz_short_to_raw(hz_actual, scale),
 
@@ -1981,7 +1981,7 @@ def _get_cpu_info_from_wmic():
 			'brand_raw' : processor_brand,
 
 			'hz_advertised_friendly' : _hz_short_to_friendly(hz_advertised, scale_advertised),
-			'hz_actual' : _hz_short_to_friendly(hz_actual, scale_actual),
+			'hz_actual_friendly' : _hz_short_to_friendly(hz_actual, scale_actual),
 			'hz_advertised_raw' : _hz_short_to_raw(hz_advertised, scale_advertised),
 			'hz_actual_raw' : _hz_short_to_raw(hz_actual, scale_actual),
 
@@ -2087,7 +2087,7 @@ def _get_cpu_info_from_registry():
 		'brand_raw' : processor_brand,
 
 		'hz_advertised_friendly' : _hz_short_to_friendly(hz_advertised, scale),
-		'hz_actual' : _hz_short_to_friendly(hz_actual, 6),
+		'hz_actual_friendly' : _hz_short_to_friendly(hz_actual, 6),
 		'hz_advertised_raw' : _hz_short_to_raw(hz_advertised, scale),
 		'hz_actual_raw' : _hz_short_to_raw(hz_actual, 6),
 
@@ -2144,7 +2144,7 @@ def _get_cpu_info_from_kstat():
 		'brand_raw' : processor_brand,
 
 		'hz_advertised_friendly' : _hz_short_to_friendly(hz_advertised, scale),
-		'hz_actual' : _hz_short_to_friendly(hz_actual, 0),
+		'hz_actual_friendly' : _hz_short_to_friendly(hz_actual, 0),
 		'hz_advertised_raw' : _hz_short_to_raw(hz_advertised, scale),
 		'hz_actual_raw' : _hz_short_to_raw(hz_actual, 0),
 
@@ -2329,7 +2329,7 @@ def main():
 		print('Hardware Raw: {0}'.format(info.get('hardware_raw', '')))
 		print('Brand Raw: {0}'.format(info.get('brand_raw', '')))
 		print('Hz Advertised Friendly: {0}'.format(info.get('hz_advertised_friendly', '')))
-		print('Hz Actual: {0}'.format(info.get('hz_actual', '')))
+		print('Hz Actual Friendly: {0}'.format(info.get('hz_actual_friendly', '')))
 		print('Hz Advertised Raw: {0}'.format(info.get('hz_advertised_raw', '')))
 		print('Hz Actual Raw: {0}'.format(info.get('hz_actual_raw', '')))
 		print('Arch: {0}'.format(info.get('arch', '')))
