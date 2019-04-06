@@ -10,7 +10,7 @@ class MockDataSource(object):
 	cpu_count = 4
 	is_windows = True
 	arch_string_raw = 'AMD64'
-	raw_uname_string = 'AMD64 Family 6 Model 30 Stepping 5, GenuineIntel'
+	uname_string_raw = 'AMD64 Family 6 Model 30 Stepping 5, GenuineIntel'
 	can_cpuid = False
 
 	@staticmethod

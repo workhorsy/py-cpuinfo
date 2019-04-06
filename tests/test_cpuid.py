@@ -11,7 +11,7 @@ class MockDataSource(object):
 	cpu_count = 1
 	is_windows = False
 	arch_string_raw = 'INVALID'
-	raw_uname_string = 'INVALID'
+	uname_string_raw = 'INVALID'
 	can_cpuid = True
 
 

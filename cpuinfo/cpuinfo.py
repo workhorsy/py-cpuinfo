@@ -48,7 +48,7 @@ class DataSource(object):
 	cpu_count = multiprocessing.cpu_count()
 	is_windows = platform.system().lower() == 'windows'
 	arch_string_raw = platform.machine()
-	raw_uname_string = platform.uname()[5]
+	uname_string_raw = platform.uname()[5]
 	can_cpuid = True
 
 	@staticmethod
@@ -268,7 +268,7 @@ def _copy_new_fields(info, new_info):
 	keys = [
 		'vendor_id_raw', 'hardware_raw', 'brand_raw', 'hz_advertised', 'hz_actual',
 		'hz_advertised_raw', 'hz_actual_raw', 'arch', 'bits', 'count',
-		'arch_string_raw', 'raw_uname_string',
+		'arch_string_raw', 'uname_string_raw',
 		'l2_cache_size', 'l2_cache_line_size', 'l2_cache_associativity',
 		'stepping', 'model', 'family',
 		'processor_type', 'extended_model', 'extended_family', 'flags',
@@ -2161,7 +2161,7 @@ def _get_cpu_info_from_kstat():
 
 def _get_cpu_info_from_platform_uname():
 	try:
-		uname = DataSource.raw_uname_string.split(',')[0]
+		uname = DataSource.uname_string_raw.split(',')[0]
 
 		family, model, stepping = (None, None, None)
 		entries = uname.split(' ')
