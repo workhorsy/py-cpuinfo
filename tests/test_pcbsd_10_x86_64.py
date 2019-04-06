@@ -9,8 +9,8 @@ class MockDataSource(object):
 	bits = '64bit'
 	cpu_count = 1
 	is_windows = False
-	raw_arch_string = 'amd64'
-	raw_uname_string = 'x86_64'
+	arch_string_raw = 'amd64'
+	uname_string_raw = 'x86_64'
 	can_cpuid = False
 
 	@staticmethod
@@ -68,11 +68,11 @@ class TestPCBSD(unittest.TestCase):
 	def test_get_cpu_info_from_dmesg(self):
 		info = cpuinfo._get_cpu_info_from_dmesg()
 
-		self.assertEqual('Intel(R) Core(TM) i5-4440 CPU @ 3.10GHz', info['brand'])
-		self.assertEqual('3.1000 GHz', info['hz_advertised'])
-		self.assertEqual('3.1000 GHz', info['hz_actual'])
-		self.assertEqual((3100000000, 0), info['hz_advertised_raw'])
-		self.assertEqual((3100000000, 0), info['hz_actual_raw'])
+		self.assertEqual('Intel(R) Core(TM) i5-4440 CPU @ 3.10GHz', info['brand_raw'])
+		self.assertEqual('3.1000 GHz', info['hz_advertised_friendly'])
+		self.assertEqual('3.1000 GHz', info['hz_actual_friendly'])
+		self.assertEqual((3100000000, 0), info['hz_advertised'])
+		self.assertEqual((3100000000, 0), info['hz_actual'])
 
 		self.assertEqual(
 			['apic', 'clflush', 'cmov', 'cx8', 'de', 'fpu', 'fxsr', 'lahf',
@@ -86,16 +86,16 @@ class TestPCBSD(unittest.TestCase):
 	def test_all(self):
 		info = cpuinfo._get_cpu_info_internal()
 
-		self.assertEqual('Intel(R) Core(TM) i5-4440 CPU @ 3.10GHz', info['brand'])
-		self.assertEqual('3.1000 GHz', info['hz_advertised'])
-		self.assertEqual('3.1000 GHz', info['hz_actual'])
-		self.assertEqual((3100000000, 0), info['hz_advertised_raw'])
-		self.assertEqual((3100000000, 0), info['hz_actual_raw'])
+		self.assertEqual('Intel(R) Core(TM) i5-4440 CPU @ 3.10GHz', info['brand_raw'])
+		self.assertEqual('3.1000 GHz', info['hz_advertised_friendly'])
+		self.assertEqual('3.1000 GHz', info['hz_actual_friendly'])
+		self.assertEqual((3100000000, 0), info['hz_advertised'])
+		self.assertEqual((3100000000, 0), info['hz_actual'])
 		self.assertEqual('X86_64', info['arch'])
 		self.assertEqual(64, info['bits'])
 		self.assertEqual(1, info['count'])
 
-		self.assertEqual('amd64', info['raw_arch_string'])
+		self.assertEqual('amd64', info['arch_string_raw'])
 
 		self.assertEqual(
 			['apic', 'clflush', 'cmov', 'cx8', 'de', 'fpu', 'fxsr', 'lahf',

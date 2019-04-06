@@ -9,8 +9,8 @@ class MockDataSource(object):
 	bits = '32bit'
 	cpu_count = 1
 	is_windows = False
-	raw_arch_string = 'armv7l'
-	raw_uname_string = ''
+	arch_string_raw = 'armv7l'
+	uname_string_raw = ''
 
 	@staticmethod
 	def has_proc_cpuinfo():
@@ -93,16 +93,16 @@ class TestLinux_BeagleBone(unittest.TestCase):
 	def test_get_cpu_info_from_cpufreq_info(self):
 		info = cpuinfo._get_cpu_info_from_cpufreq_info()
 
-		self.assertEqual('1.0000 GHz', info['hz_advertised'])
-		self.assertEqual('1.0000 GHz', info['hz_actual'])
-		self.assertEqual((1000000000, 0), info['hz_advertised_raw'])
-		self.assertEqual((1000000000, 0), info['hz_actual_raw'])
+		self.assertEqual('1.0000 GHz', info['hz_advertised_friendly'])
+		self.assertEqual('1.0000 GHz', info['hz_actual_friendly'])
+		self.assertEqual((1000000000, 0), info['hz_advertised'])
+		self.assertEqual((1000000000, 0), info['hz_actual'])
 
 	def test_get_cpu_info_from_proc_cpuinfo(self):
 		info = cpuinfo._get_cpu_info_from_proc_cpuinfo()
 
-		self.assertEqual('BCM2708', info['hardware'])
-		self.assertEqual('ARMv6-compatible processor rev 7 (v6l)', info['brand'])
+		self.assertEqual('BCM2708', info['hardware_raw'])
+		self.assertEqual('ARMv6-compatible processor rev 7 (v6l)', info['brand_raw'])
 
 		self.assertEqual(
 			['edsp', 'fastmult', 'half', 'java', 'swp', 'thumb', 'tls', 'vfp']
@@ -113,17 +113,17 @@ class TestLinux_BeagleBone(unittest.TestCase):
 	def test_all(self):
 		info = cpuinfo._get_cpu_info_internal()
 
-		self.assertEqual('BCM2708', info['hardware'])
-		self.assertEqual('ARMv6-compatible processor rev 7 (v6l)', info['brand'])
-		self.assertEqual('1.0000 GHz', info['hz_advertised'])
-		self.assertEqual('1.0000 GHz', info['hz_actual'])
-		self.assertEqual((1000000000, 0), info['hz_advertised_raw'])
-		self.assertEqual((1000000000, 0), info['hz_actual_raw'])
+		self.assertEqual('BCM2708', info['hardware_raw'])
+		self.assertEqual('ARMv6-compatible processor rev 7 (v6l)', info['brand_raw'])
+		self.assertEqual('1.0000 GHz', info['hz_advertised_friendly'])
+		self.assertEqual('1.0000 GHz', info['hz_actual_friendly'])
+		self.assertEqual((1000000000, 0), info['hz_advertised'])
+		self.assertEqual((1000000000, 0), info['hz_actual'])
 		self.assertEqual('ARM_7', info['arch'])
 		self.assertEqual(32, info['bits'])
 		self.assertEqual(1, info['count'])
 
-		self.assertEqual('armv7l', info['raw_arch_string'])
+		self.assertEqual('armv7l', info['arch_string_raw'])
 
 		self.assertEqual(
 			['edsp', 'fastmult', 'half', 'java', 'swp', 'thumb', 'tls', 'vfp']

@@ -9,8 +9,8 @@ class MockDataSource(object):
 	bits = '32bit'
 	cpu_count = 4
 	is_windows = False
-	raw_arch_string = 'BePC'
-	raw_uname_string = 'x86_32'
+	arch_string_raw = 'BePC'
+	uname_string_raw = 'x86_32'
 	can_cpuid = False
 
 	@staticmethod
@@ -80,11 +80,11 @@ class TestHaiku_x86_32(unittest.TestCase):
 	def test_get_cpu_info_from_sysinfo(self):
 		info = cpuinfo._get_cpu_info_from_sysinfo()
 
-		self.assertEqual('Intel(R) Core(TM) i7 CPU         870  @ 2.93GHz', info['brand'])
-		self.assertEqual('2.9300 GHz', info['hz_advertised'])
-		self.assertEqual('2.9300 GHz', info['hz_actual'])
-		self.assertEqual((2930000000, 0), info['hz_advertised_raw'])
-		self.assertEqual((2930000000, 0), info['hz_actual_raw'])
+		self.assertEqual('Intel(R) Core(TM) i7 CPU         870  @ 2.93GHz', info['brand_raw'])
+		self.assertEqual('2.9300 GHz', info['hz_advertised_friendly'])
+		self.assertEqual('2.9300 GHz', info['hz_actual_friendly'])
+		self.assertEqual((2930000000, 0), info['hz_advertised'])
+		self.assertEqual((2930000000, 0), info['hz_actual'])
 
 		self.assertEqual(5, info['stepping'])
 		self.assertEqual(30, info['model'])
@@ -100,16 +100,16 @@ class TestHaiku_x86_32(unittest.TestCase):
 	def test_all(self):
 		info = cpuinfo._get_cpu_info_internal()
 
-		self.assertEqual('Intel(R) Core(TM) i7 CPU         870  @ 2.93GHz', info['brand'])
-		self.assertEqual('2.9300 GHz', info['hz_advertised'])
-		self.assertEqual('2.9300 GHz', info['hz_actual'])
-		self.assertEqual((2930000000, 0), info['hz_advertised_raw'])
-		self.assertEqual((2930000000, 0), info['hz_actual_raw'])
+		self.assertEqual('Intel(R) Core(TM) i7 CPU         870  @ 2.93GHz', info['brand_raw'])
+		self.assertEqual('2.9300 GHz', info['hz_advertised_friendly'])
+		self.assertEqual('2.9300 GHz', info['hz_actual_friendly'])
+		self.assertEqual((2930000000, 0), info['hz_advertised'])
+		self.assertEqual((2930000000, 0), info['hz_actual'])
 		self.assertEqual('X86_32', info['arch'])
 		self.assertEqual(32, info['bits'])
 		self.assertEqual(4, info['count'])
 
-		self.assertEqual('BePC', info['raw_arch_string'])
+		self.assertEqual('BePC', info['arch_string_raw'])
 
 		self.assertEqual(5, info['stepping'])
 		self.assertEqual(30, info['model'])

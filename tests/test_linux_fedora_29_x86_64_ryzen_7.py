@@ -9,8 +9,8 @@ class MockDataSource(object):
 	bits = '64bit'
 	cpu_count = 8
 	is_windows = False
-	raw_arch_string = 'x86_64'
-	raw_uname_string = 'x86_64'
+	arch_string_raw = 'x86_64'
+	uname_string_raw = 'x86_64'
 	can_cpuid = False
 
 	@staticmethod
@@ -119,12 +119,12 @@ class Test_Linux_Fedora_29_X86_64_Ryzen_7(unittest.TestCase):
 	def test_get_cpu_info_from_lscpu(self):
 		info = cpuinfo._get_cpu_info_from_lscpu()
 
-		self.assertEqual('AuthenticAMD', info['vendor_id'])
-		self.assertEqual('AMD Ryzen 7 2700X Eight-Core Processor', info['brand'])
-		self.assertEqual('3.6931 GHz', info['hz_advertised'])
-		self.assertEqual('3.6931 GHz', info['hz_actual'])
-		self.assertEqual((3693060000, 0), info['hz_advertised_raw'])
-		self.assertEqual((3693060000, 0), info['hz_actual_raw'])
+		self.assertEqual('AuthenticAMD', info['vendor_id_raw'])
+		self.assertEqual('AMD Ryzen 7 2700X Eight-Core Processor', info['brand_raw'])
+		self.assertEqual('3.6931 GHz', info['hz_advertised_friendly'])
+		self.assertEqual('3.6931 GHz', info['hz_actual_friendly'])
+		self.assertEqual((3693060000, 0), info['hz_advertised'])
+		self.assertEqual((3693060000, 0), info['hz_actual'])
 
 		self.assertEqual(2, info['stepping'])
 		self.assertEqual(8, info['model'])
@@ -153,12 +153,12 @@ class Test_Linux_Fedora_29_X86_64_Ryzen_7(unittest.TestCase):
 	def test_get_cpu_info_from_proc_cpuinfo(self):
 		info = cpuinfo._get_cpu_info_from_proc_cpuinfo()
 
-		self.assertEqual('AuthenticAMD', info['vendor_id'])
-		self.assertEqual('AMD Ryzen 7 2700X Eight-Core Processor', info['brand'])
-		self.assertEqual('3.6931 GHz', info['hz_advertised'])
-		self.assertEqual('3.6931 GHz', info['hz_actual'])
-		self.assertEqual((3693060000, 0), info['hz_advertised_raw'])
-		self.assertEqual((3693060000, 0), info['hz_actual_raw'])
+		self.assertEqual('AuthenticAMD', info['vendor_id_raw'])
+		self.assertEqual('AMD Ryzen 7 2700X Eight-Core Processor', info['brand_raw'])
+		self.assertEqual('3.6931 GHz', info['hz_advertised_friendly'])
+		self.assertEqual('3.6931 GHz', info['hz_actual_friendly'])
+		self.assertEqual((3693060000, 0), info['hz_advertised'])
+		self.assertEqual((3693060000, 0), info['hz_actual'])
 
 		# FIXME: This is l2 cache size not l3 cache size
 		self.assertEqual('512 KB', info['l3_cache_size'])
@@ -184,17 +184,17 @@ class Test_Linux_Fedora_29_X86_64_Ryzen_7(unittest.TestCase):
 	def test_all(self):
 		info = cpuinfo._get_cpu_info_internal()
 
-		self.assertEqual('AuthenticAMD', info['vendor_id'])
-		self.assertEqual('AMD Ryzen 7 2700X Eight-Core Processor', info['brand'])
-		self.assertEqual('3.6931 GHz', info['hz_advertised'])
-		self.assertEqual('3.6931 GHz', info['hz_actual'])
-		self.assertEqual((3693060000, 0), info['hz_advertised_raw'])
-		self.assertEqual((3693060000, 0), info['hz_actual_raw'])
+		self.assertEqual('AuthenticAMD', info['vendor_id_raw'])
+		self.assertEqual('AMD Ryzen 7 2700X Eight-Core Processor', info['brand_raw'])
+		self.assertEqual('3.6931 GHz', info['hz_advertised_friendly'])
+		self.assertEqual('3.6931 GHz', info['hz_actual_friendly'])
+		self.assertEqual((3693060000, 0), info['hz_advertised'])
+		self.assertEqual((3693060000, 0), info['hz_actual'])
 		self.assertEqual('X86_64', info['arch'])
 		self.assertEqual(64, info['bits'])
 		self.assertEqual(8, info['count'])
 
-		self.assertEqual('x86_64', info['raw_arch_string'])
+		self.assertEqual('x86_64', info['arch_string_raw'])
 
 		self.assertEqual('64 KB', info['l1_instruction_cache_size'])
 		self.assertEqual('32 KB', info['l1_data_cache_size'])

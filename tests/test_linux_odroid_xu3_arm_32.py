@@ -9,8 +9,8 @@ class MockDataSource(object):
 	bits = '32bit'
 	cpu_count = 8
 	is_windows = False
-	raw_arch_string = 'armv7l'
-	raw_uname_string = ''
+	arch_string_raw = 'armv7l'
+	uname_string_raw = ''
 	can_cpuid = False
 
 	@staticmethod
@@ -270,25 +270,25 @@ class TestLinux_Odroid_XU3_arm_32(unittest.TestCase):
 	def test_get_cpu_info_from_cpufreq_info(self):
 		info = cpuinfo._get_cpu_info_from_cpufreq_info()
 
-		self.assertEqual('1.4000 GHz', info['hz_advertised'])
-		self.assertEqual('1.4000 GHz', info['hz_actual'])
-		self.assertEqual((1400000000, 0), info['hz_advertised_raw'])
-		self.assertEqual((1400000000, 0), info['hz_actual_raw'])
+		self.assertEqual('1.4000 GHz', info['hz_advertised_friendly'])
+		self.assertEqual('1.4000 GHz', info['hz_actual_friendly'])
+		self.assertEqual((1400000000, 0), info['hz_advertised'])
+		self.assertEqual((1400000000, 0), info['hz_actual'])
 
 	def test_get_cpu_info_from_lscpu(self):
 		info = cpuinfo._get_cpu_info_from_lscpu()
 
-		self.assertEqual('ARMv7 Processor rev 3 (v7l)', info['brand'])
-		self.assertEqual('1.4000 GHz', info['hz_advertised'])
-		self.assertEqual('1.4000 GHz', info['hz_actual'])
-		self.assertEqual((1400000000, 0), info['hz_advertised_raw'])
-		self.assertEqual((1400000000, 0), info['hz_actual_raw'])
+		self.assertEqual('ARMv7 Processor rev 3 (v7l)', info['brand_raw'])
+		self.assertEqual('1.4000 GHz', info['hz_advertised_friendly'])
+		self.assertEqual('1.4000 GHz', info['hz_actual_friendly'])
+		self.assertEqual((1400000000, 0), info['hz_advertised'])
+		self.assertEqual((1400000000, 0), info['hz_actual'])
 
 	def test_get_cpu_info_from_proc_cpuinfo(self):
 		info = cpuinfo._get_cpu_info_from_proc_cpuinfo()
 
-		self.assertEqual('ARMv7 Processor rev 3 (v7l)', info['brand'])
-		self.assertEqual('ODROID-XU3', info['hardware'])
+		self.assertEqual('ARMv7 Processor rev 3 (v7l)', info['brand_raw'])
+		self.assertEqual('ODROID-XU3', info['hardware_raw'])
 
 		self.assertEqual(
 			['edsp', 'fastmult', 'half', 'idiva', 'idivt', 'neon', 'swp',
@@ -299,17 +299,17 @@ class TestLinux_Odroid_XU3_arm_32(unittest.TestCase):
 	def test_all(self):
 		info = cpuinfo._get_cpu_info_internal()
 
-		self.assertEqual('ARMv7 Processor rev 3 (v7l)', info['brand'])
-		self.assertEqual('ODROID-XU3', info['hardware'])
-		self.assertEqual('1.4000 GHz', info['hz_advertised'])
-		self.assertEqual('1.4000 GHz', info['hz_actual'])
-		self.assertEqual((1400000000, 0), info['hz_advertised_raw'])
-		self.assertEqual((1400000000, 0), info['hz_actual_raw'])
+		self.assertEqual('ARMv7 Processor rev 3 (v7l)', info['brand_raw'])
+		self.assertEqual('ODROID-XU3', info['hardware_raw'])
+		self.assertEqual('1.4000 GHz', info['hz_advertised_friendly'])
+		self.assertEqual('1.4000 GHz', info['hz_actual_friendly'])
+		self.assertEqual((1400000000, 0), info['hz_advertised'])
+		self.assertEqual((1400000000, 0), info['hz_actual'])
 		self.assertEqual('ARM_7', info['arch'])
 		self.assertEqual(32, info['bits'])
 		self.assertEqual(8, info['count'])
 
-		self.assertEqual('armv7l', info['raw_arch_string'])
+		self.assertEqual('armv7l', info['arch_string_raw'])
 
 		self.assertEqual(
 			['edsp', 'fastmult', 'half', 'idiva', 'idivt', 'neon', 'swp',

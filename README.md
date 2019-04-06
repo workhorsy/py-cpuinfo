@@ -53,17 +53,17 @@ Output
 | :---------------------------- | :-------------- |
 | python_version                | "2.7.12.final.0 (64 bit)" |
 | cpuinfo_version               | (4, 0, 0) |
-| vendor_id                     | "GenuineIntel"  |
-| hardware                      | "BCM2708" |
-| brand                         | "Intel(R) Core(TM) i7 CPU         870  @ 2.93GHz" |
-| hz_advertised                 | "2.9300 GHz" |
-| hz_actual                     | "1.7330 GHz" |
-| hz_advertised_raw             | (2930000000, 0)|
-| hz_actual_raw                 | (1733000000, 0) |
+| vendor_id_raw                 | "GenuineIntel"  |
+| hardware_raw                  | "BCM2708" |
+| brand_raw                     | "Intel(R) Core(TM) i7 CPU         870  @ 2.93GHz" |
+| hz_advertised_friendly        | "2.9300 GHz" |
+| hz_actual_friendly            | "1.7330 GHz" |
+| hz_advertised                 | (2930000000, 0)|
+| hz_actual                     | (1733000000, 0) |
 | arch                          | "X86_64" |
 | bits                          | 64 |
 | count                         | 4 |
-| raw_arch_string               | "x86_64" |
+| arch_string_raw               | "x86_64" |
 | l1_data_cache_size            | "32 KB" |
 | l1_instruction_cache_size     | "32 KB" |
 | l2_cache_size                 | "256 KB" |

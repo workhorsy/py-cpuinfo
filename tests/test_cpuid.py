@@ -10,8 +10,8 @@ class MockDataSource(object):
 	bits = '64bit'
 	cpu_count = 1
 	is_windows = False
-	raw_arch_string = 'INVALID'
-	raw_uname_string = 'INVALID'
+	arch_string_raw = 'INVALID'
+	uname_string_raw = 'INVALID'
 	can_cpuid = True
 
 

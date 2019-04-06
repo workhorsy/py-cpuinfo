@@ -9,8 +9,8 @@ class MockDataSource(object):
 	bits = '32bit'
 	cpu_count = 1
 	is_windows = False
-	raw_arch_string = 'unknown_cpu'
-	raw_uname_string = 'unknown_cpu'
+	arch_string_raw = 'unknown_cpu'
+	uname_string_raw = 'unknown_cpu'
 
 
 class TestInvalidCPU(unittest.TestCase):
@@ -23,7 +23,7 @@ class TestInvalidCPU(unittest.TestCase):
 
 	def test_arch_parse_unknown(self):
 		# If the arch is unknown, the result should be null
-		arch, bits = cpuinfo._parse_arch(DataSource.raw_arch_string)
+		arch, bits = cpuinfo._parse_arch(DataSource.arch_string_raw)
 		self.assertIsNone(arch)
 		self.assertIsNone(bits)
 

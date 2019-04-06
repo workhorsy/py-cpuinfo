@@ -9,8 +9,8 @@ class MockDataSource(object):
 	bits = '32bit'
 	cpu_count = 2
 	is_windows = False
-	raw_arch_string = 'BePC'
-	raw_uname_string = 'x86_32'
+	arch_string_raw = 'BePC'
+	uname_string_raw = 'x86_32'
 	can_cpuid = False
 
 	@staticmethod
@@ -78,11 +78,11 @@ class TestHaiku_x86_64_Beta_1_Ryzen7(unittest.TestCase):
 	def test_get_cpu_info_from_sysinfo(self):
 		info = cpuinfo._get_cpu_info_from_sysinfo()
 
-		self.assertEqual('AMD Ryzen 7 2700X Eight-Core Processor', info['brand'])
-		self.assertEqual('3.6930 GHz', info['hz_advertised'])
-		self.assertEqual('3.6930 GHz', info['hz_actual'])
-		self.assertEqual((3693000000, 0), info['hz_advertised_raw'])
-		self.assertEqual((3693000000, 0), info['hz_actual_raw'])
+		self.assertEqual('AMD Ryzen 7 2700X Eight-Core Processor', info['brand_raw'])
+		self.assertEqual('3.6930 GHz', info['hz_advertised_friendly'])
+		self.assertEqual('3.6930 GHz', info['hz_actual_friendly'])
+		self.assertEqual((3693000000, 0), info['hz_advertised'])
+		self.assertEqual((3693000000, 0), info['hz_actual'])
 
 		self.assertEqual(2, info['stepping'])
 		self.assertEqual(8, info['model'])
@@ -101,16 +101,16 @@ class TestHaiku_x86_64_Beta_1_Ryzen7(unittest.TestCase):
 	def test_all(self):
 		info = cpuinfo._get_cpu_info_internal()
 
-		self.assertEqual('AMD Ryzen 7 2700X Eight-Core Processor', info['brand'])
-		self.assertEqual('3.6930 GHz', info['hz_advertised'])
-		self.assertEqual('3.6930 GHz', info['hz_actual'])
-		self.assertEqual((3693000000, 0), info['hz_advertised_raw'])
-		self.assertEqual((3693000000, 0), info['hz_actual_raw'])
+		self.assertEqual('AMD Ryzen 7 2700X Eight-Core Processor', info['brand_raw'])
+		self.assertEqual('3.6930 GHz', info['hz_advertised_friendly'])
+		self.assertEqual('3.6930 GHz', info['hz_actual_friendly'])
+		self.assertEqual((3693000000, 0), info['hz_advertised'])
+		self.assertEqual((3693000000, 0), info['hz_actual'])
 		self.assertEqual('X86_32', info['arch'])
 		self.assertEqual(32, info['bits'])
 		self.assertEqual(2, info['count'])
 
-		self.assertEqual('BePC', info['raw_arch_string'])
+		self.assertEqual('BePC', info['arch_string_raw'])
 
 		self.assertEqual(2, info['stepping'])
 		self.assertEqual(8, info['model'])

@@ -9,8 +9,8 @@ class MockDataSource(object):
 	bits = '64bit'
 	cpu_count = 4
 	is_windows = True
-	raw_arch_string = 'AMD64'
-	raw_uname_string = 'AMD64 Family 6 Model 69 Stepping 1, GenuineIntel'
+	arch_string_raw = 'AMD64'
+	uname_string_raw = 'AMD64 Family 6 Model 69 Stepping 1, GenuineIntel'
 	can_cpuid = False
 
 	@staticmethod
@@ -37,11 +37,11 @@ Name=Intel(R) Core(TM) i5-4300U CPU @ 1.90GHz
 		return 'Intel(R) Core(TM) i5-4300U CPU @ 1.90GHz'
 
 	@staticmethod
-	def winreg_vendor_id():
+	def winreg_vendor_id_raw():
 		return 'GenuineIntel'
 
 	@staticmethod
-	def winreg_raw_arch_string():
+	def winreg_arch_string_raw():
 		return 'AMD64'
 
 	@staticmethod
@@ -92,12 +92,12 @@ class TestWindows_10_X86_64(unittest.TestCase):
 	def test_get_cpu_info_from_wmic(self):
 		info = cpuinfo._get_cpu_info_from_wmic()
 
-		self.assertEqual('GenuineIntel', info['vendor_id'])
-		self.assertEqual('Intel(R) Core(TM) i5-4300U CPU @ 1.90GHz', info['brand'])
-		self.assertEqual('1.9000 GHz', info['hz_advertised'])
-		self.assertEqual('2.4940 GHz', info['hz_actual'])
-		self.assertEqual((1900000000, 0), info['hz_advertised_raw'])
-		self.assertEqual((2494000000, 0), info['hz_actual_raw'])
+		self.assertEqual('GenuineIntel', info['vendor_id_raw'])
+		self.assertEqual('Intel(R) Core(TM) i5-4300U CPU @ 1.90GHz', info['brand_raw'])
+		self.assertEqual('1.9000 GHz', info['hz_advertised_friendly'])
+		self.assertEqual('2.4940 GHz', info['hz_actual_friendly'])
+		self.assertEqual((1900000000, 0), info['hz_advertised'])
+		self.assertEqual((2494000000, 0), info['hz_actual'])
 
 		self.assertEqual(1, info['stepping'])
 		self.assertEqual(69, info['model'])
@@ -109,12 +109,12 @@ class TestWindows_10_X86_64(unittest.TestCase):
 	def test_get_cpu_info_from_registry(self):
 		info = cpuinfo._get_cpu_info_from_registry()
 
-		self.assertEqual('GenuineIntel', info['vendor_id'])
-		self.assertEqual('Intel(R) Core(TM) i5-4300U CPU @ 1.90GHz', info['brand'])
-		self.assertEqual('1.9000 GHz', info['hz_advertised'])
-		self.assertEqual('2.4940 GHz', info['hz_actual'])
-		self.assertEqual((1900000000, 0), info['hz_advertised_raw'])
-		self.assertEqual((2494000000, 0), info['hz_actual_raw'])
+		self.assertEqual('GenuineIntel', info['vendor_id_raw'])
+		self.assertEqual('Intel(R) Core(TM) i5-4300U CPU @ 1.90GHz', info['brand_raw'])
+		self.assertEqual('1.9000 GHz', info['hz_advertised_friendly'])
+		self.assertEqual('2.4940 GHz', info['hz_actual_friendly'])
+		self.assertEqual((1900000000, 0), info['hz_advertised'])
+		self.assertEqual((2494000000, 0), info['hz_actual'])
 
 		if "logger" in dir(unittest): unittest.logger("FIXME: Missing flags such as sse3 and sse4")
 
@@ -129,17 +129,17 @@ class TestWindows_10_X86_64(unittest.TestCase):
 	def test_all(self):
 		info = cpuinfo._get_cpu_info_internal()
 
-		self.assertEqual('GenuineIntel', info['vendor_id'])
-		self.assertEqual('Intel(R) Core(TM) i5-4300U CPU @ 1.90GHz', info['brand'])
-		self.assertEqual('1.9000 GHz', info['hz_advertised'])
-		self.assertEqual('2.4940 GHz', info['hz_actual'])
-		self.assertEqual((1900000000, 0), info['hz_advertised_raw'])
-		self.assertEqual((2494000000, 0), info['hz_actual_raw'])
+		self.assertEqual('GenuineIntel', info['vendor_id_raw'])
+		self.assertEqual('Intel(R) Core(TM) i5-4300U CPU @ 1.90GHz', info['brand_raw'])
+		self.assertEqual('1.9000 GHz', info['hz_advertised_friendly'])
+		self.assertEqual('2.4940 GHz', info['hz_actual_friendly'])
+		self.assertEqual((1900000000, 0), info['hz_advertised'])
+		self.assertEqual((2494000000, 0), info['hz_actual'])
 		self.assertEqual('X86_64', info['arch'])
 		self.assertEqual(64, info['bits'])
 		self.assertEqual(4, info['count'])
 
-		self.assertEqual('AMD64', info['raw_arch_string'])
+		self.assertEqual('AMD64', info['arch_string_raw'])
 
 		self.assertEqual(1, info['stepping'])
 		self.assertEqual(69, info['model'])

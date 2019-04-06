@@ -9,8 +9,8 @@ class MockDataSource(object):
 	bits = '64bit'
 	cpu_count = 8
 	is_windows = False
-	raw_arch_string = 'amd64'
-	raw_uname_string = 'amd64'
+	arch_string_raw = 'amd64'
+	uname_string_raw = 'amd64'
 	can_cpuid = False
 
 	@staticmethod
@@ -68,12 +68,12 @@ class TestTrueOS_18_X86_64_Ryzen7(unittest.TestCase):
 	def test_get_cpu_info_from_dmesg(self):
 		info = cpuinfo._get_cpu_info_from_dmesg()
 
-		self.assertEqual('AuthenticAMD', info['vendor_id'])
-		self.assertEqual('AMD Ryzen 7 2700X Eight-Core Processor', info['brand'])
-		self.assertEqual('3.6932 GHz', info['hz_advertised'])
-		self.assertEqual('3.6932 GHz', info['hz_actual'])
-		self.assertEqual((3693150000, 0), info['hz_advertised_raw'])
-		self.assertEqual((3693150000, 0), info['hz_actual_raw'])
+		self.assertEqual('AuthenticAMD', info['vendor_id_raw'])
+		self.assertEqual('AMD Ryzen 7 2700X Eight-Core Processor', info['brand_raw'])
+		self.assertEqual('3.6932 GHz', info['hz_advertised_friendly'])
+		self.assertEqual('3.6932 GHz', info['hz_actual_friendly'])
+		self.assertEqual((3693150000, 0), info['hz_advertised'])
+		self.assertEqual((3693150000, 0), info['hz_actual'])
 
 		self.assertEqual(2, info['stepping'])
 		self.assertEqual(8, info['model'])
@@ -94,17 +94,17 @@ class TestTrueOS_18_X86_64_Ryzen7(unittest.TestCase):
 	def test_all(self):
 		info = cpuinfo._get_cpu_info_internal()
 
-		self.assertEqual('AuthenticAMD', info['vendor_id'])
-		self.assertEqual('AMD Ryzen 7 2700X Eight-Core Processor', info['brand'])
-		self.assertEqual('3.6932 GHz', info['hz_advertised'])
-		self.assertEqual('3.6932 GHz', info['hz_actual'])
-		self.assertEqual((3693150000, 0), info['hz_advertised_raw'])
-		self.assertEqual((3693150000, 0), info['hz_actual_raw'])
+		self.assertEqual('AuthenticAMD', info['vendor_id_raw'])
+		self.assertEqual('AMD Ryzen 7 2700X Eight-Core Processor', info['brand_raw'])
+		self.assertEqual('3.6932 GHz', info['hz_advertised_friendly'])
+		self.assertEqual('3.6932 GHz', info['hz_actual_friendly'])
+		self.assertEqual((3693150000, 0), info['hz_advertised'])
+		self.assertEqual((3693150000, 0), info['hz_actual'])
 
 		self.assertEqual('X86_64', info['arch'])
 		self.assertEqual(64, info['bits'])
 		self.assertEqual(8, info['count'])
-		self.assertEqual('amd64', info['raw_arch_string'])
+		self.assertEqual('amd64', info['arch_string_raw'])
 
 		self.assertEqual(2, info['stepping'])
 		self.assertEqual(8, info['model'])

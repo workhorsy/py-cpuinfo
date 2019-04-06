@@ -192,9 +192,9 @@ if 'winreg' in sys.modules or '_winreg' in sys.modules:
 	print_output('winreg vendor_id', vendor_id)
 
 	key = winreg.OpenKey(winreg.HKEY_LOCAL_MACHINE, r"SYSTEM\CurrentControlSet\Control\Session Manager\Environment")
-	raw_arch_string = winreg.QueryValueEx(key, "PROCESSOR_ARCHITECTURE")[0]
+	arch_string_raw = winreg.QueryValueEx(key, "PROCESSOR_ARCHITECTURE")[0]
 	winreg.CloseKey(key)
-	print_output('winreg raw_arch_string', raw_arch_string)
+	print_output('winreg arch_string_raw', arch_string_raw)
 
 	key = winreg.OpenKey(winreg.HKEY_LOCAL_MACHINE, r"Hardware\Description\System\CentralProcessor\0")
 	hz_actual = winreg.QueryValueEx(key, "~Mhz")[0]

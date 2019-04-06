@@ -11,8 +11,8 @@ class MockDataSource(object):
 	bits = '64bit'
 	cpu_count = 4
 	is_windows = False
-	raw_arch_string = 'x86_64'
-	raw_uname_string = 'x86_64'
+	arch_string_raw = 'x86_64'
+	uname_string_raw = 'x86_64'
 	can_cpuid = False
 
 	@staticmethod
@@ -94,12 +94,12 @@ class TestOSX_10_9(unittest.TestCase):
 	def test_get_cpu_info_from_sysctl(self):
 		info = cpuinfo._get_cpu_info_from_sysctl()
 
-		self.assertEqual('GenuineIntel', info['vendor_id'])
-		self.assertEqual('Intel(R) Core(TM) i5-4440 CPU @ 3.10GHz', info['brand'])
-		self.assertEqual('3.1000 GHz', info['hz_advertised'])
-		self.assertEqual('2.8900 GHz', info['hz_actual'])
-		self.assertEqual((3100000000, 0), info['hz_advertised_raw'])
-		self.assertEqual((2890000000, 0), info['hz_actual_raw'])
+		self.assertEqual('GenuineIntel', info['vendor_id_raw'])
+		self.assertEqual('Intel(R) Core(TM) i5-4440 CPU @ 3.10GHz', info['brand_raw'])
+		self.assertEqual('3.1000 GHz', info['hz_advertised_friendly'])
+		self.assertEqual('2.8900 GHz', info['hz_actual_friendly'])
+		self.assertEqual((3100000000, 0), info['hz_advertised'])
+		self.assertEqual((2890000000, 0), info['hz_actual'])
 
 		self.assertEqual('256', info['l2_cache_size'])
 
@@ -119,17 +119,17 @@ class TestOSX_10_9(unittest.TestCase):
 	def test_all(self):
 		info = cpuinfo._get_cpu_info_internal()
 
-		self.assertEqual('GenuineIntel', info['vendor_id'])
-		self.assertEqual('Intel(R) Core(TM) i5-4440 CPU @ 3.10GHz', info['brand'])
-		self.assertEqual('3.1000 GHz', info['hz_advertised'])
-		self.assertEqual('2.8900 GHz', info['hz_actual'])
-		self.assertEqual((3100000000, 0), info['hz_advertised_raw'])
-		self.assertEqual((2890000000, 0), info['hz_actual_raw'])
+		self.assertEqual('GenuineIntel', info['vendor_id_raw'])
+		self.assertEqual('Intel(R) Core(TM) i5-4440 CPU @ 3.10GHz', info['brand_raw'])
+		self.assertEqual('3.1000 GHz', info['hz_advertised_friendly'])
+		self.assertEqual('2.8900 GHz', info['hz_actual_friendly'])
+		self.assertEqual((3100000000, 0), info['hz_advertised'])
+		self.assertEqual((2890000000, 0), info['hz_actual'])
 		self.assertEqual('X86_64', info['arch'])
 		self.assertEqual(64, info['bits'])
 		self.assertEqual(4, info['count'])
 
-		self.assertEqual('x86_64', info['raw_arch_string'])
+		self.assertEqual('x86_64', info['arch_string_raw'])
 
 		self.assertEqual('256', info['l2_cache_size'])
 

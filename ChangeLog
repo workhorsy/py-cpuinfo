@@ -1,5 +1,6 @@
 * Release 6.0.0
 	* Fixed Bug #115: Missing data on Ryzen CPUs
+	* Fixed Bug #122: Rename fields to be more clear
 
 03/20/2019 Release 5.0.0
 	* Fixed Bug #117: Remove PyInstaller hacks

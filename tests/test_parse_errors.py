@@ -9,8 +9,8 @@ class MockDataSource(object):
 	bits = '64bit'
 	cpu_count = 1
 	is_windows = True
-	raw_arch_string = 'x86_64'
-	raw_uname_string = 'x86_64'
+	arch_string_raw = 'x86_64'
+	uname_string_raw = 'x86_64'
 	can_cpuid = False
 
 	@staticmethod
@@ -95,11 +95,11 @@ class MockDataSource(object):
 		return {}
 
 	@staticmethod
-	def winreg_vendor_id():
+	def winreg_vendor_id_raw():
 		return {}
 
 	@staticmethod
-	def winreg_raw_arch_string():
+	def winreg_arch_string_raw():
 		return {}
 
 	@staticmethod

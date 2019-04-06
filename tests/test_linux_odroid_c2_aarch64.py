@@ -9,8 +9,8 @@ class MockDataSource(object):
 	bits = '64bit'
 	cpu_count = 4
 	is_windows = False
-	raw_arch_string = 'aarch64'
-	raw_uname_string = 'x86_64'
+	arch_string_raw = 'aarch64'
+	uname_string_raw = 'x86_64'
 	can_cpuid = False
 
 	@staticmethod
@@ -179,23 +179,23 @@ class TestLinux_Odroid_C2_Aarch_64(unittest.TestCase):
 	def test_get_cpu_info_from_cpufreq_info(self):
 		info = cpuinfo._get_cpu_info_from_cpufreq_info()
 
-		self.assertEqual('1.5400 GHz', info['hz_advertised'])
-		self.assertEqual('1.5400 GHz', info['hz_actual'])
-		self.assertEqual((1540000000, 0), info['hz_advertised_raw'])
-		self.assertEqual((1540000000, 0), info['hz_actual_raw'])
+		self.assertEqual('1.5400 GHz', info['hz_advertised_friendly'])
+		self.assertEqual('1.5400 GHz', info['hz_actual_friendly'])
+		self.assertEqual((1540000000, 0), info['hz_advertised'])
+		self.assertEqual((1540000000, 0), info['hz_actual'])
 
 	def test_get_cpu_info_from_lscpu(self):
 		info = cpuinfo._get_cpu_info_from_lscpu()
 
-		self.assertEqual('1.5360 GHz', info['hz_advertised'])
-		self.assertEqual('1.5360 GHz', info['hz_actual'])
-		self.assertEqual((1536000000, 0), info['hz_advertised_raw'])
-		self.assertEqual((1536000000, 0), info['hz_actual_raw'])
+		self.assertEqual('1.5360 GHz', info['hz_advertised_friendly'])
+		self.assertEqual('1.5360 GHz', info['hz_actual_friendly'])
+		self.assertEqual((1536000000, 0), info['hz_advertised'])
+		self.assertEqual((1536000000, 0), info['hz_actual'])
 
 	def test_get_cpu_info_from_proc_cpuinfo(self):
 		info = cpuinfo._get_cpu_info_from_proc_cpuinfo()
 
-		self.assertEqual('ODROID-C2', info['hardware'])
+		self.assertEqual('ODROID-C2', info['hardware_raw'])
 
 		self.assertEqual(
 			['asimd', 'crc32', 'fp'],
@@ -205,16 +205,16 @@ class TestLinux_Odroid_C2_Aarch_64(unittest.TestCase):
 	def test_all(self):
 		info = cpuinfo._get_cpu_info_internal()
 
-		self.assertEqual('ODROID-C2', info['hardware'])
-		self.assertEqual('1.5400 GHz', info['hz_advertised'])
-		self.assertEqual('1.5400 GHz', info['hz_actual'])
-		self.assertEqual((1540000000, 0), info['hz_advertised_raw'])
-		self.assertEqual((1540000000, 0), info['hz_actual_raw'])
+		self.assertEqual('ODROID-C2', info['hardware_raw'])
+		self.assertEqual('1.5400 GHz', info['hz_advertised_friendly'])
+		self.assertEqual('1.5400 GHz', info['hz_actual_friendly'])
+		self.assertEqual((1540000000, 0), info['hz_advertised'])
+		self.assertEqual((1540000000, 0), info['hz_actual'])
 		self.assertEqual('ARM_8', info['arch'])
 		self.assertEqual(64, info['bits'])
 		self.assertEqual(4, info['count'])
 
-		self.assertEqual('aarch64', info['raw_arch_string'])
+		self.assertEqual('aarch64', info['arch_string_raw'])
 
 		self.assertEqual(
 			['asimd', 'crc32', 'fp'],
