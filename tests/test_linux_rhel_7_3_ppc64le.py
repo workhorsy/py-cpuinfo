@@ -362,7 +362,7 @@ class TestLinuxRHEL_7_3_ppc64le(unittest.TestCase):
 		info = cpuinfo._get_cpu_info_from_proc_cpuinfo()
 
 		self.assertEqual('POWER8E (raw), altivec supported', info['brand_raw'])
-		self.assertEqual('3.4250 GHz', info['hz_advertised'])
+		self.assertEqual('3.4250 GHz', info['hz_advertised_friendly'])
 		self.assertEqual('3.4250 GHz', info['hz_actual'])
 		self.assertEqual((3425000000, 0), info['hz_advertised_raw'])
 		self.assertEqual((3425000000, 0), info['hz_actual_raw'])
@@ -371,7 +371,7 @@ class TestLinuxRHEL_7_3_ppc64le(unittest.TestCase):
 		info = cpuinfo._get_cpu_info_internal()
 
 		self.assertEqual('POWER8E (raw), altivec supported', info['brand_raw'])
-		self.assertEqual('3.4250 GHz', info['hz_advertised'])
+		self.assertEqual('3.4250 GHz', info['hz_advertised_friendly'])
 		self.assertEqual('3.4250 GHz', info['hz_actual'])
 		self.assertEqual((3425000000, 0), info['hz_advertised_raw'])
 		self.assertEqual((3425000000, 0), info['hz_actual_raw'])

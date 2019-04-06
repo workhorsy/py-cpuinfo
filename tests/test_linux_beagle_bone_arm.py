@@ -93,7 +93,7 @@ class TestLinux_BeagleBone(unittest.TestCase):
 	def test_get_cpu_info_from_cpufreq_info(self):
 		info = cpuinfo._get_cpu_info_from_cpufreq_info()
 
-		self.assertEqual('1.0000 GHz', info['hz_advertised'])
+		self.assertEqual('1.0000 GHz', info['hz_advertised_friendly'])
 		self.assertEqual('1.0000 GHz', info['hz_actual'])
 		self.assertEqual((1000000000, 0), info['hz_advertised_raw'])
 		self.assertEqual((1000000000, 0), info['hz_actual_raw'])
@@ -115,7 +115,7 @@ class TestLinux_BeagleBone(unittest.TestCase):
 
 		self.assertEqual('BCM2708', info['hardware_raw'])
 		self.assertEqual('ARMv6-compatible processor rev 7 (v6l)', info['brand_raw'])
-		self.assertEqual('1.0000 GHz', info['hz_advertised'])
+		self.assertEqual('1.0000 GHz', info['hz_advertised_friendly'])
 		self.assertEqual('1.0000 GHz', info['hz_actual'])
 		self.assertEqual((1000000000, 0), info['hz_advertised_raw'])
 		self.assertEqual((1000000000, 0), info['hz_actual_raw'])

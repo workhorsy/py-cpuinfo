@@ -69,7 +69,7 @@ class TestPCBSD(unittest.TestCase):
 		info = cpuinfo._get_cpu_info_from_dmesg()
 
 		self.assertEqual('Intel(R) Core(TM) i5-4440 CPU @ 3.10GHz', info['brand_raw'])
-		self.assertEqual('3.1000 GHz', info['hz_advertised'])
+		self.assertEqual('3.1000 GHz', info['hz_advertised_friendly'])
 		self.assertEqual('3.1000 GHz', info['hz_actual'])
 		self.assertEqual((3100000000, 0), info['hz_advertised_raw'])
 		self.assertEqual((3100000000, 0), info['hz_actual_raw'])
@@ -87,7 +87,7 @@ class TestPCBSD(unittest.TestCase):
 		info = cpuinfo._get_cpu_info_internal()
 
 		self.assertEqual('Intel(R) Core(TM) i5-4440 CPU @ 3.10GHz', info['brand_raw'])
-		self.assertEqual('3.1000 GHz', info['hz_advertised'])
+		self.assertEqual('3.1000 GHz', info['hz_advertised_friendly'])
 		self.assertEqual('3.1000 GHz', info['hz_actual'])
 		self.assertEqual((3100000000, 0), info['hz_advertised_raw'])
 		self.assertEqual((3100000000, 0), info['hz_actual_raw'])
