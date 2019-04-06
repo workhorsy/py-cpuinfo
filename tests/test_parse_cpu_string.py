@@ -22,31 +22,31 @@ class TestParseCPUString(unittest.TestCase):
 		self.assertEqual('0.0', cpuinfo._to_decimal_string(''))
 		self.assertEqual('0.0', cpuinfo._to_decimal_string(None))
 
-	def test_hz_short_to_raw(self):
-		self.assertEqual((2800000000, 0), cpuinfo._hz_short_to_raw('2.8', 9))
-		self.assertEqual((1200000, 0), cpuinfo._hz_short_to_raw('1.2', 6))
-		self.assertEqual((3200000000, 0), cpuinfo._hz_short_to_raw('3.2', 9))
-		self.assertEqual((9001200000, 0), cpuinfo._hz_short_to_raw('9001.2', 6))
-		self.assertEqual((0, 0), cpuinfo._hz_short_to_raw('0.0', 0))
-		self.assertEqual((2, 87), cpuinfo._hz_short_to_raw('2.87', 0))
+	def test_hz_short_to_full(self):
+		self.assertEqual((2800000000, 0), cpuinfo._hz_short_to_full('2.8', 9))
+		self.assertEqual((1200000, 0), cpuinfo._hz_short_to_full('1.2', 6))
+		self.assertEqual((3200000000, 0), cpuinfo._hz_short_to_full('3.2', 9))
+		self.assertEqual((9001200000, 0), cpuinfo._hz_short_to_full('9001.2', 6))
+		self.assertEqual((0, 0), cpuinfo._hz_short_to_full('0.0', 0))
+		self.assertEqual((2, 87), cpuinfo._hz_short_to_full('2.87', 0))
 
-		self.assertEqual((0, 0), cpuinfo._hz_short_to_raw('invalid', 0))
-		self.assertEqual((0, 0), cpuinfo._hz_short_to_raw('8.778.9', 0))
-		self.assertEqual((0, 0), cpuinfo._hz_short_to_raw('', 0))
-		self.assertEqual((0, 0), cpuinfo._hz_short_to_raw(None, 0))
+		self.assertEqual((0, 0), cpuinfo._hz_short_to_full('invalid', 0))
+		self.assertEqual((0, 0), cpuinfo._hz_short_to_full('8.778.9', 0))
+		self.assertEqual((0, 0), cpuinfo._hz_short_to_full('', 0))
+		self.assertEqual((0, 0), cpuinfo._hz_short_to_full(None, 0))
 
-	def test_hz_friendly_to_raw(self):
-		self.assertEqual((2800000000, 0), cpuinfo._hz_friendly_to_raw('2.80GHz'))
-		self.assertEqual((1200000, 0), cpuinfo._hz_friendly_to_raw('1.20 mHz'))
-		self.assertEqual((3693150000, 0), cpuinfo._hz_friendly_to_raw('3693.15-MHz'))
-		self.assertEqual((12000000000, 0), cpuinfo._hz_friendly_to_raw('12 GHz'))
-		self.assertEqual((2, 6), cpuinfo._hz_friendly_to_raw('2.6 Hz'))
-		self.assertEqual((0, 0), cpuinfo._hz_friendly_to_raw('0 Hz'))
+	def test_hz_friendly_to_full(self):
+		self.assertEqual((2800000000, 0), cpuinfo._hz_friendly_to_full('2.80GHz'))
+		self.assertEqual((1200000, 0), cpuinfo._hz_friendly_to_full('1.20 mHz'))
+		self.assertEqual((3693150000, 0), cpuinfo._hz_friendly_to_full('3693.15-MHz'))
+		self.assertEqual((12000000000, 0), cpuinfo._hz_friendly_to_full('12 GHz'))
+		self.assertEqual((2, 6), cpuinfo._hz_friendly_to_full('2.6 Hz'))
+		self.assertEqual((0, 0), cpuinfo._hz_friendly_to_full('0 Hz'))
 
-		self.assertEqual((0, 0), cpuinfo._hz_friendly_to_raw('invalid'))
-		self.assertEqual((0, 0), cpuinfo._hz_friendly_to_raw('8.778.9'))
-		self.assertEqual((0, 0), cpuinfo._hz_friendly_to_raw(''))
-		self.assertEqual((0, 0), cpuinfo._hz_friendly_to_raw(None))
+		self.assertEqual((0, 0), cpuinfo._hz_friendly_to_full('invalid'))
+		self.assertEqual((0, 0), cpuinfo._hz_friendly_to_full('8.778.9'))
+		self.assertEqual((0, 0), cpuinfo._hz_friendly_to_full(''))
+		self.assertEqual((0, 0), cpuinfo._hz_friendly_to_full(None))
 
 	def test_hz_short_to_friendly(self):
 		self.assertEqual('2.8000 GHz', cpuinfo._hz_short_to_friendly('2.8', 9))
