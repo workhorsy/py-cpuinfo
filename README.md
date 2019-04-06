@@ -58,7 +58,7 @@ Output
 | brand_raw                     | "Intel(R) Core(TM) i7 CPU         870  @ 2.93GHz" |
 | hz_advertised_friendly        | "2.9300 GHz" |
 | hz_actual_friendly            | "1.7330 GHz" |
-| hz_advertised_raw             | (2930000000, 0)|
+| hz_advertised                 | (2930000000, 0)|
 | hz_actual_raw                 | (1733000000, 0) |
 | arch                          | "X86_64" |
 | bits                          | 64 |

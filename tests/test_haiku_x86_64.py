@@ -83,7 +83,7 @@ class TestHaiku_x86_64(unittest.TestCase):
 		self.assertEqual('Intel(R) Core(TM) i7 CPU         870  @ 2.93GHz', info['brand_raw'])
 		self.assertEqual('2.9330 GHz', info['hz_advertised_friendly'])
 		self.assertEqual('2.9330 GHz', info['hz_actual_friendly'])
-		self.assertEqual((2933000000, 0), info['hz_advertised_raw'])
+		self.assertEqual((2933000000, 0), info['hz_advertised'])
 		self.assertEqual((2933000000, 0), info['hz_actual_raw'])
 
 		self.assertEqual(5, info['stepping'])
@@ -104,7 +104,7 @@ class TestHaiku_x86_64(unittest.TestCase):
 		self.assertEqual('Intel(R) Core(TM) i7 CPU         870  @ 2.93GHz', info['brand_raw'])
 		self.assertEqual('2.9330 GHz', info['hz_advertised_friendly'])
 		self.assertEqual('2.9330 GHz', info['hz_actual_friendly'])
-		self.assertEqual((2933000000, 0), info['hz_advertised_raw'])
+		self.assertEqual((2933000000, 0), info['hz_advertised'])
 		self.assertEqual((2933000000, 0), info['hz_actual_raw'])
 		self.assertEqual('X86_32', info['arch'])
 		self.assertEqual(32, info['bits'])

@@ -72,7 +72,7 @@ class TestTrueOS_18_X86_64_Ryzen7(unittest.TestCase):
 		self.assertEqual('AMD Ryzen 7 2700X Eight-Core Processor', info['brand_raw'])
 		self.assertEqual('3.6932 GHz', info['hz_advertised_friendly'])
 		self.assertEqual('3.6932 GHz', info['hz_actual_friendly'])
-		self.assertEqual((3693150000, 0), info['hz_advertised_raw'])
+		self.assertEqual((3693150000, 0), info['hz_advertised'])
 		self.assertEqual((3693150000, 0), info['hz_actual_raw'])
 
 		self.assertEqual(2, info['stepping'])
@@ -98,7 +98,7 @@ class TestTrueOS_18_X86_64_Ryzen7(unittest.TestCase):
 		self.assertEqual('AMD Ryzen 7 2700X Eight-Core Processor', info['brand_raw'])
 		self.assertEqual('3.6932 GHz', info['hz_advertised_friendly'])
 		self.assertEqual('3.6932 GHz', info['hz_actual_friendly'])
-		self.assertEqual((3693150000, 0), info['hz_advertised_raw'])
+		self.assertEqual((3693150000, 0), info['hz_advertised'])
 		self.assertEqual((3693150000, 0), info['hz_actual_raw'])
 
 		self.assertEqual('X86_64', info['arch'])

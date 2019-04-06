@@ -96,7 +96,7 @@ class TestWindows_10_X86_64(unittest.TestCase):
 		self.assertEqual('Intel(R) Core(TM) i5-4300U CPU @ 1.90GHz', info['brand_raw'])
 		self.assertEqual('1.9000 GHz', info['hz_advertised_friendly'])
 		self.assertEqual('2.4940 GHz', info['hz_actual_friendly'])
-		self.assertEqual((1900000000, 0), info['hz_advertised_raw'])
+		self.assertEqual((1900000000, 0), info['hz_advertised'])
 		self.assertEqual((2494000000, 0), info['hz_actual_raw'])
 
 		self.assertEqual(1, info['stepping'])
@@ -113,7 +113,7 @@ class TestWindows_10_X86_64(unittest.TestCase):
 		self.assertEqual('Intel(R) Core(TM) i5-4300U CPU @ 1.90GHz', info['brand_raw'])
 		self.assertEqual('1.9000 GHz', info['hz_advertised_friendly'])
 		self.assertEqual('2.4940 GHz', info['hz_actual_friendly'])
-		self.assertEqual((1900000000, 0), info['hz_advertised_raw'])
+		self.assertEqual((1900000000, 0), info['hz_advertised'])
 		self.assertEqual((2494000000, 0), info['hz_actual_raw'])
 
 		if "logger" in dir(unittest): unittest.logger("FIXME: Missing flags such as sse3 and sse4")
@@ -133,7 +133,7 @@ class TestWindows_10_X86_64(unittest.TestCase):
 		self.assertEqual('Intel(R) Core(TM) i5-4300U CPU @ 1.90GHz', info['brand_raw'])
 		self.assertEqual('1.9000 GHz', info['hz_advertised_friendly'])
 		self.assertEqual('2.4940 GHz', info['hz_actual_friendly'])
-		self.assertEqual((1900000000, 0), info['hz_advertised_raw'])
+		self.assertEqual((1900000000, 0), info['hz_advertised'])
 		self.assertEqual((2494000000, 0), info['hz_actual_raw'])
 		self.assertEqual('X86_64', info['arch'])
 		self.assertEqual(64, info['bits'])

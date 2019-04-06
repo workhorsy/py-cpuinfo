@@ -123,7 +123,7 @@ class Test_Linux_Fedora_29_X86_64_Ryzen_7(unittest.TestCase):
 		self.assertEqual('AMD Ryzen 7 2700X Eight-Core Processor', info['brand_raw'])
 		self.assertEqual('3.6931 GHz', info['hz_advertised_friendly'])
 		self.assertEqual('3.6931 GHz', info['hz_actual_friendly'])
-		self.assertEqual((3693060000, 0), info['hz_advertised_raw'])
+		self.assertEqual((3693060000, 0), info['hz_advertised'])
 		self.assertEqual((3693060000, 0), info['hz_actual_raw'])
 
 		self.assertEqual(2, info['stepping'])
@@ -157,7 +157,7 @@ class Test_Linux_Fedora_29_X86_64_Ryzen_7(unittest.TestCase):
 		self.assertEqual('AMD Ryzen 7 2700X Eight-Core Processor', info['brand_raw'])
 		self.assertEqual('3.6931 GHz', info['hz_advertised_friendly'])
 		self.assertEqual('3.6931 GHz', info['hz_actual_friendly'])
-		self.assertEqual((3693060000, 0), info['hz_advertised_raw'])
+		self.assertEqual((3693060000, 0), info['hz_advertised'])
 		self.assertEqual((3693060000, 0), info['hz_actual_raw'])
 
 		# FIXME: This is l2 cache size not l3 cache size
@@ -188,7 +188,7 @@ class Test_Linux_Fedora_29_X86_64_Ryzen_7(unittest.TestCase):
 		self.assertEqual('AMD Ryzen 7 2700X Eight-Core Processor', info['brand_raw'])
 		self.assertEqual('3.6931 GHz', info['hz_advertised_friendly'])
 		self.assertEqual('3.6931 GHz', info['hz_actual_friendly'])
-		self.assertEqual((3693060000, 0), info['hz_advertised_raw'])
+		self.assertEqual((3693060000, 0), info['hz_advertised'])
 		self.assertEqual((3693060000, 0), info['hz_actual_raw'])
 		self.assertEqual('X86_64', info['arch'])
 		self.assertEqual(64, info['bits'])
