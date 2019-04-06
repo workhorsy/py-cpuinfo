@@ -389,7 +389,7 @@ class TestLinuxFedora_24_ppc64le(unittest.TestCase):
 		self.assertEqual('3.4250 GHz', info['hz_advertised_friendly'])
 		self.assertEqual('3.4250 GHz', info['hz_actual_friendly'])
 		self.assertEqual((3425000000, 0), info['hz_advertised'])
-		self.assertEqual((3425000000, 0), info['hz_actual_raw'])
+		self.assertEqual((3425000000, 0), info['hz_actual'])
 
 	def test_all(self):
 		info = cpuinfo._get_cpu_info_internal()
@@ -398,7 +398,7 @@ class TestLinuxFedora_24_ppc64le(unittest.TestCase):
 		self.assertEqual('3.4250 GHz', info['hz_advertised_friendly'])
 		self.assertEqual('3.4250 GHz', info['hz_actual_friendly'])
 		self.assertEqual((3425000000, 0), info['hz_advertised'])
-		self.assertEqual((3425000000, 0), info['hz_actual_raw'])
+		self.assertEqual((3425000000, 0), info['hz_actual'])
 		self.assertEqual('PPC_64', info['arch'])
 		self.assertEqual(64, info['bits'])
 		self.assertEqual(2, info['count'])

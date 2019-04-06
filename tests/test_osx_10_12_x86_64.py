@@ -119,7 +119,7 @@ class TestOSX_10_12(unittest.TestCase):
 		self.assertEqual('1.7000 GHz', info['hz_advertised_friendly'])
 		self.assertEqual('1.7000 GHz', info['hz_actual_friendly'])
 		self.assertEqual((1700000000, 0), info['hz_advertised'])
-		self.assertEqual((1700000000, 0), info['hz_actual_raw'])
+		self.assertEqual((1700000000, 0), info['hz_actual'])
 
 		self.assertEqual('256', info['l2_cache_size'])
 
@@ -148,7 +148,7 @@ class TestOSX_10_12(unittest.TestCase):
 		self.assertEqual('1.7000 GHz', info['hz_advertised_friendly'])
 		self.assertEqual('1.7000 GHz', info['hz_actual_friendly'])
 		self.assertEqual((1700000000, 0), info['hz_advertised'])
-		self.assertEqual((1700000000, 0), info['hz_actual_raw'])
+		self.assertEqual((1700000000, 0), info['hz_actual'])
 		self.assertEqual('X86_64', info['arch'])
 		self.assertEqual(64, info['bits'])
 		self.assertEqual(4, info['count'])

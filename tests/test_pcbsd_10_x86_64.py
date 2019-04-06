@@ -72,7 +72,7 @@ class TestPCBSD(unittest.TestCase):
 		self.assertEqual('3.1000 GHz', info['hz_advertised_friendly'])
 		self.assertEqual('3.1000 GHz', info['hz_actual_friendly'])
 		self.assertEqual((3100000000, 0), info['hz_advertised'])
-		self.assertEqual((3100000000, 0), info['hz_actual_raw'])
+		self.assertEqual((3100000000, 0), info['hz_actual'])
 
 		self.assertEqual(
 			['apic', 'clflush', 'cmov', 'cx8', 'de', 'fpu', 'fxsr', 'lahf',
@@ -90,7 +90,7 @@ class TestPCBSD(unittest.TestCase):
 		self.assertEqual('3.1000 GHz', info['hz_advertised_friendly'])
 		self.assertEqual('3.1000 GHz', info['hz_actual_friendly'])
 		self.assertEqual((3100000000, 0), info['hz_advertised'])
-		self.assertEqual((3100000000, 0), info['hz_actual_raw'])
+		self.assertEqual((3100000000, 0), info['hz_actual'])
 		self.assertEqual('X86_64', info['arch'])
 		self.assertEqual(64, info['bits'])
 		self.assertEqual(1, info['count'])

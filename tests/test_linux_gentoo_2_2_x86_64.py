@@ -475,7 +475,7 @@ class TestLinuxGentoo_2_2_X86_64(unittest.TestCase):
 		self.assertEqual('2.7937 GHz', info['hz_advertised_friendly'])
 		self.assertEqual('2.7937 GHz', info['hz_actual_friendly'])
 		self.assertEqual((2793652000, 0), info['hz_advertised'])
-		self.assertEqual((2793652000, 0), info['hz_actual_raw'])
+		self.assertEqual((2793652000, 0), info['hz_actual'])
 
 		self.assertEqual(7, info['stepping'])
 		self.assertEqual(42, info['model'])
@@ -504,7 +504,7 @@ class TestLinuxGentoo_2_2_X86_64(unittest.TestCase):
 		self.assertEqual('2.8000 GHz', info['hz_advertised_friendly'])
 		self.assertEqual('2.8000 GHz', info['hz_actual_friendly'])
 		self.assertEqual((2800000000, 0), info['hz_advertised'])
-		self.assertEqual((2800000000, 0), info['hz_actual_raw'])
+		self.assertEqual((2800000000, 0), info['hz_actual'])
 
 		self.assertEqual(7, info['stepping'])
 		self.assertEqual(42, info['model'])
@@ -518,7 +518,7 @@ class TestLinuxGentoo_2_2_X86_64(unittest.TestCase):
 		self.assertEqual('2.8000 GHz', info['hz_advertised_friendly'])
 		self.assertEqual('2.7937 GHz', info['hz_actual_friendly'])
 		self.assertEqual((2800000000, 0), info['hz_advertised'])
-		self.assertEqual((2793652000, 0), info['hz_actual_raw'])
+		self.assertEqual((2793652000, 0), info['hz_actual'])
 
 		self.assertEqual('3072 KB', info['l3_cache_size'])
 
@@ -544,7 +544,7 @@ class TestLinuxGentoo_2_2_X86_64(unittest.TestCase):
 		self.assertEqual('2.8000 GHz', info['hz_advertised_friendly'])
 		self.assertEqual('2.7937 GHz', info['hz_actual_friendly'])
 		self.assertEqual((2800000000, 0), info['hz_advertised'])
-		self.assertEqual((2793652000, 0), info['hz_actual_raw'])
+		self.assertEqual((2793652000, 0), info['hz_actual'])
 		self.assertEqual('X86_64', info['arch'])
 		self.assertEqual(64, info['bits'])
 		self.assertEqual(2, info['count'])

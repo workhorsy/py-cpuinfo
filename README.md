@@ -59,7 +59,7 @@ Output
 | hz_advertised_friendly        | "2.9300 GHz" |
 | hz_actual_friendly            | "1.7330 GHz" |
 | hz_advertised                 | (2930000000, 0)|
-| hz_actual_raw                 | (1733000000, 0) |
+| hz_actual                     | (1733000000, 0) |
 | arch                          | "X86_64" |
 | bits                          | 64 |
 | count                         | 4 |

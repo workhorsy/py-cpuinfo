@@ -113,7 +113,7 @@ class TestSolaris_11(unittest.TestCase):
 		self.assertEqual('2.9310 GHz', info['hz_advertised_friendly'])
 		self.assertEqual('2.9305 GHz', info['hz_actual_friendly'])
 		self.assertEqual((2931000000, 0), info['hz_advertised'])
-		self.assertEqual((2930505167, 0), info['hz_actual_raw'])
+		self.assertEqual((2930505167, 0), info['hz_actual'])
 
 		self.assertEqual(5, info['stepping'])
 		self.assertEqual(30, info['model'])
@@ -132,7 +132,7 @@ class TestSolaris_11(unittest.TestCase):
 		self.assertEqual('2.9310 GHz', info['hz_advertised_friendly'])
 		self.assertEqual('2.9305 GHz', info['hz_actual_friendly'])
 		self.assertEqual((2931000000, 0), info['hz_advertised'])
-		self.assertEqual((2930505167, 0), info['hz_actual_raw'])
+		self.assertEqual((2930505167, 0), info['hz_actual'])
 		self.assertEqual('X86_32', info['arch'])
 		self.assertEqual(32, info['bits'])
 		self.assertEqual(4, info['count'])
