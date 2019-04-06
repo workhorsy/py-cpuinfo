@@ -32,32 +32,32 @@ Output
 -----
 | key                           | Example value   |
 | :---------------------------- | :-------------- |
-| python_version                | "2.7.12.final.0 (64 bit)" |
-| cpuinfo_version               | (4, 0, 0) |
-| vendor_id_raw                 | "GenuineIntel"  |
-| hardware_raw                  | "BCM2708" |
-| brand_raw                     | "Intel(R) Core(TM) i7 CPU         870  @ 2.93GHz" |
-| hz_advertised_friendly        | "2.9300 GHz" |
-| hz_actual_friendly            | "1.7330 GHz" |
-| hz_advertised                 | (2930000000, 0)|
-| hz_actual                     | (1733000000, 0) |
-| arch                          | "X86_64" |
-| bits                          | 64 |
-| count                         | 4 |
-| arch_string_raw               | "x86_64" |
-| l1_data_cache_size            | "32 KB" |
-| l1_instruction_cache_size     | "32 KB" |
-| l2_cache_size                 | "256 KB" |
-| l2_cache_line_size            | 6 |
-| l2_cache_associativity        | 0x100 |
-| l3_cache_size                 | "3072 KB" |
-| stepping                      | 5 |
-| model                         | 30 |
-| family                        | 6 |
-| processor_type                | 0 |
-| extended_model                | 0 |
-| extended_family               | 0 |
-| flags                         | ['acpi', 'aperfmperf', 'apic', 'arch_perfmon', 'bts', 'clflush', 'cmov', 'constant_tsc', 'cx16', 'cx8', 'de', 'ds_cpl', 'dtes64', 'dtherm', 'dts', 'ept', 'est', 'flexpriority', 'fpu', 'fxsr', 'ht', 'ida', 'lahf_lm', 'lm', 'mca', 'mce', 'mmx', 'monitor', 'msr', 'mtrr', 'nonstop_tsc', 'nopl', 'nx', 'pae', 'pat', 'pbe', 'pdcm', 'pebs', 'pge', 'pni', 'popcnt', 'pse', 'pse36', 'rdtscp', 'rep_good', 'sep', 'smx', 'ss', 'sse', 'sse2', 'sse4_1', 'sse4_2', 'ssse3', 'syscall', 'tm', 'tm2', 'tpr_shadow', 'tsc', 'vme', 'vmx', 'vnmi', 'vpid', 'xtopology', 'xtpr'] |
+| "python_version"              | "2.7.12.final.0 (64 bit)" |
+| "cpuinfo_version"             | (4, 0, 0) |
+| "vendor_id_raw"               | "GenuineIntel"  |
+| "hardware_raw"                | "BCM2708" |
+| "brand_raw"                   | "Intel(R) Core(TM) i7 CPU         870  @ 2.93GHz" |
+| "hz_advertised_friendly"      | "2.9300 GHz" |
+| "hz_actual_friendly"          | "1.7330 GHz" |
+| "hz_advertised"               | (2930000000, 0)|
+| "hz_actual"                   | (1733000000, 0) |
+| "arch"                        | "X86_64" |
+| "bits"                        | 64 |
+| "count"                       | 4 |
+| "arch_string_raw"             | "x86_64" |
+| "l1_data_cache_size"          | "32 KB" |
+| "l1_instruction_cache_size"   | "32 KB" |
+| "l2_cache_size"               | "256 KB" |
+| "l2_cache_line_size"          | 6 |
+| "l2_cache_associativity"      | 0x100 |
+| "l3_cache_size"               | "3072 KB" |
+| "stepping"                    | 5 |
+| "model"                       | 30 |
+| "family"                      | 6 |
+| "processor_type"              | 0 |
+| "extended_model"              | 0 |
+| "extended_family"             | 0 |
+| "flags"                       | ['acpi', 'aperfmperf', 'apic', 'arch_perfmon', 'bts', 'clflush', 'cmov', 'constant_tsc', 'cx16', 'cx8', 'de', 'ds_cpl', 'dtes64', 'dtherm', 'dts', 'ept', 'est', 'flexpriority', 'fpu', 'fxsr', 'ht', 'ida', 'lahf_lm', 'lm', 'mca', 'mce', 'mmx', 'monitor', 'msr', 'mtrr', 'nonstop_tsc', 'nopl', 'nx', 'pae', 'pat', 'pbe', 'pdcm', 'pebs', 'pge', 'pni', 'popcnt', 'pse', 'pse36', 'rdtscp', 'rep_good', 'sep', 'smx', 'ss', 'sse', 'sse2', 'sse4_1', 'sse4_2', 'ssse3', 'syscall', 'tm', 'tm2', 'tpr_shadow', 'tsc', 'vme', 'vmx', 'vnmi', 'vpid', 'xtopology', 'xtpr'] |
 
 
 These approaches are used for getting info:
