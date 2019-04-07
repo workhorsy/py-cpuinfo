@@ -61,12 +61,12 @@ Raw Fields
 
 These fields are pulled directly from the CPU and can vary greatly.
 
-| key                           | Example value   |
-| :---------------------------- | :-------------- |
-| "vendor_id_raw"               | "GenuineIntel"  |
-| "hardware_raw"                | "BCM2708" |
-| "brand_raw"                   | "Intel(R) Core(TM) i7 CPU         870  @ 2.93GHz" |
-| "arch_string_raw"             | "x86_64" |
+| key                           | Example value             | Return Format         |
+| :---------------------------- | :------------------------ | :-------------------- |
+| "vendor_id_raw"               | "GenuineIntel"            | string                |
+| "hardware_raw"                | "BCM2708"                 | string                |
+| "brand_raw"                   | "Intel(R) Core(TM) i7 CPU         870  @ 2.93GHz" | string                |
+| "arch_string_raw"             | "x86_64"                  | string                |
 
 
 These approaches are used for getting info:
