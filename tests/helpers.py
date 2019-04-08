@@ -150,10 +150,8 @@ def _actual_monkey_patch_data_source(cpuinfo, NewDataSource):
 		cpuinfo.DataSource.cat_proc_cpuinfo = staticmethod(NewDataSource.cat_proc_cpuinfo)
 	if hasattr(NewDataSource, 'cpufreq_info'):
 		cpuinfo.DataSource.cpufreq_info = staticmethod(NewDataSource.cpufreq_info)
-	if hasattr(NewDataSource, 'sestatus_allow_execheap'):
-		cpuinfo.DataSource.sestatus_allow_execheap = staticmethod(NewDataSource.sestatus_allow_execheap)
-	if hasattr(NewDataSource, 'sestatus_allow_execmem'):
-		cpuinfo.DataSource.sestatus_allow_execmem = staticmethod(NewDataSource.sestatus_allow_execmem)
+	if hasattr(NewDataSource, 'sestatus_b'):
+		cpuinfo.DataSource.sestatus_b = staticmethod(NewDataSource.sestatus_b)
 	if hasattr(NewDataSource, 'dmesg_a'):
 		cpuinfo.DataSource.dmesg_a = staticmethod(NewDataSource.dmesg_a)
 	if hasattr(NewDataSource, 'cat_var_run_dmesg_boot'):
@@ -207,8 +205,7 @@ def backup_data_source(cpuinfo):
 	cpuinfo.BackupDataSource.has_wmic = staticmethod(cpuinfo.DataSource.has_wmic)
 	cpuinfo.BackupDataSource.cat_proc_cpuinfo = staticmethod(cpuinfo.DataSource.cat_proc_cpuinfo)
 	cpuinfo.BackupDataSource.cpufreq_info = staticmethod(cpuinfo.DataSource.cpufreq_info)
-	cpuinfo.BackupDataSource.sestatus_allow_execheap = staticmethod(cpuinfo.DataSource.sestatus_allow_execheap)
-	cpuinfo.BackupDataSource.sestatus_allow_execmem = staticmethod(cpuinfo.DataSource.sestatus_allow_execmem)
+	cpuinfo.BackupDataSource.sestatus_b = staticmethod(cpuinfo.DataSource.sestatus_b)
 	cpuinfo.BackupDataSource.dmesg_a = staticmethod(cpuinfo.DataSource.dmesg_a)
 	cpuinfo.BackupDataSource.cat_var_run_dmesg_boot = staticmethod(cpuinfo.DataSource.cat_var_run_dmesg_boot)
 	cpuinfo.BackupDataSource.sysctl_machdep_cpu_hw_cpufrequency = staticmethod(cpuinfo.DataSource.sysctl_machdep_cpu_hw_cpufrequency)
@@ -246,8 +243,7 @@ def restore_data_source(cpuinfo):
 	cpuinfo.DataSource.has_wmic = cpuinfo.BackupDataSource.has_wmic
 	cpuinfo.DataSource.cat_proc_cpuinfo = cpuinfo.BackupDataSource.cat_proc_cpuinfo
 	cpuinfo.DataSource.cpufreq_info = cpuinfo.BackupDataSource.cpufreq_info
-	cpuinfo.DataSource.sestatus_allow_execheap = cpuinfo.BackupDataSource.sestatus_allow_execheap
-	cpuinfo.DataSource.sestatus_allow_execmem = cpuinfo.BackupDataSource.sestatus_allow_execmem
+	cpuinfo.DataSource.sestatus_b = cpuinfo.BackupDataSource.sestatus_b
 	cpuinfo.DataSource.dmesg_a = cpuinfo.BackupDataSource.dmesg_a
 	cpuinfo.DataSource.cat_var_run_dmesg_boot = cpuinfo.BackupDataSource.cat_var_run_dmesg_boot
 	cpuinfo.DataSource.sysctl_machdep_cpu_hw_cpufrequency = cpuinfo.BackupDataSource.sysctl_machdep_cpu_hw_cpufrequency

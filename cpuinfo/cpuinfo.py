@@ -110,12 +110,8 @@ class DataSource(object):
 		return _run_and_get_stdout(['cpufreq-info'])
 
 	@staticmethod
-	def sestatus_allow_execheap():
-		return _run_and_get_stdout(['sestatus', '-b'], ['grep', '-i', '"allow_execheap"'])[1].strip().lower().endswith('on')
-
-	@staticmethod
-	def sestatus_allow_execmem():
-		return _run_and_get_stdout(['sestatus', '-b'], ['grep', '-i', '"allow_execmem"'])[1].strip().lower().endswith('on')
+	def sestatus_b():
+		return _run_and_get_stdout(['sestatus', '-b'])
 
 	@staticmethod
 	def dmesg_a():
@@ -666,8 +662,15 @@ class CPUID(object):
 			return
 
 		# Figure out if we can execute heap and execute memory
-		can_selinux_exec_heap = DataSource.sestatus_allow_execheap()
-		can_selinux_exec_memory = DataSource.sestatus_allow_execmem()
+		can_selinux_exec_heap = False
+		can_selinux_exec_memory = False
+		for line in DataSource.sestatus_b():
+			line = line.strip().lower()
+			if line.startswith("allow_execheap") and line.endswith("on"):
+				can_selinux_exec_heap = True
+			elif line.startswith("allow_execmem") and line.endswith("on"):
+				can_selinux_exec_memory = True
+
 		self.is_selinux_enforcing = (not can_selinux_exec_heap or not can_selinux_exec_memory)
 
 	def _asm_func(self, restype=None, argtypes=(), byte_code=[]):
