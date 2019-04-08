@@ -69,20 +69,6 @@ These fields are pulled directly from the CPU and can vary greatly.
 | "arch_string_raw"             | "x86_64"                  | string                |
 
 
-These approaches are used for getting info:
------
-1. Windows Registry (Windows)
-2. /proc/cpuinfo (Linux)
-3. sysctl (OS X)
-4. dmesg (Unix/Linux)
-5. /var/run/dmesg.boot (BSD/Unix)
-6. isainfo and kstat (Solaris)
-7. cpufreq-info (BeagleBone)
-8. lscpu (Unix/Linux)
-9. sysinfo (Haiku)
-10. device-tree ibm features flags (Linux PPC)
-11. Querying the CPUID register (Intel X86 CPUs)
-
 
 Run as a script
 -----
@@ -152,6 +138,21 @@ CPU Support
 -----
 * X86 32bit and 64bit
 * Some ARM and PPC CPUs
+
+
+These approaches are used for getting info:
+-----
+1. Windows Registry (Windows)
+2. /proc/cpuinfo (Linux)
+3. sysctl (OS X)
+4. dmesg (Unix/Linux)
+5. /var/run/dmesg.boot (BSD/Unix)
+6. isainfo and kstat (Solaris)
+7. cpufreq-info (BeagleBone)
+8. lscpu (Unix/Linux)
+9. sysinfo (Haiku)
+10. device-tree ibm features flags (Linux PPC)
+11. Querying the CPUID register (Intel X86 CPUs)
 
 
 Bugs and Corrections
