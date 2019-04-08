@@ -126,6 +126,14 @@ $ python -m pip install -U py-cpuinfo
 ~~~
 
 
+Command Line Arguments
+----
+~~~
+--help: show this help message and exit
+--json: Return the info in JSON format
+~~~
+
+
 OS Support
 -----
 | OS            | Tested and should work                                 | Untested        |
