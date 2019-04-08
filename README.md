@@ -59,7 +59,9 @@ Fields
 Raw Fields
 -----
 
-These fields are pulled directly from the CPU and can vary greatly.
+These fields are pulled directly from the CPU and are unverified. They may
+contain expected results. Other times they may contain wildly unexpected
+results or garbage. So it would be a bad idea to rely on them.
 
 | key                           | Example value             | Return Format         |
 | :---------------------------- | :------------------------ | :-------------------- |
