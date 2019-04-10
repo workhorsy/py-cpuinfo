@@ -650,28 +650,45 @@ def _is_bit_set(reg, bit):
 	return is_set
 
 
+def _is_selinux_enforcing():
+	# Just return if the SE Linux Status Tool is not installed
+	if not DataSource.has_sestatus():
+		return False
+
+	returncode, output = DataSource.sestatus_b()
+
+	# Just return if it failed to run
+	if returncode != 0:
+		return False
+
+	# Figure out if explicitly in enforcing mode
+	for line in output.splitlines():
+		line = line.strip().lower()
+		if line.startswith("current mode:"):
+			if line.endswith("enforcing"):
+				return True
+			else:
+				return False
+
+	# Figure out if we can execute heap and execute memory
+	can_selinux_exec_heap = False
+	can_selinux_exec_memory = False
+	for line in output.splitlines():
+		line = line.strip().lower()
+		if line.startswith("allow_execheap") and line.endswith("on"):
+			can_selinux_exec_heap = True
+		elif line.startswith("allow_execmem") and line.endswith("on"):
+			can_selinux_exec_memory = True
+
+	return (not can_selinux_exec_heap or not can_selinux_exec_memory)
+
+
 class CPUID(object):
 	def __init__(self):
 		self.prochandle = None
 
 		# Figure out if SE Linux is on and in enforcing mode
-		self.is_selinux_enforcing = False
-
-		# Just return if the SE Linux Status Tool is not installed
-		if not DataSource.has_sestatus():
-			return
-
-		# Figure out if we can execute heap and execute memory
-		can_selinux_exec_heap = False
-		can_selinux_exec_memory = False
-		for line in DataSource.sestatus_b():
-			line = line.strip().lower()
-			if line.startswith("allow_execheap") and line.endswith("on"):
-				can_selinux_exec_heap = True
-			elif line.startswith("allow_execmem") and line.endswith("on"):
-				can_selinux_exec_memory = True
-
-		self.is_selinux_enforcing = (not can_selinux_exec_heap or not can_selinux_exec_memory)
+		self.is_selinux_enforcing = _is_selinux_enforcing()
 
 	def _asm_func(self, restype=None, argtypes=(), byte_code=[]):
 		byte_code = bytes.join(b'', byte_code)
