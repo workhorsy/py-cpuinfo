@@ -125,7 +125,7 @@ if program_paths('cpufreq-info'):
 
 if program_paths('sestatus'):
 	returncode, output = run_and_get_stdout(['sestatus', '-b'])
-	print_output('sestatus', output)
+	print_output('sestatus -b', output)
 
 if os.path.exists('/proc/cpuinfo'):
 	returncode, output = run_and_get_stdout(['cat', '/proc/cpuinfo'])
@@ -157,13 +157,13 @@ if program_paths('dmesg'):
 		returncode, output = run_and_get_stdout(['dmesg'])
 	if len(output) > 20480:
 		output = output[0 : 20480]
-	print_output('dmesg', output)
+	print_output('dmesg -a', output)
 
 if os.path.exists('/var/run/dmesg.boot'):
 	returncode, output = run_and_get_stdout(['cat', '/var/run/dmesg.boot'])
 	if len(output) > 20480:
 		output = output[0 : 20480]
-	print_output('/var/run/dmesg.boot', output)
+	print_output('cat /var/run/dmesg.boot', output)
 
 if program_paths('sysinfo'):
 	returncode, output = run_and_get_stdout(['sysinfo', '-cpu'])
