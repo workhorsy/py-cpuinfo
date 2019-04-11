@@ -47,15 +47,17 @@ out_file = open(out_file_name, 'w')
 
 
 def run_and_get_stdout(command, pipe_command=None):
+	from subprocess import Popen, PIPE
+
 	if not pipe_command:
-		p1 = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, stdin=subprocess.PIPE)
+		p1 = Popen(command, stdout=PIPE, stderr=PIPE, stdin=PIPE)
 		output = p1.communicate()[0]
 		if not IS_PY2:
 			output = output.decode(encoding='UTF-8')
 		return p1.returncode, output
 	else:
-		p1 = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, stdin=subprocess.PIPE)
-		p2 = subprocess.Popen(pipe_command, stdin=p1.stdout, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+		p1 = Popen(command, stdout=PIPE, stderr=PIPE, stdin=PIPE)
+		p2 = Popen(pipe_command, stdin=p1.stdout, stdout=PIPE, stderr=PIPE)
 		p1.stdout.close()
 		output = p2.communicate()[0]
 		if not IS_PY2:
