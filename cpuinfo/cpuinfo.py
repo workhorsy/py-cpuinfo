@@ -2306,6 +2306,7 @@ def main():
 	# Parse args
 	parser = ArgumentParser(description='Gets CPU info with pure Python 2 & 3')
 	parser.add_argument('--json', action='store_true', help='Return the info in JSON format')
+	parser.add_argument('--version', action='store_true', help='Return the version of py-cpuinfo')
 	args = parser.parse_args()
 
 	try:
@@ -2322,6 +2323,8 @@ def main():
 
 	if args.json:
 		print(json.dumps(info))
+	elif args.version:
+		print('.'.join([str(n) for n in CPUINFO_VERSION]))
 	else:
 		print('Python Version: {0}'.format(info.get('python_version', '')))
 		print('Cpuinfo Version: {0}'.format(info.get('cpuinfo_version', '')))

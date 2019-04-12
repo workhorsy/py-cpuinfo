@@ -30,6 +30,21 @@ class TestCLI(unittest.TestCase):
 
 		self.assertEqual(list(cpuinfo.CPUINFO_VERSION), info['cpuinfo_version'])
 
+	def test_version(self):
+		from subprocess import Popen, PIPE
+
+		command = [sys.executable, 'cpuinfo/cpuinfo.py', '--version']
+		p1 = Popen(command, stdout=PIPE, stderr=PIPE, stdin=PIPE)
+		output = p1.communicate()[0]
+
+		self.assertEqual(0, p1.returncode)
+
+		if not IS_PY2:
+			output = output.decode(encoding='UTF-8')
+		output = output.strip()
+
+		self.assertEqual('.'.join([str(n) for n in cpuinfo.CPUINFO_VERSION]), output)
+
 	def test_default(self):
 		from subprocess import Popen, PIPE
 

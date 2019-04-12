@@ -129,6 +129,7 @@ Command Line Arguments
 ~~~
 --help: show this help message and exit
 --json: Return the info in JSON format
+--version: Return the version of py-cpuinfo
 ~~~
 
 
