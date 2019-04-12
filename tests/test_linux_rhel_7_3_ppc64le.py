@@ -343,7 +343,7 @@ class TestLinuxRHEL_7_3_ppc64le(unittest.TestCase):
 		self.assertEqual(1, len(cpuinfo._get_cpu_info_from_ibm_pa_features()))
 		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_sysinfo()))
 		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_cpuid()))
-		self.assertEqual(14, len(cpuinfo._get_cpu_info_internal()))
+		self.assertEqual(15, len(cpuinfo._get_cpu_info_internal()))
 
 	def test_get_cpu_info_from_lscpu(self):
 		info = cpuinfo._get_cpu_info_from_lscpu()
