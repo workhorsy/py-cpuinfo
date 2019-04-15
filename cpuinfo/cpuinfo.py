@@ -655,9 +655,8 @@ def _is_selinux_enforcing():
 	if not DataSource.has_sestatus():
 		return False
 
+	# Run the sestatus, and just return if it failed to run
 	returncode, output = DataSource.sestatus_b()
-
-	# Just return if it failed to run
 	if returncode != 0:
 		return False
 
