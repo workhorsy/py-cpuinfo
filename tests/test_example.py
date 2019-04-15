@@ -61,12 +61,8 @@ class MockDataSource(object):
 		return 1, None
 
 	@staticmethod
-	def sestatus_allow_execheap():
-		return False
-
-	@staticmethod
-	def sestatus_allow_execmem():
-		return False
+	def sestatus_b():
+		return 1, None
 
 	@staticmethod
 	def dmesg_a():

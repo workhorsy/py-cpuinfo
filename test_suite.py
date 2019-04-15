@@ -39,6 +39,7 @@ from test_example import TestExample
 from test_parse_errors import TestParseErrors
 from test_parse_cpu_string import TestParseCPUString
 from test_invalid_cpu import TestInvalidCPU
+from test_selinux import TestSELinux
 from test_linux_debian_8_x86_64 import TestLinuxDebian_8_X86_64
 from test_linux_debian_8_5_x86_64 import TestLinuxDebian_8_5_X86_64
 from test_linux_debian_8_7_1_ppc64le import TestLinuxDebian_8_7_1_ppc64le
@@ -82,6 +83,7 @@ if __name__ == '__main__':
 		TestExample,
 		TestParseErrors,
 		TestInvalidCPU,
+		TestSELinux,
 		TestLinuxDebian_8_X86_64,
 		TestLinuxDebian_8_5_X86_64,
 		TestLinuxDebian_8_7_1_ppc64le,
