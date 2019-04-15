@@ -44,6 +44,7 @@ Fields
 | :---------------------------- | :------------------------ | :-------------------- |
 | "python_version"              | "2.7.12.final.0 (64 bit)" | string                |
 | "cpuinfo_version"             | (4, 0, 0)                 | (int, int, int)       |
+| "cpuinfo_version_string"      | "4.0.0"                   | string                |
 | "hz_advertised_friendly"      | "2.9300 GHz"              | string                |
 | "hz_actual_friendly"          | "1.7330 GHz"              | string                |
 | "hz_advertised"               | (2930000000, 0)           | (int, int)            |
@@ -129,6 +130,7 @@ Command Line Arguments
 ~~~
 --help: show this help message and exit
 --json: Return the info in JSON format
+--version: Return the version of py-cpuinfo
 ~~~
 
 

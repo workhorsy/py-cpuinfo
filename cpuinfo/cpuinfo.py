@@ -26,6 +26,7 @@
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 CPUINFO_VERSION = (5, 0, 0)
+CPUINFO_VERSION_STRING = '.'.join([str(n) for n in CPUINFO_VERSION])
 
 import os, sys
 import platform
@@ -2223,6 +2224,7 @@ def _get_cpu_info_internal():
 	info = {
 		'python_version' : PYTHON_VERSION,
 		'cpuinfo_version' : CPUINFO_VERSION,
+		'cpuinfo_version_string' : CPUINFO_VERSION_STRING,
 		'arch' : arch,
 		'bits' : bits,
 		'count' : DataSource.cpu_count,
@@ -2325,6 +2327,7 @@ def main():
 	# Parse args
 	parser = ArgumentParser(description='Gets CPU info with pure Python 2 & 3')
 	parser.add_argument('--json', action='store_true', help='Return the info in JSON format')
+	parser.add_argument('--version', action='store_true', help='Return the version of py-cpuinfo')
 	args = parser.parse_args()
 
 	try:
@@ -2341,9 +2344,11 @@ def main():
 
 	if args.json:
 		print(json.dumps(info))
+	elif args.version:
+		print(CPUINFO_VERSION_STRING)
 	else:
 		print('Python Version: {0}'.format(info.get('python_version', '')))
-		print('Cpuinfo Version: {0}'.format(info.get('cpuinfo_version', '')))
+		print('Cpuinfo Version: {0}'.format(info.get('cpuinfo_version_string', '')))
 		print('Vendor ID Raw: {0}'.format(info.get('vendor_id_raw', '')))
 		print('Hardware Raw: {0}'.format(info.get('hardware_raw', '')))
 		print('Brand Raw: {0}'.format(info.get('brand_raw', '')))

@@ -80,7 +80,7 @@ class TestWindows_8_X86_64(unittest.TestCase):
 		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_sysinfo()))
 		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_cpuid()))
 		self.assertEqual(3, len(cpuinfo._get_cpu_info_from_platform_uname()))
-		self.assertEqual(18, len(cpuinfo._get_cpu_info_internal()))
+		self.assertEqual(19, len(cpuinfo._get_cpu_info_internal()))
 
 	def test_get_cpu_info_from_platform_uname(self):
 		info = cpuinfo._get_cpu_info_from_platform_uname()
