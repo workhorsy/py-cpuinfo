@@ -22,11 +22,13 @@ class MockCPUID(CPUID):
 		print('!!!!!! byte_code:', byte_code)
 		print('!!!!!! ==       :', expected == byte_code)
 
+		# get_max_extension_support
 		if byte_code == \
 			(b"\xB8\x00\x00\x00\x80" # mov ax,0x80000000
 			b"\x0f\xa2"               # cpuid
 			b"\xC3",):               # ret
 			return 0x8000001f
+		# get_info
 		elif byte_code == \
 			(b"\xB8\x06\x00\x00\x80"  # mov ax,0x80000006
 			b"\x0f\xa2"                # cpuid
@@ -38,30 +40,79 @@ class MockCPUID(CPUID):
 			b"\x0f\xa2"                # cpuid
 			b"\xC3",):                # ret
 			return 0x800f82
+		# get_processor_brand
 		elif byte_code == \
-			(b"\xB8\x02\x00\x00\x80",  # mov ax,0x8000000?
+			(b"\xB8\x02\x00\x00\x80",  # mov ax,0x80000002
 			b"\x0f\xa2"                # cpuid
 			b"\x89\xC0"                # mov ax,ax
 			b"\xC3",):                 # ret
 			return 0x20444d41
-
-		'''
-		!!! eax: 0x20444d41
-		!!! ebx: 0x657a7952
-		!!! ecx: 0x2037206e
-		!!! edx: 0x30303732
-		!!! eax: 0x69452058
-		!!! ebx: 0x2d746867
-		!!! ecx: 0x65726f43
-		!!! edx: 0x6f725020
-		!!! eax: 0x73736563
-		!!! ebx: 0x2020726f
-		!!! ecx: 0x20202020
-		!!! edx: 0x202020
-		'''
-
-
-
+		elif byte_code == \
+			(b"\xB8\x02\x00\x00\x80",  # mov ax,0x80000002
+			b"\x0f\xa2"                # cpuid
+			b"\x89\xD8"                # mov ax,bx
+			b"\xC3",):                 # ret
+			return 0x657a7952
+		elif byte_code == \
+			(b"\xB8\x02\x00\x00\x80",  # mov ax,0x80000002
+			b"\x0f\xa2"                # cpuid
+			b"\x89\xC8"                # mov ax,cx
+			b"\xC3",):                 # ret
+			return 0x2037206e
+		elif byte_code == \
+			(b"\xB8\x02\x00\x00\x80",  # mov ax,0x80000002
+			b"\x0f\xa2"                # cpuid
+			b"\x89\xD0"                # mov ax,dx
+			b"\xC3",):                 # ret
+			return 0x30303732
+		elif byte_code == \
+			(b"\xB8\x03\x00\x00\x80",  # mov ax,0x80000003
+			b"\x0f\xa2"                # cpuid
+			b"\x89\xC0"                # mov ax,ax
+			b"\xC3",):                 # ret
+			return 0x69452058
+		elif byte_code == \
+			(b"\xB8\x03\x00\x00\x80",  # mov ax,0x80000003
+			b"\x0f\xa2"                # cpuid
+			b"\x89\xD8"                # mov ax,bx
+			b"\xC3",):                 # ret
+			return 0x2d746867
+		elif byte_code == \
+			(b"\xB8\x03\x00\x00\x80",  # mov ax,0x80000003
+			b"\x0f\xa2"                # cpuid
+			b"\x89\xC8"                # mov ax,cx
+			b"\xC3",):                 # ret
+			return 0x65726f43
+		elif byte_code == \
+			(b"\xB8\x03\x00\x00\x80",  # mov ax,0x80000003
+			b"\x0f\xa2"                # cpuid
+			b"\x89\xD0"                # mov ax,dx
+			b"\xC3",):                 # ret
+			return 0x6f725020
+		elif byte_code == \
+			(b"\xB8\x04\x00\x00\x80",  # mov ax,0x80000004
+			b"\x0f\xa2"                # cpuid
+			b"\x89\xC0"                # mov ax,ax
+			b"\xC3",):                 # ret
+			return 0x73736563
+		elif byte_code == \
+			(b"\xB8\x04\x00\x00\x80",  # mov ax,0x80000004
+			b"\x0f\xa2"                # cpuid
+			b"\x89\xD8"                # mov ax,bx
+			b"\xC3",):                 # ret
+			return 0x2020726f
+		elif byte_code == \
+			(b"\xB8\x04\x00\x00\x80",  # mov ax,0x80000004
+			b"\x0f\xa2"                # cpuid
+			b"\x89\xC8"                # mov ax,cx
+			b"\xC3",):                 # ret
+			return 0x20202020
+		elif byte_code == \
+			(b"\xB8\x04\x00\x00\x80",  # mov ax,0x80000004
+			b"\x0f\xa2"                # cpuid
+			b"\x89\xD0"                # mov ax,dx
+			b"\xC3",):                 # ret
+			return 0x202020
 
 		raise Exception("Unexpected byte code")
 
@@ -90,6 +141,7 @@ class TestCPUID(unittest.TestCase):
 	def test_normal(self):
 		cpuid = MockCPUID()
 		print('cpuid', cpuid)
+		self.assertIsNotNone(cpuid)
 
 		self.assertFalse(cpuid.is_selinux_enforcing)
 
