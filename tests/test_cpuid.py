@@ -28,20 +28,24 @@ class MockCPUID(CPUID):
 			b"\x0f\xa2"               # cpuid
 			b"\xC3",):               # ret
 			return 0x8000001f
-		# get_info
-		elif byte_code == \
+
+		# get_cache
+		if byte_code == \
 			(b"\xB8\x06\x00\x00\x80"  # mov ax,0x80000006
 			b"\x0f\xa2"                # cpuid
 			b"\x89\xC8"                # mov ax,cx
 			b"\xC3",):                # ret))
 			return 0x2006140
-		elif byte_code == \
+
+		# get_info
+		if byte_code == \
 			(self._one_eax(),  # mov eax,0x1"
 			b"\x0f\xa2"                # cpuid
 			b"\xC3",):                # ret
 			return 0x800f82
+
 		# get_processor_brand
-		elif byte_code == \
+		if byte_code == \
 			(b"\xB8\x02\x00\x00\x80",  # mov ax,0x80000002
 			b"\x0f\xa2"                # cpuid
 			b"\x89\xC0"                # mov ax,ax
