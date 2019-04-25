@@ -6,11 +6,22 @@ import helpers
 
 
 class MockCPUID(CPUID):
+	is_first = False
+
 	def __init__(self):
 		super(MockCPUID, self).__init__()
 
 	def _asm_func(self, restype=None, argtypes=(), byte_code=[]):
-		raise Exception("FIXME: Add body of mock _asm_func")
+		# NOTE: This assumes that the function returned is a get_ticks function
+		def retval_func():
+			MockCPUID.is_first = not MockCPUID.is_first
+
+			if MockCPUID.is_first:
+				return 19233706151817
+			else:
+				return 19237434253761
+
+		return retval_func, 0
 
 	def _run_asm(self, *byte_code):
 		expected = (b"\xB8\x02\x00\x00\x80",  # mov ax,0x8000000?
@@ -167,7 +178,7 @@ class TestCPUID(unittest.TestCase):
 
 		hz_actual = cpuid.get_raw_hz()
 		print('hz_actual', hz_actual)
-		self.assertEqual(3727888314, hz_actual)
+		self.assertEqual(3728101944, hz_actual)
 
 		vendor_id = cpuid.get_vendor_id()
 		print('vendor_id', vendor_id)

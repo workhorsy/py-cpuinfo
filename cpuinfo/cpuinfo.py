@@ -1282,6 +1282,7 @@ class CPUID(object):
 			)
 			retval = get_ticks_x86_64()
 
+		print('!!! retval: ', retval)
 		return retval
 
 	def get_raw_hz(self):
@@ -1305,8 +1306,8 @@ def _actual_get_cpu_info_from_cpuid(queue):
 	'''
 
 	# Pipe all output to nothing
-	sys.stdout = open(os.devnull, 'w')
-	sys.stderr = open(os.devnull, 'w')
+	#sys.stdout = open(os.devnull, 'w')
+	#sys.stderr = open(os.devnull, 'w')
 
 	# Get the CPU arch and bits
 	arch, bits = _parse_arch(DataSource.arch_string_raw)
@@ -1331,6 +1332,7 @@ def _actual_get_cpu_info_from_cpuid(queue):
 
 	# Get the Hz and scale
 	hz_actual = cpuid.get_raw_hz()
+	print('!!!!!!!!!! hz_actual: ', hz_actual)
 	hz_actual = _to_decimal_string(hz_actual)
 
 	# Get the Hz and scale
