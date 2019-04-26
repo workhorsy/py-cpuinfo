@@ -129,6 +129,26 @@ class MockCPUID(CPUID):
 			b"\xC3",):                 # ret
 			return 0x202020
 
+		# get_vendor_id
+		if byte_code == \
+			(b"\x31\xC0",             # xor eax,eax
+			b"\x0F\xA2"               # cpuid
+			b"\x89\xD8"               # mov ax,bx
+			b"\xC3",):                # ret
+			return 0x756e6547
+		elif byte_code == \
+			(b"\x31\xC0",             # xor eax,eax
+			b"\x0f\xa2"               # cpuid
+			b"\x89\xC8"               # mov ax,cx
+			b"\xC3",):                # ret
+			return 0x6c65746e
+		elif byte_code == \
+			(b"\x31\xC0",             # xor eax,eax
+			b"\x0f\xa2"               # cpuid
+			b"\x89\xD0"               # mov ax,dx
+			b"\xC3",):                # ret
+			return 0x49656e69
+
 		raise Exception("Unexpected byte code")
 
 
@@ -182,7 +202,7 @@ class TestCPUID(unittest.TestCase):
 
 		vendor_id = cpuid.get_vendor_id()
 		print('vendor_id', vendor_id)
-		self.assertEqual('AuthenticAMD', vendor_id)
+		self.assertEqual('GenuineIntel', vendor_id)
 
 		flags = cpuid.get_flags(max_extension_support)
 		print('flags', flags)

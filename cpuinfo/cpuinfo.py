@@ -811,6 +811,7 @@ class CPUID(object):
 			b"\x89\xD8"         # mov ax,bx
 			b"\xC3"             # ret
 		)
+		print('!!! ebx: ', hex(ebx))
 
 		# ECX
 		ecx = self._run_asm(
@@ -819,6 +820,7 @@ class CPUID(object):
 			b"\x89\xC8"         # mov ax,cx
 			b"\xC3"             # ret
 		)
+		print('!!! ecx: ', hex(ecx))
 
 		# EDX
 		edx = self._run_asm(
@@ -827,6 +829,7 @@ class CPUID(object):
 			b"\x89\xD0"         # mov ax,dx
 			b"\xC3"             # ret
 		)
+		print('!!! edx: ', hex(edx))
 
 		# Each 4bits is a ascii letter in the name
 		vendor_id = []
