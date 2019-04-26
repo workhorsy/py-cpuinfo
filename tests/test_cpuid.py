@@ -149,6 +149,46 @@ class MockCPUID(CPUID):
 			b"\xC3",):                # ret
 			return 0x49656e69
 
+		# get_flags
+		if byte_code == \
+			(b"\xB8\x01\x00\x00\x00", # mov eax,0x1"
+			b"\x0f\xa2"               # cpuid
+			b"\x89\xD0"               # mov ax,dx
+			b"\xC3",):                 # ret
+			return 0xbfebfbff
+		elif byte_code == \
+			(b"\xB8\x01\x00\x00\x00", # mov eax,0x1"
+			b"\x0f\xa2"               # cpuid
+			b"\x89\xC8"               # mov ax,cx
+			b"\xC3",):                # ret
+			return 0x4ff8ebbf
+		elif byte_code == \
+			(self._zero_ecx(),
+			b"\xB8\x07\x00\x00\x00"    # mov eax,7
+			b"\x0f\xa2"                # cpuid
+			b"\x89\xD8"                # mov ax,bx
+			b"\xC3",):                 # ret
+			return 0x2294e287
+		elif byte_code == \
+			(self._zero_ecx(),
+			b"\xB8\x07\x00\x00\x00"    # mov eax,7
+			b"\x0f\xa2"                # cpuid
+			b"\x89\xC8"                # mov ax,cx
+			b"\xC3",):                 # ret
+			return 0x40400004
+		elif byte_code == \
+			(b"\xB8\x01\x00\x00\x80"   # mov ax,0x80000001
+			b"\x0f\xa2"                # cpuid
+			b"\x89\xD8"                # mov ax,bx
+			b"\xC3",):                 # ret
+			return 0x0
+		elif byte_code == \
+			(b"\xB8\x01\x00\x00\x80"   # mov ax,0x80000001
+			b"\x0f\xa2"                # cpuid
+			b"\x89\xC8"                # mov ax,cx
+			b"\xC3",):                 # ret
+			return 0x101
+
 		raise Exception("Unexpected byte code")
 
 

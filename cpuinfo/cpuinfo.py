@@ -887,6 +887,7 @@ class CPUID(object):
 			b"\x89\xD0"         # mov ax,dx
 			b"\xC3"             # ret
 		)
+		print('!!! edx: ', hex(edx))
 
 		# ECX
 		ecx = self._run_asm(
@@ -895,6 +896,7 @@ class CPUID(object):
 			b"\x89\xC8"         # mov ax,cx
 			b"\xC3"             # ret
 		)
+		print('!!! ecx: ', hex(ecx))
 
 		# Get the CPU flags
 		flags = {
@@ -978,6 +980,7 @@ class CPUID(object):
 				b"\x89\xD8"         # mov ax,bx
 				b"\xC3"             # ret
 			)
+			print('!!! ebx: ', hex(ebx))
 
 			# ECX
 			ecx = self._run_asm(
@@ -987,6 +990,7 @@ class CPUID(object):
 				b"\x89\xC8"         # mov ax,cx
 				b"\xC3"             # ret
 			)
+			print('!!! ecx: ', hex(ecx))
 
 			# Get the extended CPU flags
 			extended_flags = {
@@ -1070,6 +1074,7 @@ class CPUID(object):
 				b"\x89\xD8"         # mov ax,bx
 				b"\xC3"             # ret
 			)
+			print('!!! ebx: ', hex(ebx))
 
 			# ECX
 			ecx = self._run_asm(
@@ -1078,6 +1083,7 @@ class CPUID(object):
 				b"\x89\xC8"         # mov ax,cx
 				b"\xC3"             # ret
 			)
+			print('!!! ecx: ', hex(ecx))
 
 			# Get the extended CPU flags
 			extended_flags = {
