@@ -115,7 +115,6 @@ if __name__ == '__main__':
 		TestActual,
 		TestCLI
 	]
-	tests = [TestCPUID]
 
 	# Add the tests to the suite
 	suite = unittest.TestSuite()

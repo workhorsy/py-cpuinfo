@@ -811,7 +811,6 @@ class CPUID(object):
 			b"\x89\xD8"         # mov ax,bx
 			b"\xC3"             # ret
 		)
-		print('!!! ebx: ', hex(ebx))
 
 		# ECX
 		ecx = self._run_asm(
@@ -820,7 +819,6 @@ class CPUID(object):
 			b"\x89\xC8"         # mov ax,cx
 			b"\xC3"             # ret
 		)
-		print('!!! ecx: ', hex(ecx))
 
 		# EDX
 		edx = self._run_asm(
@@ -829,7 +827,6 @@ class CPUID(object):
 			b"\x89\xD0"         # mov ax,dx
 			b"\xC3"             # ret
 		)
-		print('!!! edx: ', hex(edx))
 
 		# Each 4bits is a ascii letter in the name
 		vendor_id = []
@@ -848,7 +845,6 @@ class CPUID(object):
 			b"\x0f\xa2"         # cpuid
 			b"\xC3"             # ret
 		)
-		print('!!! eax:', hex(eax))
 
 		# Get the CPU info
 		stepping = (eax >> 0) & 0xF # 4 bits
@@ -887,7 +883,6 @@ class CPUID(object):
 			b"\x89\xD0"         # mov ax,dx
 			b"\xC3"             # ret
 		)
-		print('!!! edx: ', hex(edx))
 
 		# ECX
 		ecx = self._run_asm(
@@ -896,7 +891,6 @@ class CPUID(object):
 			b"\x89\xC8"         # mov ax,cx
 			b"\xC3"             # ret
 		)
-		print('!!! ecx: ', hex(ecx))
 
 		# Get the CPU flags
 		flags = {
@@ -980,7 +974,6 @@ class CPUID(object):
 				b"\x89\xD8"         # mov ax,bx
 				b"\xC3"             # ret
 			)
-			print('!!! ebx: ', hex(ebx))
 
 			# ECX
 			ecx = self._run_asm(
@@ -990,7 +983,6 @@ class CPUID(object):
 				b"\x89\xC8"         # mov ax,cx
 				b"\xC3"             # ret
 			)
-			print('!!! ecx: ', hex(ecx))
 
 			# Get the extended CPU flags
 			extended_flags = {
@@ -1074,7 +1066,6 @@ class CPUID(object):
 				b"\x89\xD8"         # mov ax,bx
 				b"\xC3"             # ret
 			)
-			print('!!! ebx: ', hex(ebx))
 
 			# ECX
 			ecx = self._run_asm(
@@ -1083,7 +1074,6 @@ class CPUID(object):
 				b"\x89\xC8"         # mov ax,cx
 				b"\xC3"             # ret
 			)
-			print('!!! ecx: ', hex(ecx))
 
 			# Get the extended CPU flags
 			extended_flags = {
@@ -1180,7 +1170,6 @@ class CPUID(object):
 					b"\x89\xC0"   # mov ax,ax
 					b"\xC3"       # ret
 				)
-				print('!!! eax:', hex(eax))
 
 				# EBX
 				ebx = self._run_asm(
@@ -1189,7 +1178,6 @@ class CPUID(object):
 					b"\x89\xD8"   # mov ax,bx
 					b"\xC3"       # ret
 				)
-				print('!!! ebx:', hex(ebx))
 
 				# ECX
 				ecx = self._run_asm(
@@ -1198,7 +1186,6 @@ class CPUID(object):
 					b"\x89\xC8"   # mov ax,cx
 					b"\xC3"       # ret
 				)
-				print('!!! ecx:', hex(ecx))
 
 				# EDX
 				edx = self._run_asm(
@@ -1207,7 +1194,6 @@ class CPUID(object):
 					b"\x89\xD0"   # mov ax,dx
 					b"\xC3"       # ret
 				)
-				print('!!! edx:', hex(edx))
 
 				# Combine each of the 4 bytes in each register into the string
 				for reg in [eax, ebx, ecx, edx]:
@@ -1234,7 +1220,6 @@ class CPUID(object):
 			b"\x89\xC8"              # mov ax,cx
 			b"\xC3"                   # ret
 		)
-		print('!!! ecx:', hex(ecx))
 
 		cache_info = {
 			'size_kb' : ecx & 0xFF,
@@ -1291,7 +1276,6 @@ class CPUID(object):
 			)
 			retval = get_ticks_x86_64()
 
-		print('!!! retval: ', retval)
 		return retval
 
 	def get_raw_hz(self):
@@ -1315,8 +1299,8 @@ def _actual_get_cpu_info_from_cpuid(queue):
 	'''
 
 	# Pipe all output to nothing
-	#sys.stdout = open(os.devnull, 'w')
-	#sys.stderr = open(os.devnull, 'w')
+	sys.stdout = open(os.devnull, 'w')
+	sys.stderr = open(os.devnull, 'w')
 
 	# Get the CPU arch and bits
 	arch, bits = _parse_arch(DataSource.arch_string_raw)
@@ -1341,7 +1325,6 @@ def _actual_get_cpu_info_from_cpuid(queue):
 
 	# Get the Hz and scale
 	hz_actual = cpuid.get_raw_hz()
-	print('!!!!!!!!!! hz_actual: ', hz_actual)
 	hz_actual = _to_decimal_string(hz_actual)
 
 	# Get the Hz and scale

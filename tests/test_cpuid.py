@@ -24,15 +24,6 @@ class MockCPUID(CPUID):
 		return retval_func, 0
 
 	def _run_asm(self, *byte_code):
-		expected = (b"\xB8\x02\x00\x00\x80",  # mov ax,0x8000000?
-							b"\x0f\xa2"   # cpuid
-							b"\x89\xC0"   # mov ax,ax
-							b"\xC3"       # ret
-					,)
-		print('!!!!!! expected :', expected)
-		print('!!!!!! byte_code:', byte_code)
-		print('!!!!!! ==       :', expected == byte_code)
-
 		# get_max_extension_support
 		if byte_code == \
 			(b"\xB8\x00\x00\x00\x80" # mov ax,0x80000000
@@ -215,37 +206,29 @@ class TestCPUID(unittest.TestCase):
 
 	def test_normal(self):
 		cpuid = MockCPUID()
-		print('cpuid', cpuid)
 		self.assertIsNotNone(cpuid)
 
 		self.assertFalse(cpuid.is_selinux_enforcing)
 
 		max_extension_support = cpuid.get_max_extension_support()
-		print('max_extension_support', hex(max_extension_support))
 		self.assertEqual(0x8000001f, max_extension_support)
 
 		cache_info = cpuid.get_cache(max_extension_support)
-		print('cache_info', cache_info)
 		self.assertEqual({'size_kb': 64, 'line_size_b': 6, 'associativity': 512}, cache_info)
 
 		info = cpuid.get_info()
-		print('info', info)
 		self.assertEqual({'stepping': 2, 'model': 8, 'family': 15, 'processor_type': 0, 'extended_model': 0, 'extended_family': 8}, info)
 
 		processor_brand = cpuid.get_processor_brand(max_extension_support)
-		print('processor_brand', processor_brand)
 		self.assertEqual("AMD Ryzen 7 2700X Eight-Core Processor", processor_brand)
 
 		hz_actual = cpuid.get_raw_hz()
-		print('hz_actual', hz_actual)
 		self.assertEqual(3728101944, hz_actual)
 
 		vendor_id = cpuid.get_vendor_id()
-		print('vendor_id', vendor_id)
 		self.assertEqual('AuthenticAMD', vendor_id)
 
 		flags = cpuid.get_flags(max_extension_support)
-		print('flags', flags)
 		self.assertEqual(
 		['3dnowprefetch', 'abm', 'adx', 'aes', 'apic', 'avx', 'avx2', 'bmi1',
 		'bmi2', 'clflush', 'clflushopt', 'cmov', 'cmp_legacy', 'cr8_legacy',
