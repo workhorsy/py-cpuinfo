@@ -1291,30 +1291,24 @@ class CPUID(object):
 
 		return ticks
 
-def _actual_get_cpu_info_from_cpuid(queue):
+def _get_cpu_info_from_cpuid_actual():
 	'''
 	Warning! This function has the potential to crash the Python runtime.
 	Do not call it directly. Use the _get_cpu_info_from_cpuid function instead.
 	It will safely call this function in another process.
 	'''
 
-	# Pipe all output to nothing
-	sys.stdout = open(os.devnull, 'w')
-	sys.stderr = open(os.devnull, 'w')
-
 	# Get the CPU arch and bits
 	arch, bits = _parse_arch(DataSource.arch_string_raw)
 
 	# Return none if this is not an X86 CPU
 	if not arch in ['X86_32', 'X86_64']:
-		queue.put(_obj_to_b64({}))
-		return
+		return {}
 
 	# Return none if SE Linux is in enforcing mode
 	cpuid = CPUID()
 	if cpuid.is_selinux_enforcing:
-		queue.put(_obj_to_b64({}))
-		return
+		return {}
 
 	# Get the cpu info from the CPUID register
 	max_extension_support = cpuid.get_max_extension_support()
@@ -1353,9 +1347,18 @@ def _actual_get_cpu_info_from_cpuid(queue):
 	}
 
 	info = {k: v for k, v in info.items() if v}
+	return info
+
+def _get_cpu_info_from_cpuid_subprocess_wrapper(queue):
+	# Pipe all output to nothing
+	sys.stdout = open(os.devnull, 'w')
+	sys.stderr = open(os.devnull, 'w')
+
+	info = _get_cpu_info_from_cpuid_actual()
+
 	queue.put(_obj_to_b64(info))
 
-def _get_cpu_info_from_cpuid():
+def _get_cpu_info_from_cpuid(is_called_in_own_process=True):
 	'''
 	Returns the CPU info gathered by querying the X86 cpuid register in a new process.
 	Returns {} on non X86 cpus.
@@ -1375,23 +1378,26 @@ def _get_cpu_info_from_cpuid():
 		return {}
 
 	try:
-		# Start running the function in a subprocess
-		queue = Queue()
-		p = Process(target=_actual_get_cpu_info_from_cpuid, args=(queue,))
-		p.start()
+		if is_called_in_own_process:
+			# Start running the function in a subprocess
+			queue = Queue()
+			p = Process(target=_get_cpu_info_from_cpuid_subprocess_wrapper, args=(queue,))
+			p.start()
 
-		# Wait for the process to end, while it is still alive
-		while p.is_alive():
-			p.join(0)
+			# Wait for the process to end, while it is still alive
+			while p.is_alive():
+				p.join(0)
 
-		# Return {} if it failed
-		if p.exitcode != 0:
-			return {}
+			# Return {} if it failed
+			if p.exitcode != 0:
+				return {}
 
-		# Return the result, only if there is something to read
-		if not queue.empty():
-			output = queue.get()
-			return _b64_to_obj(output)
+			# Return the result, only if there is something to read
+			if not queue.empty():
+				output = queue.get()
+				return _b64_to_obj(output)
+		else:
+			return _get_cpu_info_from_cpuid_actual()
 	except:
 		pass
 
