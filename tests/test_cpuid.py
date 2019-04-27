@@ -135,19 +135,19 @@ class MockCPUID(CPUID):
 			b"\x0F\xA2"               # cpuid
 			b"\x89\xD8"               # mov ax,bx
 			b"\xC3",):                # ret
-			return 0x756e6547
+			return 0x68747541
 		elif byte_code == \
 			(b"\x31\xC0",             # xor eax,eax
 			b"\x0f\xa2"               # cpuid
 			b"\x89\xC8"               # mov ax,cx
 			b"\xC3",):                # ret
-			return 0x6c65746e
+			return 0x444d4163
 		elif byte_code == \
 			(b"\x31\xC0",             # xor eax,eax
 			b"\x0f\xa2"               # cpuid
 			b"\x89\xD0"               # mov ax,dx
 			b"\xC3",):                # ret
-			return 0x49656e69
+			return 0x69746e65
 
 		# get_flags
 		if byte_code == \
@@ -155,39 +155,39 @@ class MockCPUID(CPUID):
 			b"\x0f\xa2"               # cpuid
 			b"\x89\xD0"               # mov ax,dx
 			b"\xC3",):                 # ret
-			return 0xbfebfbff
+			return 0x178bfbff
 		elif byte_code == \
 			(b"\xB8\x01\x00\x00\x00", # mov eax,0x1"
 			b"\x0f\xa2"               # cpuid
 			b"\x89\xC8"               # mov ax,cx
 			b"\xC3",):                # ret
-			return 0x4ff8ebbf
+			return 0x7ed8320b
 		elif byte_code == \
 			(self._zero_ecx(),
 			b"\xB8\x07\x00\x00\x00"    # mov eax,7
 			b"\x0f\xa2"                # cpuid
 			b"\x89\xD8"                # mov ax,bx
 			b"\xC3",):                 # ret
-			return 0x2294e287
+			return 0x209c01a9
 		elif byte_code == \
 			(self._zero_ecx(),
 			b"\xB8\x07\x00\x00\x00"    # mov eax,7
 			b"\x0f\xa2"                # cpuid
 			b"\x89\xC8"                # mov ax,cx
-			b"\xC3",):                 # ret
-			return 0x40400004
-		elif byte_code == \
-			(b"\xB8\x01\x00\x00\x80"   # mov ax,0x80000001
-			b"\x0f\xa2"                # cpuid
-			b"\x89\xD8"                # mov ax,bx
 			b"\xC3",):                 # ret
 			return 0x0
 		elif byte_code == \
 			(b"\xB8\x01\x00\x00\x80"   # mov ax,0x80000001
 			b"\x0f\xa2"                # cpuid
+			b"\x89\xD8"                # mov ax,bx
+			b"\xC3",):                 # ret
+			return 0x20000000
+		elif byte_code == \
+			(b"\xB8\x01\x00\x00\x80"   # mov ax,0x80000001
+			b"\x0f\xa2"                # cpuid
 			b"\x89\xC8"                # mov ax,cx
 			b"\xC3",):                 # ret
-			return 0x101
+			return 0x35c233ff
 
 		raise Exception("Unexpected byte code")
 
@@ -242,7 +242,7 @@ class TestCPUID(unittest.TestCase):
 
 		vendor_id = cpuid.get_vendor_id()
 		print('vendor_id', vendor_id)
-		self.assertEqual('GenuineIntel', vendor_id)
+		self.assertEqual('AuthenticAMD', vendor_id)
 
 		flags = cpuid.get_flags(max_extension_support)
 		print('flags', flags)
