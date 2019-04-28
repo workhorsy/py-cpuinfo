@@ -286,8 +286,9 @@ def monkey_patch_cpuid(cpuinfo, return_values):
 			result = return_values[MockCPUID._counter]
 			MockCPUID._counter += 1
 			return result
-	cpuinfo.CPUID._run_asm = MockCPUID._run_asm
-	cpuinfo.CPUID._asm_func = MockCPUID._asm_func
+
+	cpuinfo.CPUID._run_asm = MockCPUID.__dict__['_run_asm']
+	cpuinfo.CPUID._asm_func = MockCPUID.__dict__['_asm_func']
 
 def restore_cpuid(cpuinfo):
 	cpuinfo.CPUID._run_asm = cpuinfo.BackupCPUID._run_asm
