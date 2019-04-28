@@ -786,27 +786,11 @@ class CPUID(object):
 
 		return retval
 
-	# FIXME: We should not have to use different instructions to
-	# set eax to 0 or 1, on 32bit and 64bit machines.
-	def _zero_eax(self):
-		return (
-			b"\x31\xC0"         # xor eax,eax
-		)
-
-	def _zero_ecx(self):
-		return (
-			b"\x31\xC9"         # xor ecx,ecx
-		)
-	def _one_eax(self):
-		return (
-			b"\xB8\x01\x00\x00\x00" # mov eax,0x1"
-		)
-
 	# http://en.wikipedia.org/wiki/CPUID#EAX.3D0:_Get_vendor_ID
 	def get_vendor_id(self):
 		# EBX
 		ebx = self._run_asm(
-			self._zero_eax(),
+			b"\x31\xC0",        # xor eax,eax
 			b"\x0F\xA2"         # cpuid
 			b"\x89\xD8"         # mov ax,bx
 			b"\xC3"             # ret
@@ -814,7 +798,7 @@ class CPUID(object):
 
 		# ECX
 		ecx = self._run_asm(
-			self._zero_eax(),
+			b"\x31\xC0",        # xor eax,eax
 			b"\x0f\xa2"         # cpuid
 			b"\x89\xC8"         # mov ax,cx
 			b"\xC3"             # ret
@@ -822,7 +806,7 @@ class CPUID(object):
 
 		# EDX
 		edx = self._run_asm(
-			self._zero_eax(),
+			b"\x31\xC0",        # xor eax,eax
 			b"\x0f\xa2"         # cpuid
 			b"\x89\xD0"         # mov ax,dx
 			b"\xC3"             # ret
@@ -841,9 +825,9 @@ class CPUID(object):
 	def get_info(self):
 		# EAX
 		eax = self._run_asm(
-			self._one_eax(),
-			b"\x0f\xa2"         # cpuid
-			b"\xC3"             # ret
+			b"\xB8\x01\x00\x00\x00",   # mov eax,0x1"
+			b"\x0f\xa2"                # cpuid
+			b"\xC3"                    # ret
 		)
 
 		# Get the CPU info
@@ -878,18 +862,18 @@ class CPUID(object):
 	def get_flags(self, max_extension_support):
 		# EDX
 		edx = self._run_asm(
-			self._one_eax(),
-			b"\x0f\xa2"         # cpuid
-			b"\x89\xD0"         # mov ax,dx
-			b"\xC3"             # ret
+			b"\xB8\x01\x00\x00\x00",   # mov eax,0x1"
+			b"\x0f\xa2"                # cpuid
+			b"\x89\xD0"                # mov ax,dx
+			b"\xC3"                    # ret
 		)
 
 		# ECX
 		ecx = self._run_asm(
-			self._one_eax(),
-			b"\x0f\xa2"         # cpuid
-			b"\x89\xC8"         # mov ax,cx
-			b"\xC3"             # ret
+			b"\xB8\x01\x00\x00\x00",   # mov eax,0x1"
+			b"\x0f\xa2"                # cpuid
+			b"\x89\xC8"                # mov ax,cx
+			b"\xC3"                    # ret
 		)
 
 		# Get the CPU flags
@@ -968,7 +952,7 @@ class CPUID(object):
 		if max_extension_support >= 7:
 			# EBX
 			ebx = self._run_asm(
-				self._zero_ecx(),
+				b"\x31\xC9",            # xor ecx,ecx
 				b"\xB8\x07\x00\x00\x00" # mov eax,7
 				b"\x0f\xa2"         # cpuid
 				b"\x89\xD8"         # mov ax,bx
@@ -977,7 +961,7 @@ class CPUID(object):
 
 			# ECX
 			ecx = self._run_asm(
-				self._zero_ecx(),
+				b"\x31\xC9",            # xor ecx,ecx
 				b"\xB8\x07\x00\x00\x00" # mov eax,7
 				b"\x0f\xa2"         # cpuid
 				b"\x89\xC8"         # mov ax,cx
