@@ -258,3 +258,37 @@ def restore_data_source(cpuinfo):
 	cpuinfo.DataSource.winreg_arch_string_raw = cpuinfo.BackupDataSource.winreg_arch_string_raw
 	cpuinfo.DataSource.winreg_hz_actual = cpuinfo.BackupDataSource.winreg_hz_actual
 	cpuinfo.DataSource.winreg_feature_bits = cpuinfo.BackupDataSource.winreg_feature_bits
+
+def backup_cpuid(cpuinfo):
+	BackupCPUID = type('BackupCPUID', (object,), {})
+	cpuinfo.BackupCPUID = BackupCPUID()
+	cpuinfo.BackupCPUID._run_asm = cpuinfo.CPUID._run_asm
+	cpuinfo.BackupCPUID._asm_func = cpuinfo.CPUID._asm_func
+
+def monkey_patch_cpuid(cpuinfo, return_values):
+	class MockCPUID(object):
+		_counter = 0
+		_is_first = False
+
+		def _asm_func(self, restype=None, argtypes=(), byte_code=[]):
+			# NOTE: This assumes that the function returned is a get_ticks function
+			def retval_func():
+				MockCPUID._is_first = not MockCPUID._is_first
+
+				if MockCPUID._is_first:
+					return 19233706151817
+				else:
+					return 19237434253761
+
+			return retval_func, 0
+
+		def _run_asm(self, *byte_code):
+			result = return_values[MockCPUID._counter]
+			MockCPUID._counter += 1
+			return result
+	cpuinfo.CPUID._run_asm = MockCPUID._run_asm
+	cpuinfo.CPUID._asm_func = MockCPUID._asm_func
+
+def restore_cpuid(cpuinfo):
+	cpuinfo.CPUID._run_asm = cpuinfo.BackupCPUID._run_asm
+	cpuinfo.CPUID._asm_func = cpuinfo.BackupCPUID._asm_func
