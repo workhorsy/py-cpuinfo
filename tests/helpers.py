@@ -285,6 +285,8 @@ def monkey_patch_cpuid(cpuinfo, return_values):
 		def _run_asm(self, *byte_code):
 			result = return_values[MockCPUID._counter]
 			MockCPUID._counter += 1
+			if MockCPUID._counter == len(return_values):
+				MockCPUID._counter = 0
 			return result
 
 	cpuinfo.CPUID._run_asm = MockCPUID.__dict__['_run_asm']

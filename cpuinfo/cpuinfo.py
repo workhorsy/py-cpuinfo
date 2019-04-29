@@ -42,6 +42,7 @@ except ImportError as err:
 		pass
 
 IS_PY2 = sys.version_info[0] == 2
+CAN_CALL_CPUID_IN_SUBPROCESS = True
 
 
 class DataSource(object):
@@ -1342,7 +1343,7 @@ def _get_cpu_info_from_cpuid_subprocess_wrapper(queue):
 
 	queue.put(_obj_to_b64(info))
 
-def _get_cpu_info_from_cpuid(is_called_in_own_process=True):
+def _get_cpu_info_from_cpuid():
 	'''
 	Returns the CPU info gathered by querying the X86 cpuid register in a new process.
 	Returns {} on non X86 cpus.
@@ -1362,7 +1363,7 @@ def _get_cpu_info_from_cpuid(is_called_in_own_process=True):
 		return {}
 
 	try:
-		if is_called_in_own_process:
+		if CAN_CALL_CPUID_IN_SUBPROCESS:
 			# Start running the function in a subprocess
 			queue = Queue()
 			p = Process(target=_get_cpu_info_from_cpuid_subprocess_wrapper, args=(queue,))

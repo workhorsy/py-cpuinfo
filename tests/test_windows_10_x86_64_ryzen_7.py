@@ -38,6 +38,7 @@ class MockDataSource(object):
 
 class TestWindows_10_X86_64_Ryzen7(unittest.TestCase):
 	def setUp(self):
+		cpuinfo.CAN_CALL_CPUID_IN_SUBPROCESS = False
 		helpers.backup_data_source(cpuinfo)
 		helpers.monkey_patch_data_source(cpuinfo, MockDataSource)
 
@@ -64,6 +65,7 @@ class TestWindows_10_X86_64_Ryzen7(unittest.TestCase):
 	def tearDown(self):
 		helpers.restore_data_source(cpuinfo)
 		helpers.restore_cpuid(cpuinfo)
+		cpuinfo.CAN_CALL_CPUID_IN_SUBPROCESS = True
 
 	'''
 	Make sure calls return the expected number of fields.
@@ -80,12 +82,13 @@ class TestWindows_10_X86_64_Ryzen7(unittest.TestCase):
 		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_cat_var_run_dmesg_boot()))
 		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_ibm_pa_features()))
 		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_sysinfo()))
-		self.assertEqual(14, len(cpuinfo._get_cpu_info_from_cpuid_actual()))
+		self.assertEqual(14, len(cpuinfo._get_cpu_info_from_cpuid()))
 		self.assertEqual(3, len(cpuinfo._get_cpu_info_from_platform_uname()))
 		self.assertEqual(21, len(cpuinfo._get_cpu_info_internal()))
 
+
 	def test_get_cpu_info_from_cpuid(self):
-		info = cpuinfo._get_cpu_info_from_cpuid_actual()
+		info = cpuinfo._get_cpu_info_from_cpuid()
 
 		self.assertEqual('AuthenticAMD', info['vendor_id_raw'])
 		self.assertEqual('AMD Ryzen 7 2700X Eight-Core Processor', info['brand_raw'])
