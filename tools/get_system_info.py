@@ -563,7 +563,7 @@ class CPUID(object):
 def get_cpu_info_from_cpuid():
 	# Just return if not X86
 	arch_string_raw = platform.machine()
-	arch, bits = _parse_arch(arch_string_raw)
+	arch, bits = parse_arch(arch_string_raw)
 	if not arch in ['X86_32', 'X86_64']:
 		return {}
 
