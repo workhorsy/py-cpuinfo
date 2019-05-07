@@ -11,7 +11,7 @@ class MockDataSource(object):
 	is_windows = True
 	arch_string_raw = 'AMD64'
 	uname_string_raw = 'AMD64 Family 6 Model 69 Stepping 1, GenuineIntel'
-	can_cpuid = False
+	can_cpuid = True
 
 	@staticmethod
 	def has_wmic():
@@ -57,11 +57,34 @@ Name=Intel(R) Core(TM) i5-4300U CPU @ 1.90GHz
 
 class TestWindows_10_X86_64(unittest.TestCase):
 	def setUp(self):
+		cpuinfo.CAN_CALL_CPUID_IN_SUBPROCESS = False
 		helpers.backup_data_source(cpuinfo)
 		helpers.monkey_patch_data_source(cpuinfo, MockDataSource)
 
+		helpers.backup_cpuid(cpuinfo)
+		helpers.monkey_patch_cpuid(cpuinfo, [
+			# max_extension_support
+			0x80000008,
+			# get_cache
+			0x1006040,
+			# get_info
+			0x40651,
+			# get_processor_brand
+			0x65746e49, 0x2952286c, 0x726f4320,
+			0x4d542865, 0x35692029, 0x3033342d,
+			0x43205530, 0x40205550, 0x392e3120,
+			0x7a484730, 0x0, 0x0,
+			# get_vendor_id
+			0x756e6547, 0x6c65746e, 0x49656e69,
+			# get_flags
+			0xbfebfbff, 0x7ffafbff, 0x27ab,
+			0x0, 0x0, 0x21,
+		])
+
 	def tearDown(self):
 		helpers.restore_data_source(cpuinfo)
+		helpers.restore_cpuid(cpuinfo)
+		cpuinfo.CAN_CALL_CPUID_IN_SUBPROCESS = True
 
 	'''
 	Make sure calls return the expected number of fields.
@@ -78,9 +101,43 @@ class TestWindows_10_X86_64(unittest.TestCase):
 		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_cat_var_run_dmesg_boot()))
 		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_ibm_pa_features()))
 		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_sysinfo()))
-		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_cpuid()))
+		self.assertEqual(14, len(cpuinfo._get_cpu_info_from_cpuid()))
 		self.assertEqual(3, len(cpuinfo._get_cpu_info_from_platform_uname()))
-		self.assertEqual(19, len(cpuinfo._get_cpu_info_internal()))
+		self.assertEqual(22, len(cpuinfo._get_cpu_info_internal()))
+
+	def test_get_cpu_info_from_cpuid(self):
+		info = cpuinfo._get_cpu_info_from_cpuid()
+
+		self.assertEqual('GenuineIntel', info['vendor_id_raw'])
+		self.assertEqual('Intel(R) Core(TM) i5-4300U CPU @ 1.90GHz', info['brand_raw'])
+		#self.assertEqual('3.7281 GHz', info['hz_advertised_friendly'])
+		self.assertEqual('3.7281 GHz', info['hz_actual_friendly'])
+		#self.assertEqual((3728101944, 0), info['hz_advertised'])
+		self.assertEqual((3728101944, 0), info['hz_actual'])
+
+		self.assertEqual(1, info['stepping'])
+		self.assertEqual(5, info['model'])
+		self.assertEqual(6, info['family'])
+		#self.assertEqual(8, info['extended_family'])
+
+		# FIXME: These cache fields are in the wrong format
+		self.assertEqual('64', info['l2_cache_size'])
+		self.assertEqual(6, info['l2_cache_line_size'])
+		self.assertEqual('0x100', info['l2_cache_associativity'])
+
+		self.assertEqual(
+			['abm', 'acpi', 'aes', 'apic', 'avx', 'avx2', 'bmi1', 'bmi2',
+			'clflush', 'cmov', 'cx16', 'cx8', 'de', 'ds_cpl', 'dtes64',
+			'dts', 'erms', 'est', 'f16c', 'fma', 'fpu', 'fxsr', 'ht',
+			'invpcid', 'lahf_lm', 'mca', 'mce', 'mmx', 'monitor', 'movbe',
+			'msr', 'mtrr', 'osxsave', 'pae', 'pat', 'pbe', 'pcid',
+			'pclmulqdq', 'pdcm', 'pge', 'pni', 'popcnt', 'pse', 'pse36',
+			'rdrnd', 'sep', 'smep', 'smx', 'ss', 'sse', 'sse2', 'sse4_1',
+			'sse4_2', 'ssse3', 'tm', 'tm2', 'tsc', 'tscdeadline', 'vme',
+			'vmx', 'x2apic', 'xsave', 'xtpr']
+			,
+			info['flags']
+		)
 
 	def test_get_cpu_info_from_platform_uname(self):
 		info = cpuinfo._get_cpu_info_from_platform_uname()
@@ -116,8 +173,6 @@ class TestWindows_10_X86_64(unittest.TestCase):
 		self.assertEqual((1900000000, 0), info['hz_advertised'])
 		self.assertEqual((2494000000, 0), info['hz_actual'])
 
-		if "logger" in dir(unittest): unittest.logger("FIXME: Missing flags such as sse3 and sse4")
-
 		self.assertEqual(
 			['3dnow', 'acpi', 'clflush', 'cmov', 'de', 'dts', 'fxsr',
 			'ia64', 'mca', 'mce', 'mmx', 'msr', 'mtrr', 'pse', 'sep',
@@ -148,12 +203,16 @@ class TestWindows_10_X86_64(unittest.TestCase):
 		self.assertEqual('512 KB', info['l2_cache_size'])
 		self.assertEqual('3072 KB', info['l3_cache_size'])
 
-		if "logger" in dir(unittest): unittest.logger("FIXME: Missing flags such as sse3 and sse4")
-
 		self.assertEqual(
-			['3dnow', 'acpi', 'clflush', 'cmov', 'de', 'dts', 'fxsr',
-			'ia64', 'mca', 'mce', 'mmx', 'msr', 'mtrr', 'pse', 'sep',
-			'serial', 'ss', 'sse', 'sse2', 'tm', 'tsc']
+			['3dnow', 'abm', 'acpi', 'aes', 'apic', 'avx', 'avx2', 'bmi1',
+			'bmi2', 'clflush', 'cmov', 'cx16', 'cx8', 'de', 'ds_cpl',
+			'dtes64', 'dts', 'erms', 'est', 'f16c', 'fma', 'fpu', 'fxsr',
+			'ht', 'ia64', 'invpcid', 'lahf_lm', 'mca', 'mce', 'mmx',
+			'monitor', 'movbe', 'msr', 'mtrr', 'osxsave', 'pae', 'pat',
+			'pbe', 'pcid', 'pclmulqdq', 'pdcm', 'pge', 'pni', 'popcnt',
+			'pse', 'pse36', 'rdrnd', 'sep', 'serial', 'smep', 'smx', 'ss',
+			'sse', 'sse2', 'sse4_1', 'sse4_2', 'ssse3', 'tm', 'tm2', 'tsc',
+			'tscdeadline', 'vme', 'vmx', 'x2apic', 'xsave', 'xtpr']
 			,
 			info['flags']
 		)
