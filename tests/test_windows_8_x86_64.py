@@ -110,8 +110,7 @@ class TestWindows_8_X86_64(unittest.TestCase):
 
 		self.assertEqual('GenuineIntel', info['vendor_id_raw'])
 		self.assertEqual('Intel(R) Core(TM) i7 CPU         870  @ 2.93GHz', info['brand_raw'])
-
-		# FIXME: The HZ should be 2.9300 GHz
+		if "logger" in dir(unittest): unittest.logger("FIXME: Is using test runner machine  Hz, not mock Hz")
 		#self.assertEqual('3.7281 GHz', info['hz_advertised_friendly'])
 		self.assertEqual('3.7281 GHz', info['hz_actual_friendly'])
 		# FIXME: The HZ should be 2933000000
