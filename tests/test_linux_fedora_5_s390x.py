@@ -10,7 +10,7 @@ class MockDataSource(object):
 	cpu_count = 4
 	is_windows = False
 	arch_string_raw = 's390x'
-	uname_string_raw = 's390x'
+	uname_string_raw = ''
 	can_cpuid = False
 
 	@staticmethod
@@ -404,10 +404,10 @@ class TestLinuxFedora_5_s390x(unittest.TestCase):
 
 		self.assertEqual('IBM/S390', info['vendor_id_raw'])
 		#self.assertEqual('FIXME', info['brand'])
-		#self.assertEqual('5.5040 GHz', info['hz_advertised_friendly'])
-		#self.assertEqual('5.5040 GHz', info['hz_actual_friendly'])
-		#self.assertEqual((5504000000, 0), info['hz_advertised'])
-		#self.assertEqual((5504000000, 0), info['hz_actual'])
+		self.assertEqual('5.5040 GHz', info['hz_advertised_friendly'])
+		self.assertEqual('5.5040 GHz', info['hz_actual_friendly'])
+		self.assertEqual((5504000000, 0), info['hz_advertised'])
+		self.assertEqual((5504000000, 0), info['hz_actual'])
 
 		#self.assertEqual(7, info['stepping'])
 		#self.assertEqual(42, info['model'])
@@ -436,10 +436,10 @@ class TestLinuxFedora_5_s390x(unittest.TestCase):
 
 		self.assertEqual('IBM/S390', info['vendor_id_raw'])
 		#self.assertEqual('FIXME', info['brand'])
-		#self.assertEqual('5.5040 GHz', info['hz_advertised_friendly'])
-		#self.assertEqual('5.5040 GHz', info['hz_actual_friendly'])
-		#self.assertEqual((5504000000, 0), info['hz_advertised'])
-		#self.assertEqual((5504000000, 0), info['hz_actual'])
+		self.assertEqual('5.5040 GHz', info['hz_advertised_friendly'])
+		self.assertEqual('5.5040 GHz', info['hz_actual_friendly'])
+		self.assertEqual((5504000000, 0), info['hz_advertised'])
+		self.assertEqual((5504000000, 0), info['hz_actual'])
 
 		self.assertEqual('49152 KB', info['l3_cache_size'])
 
@@ -478,7 +478,6 @@ class TestLinuxFedora_5_s390x(unittest.TestCase):
 		#self.assertEqual(6, info['family'])
 		self.assertEqual(
 			['dfp', 'edat', 'eimm', 'esan3', 'etf3eh', 'highgprs', 'ldisp',
-			'msa', 'sie', 'stfle', 'te', 'zarch']
-			,
+			'msa', 'sie', 'stfle', 'te', 'zarch'],
 			info['flags']
 		)
