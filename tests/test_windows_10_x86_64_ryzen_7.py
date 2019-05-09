@@ -43,7 +43,7 @@ class TestWindows_10_X86_64_Ryzen7(unittest.TestCase):
 		helpers.monkey_patch_data_source(cpuinfo, MockDataSource)
 
 		helpers.backup_cpuid(cpuinfo)
-		helpers.monkey_patch_cpuid(cpuinfo, [
+		helpers.monkey_patch_cpuid(cpuinfo, 3693000000, [
 			# get_max_extension_support
 			0x8000001f,
 			# get_cache
@@ -92,11 +92,10 @@ class TestWindows_10_X86_64_Ryzen7(unittest.TestCase):
 
 		self.assertEqual('AuthenticAMD', info['vendor_id_raw'])
 		self.assertEqual('AMD Ryzen 7 2700X Eight-Core Processor', info['brand_raw'])
-		if "logger" in dir(unittest): unittest.logger("FIXME: Is using test runner machine  Hz, not mock Hz")
-		#self.assertEqual('3.7281 GHz', info['hz_advertised_friendly'])
-		self.assertEqual('3.7281 GHz', info['hz_actual_friendly'])
-		#self.assertEqual((3728101944, 0), info['hz_advertised'])
-		self.assertEqual((3728101944, 0), info['hz_actual'])
+		#self.assertEqual('3.6930 GHz', info['hz_advertised_friendly'])
+		self.assertEqual('3.6930 GHz', info['hz_actual_friendly'])
+		#self.assertEqual((3693000000, 0), info['hz_advertised'])
+		self.assertEqual((3693000000, 0), info['hz_actual'])
 
 		self.assertEqual(2, info['stepping'])
 		self.assertEqual(8, info['model'])

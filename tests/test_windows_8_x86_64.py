@@ -62,7 +62,7 @@ class TestWindows_8_X86_64(unittest.TestCase):
 		helpers.monkey_patch_data_source(cpuinfo, MockDataSource)
 
 		helpers.backup_cpuid(cpuinfo)
-		helpers.monkey_patch_cpuid(cpuinfo, [
+		helpers.monkey_patch_cpuid(cpuinfo, 2930000000, [
 			# max_extension_support
 			0x80000008,
 			# get_cache
@@ -110,12 +110,10 @@ class TestWindows_8_X86_64(unittest.TestCase):
 
 		self.assertEqual('GenuineIntel', info['vendor_id_raw'])
 		self.assertEqual('Intel(R) Core(TM) i7 CPU         870  @ 2.93GHz', info['brand_raw'])
-		if "logger" in dir(unittest): unittest.logger("FIXME: Is using test runner machine  Hz, not mock Hz")
-		#self.assertEqual('3.7281 GHz', info['hz_advertised_friendly'])
-		self.assertEqual('3.7281 GHz', info['hz_actual_friendly'])
-		# FIXME: The HZ should be 2933000000
-		#self.assertEqual((3728101944, 0), info['hz_advertised'])
-		self.assertEqual((3728101944, 0), info['hz_actual'])
+		#self.assertEqual('2.9300 GHz', info['hz_advertised_friendly'])
+		self.assertEqual('2.9300 GHz', info['hz_actual_friendly'])
+		#self.assertEqual((2930000000, 0), info['hz_advertised'])
+		self.assertEqual((2930000000, 0), info['hz_actual'])
 
 		self.assertEqual(5, info['stepping'])
 		self.assertEqual(14, info['model'])

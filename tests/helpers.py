@@ -265,7 +265,7 @@ def backup_cpuid(cpuinfo):
 	cpuinfo.BackupCPUID._run_asm = cpuinfo.CPUID._run_asm
 	cpuinfo.BackupCPUID._asm_func = cpuinfo.CPUID._asm_func
 
-def monkey_patch_cpuid(cpuinfo, return_values):
+def monkey_patch_cpuid(cpuinfo, return_hz, return_values):
 	class MockCPUID(object):
 		_counter = 0
 		_is_first = False
@@ -276,9 +276,9 @@ def monkey_patch_cpuid(cpuinfo, return_values):
 				MockCPUID._is_first = not MockCPUID._is_first
 
 				if MockCPUID._is_first:
-					return 19233706151817
+					return return_hz
 				else:
-					return 19237434253761
+					return 0
 
 			return retval_func, 0
 
