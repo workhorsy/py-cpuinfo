@@ -227,8 +227,8 @@ def _run_and_get_stdout(command, pipe_command=None):
 # Make sure we are running on a supported system
 def _check_arch():
 	arch, bits = _parse_arch(DataSource.arch_string_raw)
-	if not arch in ['X86_32', 'X86_64', 'ARM_7', 'ARM_8', 'PPC_64']:
-		raise Exception("py-cpuinfo currently only works on X86 and some PPC and ARM CPUs.")
+	if not arch in ['X86_32', 'X86_64', 'ARM_7', 'ARM_8', 'PPC_64', 'S390X']:
+		raise Exception("py-cpuinfo currently only works on X86 and some ARM/PPC/S390X CPUs.")
 
 def _obj_to_b64(thing):
 	import pickle
@@ -642,6 +642,10 @@ def _parse_arch(arch_string_raw):
 		bits = 32
 	elif re.match('^sparc64$|^sun4u$|^sun4v$', arch_string_raw):
 		arch = 'SPARC_64'
+		bits = 64
+	# S390X
+	elif re.match('^s390x$', arch_string_raw):
+		arch = 'S390X'
 		bits = 64
 
 	return (arch, bits)
@@ -1417,8 +1421,23 @@ def _get_cpu_info_from_proc_cpuinfo():
 			flags = flags.split()
 			flags.sort()
 
+		# Check for other cache format
+		if not cache_size:
+			try:
+				for i in range(0, 10):
+					name = "cache{0}".format(i)
+					value = _get_field(False, output, None, None, name)
+					if value:
+						value = [entry.split('=') for entry in value.split(' ')]
+						value = dict(value)
+						if 'level' in value and value['level'] == '3' and 'size' in value:
+							cache_size = value['size']
+							break
+			except Exception:
+				pass
+
 		# Convert from MHz string to Hz
-		hz_actual = _get_field(False, output, None, '', 'cpu MHz', 'cpu speed', 'clock')
+		hz_actual = _get_field(False, output, None, '', 'cpu MHz', 'cpu speed', 'clock', 'cpu MHz dynamic', 'cpu MHz static')
 		hz_actual = hz_actual.lower().rstrip('mhz').strip()
 		hz_actual = _to_decimal_string(hz_actual)
 
@@ -1526,6 +1545,15 @@ def _get_cpu_info_from_lscpu():
 			info['hz_advertised'] = _hz_short_to_full(new_hz, scale)
 			info['hz_actual'] = _hz_short_to_full(new_hz, scale)
 
+		new_hz = _get_field(False, output, None, None, 'CPU dynamic MHz', 'CPU static MHz')
+		if new_hz:
+			new_hz = _to_decimal_string(new_hz)
+			scale = 6
+			info['hz_advertised_friendly'] = _hz_short_to_friendly(new_hz, scale)
+			info['hz_actual_friendly'] = _hz_short_to_friendly(new_hz, scale)
+			info['hz_advertised'] = _hz_short_to_full(new_hz, scale)
+			info['hz_actual'] = _hz_short_to_full(new_hz, scale)
+
 		vendor_id = _get_field(False, output, None, None, 'Vendor ID')
 		if vendor_id:
 			info['vendor_id_raw'] = vendor_id
@@ -1554,7 +1582,7 @@ def _get_cpu_info_from_lscpu():
 		if l1_instruction_cache_size:
 			info['l1_instruction_cache_size'] = _to_friendly_bytes(l1_instruction_cache_size)
 
-		l2_cache_size = _get_field(False, output, None, None, 'L2 cache')
+		l2_cache_size = _get_field(False, output, None, None, 'L2 cache', 'L2d cache')
 		if l2_cache_size:
 			info['l2_cache_size'] = _to_friendly_bytes(l2_cache_size)
 
@@ -1580,6 +1608,12 @@ def _get_cpu_info_from_dmesg():
 	Returns the CPU info gathered from dmesg.
 	Returns {} if dmesg is not found or does not have the desired info.
 	'''
+
+	# Just return {} if this arch has an unreliable dmesg log
+	arch, bits = _parse_arch(DataSource.arch_string_raw)
+	if arch in ['S390X']:
+		return {}
+
 	# Just return {} if there is no dmesg
 	if not DataSource.has_dmesg():
 		return {}

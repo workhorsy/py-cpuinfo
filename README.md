@@ -151,7 +151,7 @@ OS Support
 CPU Support
 -----
 * X86 32bit and 64bit
-* Some ARM and PPC CPUs
+* Some ARM, PPC and S390X CPUs
 
 
 These approaches are used for getting info:
