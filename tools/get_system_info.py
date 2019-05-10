@@ -117,6 +117,10 @@ def parse_arch(arch_string_raw):
 	elif re.match('^sparc64$|^sun4u$|^sun4v$', arch_string_raw):
 		arch = 'SPARC_64'
 		bits = 64
+	# S390X
+	elif re.match('^s390x$', arch_string_raw):
+		arch = 'S390X'
+		bits = 64
 
 	return (arch, bits)
 
