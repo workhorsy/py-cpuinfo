@@ -42,6 +42,7 @@ except ImportError as err:
 		pass
 
 IS_PY2 = sys.version_info[0] == 2
+CAN_CALL_CPUID_IN_SUBPROCESS = True
 
 
 class DataSource(object):
@@ -786,27 +787,11 @@ class CPUID(object):
 
 		return retval
 
-	# FIXME: We should not have to use different instructions to
-	# set eax to 0 or 1, on 32bit and 64bit machines.
-	def _zero_eax(self):
-		return (
-			b"\x31\xC0"         # xor eax,eax
-		)
-
-	def _zero_ecx(self):
-		return (
-			b"\x31\xC9"         # xor ecx,ecx
-		)
-	def _one_eax(self):
-		return (
-			b"\xB8\x01\x00\x00\x00" # mov eax,0x1"
-		)
-
 	# http://en.wikipedia.org/wiki/CPUID#EAX.3D0:_Get_vendor_ID
 	def get_vendor_id(self):
 		# EBX
 		ebx = self._run_asm(
-			self._zero_eax(),
+			b"\x31\xC0",        # xor eax,eax
 			b"\x0F\xA2"         # cpuid
 			b"\x89\xD8"         # mov ax,bx
 			b"\xC3"             # ret
@@ -814,7 +799,7 @@ class CPUID(object):
 
 		# ECX
 		ecx = self._run_asm(
-			self._zero_eax(),
+			b"\x31\xC0",        # xor eax,eax
 			b"\x0f\xa2"         # cpuid
 			b"\x89\xC8"         # mov ax,cx
 			b"\xC3"             # ret
@@ -822,7 +807,7 @@ class CPUID(object):
 
 		# EDX
 		edx = self._run_asm(
-			self._zero_eax(),
+			b"\x31\xC0",        # xor eax,eax
 			b"\x0f\xa2"         # cpuid
 			b"\x89\xD0"         # mov ax,dx
 			b"\xC3"             # ret
@@ -841,9 +826,9 @@ class CPUID(object):
 	def get_info(self):
 		# EAX
 		eax = self._run_asm(
-			self._one_eax(),
-			b"\x0f\xa2"         # cpuid
-			b"\xC3"             # ret
+			b"\xB8\x01\x00\x00\x00",   # mov eax,0x1"
+			b"\x0f\xa2"                # cpuid
+			b"\xC3"                    # ret
 		)
 
 		# Get the CPU info
@@ -878,18 +863,18 @@ class CPUID(object):
 	def get_flags(self, max_extension_support):
 		# EDX
 		edx = self._run_asm(
-			self._one_eax(),
-			b"\x0f\xa2"         # cpuid
-			b"\x89\xD0"         # mov ax,dx
-			b"\xC3"             # ret
+			b"\xB8\x01\x00\x00\x00",   # mov eax,0x1"
+			b"\x0f\xa2"                # cpuid
+			b"\x89\xD0"                # mov ax,dx
+			b"\xC3"                    # ret
 		)
 
 		# ECX
 		ecx = self._run_asm(
-			self._one_eax(),
-			b"\x0f\xa2"         # cpuid
-			b"\x89\xC8"         # mov ax,cx
-			b"\xC3"             # ret
+			b"\xB8\x01\x00\x00\x00",   # mov eax,0x1"
+			b"\x0f\xa2"                # cpuid
+			b"\x89\xC8"                # mov ax,cx
+			b"\xC3"                    # ret
 		)
 
 		# Get the CPU flags
@@ -968,7 +953,7 @@ class CPUID(object):
 		if max_extension_support >= 7:
 			# EBX
 			ebx = self._run_asm(
-				self._zero_ecx(),
+				b"\x31\xC9",            # xor ecx,ecx
 				b"\xB8\x07\x00\x00\x00" # mov eax,7
 				b"\x0f\xa2"         # cpuid
 				b"\x89\xD8"         # mov ax,bx
@@ -977,7 +962,7 @@ class CPUID(object):
 
 			# ECX
 			ecx = self._run_asm(
-				self._zero_ecx(),
+				b"\x31\xC9",            # xor ecx,ecx
 				b"\xB8\x07\x00\x00\x00" # mov eax,7
 				b"\x0f\xa2"         # cpuid
 				b"\x89\xC8"         # mov ax,cx
@@ -1291,30 +1276,24 @@ class CPUID(object):
 
 		return ticks
 
-def _actual_get_cpu_info_from_cpuid(queue):
+def _get_cpu_info_from_cpuid_actual():
 	'''
 	Warning! This function has the potential to crash the Python runtime.
 	Do not call it directly. Use the _get_cpu_info_from_cpuid function instead.
 	It will safely call this function in another process.
 	'''
 
-	# Pipe all output to nothing
-	sys.stdout = open(os.devnull, 'w')
-	sys.stderr = open(os.devnull, 'w')
-
 	# Get the CPU arch and bits
 	arch, bits = _parse_arch(DataSource.arch_string_raw)
 
 	# Return none if this is not an X86 CPU
 	if not arch in ['X86_32', 'X86_64']:
-		queue.put(_obj_to_b64({}))
-		return
+		return {}
 
 	# Return none if SE Linux is in enforcing mode
 	cpuid = CPUID()
 	if cpuid.is_selinux_enforcing:
-		queue.put(_obj_to_b64({}))
-		return
+		return {}
 
 	# Get the cpu info from the CPUID register
 	max_extension_support = cpuid.get_max_extension_support()
@@ -1353,6 +1332,15 @@ def _actual_get_cpu_info_from_cpuid(queue):
 	}
 
 	info = {k: v for k, v in info.items() if v}
+	return info
+
+def _get_cpu_info_from_cpuid_subprocess_wrapper(queue):
+	# Pipe all output to nothing
+	sys.stdout = open(os.devnull, 'w')
+	sys.stderr = open(os.devnull, 'w')
+
+	info = _get_cpu_info_from_cpuid_actual()
+
 	queue.put(_obj_to_b64(info))
 
 def _get_cpu_info_from_cpuid():
@@ -1375,23 +1363,26 @@ def _get_cpu_info_from_cpuid():
 		return {}
 
 	try:
-		# Start running the function in a subprocess
-		queue = Queue()
-		p = Process(target=_actual_get_cpu_info_from_cpuid, args=(queue,))
-		p.start()
+		if CAN_CALL_CPUID_IN_SUBPROCESS:
+			# Start running the function in a subprocess
+			queue = Queue()
+			p = Process(target=_get_cpu_info_from_cpuid_subprocess_wrapper, args=(queue,))
+			p.start()
 
-		# Wait for the process to end, while it is still alive
-		while p.is_alive():
-			p.join(0)
+			# Wait for the process to end, while it is still alive
+			while p.is_alive():
+				p.join(0)
 
-		# Return {} if it failed
-		if p.exitcode != 0:
-			return {}
+			# Return {} if it failed
+			if p.exitcode != 0:
+				return {}
 
-		# Return the result, only if there is something to read
-		if not queue.empty():
-			output = queue.get()
-			return _b64_to_obj(output)
+			# Return the result, only if there is something to read
+			if not queue.empty():
+				output = queue.get()
+				return _b64_to_obj(output)
+		else:
+			return _get_cpu_info_from_cpuid_actual()
 	except:
 		pass
 
