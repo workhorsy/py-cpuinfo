@@ -270,7 +270,8 @@ def _copy_new_fields(info, new_info):
 		'l2_cache_size', 'l2_cache_line_size', 'l2_cache_associativity',
 		'stepping', 'model', 'family',
 		'processor_type', 'extended_model', 'extended_family', 'flags',
-		'l3_cache_size', 'l1_data_cache_size', 'l1_instruction_cache_size'
+		'l3_cache_size', 'l1_data_cache_size', 'l1_instruction_cache_size',
+		'threads_per_core', 'cores_per_socket', 'sockets', 'numa_nodes'
 	]
 
 	for key in keys:
@@ -1589,6 +1590,22 @@ def _get_cpu_info_from_lscpu():
 		l3_cache_size = _get_field(False, output, None, None, 'L3 cache')
 		if l3_cache_size:
 			info['l3_cache_size'] = _to_friendly_bytes(l3_cache_size)
+
+		threads_per_core = _get_field(False, output, None, None, 'Thread(s) per core')
+		if threads_per_core:
+			info['threads_per_core'] = int(threads_per_core)
+
+		cores_per_socket = _get_field(False, output, None, None, 'Core(s) per socket')
+		if cores_per_socket:
+			info['cores_per_socket'] = int(cores_per_socket)
+
+		sockets = _get_field(False, output, None, None, 'Socket(s)')
+		if sockets:
+			info['sockets'] = int(sockets)
+
+		numa_nodes = _get_field(False, output, None, None, 'NUMA node(s)')
+		if numa_nodes:
+			info['numa_nodes'] = int(numa_nodes)
 
 		# Flags
 		flags = _get_field(False, output, None, None, 'flags', 'Features')
