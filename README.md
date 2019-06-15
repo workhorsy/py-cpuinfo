@@ -53,7 +53,7 @@ Fields
 | "bits"                        | 64                        | int                   |
 | "count"                       | 4                         | int                   |
 | "threads_per_core"            | 1                         | int                   |
-| "cores_per_socket"            | 4                         | int                   |
+| "cores_per_socket"            | 2                         | int                   |
 | "sockets"                     | 2                         | int                   |
 | "numa_nodes"                  | 2                         | int                   |
 | "l1_data_cache_size"          | "32 KB"                   | string                |
