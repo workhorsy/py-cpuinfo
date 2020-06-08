@@ -33,13 +33,6 @@ import platform
 import multiprocessing
 import ctypes
 
-try:
-	import _winreg as winreg
-except ImportError as err:
-	try:
-		import winreg
-	except ImportError as err:
-		pass
 
 IS_PY2 = sys.version_info[0] == 2
 CAN_CALL_CPUID_IN_SUBPROCESS = True
@@ -157,38 +150,28 @@ class DataSource(object):
 
 	@staticmethod
 	def winreg_processor_brand():
-		key = winreg.OpenKey(winreg.HKEY_LOCAL_MACHINE, r"Hardware\Description\System\CentralProcessor\0")
-		processor_brand = winreg.QueryValueEx(key, "ProcessorNameString")[0]
-		winreg.CloseKey(key)
+		processor_brand = _read_windows_registry_key(r"Hardware\Description\System\CentralProcessor\0", "ProcessorNameString")
 		return processor_brand.strip()
 
 	@staticmethod
 	def winreg_vendor_id_raw():
-		key = winreg.OpenKey(winreg.HKEY_LOCAL_MACHINE, r"Hardware\Description\System\CentralProcessor\0")
-		vendor_id_raw = winreg.QueryValueEx(key, "VendorIdentifier")[0]
-		winreg.CloseKey(key)
+		vendor_id_raw = _read_windows_registry_key(r"Hardware\Description\System\CentralProcessor\0", "VendorIdentifier")
 		return vendor_id_raw
 
 	@staticmethod
 	def winreg_arch_string_raw():
-		key = winreg.OpenKey(winreg.HKEY_LOCAL_MACHINE, r"SYSTEM\CurrentControlSet\Control\Session Manager\Environment")
-		arch_string_raw = winreg.QueryValueEx(key, "PROCESSOR_ARCHITECTURE")[0]
-		winreg.CloseKey(key)
+		arch_string_raw = _read_windows_registry_key(r"SYSTEM\CurrentControlSet\Control\Session Manager\Environment", "PROCESSOR_ARCHITECTURE")
 		return arch_string_raw
 
 	@staticmethod
 	def winreg_hz_actual():
-		key = winreg.OpenKey(winreg.HKEY_LOCAL_MACHINE, r"Hardware\Description\System\CentralProcessor\0")
-		hz_actual = winreg.QueryValueEx(key, "~Mhz")[0]
-		winreg.CloseKey(key)
+		hz_actual = _read_windows_registry_key(r"Hardware\Description\System\CentralProcessor\0", "~Mhz")
 		hz_actual = _to_decimal_string(hz_actual)
 		return hz_actual
 
 	@staticmethod
 	def winreg_feature_bits():
-		key = winreg.OpenKey(winreg.HKEY_LOCAL_MACHINE, r"Hardware\Description\System\CentralProcessor\0")
-		feature_bits = winreg.QueryValueEx(key, "FeatureSet")[0]
-		winreg.CloseKey(key)
+		feature_bits = _read_windows_registry_key(r"Hardware\Description\System\CentralProcessor\0", "FeatureSet")
 		return feature_bits
 
 
@@ -223,6 +206,20 @@ def _run_and_get_stdout(command, pipe_command=None):
 		if not IS_PY2:
 			output = output.decode(encoding='UTF-8')
 		return p2.returncode, output
+
+def _read_windows_registry_key(key_name, field_name):
+	try:
+		import _winreg as winreg
+	except ImportError as err:
+		try:
+			import winreg
+		except ImportError as err:
+			pass
+
+	key = winreg.OpenKey(winreg.HKEY_LOCAL_MACHINE, key_name)
+	value = winreg.QueryValueEx(key, field_name)[0]
+	winreg.CloseKey(key)
+	return value
 
 # Make sure we are running on a supported system
 def _check_arch():
