@@ -1220,8 +1220,8 @@ class CPUID(object):
 
 		cache_info = {
 			'size_kb' : ecx & 0xFF,
-			'line_size_b' : (ecx >> 12) & 0xF,
-			'associativity' : (ecx >> 16) & 0xFFFF
+			'associativity' : (ecx >> 12) & 0xF,
+			'line_size_b' : (ecx >> 16) & 0xFFFF
 		}
 
 		return cache_info

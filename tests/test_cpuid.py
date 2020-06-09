@@ -214,7 +214,7 @@ class TestCPUID(unittest.TestCase):
 		self.assertEqual(0x8000001f, max_extension_support)
 
 		cache_info = cpuid.get_cache(max_extension_support)
-		self.assertEqual({'size_kb': 64, 'line_size_b': 6, 'associativity': 512}, cache_info)
+		self.assertEqual({'size_kb': 64, 'line_size_b': 512, 'associativity': 6}, cache_info)
 
 		info = cpuid.get_info()
 		self.assertEqual({'stepping': 2, 'model': 8, 'family': 15, 'processor_type': 0, 'extended_model': 0, 'extended_family': 8}, info)

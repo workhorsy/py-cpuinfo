@@ -104,8 +104,8 @@ class TestWindows_10_X86_64_Ryzen7(unittest.TestCase):
 
 		# FIXME: These cache fields are in the wrong format
 		self.assertEqual('64', info['l2_cache_size'])
-		self.assertEqual(6, info['l2_cache_line_size'])
-		self.assertEqual('0x200', info['l2_cache_associativity'])
+		self.assertEqual(512, info['l2_cache_line_size'])
+		self.assertEqual('0x6', info['l2_cache_associativity'])
 
 		self.assertEqual(
 			['3dnowprefetch', 'abm', 'adx', 'aes', 'apic', 'avx', 'avx2',
@@ -170,8 +170,8 @@ class TestWindows_10_X86_64_Ryzen7(unittest.TestCase):
 
 		# FIXME: These cache fields are in the wrong format
 		self.assertEqual('64', info['l2_cache_size'])
-		self.assertEqual(6, info['l2_cache_line_size'])
-		self.assertEqual('0x200', info['l2_cache_associativity'])
+		self.assertEqual(512, info['l2_cache_line_size'])
+		self.assertEqual('0x6', info['l2_cache_associativity'])
 
 		self.assertEqual(
 			['3dnow', '3dnowprefetch', 'abm', 'adx', 'aes', 'apic', 'avx',

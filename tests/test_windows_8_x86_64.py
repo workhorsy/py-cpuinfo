@@ -122,8 +122,8 @@ class TestWindows_8_X86_64(unittest.TestCase):
 
 		# FIXME: These cache fields are in the wrong format
 		self.assertEqual('64', info['l2_cache_size'])
-		self.assertEqual(6, info['l2_cache_line_size'])
-		self.assertEqual('0x100', info['l2_cache_associativity'])
+		self.assertEqual(256, info['l2_cache_line_size'])
+		self.assertEqual('0x6', info['l2_cache_associativity'])
 
 		self.assertEqual(
 			['acpi', 'apic', 'clflush', 'cmov', 'cx16', 'cx8', 'de', 'ds_cpl',

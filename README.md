@@ -55,8 +55,8 @@ Fields
 | "l1_data_cache_size"          | "32 KB"                   | string                |
 | "l1_instruction_cache_size"   | "32 KB"                   | string                |
 | "l2_cache_size"               | "256 KB"                  | string                |
-| "l2_cache_line_size"          | 6                         | int                   |
-| "l2_cache_associativity"      | 0x100                     | int                   |
+| "l2_cache_line_size"          | 0x100                     | int                   |
+| "l2_cache_associativity"      | 6                         | int                   |
 | "l3_cache_size"               | "3072 KB"                 | string                |
 | "stepping"                    | 5                         | int                   |
 | "model"                       | 30                        | int                   |
