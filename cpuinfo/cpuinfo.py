@@ -684,6 +684,17 @@ def _is_selinux_enforcing():
 
 	return (not can_selinux_exec_heap or not can_selinux_exec_memory)
 
+def _filter_dict_keys_with_empty_values(info):
+	# Filter out None, 0, "", (), {}, []
+	info = {k: v for k, v in info.items() if v}
+
+	# Filter out (0, 0)
+	info = {k: v for k, v in info.items() if v != (0, 0)}
+
+	# Filter out strings that start with "0.0"
+	info = {k: v for k, v in info.items() if not (type(v) == str and v.startswith('0.0'))}
+
+	return info
 
 class CPUID(object):
 	def __init__(self):
@@ -1332,8 +1343,7 @@ def _get_cpu_info_from_cpuid_actual():
 	'flags' : cpuid.get_flags(max_extension_support)
 	}
 
-	info = {k: v for k, v in info.items() if v}
-	return info
+	return _filter_dict_keys_with_empty_values(info)
 
 def _get_cpu_info_from_cpuid_subprocess_wrapper(queue):
 	# Pipe all output to nothing
@@ -1472,8 +1482,7 @@ def _get_cpu_info_from_proc_cpuinfo():
 			info['hz_actual_friendly'] = _hz_short_to_friendly(hz_actual, 6)
 			info['hz_actual'] = _hz_short_to_full(hz_actual, 6)
 
-		info = {k: v for k, v in info.items() if v}
-		return info
+		return _filter_dict_keys_with_empty_values(info)
 	except:
 		#raise # NOTE: To have this throw on error, uncomment this line
 		return {}
@@ -1512,8 +1521,7 @@ def _get_cpu_info_from_cpufreq_info():
 			'hz_actual' : _hz_short_to_full(hz_brand, scale),
 		}
 
-		info = {k: v for k, v in info.items() if v}
-		return info
+		return _filter_dict_keys_with_empty_values(info)
 	except:
 		#raise # NOTE: To have this throw on error, uncomment this line
 		return {}
@@ -1594,8 +1602,7 @@ def _get_cpu_info_from_lscpu():
 			flags.sort()
 			info['flags'] = flags
 
-		info = {k: v for k, v in info.items() if v}
-		return info
+		return _filter_dict_keys_with_empty_values(info)
 	except:
 		#raise # NOTE: To have this throw on error, uncomment this line
 		return {}
@@ -1739,9 +1746,7 @@ def _get_cpu_info_from_ibm_pa_features():
 		info = {
 			'flags' : flags
 		}
-		info = {k: v for k, v in info.items() if v}
-
-		return info
+		return _filter_dict_keys_with_empty_values(info)
 	except:
 		return {}
 
@@ -1814,8 +1819,7 @@ def _get_cpu_info_from_sysctl():
 		'flags' : flags
 		}
 
-		info = {k: v for k, v in info.items() if v}
-		return info
+		return _filter_dict_keys_with_empty_values(info)
 	except:
 		return {}
 
@@ -1881,8 +1885,7 @@ def _get_cpu_info_from_sysinfo_v1():
 		'flags' : flags
 		}
 
-		info = {k: v for k, v in info.items() if v}
-		return info
+		return _filter_dict_keys_with_empty_values(info)
 	except:
 		#raise # NOTE: To have this throw on error, uncomment this line
 		return {}
@@ -1956,8 +1959,7 @@ def _get_cpu_info_from_sysinfo_v2():
 		'flags' : flags
 		}
 
-		info = {k: v for k, v in info.items() if v}
-		return info
+		return _filter_dict_keys_with_empty_values(info)
 	except:
 		#raise # NOTE: To have this throw on error, uncomment this line
 		return {}
@@ -2035,8 +2037,7 @@ def _get_cpu_info_from_wmic():
 			'family' : family,
 		}
 
-		info = {k: v for k, v in info.items() if v}
-		return info
+		return _filter_dict_keys_with_empty_values(info)
 	except:
 		#raise # NOTE: To have this throw on error, uncomment this line
 		return {}
@@ -2136,8 +2137,7 @@ def _get_cpu_info_from_registry():
 		'flags' : flags
 		}
 
-		info = {k: v for k, v in info.items() if v}
-		return info
+		return _filter_dict_keys_with_empty_values(info)
 	except:
 		return {}
 
@@ -2196,8 +2196,7 @@ def _get_cpu_info_from_kstat():
 		'flags' : flags
 		}
 
-		info = {k: v for k, v in info.items() if v}
-		return info
+		return _filter_dict_keys_with_empty_values(info)
 	except:
 		return {}
 
@@ -2225,8 +2224,7 @@ def _get_cpu_info_from_platform_uname():
 			'model' : model,
 			'stepping' : stepping
 		}
-		info = {k: v for k, v in info.items() if v}
-		return info
+		return _filter_dict_keys_with_empty_values(info)
 	except:
 		return {}
 
