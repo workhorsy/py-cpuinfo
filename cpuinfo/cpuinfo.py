@@ -1330,7 +1330,7 @@ def _get_cpu_info_from_cpuid_actual():
 	'hz_advertised' : _hz_short_to_full(hz_advertised, scale),
 	'hz_actual' : _hz_short_to_full(hz_actual, 0),
 
-	'l2_cache_size' : _to_friendly_bytes(cache_info['size_kb']),
+	'l2_cache_size' : int(cache_info['size_kb']) * 1024,
 	'l2_cache_line_size' : cache_info['line_size_b'],
 	'l2_cache_associativity' : hex(cache_info['associativity']),
 
@@ -1995,13 +1995,13 @@ def _get_cpu_info_from_wmic():
 			hz_actual = _to_decimal_string(hz_actual)
 
 		# Get cache sizes
-		l2_cache_size = value.get('L2CacheSize')
+		l2_cache_size = value.get('L2CacheSize') # NOTE: L2CacheSize is in kilobytes
 		if l2_cache_size:
-			l2_cache_size = l2_cache_size + ' KB'
+			l2_cache_size = int(l2_cache_size) * 1024
 
-		l3_cache_size = value.get('L3CacheSize')
+		l3_cache_size = value.get('L3CacheSize') # NOTE: L3CacheSize is in kilobytes
 		if l3_cache_size:
-			l3_cache_size = l3_cache_size + ' KB'
+			l3_cache_size = int(l3_cache_size) * 1024
 
 		# Get family, model, and stepping
 		family, model, stepping = '', '', ''
