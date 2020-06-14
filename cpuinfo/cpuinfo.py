@@ -1356,7 +1356,7 @@ def _get_cpu_info_from_cpuid_actual():
 
 	'l2_cache_size' : int(cache_info['size_kb']) * 1024,
 	'l2_cache_line_size' : cache_info['line_size_b'],
-	'l2_cache_associativity' : hex(cache_info['associativity']),
+	'l2_cache_associativity' : cache_info['associativity'],
 
 	'stepping' : info['stepping'],
 	'model' : info['model'],
