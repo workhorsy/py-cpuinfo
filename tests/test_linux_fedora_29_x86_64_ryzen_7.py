@@ -477,10 +477,10 @@ class Test_Linux_Fedora_29_X86_64_Ryzen_7(unittest.TestCase):
 		self.assertEqual(8, info['model'])
 		self.assertEqual(23, info['family'])
 
-		self.assertEqual('64 KB', info['l1_instruction_cache_size'])
-		self.assertEqual('32 KB', info['l1_data_cache_size'])
-		self.assertEqual('512 KB', info['l2_cache_size'])
-		self.assertEqual('16384 KB', info['l3_cache_size'])
+		self.assertEqual(64 * 1024, info['l1_instruction_cache_size'])
+		self.assertEqual(32 * 1024, info['l1_data_cache_size'])
+		self.assertEqual(512 * 1024, info['l2_cache_size'])
+		self.assertEqual(16384 * 1024, info['l3_cache_size'])
 
 		self.assertEqual(
 			['3dnowprefetch', 'abm', 'aes', 'apic', 'arat', 'avx', 'avx2',
@@ -508,7 +508,7 @@ class Test_Linux_Fedora_29_X86_64_Ryzen_7(unittest.TestCase):
 		self.assertEqual((3693060000, 0), info['hz_actual'])
 
 		# FIXME: This is l2 cache size not l3 cache size
-		self.assertEqual('512 KB', info['l3_cache_size'])
+		self.assertEqual(512 * 1024, info['l3_cache_size'])
 
 		self.assertEqual(2, info['stepping'])
 		self.assertEqual(8, info['model'])
@@ -543,13 +543,13 @@ class Test_Linux_Fedora_29_X86_64_Ryzen_7(unittest.TestCase):
 
 		self.assertEqual('x86_64', info['arch_string_raw'])
 
-		self.assertEqual('64 KB', info['l1_instruction_cache_size'])
-		self.assertEqual('32 KB', info['l1_data_cache_size'])
+		self.assertEqual(64 * 1024, info['l1_instruction_cache_size'])
+		self.assertEqual(32 * 1024, info['l1_data_cache_size'])
 
-		self.assertEqual('512 KB', info['l2_cache_size'])
+		self.assertEqual(512 * 1024, info['l2_cache_size'])
 		# FIXME: This is l2 cache size not l3 cache size
 		# it is wrong in /proc/cpuinfo
-		self.assertEqual('512 KB', info['l3_cache_size'])
+		self.assertEqual(512 * 1024, info['l3_cache_size'])
 
 		self.assertEqual(2, info['stepping'])
 		self.assertEqual(8, info['model'])

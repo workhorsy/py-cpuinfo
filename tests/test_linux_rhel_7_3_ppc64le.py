@@ -347,8 +347,8 @@ class TestLinuxRHEL_7_3_ppc64le(unittest.TestCase):
 
 	def test_get_cpu_info_from_lscpu(self):
 		info = cpuinfo._get_cpu_info_from_lscpu()
-		self.assertEqual('32 KB', info['l1_instruction_cache_size'])
-		self.assertEqual('64 KB', info['l1_data_cache_size'])
+		self.assertEqual(32 * 1024, info['l1_instruction_cache_size'])
+		self.assertEqual(64 * 1024, info['l1_data_cache_size'])
 		self.assertEqual('POWER8E (raw), altivec supported', info['brand_raw'])
 
 	def test_get_cpu_info_from_ibm_pa_features(self):
@@ -376,8 +376,8 @@ class TestLinuxRHEL_7_3_ppc64le(unittest.TestCase):
 		self.assertEqual((3425000000, 0), info['hz_advertised'])
 		self.assertEqual((3425000000, 0), info['hz_actual'])
 		self.assertEqual('PPC_64', info['arch'])
-		self.assertEqual('32 KB', info['l1_instruction_cache_size'])
-		self.assertEqual('64 KB', info['l1_data_cache_size'])
+		self.assertEqual(32 * 1024, info['l1_instruction_cache_size'])
+		self.assertEqual(64 * 1024, info['l1_data_cache_size'])
 		self.assertEqual(64, info['bits'])
 		self.assertEqual(16, info['count'])
 		self.assertEqual('ppc64le', info['arch_string_raw'])

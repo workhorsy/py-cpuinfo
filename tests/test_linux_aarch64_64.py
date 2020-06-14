@@ -132,10 +132,10 @@ class TestLinux_Aarch_64(unittest.TestCase):
 	def test_get_cpu_info_from_lscpu(self):
 		info = cpuinfo._get_cpu_info_from_lscpu()
 
-		self.assertEqual('78 KB', info['l1_instruction_cache_size'])
-		self.assertEqual('32 KB', info['l1_data_cache_size'])
+		self.assertEqual(78 * 1024, info['l1_instruction_cache_size'])
+		self.assertEqual(32 * 1024, info['l1_data_cache_size'])
 
-		self.assertEqual('16384 KB', info['l2_cache_size'])
+		self.assertEqual(16384 * 1024, info['l2_cache_size'])
 
 		self.assertEqual(3, len(info))
 

@@ -434,6 +434,30 @@ def _to_friendly_bytes(input):
 
 	return input
 
+def _friendly_bytes_to_int(friendly_bytes):
+	input = friendly_bytes.lower()
+
+	formats = {
+		'gb' : 1024 * 1024 * 1024,
+		'mb' : 1024 * 1024,
+		'kb' : 1024,
+
+		'g' : 1024 * 1024 * 1024,
+		'm' : 1024 * 1024,
+		'k' : 1024,
+		'b' : 1,
+	}
+
+	try:
+		for pattern, multiplier in formats.items():
+			if input.endswith(pattern):
+				return int(input.split(pattern)[0].strip()) * multiplier
+
+	except Exception as err:
+		pass
+
+	return friendly_bytes
+
 def _parse_cpu_brand_string(cpu_string):
 	# Just return 0 if the processor brand does not have the Hz
 	if not 'hz' in cpu_string.lower():
@@ -1422,6 +1446,7 @@ def _get_cpu_info_from_proc_cpuinfo():
 		model = _get_field(False, output, int, 0, 'model')
 		family = _get_field(False, output, int, 0, 'cpu family')
 		hardware = _get_field(False, output, None, '', 'Hardware')
+
 		# Flags
 		flags = _get_field(False, output, None, None, 'flags', 'Features')
 		if flags:
@@ -1459,7 +1484,7 @@ def _get_cpu_info_from_proc_cpuinfo():
 		'hardware_raw' : hardware,
 		'brand_raw' : processor_brand,
 
-		'l3_cache_size' : _to_friendly_bytes(cache_size),
+		'l3_cache_size' : _friendly_bytes_to_int(cache_size),
 		'flags' : flags,
 		'vendor_id_raw' : vendor_id,
 		'stepping' : stepping,
@@ -1581,19 +1606,19 @@ def _get_cpu_info_from_lscpu():
 
 		l1_data_cache_size = _get_field(False, output, None, None, 'L1d cache')
 		if l1_data_cache_size:
-			info['l1_data_cache_size'] = _to_friendly_bytes(l1_data_cache_size)
+			info['l1_data_cache_size'] = _friendly_bytes_to_int(l1_data_cache_size)
 
 		l1_instruction_cache_size = _get_field(False, output, None, None, 'L1i cache')
 		if l1_instruction_cache_size:
-			info['l1_instruction_cache_size'] = _to_friendly_bytes(l1_instruction_cache_size)
+			info['l1_instruction_cache_size'] = _friendly_bytes_to_int(l1_instruction_cache_size)
 
 		l2_cache_size = _get_field(False, output, None, None, 'L2 cache', 'L2d cache')
 		if l2_cache_size:
-			info['l2_cache_size'] = _to_friendly_bytes(l2_cache_size)
+			info['l2_cache_size'] = _friendly_bytes_to_int(l2_cache_size)
 
 		l3_cache_size = _get_field(False, output, None, None, 'L3 cache')
 		if l3_cache_size:
-			info['l3_cache_size'] = _to_friendly_bytes(l3_cache_size)
+			info['l3_cache_size'] = _friendly_bytes_to_int(l3_cache_size)
 
 		# Flags
 		flags = _get_field(False, output, None, None, 'flags', 'Features')
