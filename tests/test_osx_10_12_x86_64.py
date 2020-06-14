@@ -121,7 +121,7 @@ class TestOSX_10_12(unittest.TestCase):
 		self.assertEqual((1700000000, 0), info['hz_advertised'])
 		self.assertEqual((1700000000, 0), info['hz_actual'])
 
-		self.assertEqual('256', info['l2_cache_size'])
+		self.assertEqual(256 * 1024, info['l2_cache_size'])
 
 		self.assertEqual(7, info['stepping'])
 		self.assertEqual(42, info['model'])
@@ -155,7 +155,7 @@ class TestOSX_10_12(unittest.TestCase):
 
 		self.assertEqual('x86_64', info['arch_string_raw'])
 
-		self.assertEqual('256', info['l2_cache_size'])
+		self.assertEqual(256 * 1024, info['l2_cache_size'])
 
 		self.assertEqual(7, info['stepping'])
 		self.assertEqual(42, info['model'])

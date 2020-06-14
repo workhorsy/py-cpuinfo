@@ -413,11 +413,11 @@ class TestLinuxFedora_5_s390x(unittest.TestCase):
 		#self.assertEqual(42, info['model'])
 		#self.assertEqual(6, info['family'])
 
-		self.assertEqual('64 KB', info['l1_instruction_cache_size'])
-		self.assertEqual('96 KB', info['l1_data_cache_size'])
+		self.assertEqual(64 * 1024, info['l1_instruction_cache_size'])
+		self.assertEqual(96 * 1024, info['l1_data_cache_size'])
 
-		self.assertEqual('1024 KB', info['l2_cache_size'])
-		self.assertEqual('49152 KB', info['l3_cache_size'])
+		self.assertEqual(1024 * 1024, info['l2_cache_size'])
+		self.assertEqual(49152 * 1024, info['l3_cache_size'])
 
 		self.assertEqual(
 			['dfp', 'eimm', 'esan3', 'etf3eh', 'highgprs', 'ldisp',
@@ -441,7 +441,7 @@ class TestLinuxFedora_5_s390x(unittest.TestCase):
 		self.assertEqual((5504000000, 0), info['hz_advertised'])
 		self.assertEqual((5504000000, 0), info['hz_actual'])
 
-		self.assertEqual('49152 KB', info['l3_cache_size'])
+		self.assertEqual(49152 * 1024, info['l3_cache_size'])
 
 		#self.assertEqual(7, info['stepping'])
 		#self.assertEqual(42, info['model'])
@@ -467,11 +467,11 @@ class TestLinuxFedora_5_s390x(unittest.TestCase):
 
 		self.assertEqual('s390x', info['arch_string_raw'])
 
-		self.assertEqual('64 KB', info['l1_instruction_cache_size'])
-		self.assertEqual('96 KB', info['l1_data_cache_size'])
+		self.assertEqual(64 * 1024, info['l1_instruction_cache_size'])
+		self.assertEqual(96 * 1024, info['l1_data_cache_size'])
 
-		self.assertEqual('1024 KB', info['l2_cache_size'])
-		self.assertEqual('49152 KB', info['l3_cache_size'])
+		self.assertEqual(1024 * 1024, info['l2_cache_size'])
+		self.assertEqual(49152 * 1024, info['l3_cache_size'])
 
 		#self.assertEqual(7, info['stepping'])
 		#self.assertEqual(42, info['model'])

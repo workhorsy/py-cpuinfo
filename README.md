@@ -52,12 +52,12 @@ Fields
 | "arch"                        | "X86_64"                  | "X86_32", "X86_64", "ARM_8", "ARM_7", "PPC_32", "PPC_64", "SPARC_32", "SPARC_64", "S390X" |
 | "bits"                        | 64                        | int                   |
 | "count"                       | 4                         | int                   |
-| "l1_data_cache_size"          | "32 KB"                   | string                |
-| "l1_instruction_cache_size"   | "32 KB"                   | string                |
-| "l2_cache_size"               | "256 KB"                  | string                |
-| "l2_cache_line_size"          | 0x100                     | int                   |
+| "l1_data_cache_size"          | 32768                     | int                   |
+| "l1_instruction_cache_size"   | 32768                     | int                   |
+| "l2_cache_size"               | 262144                    | int                   |
+| "l2_cache_line_size"          | 256                       | int                   |
 | "l2_cache_associativity"      | 6                         | int                   |
-| "l3_cache_size"               | "3072 KB"                 | string                |
+| "l3_cache_size"               | 3145728                   | int                   |
 | "stepping"                    | 5                         | int                   |
 | "model"                       | 30                        | int                   |
 | "family"                      | 6                         | int                   |

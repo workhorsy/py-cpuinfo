@@ -434,6 +434,30 @@ def _to_friendly_bytes(input):
 
 	return input
 
+def _friendly_bytes_to_int(friendly_bytes):
+	input = friendly_bytes.lower()
+
+	formats = {
+		'gb' : 1024 * 1024 * 1024,
+		'mb' : 1024 * 1024,
+		'kb' : 1024,
+
+		'g' : 1024 * 1024 * 1024,
+		'm' : 1024 * 1024,
+		'k' : 1024,
+		'b' : 1,
+	}
+
+	try:
+		for pattern, multiplier in formats.items():
+			if input.endswith(pattern):
+				return int(input.split(pattern)[0].strip()) * multiplier
+
+	except Exception as err:
+		pass
+
+	return friendly_bytes
+
 def _parse_cpu_brand_string(cpu_string):
 	# Just return 0 if the processor brand does not have the Hz
 	if not 'hz' in cpu_string.lower():
@@ -1219,7 +1243,7 @@ class CPUID(object):
 		)
 
 		cache_info = {
-			'size_kb' : ecx & 0xFF,
+			'size_b' : (ecx & 0xFF) * 1024,
 			'associativity' : (ecx >> 12) & 0xF,
 			'line_size_b' : (ecx >> 16) & 0xFFFF
 		}
@@ -1330,9 +1354,9 @@ def _get_cpu_info_from_cpuid_actual():
 	'hz_advertised' : _hz_short_to_full(hz_advertised, scale),
 	'hz_actual' : _hz_short_to_full(hz_actual, 0),
 
-	'l2_cache_size' : _to_friendly_bytes(cache_info['size_kb']),
+	'l2_cache_size' : cache_info['size_b'],
 	'l2_cache_line_size' : cache_info['line_size_b'],
-	'l2_cache_associativity' : hex(cache_info['associativity']),
+	'l2_cache_associativity' : cache_info['associativity'],
 
 	'stepping' : info['stepping'],
 	'model' : info['model'],
@@ -1422,6 +1446,7 @@ def _get_cpu_info_from_proc_cpuinfo():
 		model = _get_field(False, output, int, 0, 'model')
 		family = _get_field(False, output, int, 0, 'cpu family')
 		hardware = _get_field(False, output, None, '', 'Hardware')
+
 		# Flags
 		flags = _get_field(False, output, None, None, 'flags', 'Features')
 		if flags:
@@ -1459,7 +1484,7 @@ def _get_cpu_info_from_proc_cpuinfo():
 		'hardware_raw' : hardware,
 		'brand_raw' : processor_brand,
 
-		'l3_cache_size' : _to_friendly_bytes(cache_size),
+		'l3_cache_size' : _friendly_bytes_to_int(cache_size),
 		'flags' : flags,
 		'vendor_id_raw' : vendor_id,
 		'stepping' : stepping,
@@ -1581,19 +1606,19 @@ def _get_cpu_info_from_lscpu():
 
 		l1_data_cache_size = _get_field(False, output, None, None, 'L1d cache')
 		if l1_data_cache_size:
-			info['l1_data_cache_size'] = _to_friendly_bytes(l1_data_cache_size)
+			info['l1_data_cache_size'] = _friendly_bytes_to_int(l1_data_cache_size)
 
 		l1_instruction_cache_size = _get_field(False, output, None, None, 'L1i cache')
 		if l1_instruction_cache_size:
-			info['l1_instruction_cache_size'] = _to_friendly_bytes(l1_instruction_cache_size)
+			info['l1_instruction_cache_size'] = _friendly_bytes_to_int(l1_instruction_cache_size)
 
 		l2_cache_size = _get_field(False, output, None, None, 'L2 cache', 'L2d cache')
 		if l2_cache_size:
-			info['l2_cache_size'] = _to_friendly_bytes(l2_cache_size)
+			info['l2_cache_size'] = _friendly_bytes_to_int(l2_cache_size)
 
 		l3_cache_size = _get_field(False, output, None, None, 'L3 cache')
 		if l3_cache_size:
-			info['l3_cache_size'] = _to_friendly_bytes(l3_cache_size)
+			info['l3_cache_size'] = _friendly_bytes_to_int(l3_cache_size)
 
 		# Flags
 		flags = _get_field(False, output, None, None, 'flags', 'Features')
@@ -1811,7 +1836,7 @@ def _get_cpu_info_from_sysctl():
 		'hz_advertised' : _hz_short_to_full(hz_advertised, scale),
 		'hz_actual' : _hz_short_to_full(hz_actual, 0),
 
-		'l2_cache_size' : _to_friendly_bytes(cache_size),
+		'l2_cache_size' : int(cache_size) * 1024,
 
 		'stepping' : stepping,
 		'model' : model,
@@ -1995,13 +2020,13 @@ def _get_cpu_info_from_wmic():
 			hz_actual = _to_decimal_string(hz_actual)
 
 		# Get cache sizes
-		l2_cache_size = value.get('L2CacheSize')
+		l2_cache_size = value.get('L2CacheSize') # NOTE: L2CacheSize is in kilobytes
 		if l2_cache_size:
-			l2_cache_size = l2_cache_size + ' KB'
+			l2_cache_size = int(l2_cache_size) * 1024
 
-		l3_cache_size = value.get('L3CacheSize')
+		l3_cache_size = value.get('L3CacheSize') # NOTE: L3CacheSize is in kilobytes
 		if l3_cache_size:
-			l3_cache_size = l3_cache_size + ' KB'
+			l3_cache_size = int(l3_cache_size) * 1024
 
 		# Get family, model, and stepping
 		family, model, stepping = '', '', ''

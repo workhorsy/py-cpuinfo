@@ -370,8 +370,8 @@ class TestLinuxFedora_24_ppc64le(unittest.TestCase):
 	def test_get_cpu_info_from_lscpu(self):
 		info = cpuinfo._get_cpu_info_from_lscpu()
 
-		self.assertEqual('32 KB', info['l1_instruction_cache_size'])
-		self.assertEqual('64 KB', info['l1_data_cache_size'])
+		self.assertEqual(32 * 1024, info['l1_instruction_cache_size'])
+		self.assertEqual(64 * 1024, info['l1_data_cache_size'])
 
 		self.assertEqual('POWER8E (raw), altivec supported', info['brand_raw'])
 
@@ -402,8 +402,8 @@ class TestLinuxFedora_24_ppc64le(unittest.TestCase):
 		self.assertEqual('PPC_64', info['arch'])
 		self.assertEqual(64, info['bits'])
 		self.assertEqual(2, info['count'])
-		self.assertEqual('32 KB', info['l1_instruction_cache_size'])
-		self.assertEqual('64 KB', info['l1_data_cache_size'])
+		self.assertEqual(32 * 1024, info['l1_instruction_cache_size'])
+		self.assertEqual(64 * 1024, info['l1_data_cache_size'])
 		self.assertEqual('ppc64le', info['arch_string_raw'])
 		self.assertEqual(
 			['dss_2.02', 'dss_2.05', 'dss_2.06', 'fpu', 'lsd_in_dscr', 'ppr', 'slb', 'sso_2.06', 'ugr_in_dscr'],

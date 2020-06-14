@@ -481,10 +481,10 @@ class TestLinuxGentoo_2_2_X86_64(unittest.TestCase):
 		self.assertEqual(42, info['model'])
 		self.assertEqual(6, info['family'])
 
-		self.assertEqual('32 KB', info['l1_instruction_cache_size'])
-		self.assertEqual('32 KB', info['l1_data_cache_size'])
-		self.assertEqual('256 KB', info['l2_cache_size'])
-		self.assertEqual('3072 KB', info['l3_cache_size'])
+		self.assertEqual(32 * 1024, info['l1_instruction_cache_size'])
+		self.assertEqual(32 * 1024, info['l1_data_cache_size'])
+		self.assertEqual(256 * 1024, info['l2_cache_size'])
+		self.assertEqual(3072 * 1024, info['l3_cache_size'])
 
 		self.assertEqual(
 			['apic', 'clflush', 'cmov', 'constant_tsc', 'cx16', 'cx8', 'de',
@@ -520,7 +520,7 @@ class TestLinuxGentoo_2_2_X86_64(unittest.TestCase):
 		self.assertEqual((2800000000, 0), info['hz_advertised'])
 		self.assertEqual((2793652000, 0), info['hz_actual'])
 
-		self.assertEqual('3072 KB', info['l3_cache_size'])
+		self.assertEqual(3072 * 1024, info['l3_cache_size'])
 
 		self.assertEqual(7, info['stepping'])
 		self.assertEqual(42, info['model'])
@@ -551,10 +551,10 @@ class TestLinuxGentoo_2_2_X86_64(unittest.TestCase):
 
 		self.assertEqual('x86_64', info['arch_string_raw'])
 
-		self.assertEqual('32 KB', info['l1_instruction_cache_size'])
-		self.assertEqual('32 KB', info['l1_data_cache_size'])
-		self.assertEqual('256 KB', info['l2_cache_size'])
-		self.assertEqual('3072 KB', info['l3_cache_size'])
+		self.assertEqual(32 * 1024, info['l1_instruction_cache_size'])
+		self.assertEqual(32 * 1024, info['l1_data_cache_size'])
+		self.assertEqual(256 * 1024, info['l2_cache_size'])
+		self.assertEqual(3072 * 1024, info['l3_cache_size'])
 
 		self.assertEqual(7, info['stepping'])
 		self.assertEqual(42, info['model'])
