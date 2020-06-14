@@ -120,7 +120,6 @@ class TestWindows_10_X86_64(unittest.TestCase):
 		self.assertEqual(6, info['family'])
 		#self.assertEqual(8, info['extended_family'])
 
-		# FIXME: These cache fields are in the wrong format
 		self.assertEqual(64 * 1024, info['l2_cache_size'])
 		self.assertEqual(256, info['l2_cache_line_size'])
 		self.assertEqual(6, info['l2_cache_associativity'])
