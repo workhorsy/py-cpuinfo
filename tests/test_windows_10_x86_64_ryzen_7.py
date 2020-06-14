@@ -103,7 +103,7 @@ class TestWindows_10_X86_64_Ryzen7(unittest.TestCase):
 		self.assertEqual(8, info['extended_family'])
 
 		# FIXME: These cache fields are in the wrong format
-		self.assertEqual(65536, info['l2_cache_size'])
+		self.assertEqual(64 * 1024, info['l2_cache_size'])
 		self.assertEqual(512, info['l2_cache_line_size'])
 		self.assertEqual('0x6', info['l2_cache_associativity'])
 
@@ -169,7 +169,7 @@ class TestWindows_10_X86_64_Ryzen7(unittest.TestCase):
 		self.assertEqual(8, info['extended_family'])
 
 		# FIXME: These cache fields are in the wrong format
-		self.assertEqual(65536, info['l2_cache_size'])
+		self.assertEqual(64 * 1024, info['l2_cache_size'])
 		self.assertEqual('0x6', info['l2_cache_associativity'])
 		self.assertEqual(512, info['l2_cache_line_size'])
 

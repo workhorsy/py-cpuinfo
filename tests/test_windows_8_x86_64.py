@@ -121,7 +121,7 @@ class TestWindows_8_X86_64(unittest.TestCase):
 		#self.assertEqual(8, info['extended_family'])
 
 		# FIXME: These cache fields are in the wrong format
-		self.assertEqual(65536, info['l2_cache_size'])
+		self.assertEqual(64 * 1024, info['l2_cache_size'])
 		self.assertEqual(256, info['l2_cache_line_size'])
 		self.assertEqual('0x6', info['l2_cache_associativity'])
 
@@ -157,8 +157,8 @@ class TestWindows_8_X86_64(unittest.TestCase):
 		self.assertEqual(30, info['model'])
 		self.assertEqual(6, info['family'])
 
-		self.assertEqual(262144, info['l2_cache_size'])
-		self.assertEqual(8388608, info['l3_cache_size'])
+		self.assertEqual(256 * 1024, info['l2_cache_size'])
+		self.assertEqual(8192 * 1024, info['l3_cache_size'])
 
 	def test_get_cpu_info_from_registry(self):
 		info = cpuinfo._get_cpu_info_from_registry()
@@ -198,8 +198,8 @@ class TestWindows_8_X86_64(unittest.TestCase):
 		self.assertEqual(30, info['model'])
 		self.assertEqual(6, info['family'])
 
-		self.assertEqual(262144, info['l2_cache_size'])
-		self.assertEqual(8388608, info['l3_cache_size'])
+		self.assertEqual(256 * 1024, info['l2_cache_size'])
+		self.assertEqual(8192 * 1024, info['l3_cache_size'])
 		self.assertEqual('0x6', info['l2_cache_associativity'])
 		self.assertEqual(256, info['l2_cache_line_size'])
 
