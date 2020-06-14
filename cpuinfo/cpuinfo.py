@@ -1243,7 +1243,7 @@ class CPUID(object):
 		)
 
 		cache_info = {
-			'size_kb' : ecx & 0xFF,
+			'size_b' : (ecx & 0xFF) * 1024,
 			'associativity' : (ecx >> 12) & 0xF,
 			'line_size_b' : (ecx >> 16) & 0xFFFF
 		}
@@ -1354,7 +1354,7 @@ def _get_cpu_info_from_cpuid_actual():
 	'hz_advertised' : _hz_short_to_full(hz_advertised, scale),
 	'hz_actual' : _hz_short_to_full(hz_actual, 0),
 
-	'l2_cache_size' : int(cache_info['size_kb']) * 1024,
+	'l2_cache_size' : cache_info['size_b'],
 	'l2_cache_line_size' : cache_info['line_size_b'],
 	'l2_cache_associativity' : cache_info['associativity'],
 
