@@ -1,3 +1,6 @@
+* Release 7.0.0
+	* Fixed Bug #144: Cache fields should be full ints instead of kb strings
+
 06/11/2020 Release 6.0.0
 	* Fixed Bug #140: The get_cache function has swapped fields
 	* Fixed Bug #142: Remove empty and zeroed fields
