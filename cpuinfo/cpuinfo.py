@@ -1836,7 +1836,7 @@ def _get_cpu_info_from_sysctl():
 		'hz_advertised' : _hz_short_to_full(hz_advertised, scale),
 		'hz_actual' : _hz_short_to_full(hz_actual, 0),
 
-		'l2_cache_size' : _to_friendly_bytes(cache_size),
+		'l2_cache_size' : int(cache_size) * 1024,
 
 		'stepping' : stepping,
 		'model' : model,

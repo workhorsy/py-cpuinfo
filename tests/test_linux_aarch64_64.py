@@ -166,14 +166,14 @@ class TestLinux_Aarch_64(unittest.TestCase):
 
 		self.assertEqual('aarch64', info['arch_string_raw'])
 
-		self.assertEqual('78K', info['l1_instruction_cache_size'])
-		self.assertEqual('32K', info['l1_data_cache_size'])
+		self.assertEqual(78 * 1024, info['l1_instruction_cache_size'])
+		self.assertEqual(32 * 1024, info['l1_data_cache_size'])
 
-		self.assertEqual('16384K', info['l2_cache_size'])
+		self.assertEqual(16384 * 1024, info['l2_cache_size'])
 		self.assertEqual(0, info['l2_cache_line_size'])
 		self.assertEqual(0, info['l2_cache_associativity'])
 
-		self.assertEqual('', info['l3_cache_size'])
+		self.assertEqual(0, info['l3_cache_size'])
 
 		self.assertEqual(0, info['stepping'])
 		self.assertEqual(0, info['model'])
