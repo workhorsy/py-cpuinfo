@@ -28,7 +28,7 @@ class MockDataSource(object):
 	@staticmethod
 	def cat_proc_cpuinfo():
 		returncode = 0
-		output = '''
+		output = r'''
 processor	: 0
 model name	: ARMv7 Processor rev 3 (v7l)
 BogoMIPS	: 84.00
@@ -120,7 +120,7 @@ Serial		: 0000000000000000
 	@staticmethod
 	def lscpu():
 		returncode = 0
-		output = '''
+		output = r'''
 Architecture:          armv7l
 Byte Order:            Little Endian
 CPU(s):                8
@@ -138,7 +138,7 @@ CPU min MHz:           200.0000
 	@staticmethod
 	def cpufreq_info():
 		returncode = 0
-		output = '''
+		output = r'''
 cpufrequtils 008: cpufreq-info (C) Dominik Brodowski 2004-2009
 Report errors and bugs to cpufreq@vger.kernel.org, please.
 analyzing CPU 0:

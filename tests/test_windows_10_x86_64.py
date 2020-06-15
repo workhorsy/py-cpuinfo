@@ -20,7 +20,7 @@ class MockDataSource(object):
 	@staticmethod
 	def wmic_cpu():
 		returncode = 0
-		output = '''
+		output = r'''
 Caption=Intel64 Family 6 Model 69 Stepping 1
 CurrentClockSpeed=2494
 Description=Intel64 Family 6 Model 69 Stepping 1

@@ -87,38 +87,38 @@ def parse_arch(arch_string_raw):
 	arch_string_raw = arch_string_raw.lower()
 
 	# X86
-	if re.match('^i\d86$|^x86$|^x86_32$|^i86pc$|^ia32$|^ia-32$|^bepc$', arch_string_raw):
+	if re.match(r'^i\d86$|^x86$|^x86_32$|^i86pc$|^ia32$|^ia-32$|^bepc$', arch_string_raw):
 		arch = 'X86_32'
 		bits = 32
-	elif re.match('^x64$|^x86_64$|^x86_64t$|^i686-64$|^amd64$|^ia64$|^ia-64$', arch_string_raw):
+	elif re.match(r'^x64$|^x86_64$|^x86_64t$|^i686-64$|^amd64$|^ia64$|^ia-64$', arch_string_raw):
 		arch = 'X86_64'
 		bits = 64
 	# ARM
-	elif re.match('^armv8-a|aarch64$', arch_string_raw):
+	elif re.match(r'^armv8-a|aarch64$', arch_string_raw):
 		arch = 'ARM_8'
 		bits = 64
-	elif re.match('^armv7$|^armv7[a-z]$|^armv7-[a-z]$|^armv6[a-z]$', arch_string_raw):
+	elif re.match(r'^armv7$|^armv7[a-z]$|^armv7-[a-z]$|^armv6[a-z]$', arch_string_raw):
 		arch = 'ARM_7'
 		bits = 32
-	elif re.match('^armv8$|^armv8[a-z]$|^armv8-[a-z]$', arch_string_raw):
+	elif re.match(r'^armv8$|^armv8[a-z]$|^armv8-[a-z]$', arch_string_raw):
 		arch = 'ARM_8'
 		bits = 32
 	# PPC
-	elif re.match('^ppc32$|^prep$|^pmac$|^powermac$', arch_string_raw):
+	elif re.match(r'^ppc32$|^prep$|^pmac$|^powermac$', arch_string_raw):
 		arch = 'PPC_32'
 		bits = 32
-	elif re.match('^powerpc$|^ppc64$|^ppc64le$', arch_string_raw):
+	elif re.match(r'^powerpc$|^ppc64$|^ppc64le$', arch_string_raw):
 		arch = 'PPC_64'
 		bits = 64
 	# SPARC
-	elif re.match('^sparc32$|^sparc$', arch_string_raw):
+	elif re.match(r'^sparc32$|^sparc$', arch_string_raw):
 		arch = 'SPARC_32'
 		bits = 32
-	elif re.match('^sparc64$|^sun4u$|^sun4v$', arch_string_raw):
+	elif re.match(r'^sparc64$|^sun4u$|^sun4v$', arch_string_raw):
 		arch = 'SPARC_64'
 		bits = 64
 	# S390X
-	elif re.match('^s390x$', arch_string_raw):
+	elif re.match(r'^s390x$', arch_string_raw):
 		arch = 'S390X'
 		bits = 64
 

@@ -13,7 +13,7 @@ class MockDataSource_enforcing(object):
 	@staticmethod
 	def sestatus_b():
 		returncode = 0
-		output = '''
+		output = r'''
 SELinux status:                 enabled
 SELinuxfs mount:                /sys/fs/selinux
 SELinux root directory:         /etc/selinux
@@ -35,7 +35,7 @@ class MockDataSource_not_enforcing(object):
 	@staticmethod
 	def sestatus_b():
 		returncode = 0
-		output = '''
+		output = r'''
 SELinux status:                 enabled
 SELinuxfs mount:                /sys/fs/selinux
 SELinux root directory:         /etc/selinux
@@ -57,7 +57,7 @@ class MockDataSource_exec_mem_and_heap(object):
 	@staticmethod
 	def sestatus_b():
 		returncode = 0
-		output = '''
+		output = r'''
 allow_execheap                  on
 allow_execmem                   on
 '''
@@ -71,7 +71,7 @@ class MockDataSource_no_exec_mem_and_heap(object):
 	@staticmethod
 	def sestatus_b():
 		returncode = 0
-		output = '''
+		output = r'''
 allow_execheap                  off
 allow_execmem                   off
 '''

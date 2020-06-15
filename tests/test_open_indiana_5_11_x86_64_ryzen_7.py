@@ -24,7 +24,7 @@ class MockDataSource(object):
 	@staticmethod
 	def isainfo_vb():
 		returncode = 0
-		output = '''
+		output = r'''
 64-bit amd64 applications
 	rdseed avx2 rdrand avx xsave pclmulqdq aes movbe sse4.2 sse4.1
 	ssse3 amd_lzcnt popcnt amd_sse4a tscp ahf cx16 sse3 sse2 sse fxsr
@@ -36,7 +36,7 @@ amd_mmx mmx cmov amd_sysc cx8 tsc fpu
 	@staticmethod
 	def kstat_m_cpu_info():
 		returncode = 0
-		output = '''
+		output = r'''
 module: cpu_info                        instance: 0
 name:   cpu_info0                       class:    misc
 	brand                           AMD Ryzen 7 2700X Eight-Core Processor

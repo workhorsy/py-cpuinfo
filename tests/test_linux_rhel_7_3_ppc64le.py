@@ -32,7 +32,7 @@ class MockDataSource(object):
 	@staticmethod
 	def ibm_pa_features():
 		returncode = 0
-		output = '''
+		output = r'''
 /proc/device-tree/cpus/PowerPC,POWER7@1/ibm,pa-features 3ff60006 c08000c7
 
 '''
@@ -41,7 +41,7 @@ class MockDataSource(object):
 	@staticmethod
 	def cat_proc_cpuinfo():
 		returncode = 0
-		output = '''
+		output = r'''
 processor	: 0
 cpu		: POWER8E (raw), altivec supported
 clock		: 3425.000000MHz
@@ -133,7 +133,7 @@ machine		: CHRP IBM pSeries (emulated by qemu)
 	@staticmethod
 	def dmesg_a():
 		returncode = 0
-		output = '''
+		output = r'''
 [3269512.154534] convolution_var[11236]: unhandled signal 4 at 00003fff6c390004 nip 00003fff6c390004 lr 00003fff9a648d58 code 30001
 [3269512.234818] convolution_var[11344]: unhandled signal 5 at 00003fff84390000 nip 00003fff84390000 lr 00003fffb2217ce0 code 30001
 [3269512.234823] convolution_var[11347]: unhandled signal 11 at 0000000000000304 nip 00003fff8439001c lr 00003fffb2217ce0 code 30001
@@ -301,7 +301,7 @@ machine		: CHRP IBM pSeries (emulated by qemu)
 	@staticmethod
 	def lscpu():
 		returncode = 0
-		output = '''
+		output = r'''
 Architecture:          ppc64le
 Byte Order:            Little Endian
 CPU(s):                16

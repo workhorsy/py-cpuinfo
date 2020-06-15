@@ -20,7 +20,7 @@ class MockDataSource(object):
 	@staticmethod
 	def dmesg_a():
 		retcode = 0
-		output = '''Copyright (c) 1992-2014 The FreeBSD Project.
+		output = r'''Copyright (c) 1992-2014 The FreeBSD Project.
 Copyright (c) 1979, 1980, 1983, 1986, 1988, 1989, 1991, 1992, 1993, 1994
     The Regents of the University of California. All rights reserved.
 FreeBSD is a registered trademark of The FreeBSD Foundation.

@@ -23,7 +23,7 @@ class MockDataSource(object):
 	@staticmethod
 	def cat_proc_cpuinfo():
 		returncode = 0
-		output = '''
+		output = r'''
 Processor	: ARMv6-compatible processor rev 7 (v6l)
 BogoMIPS	: 697.95
 Features	: swp half thumb fastmult vfp edsp java tls
@@ -44,7 +44,7 @@ Serial		: 0000000066564a8f
 	@staticmethod
 	def lscpu():
 		returncode = 0
-		output = '''
+		output = r'''
 Architecture:          armv6l
 Byte Order:            Little Endian
 CPU(s):                1

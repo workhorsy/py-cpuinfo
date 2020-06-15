@@ -20,7 +20,7 @@ class MockDataSource(object):
 	@staticmethod
 	def cat_proc_cpuinfo():
 		returncode = 0
-		output = '''
+		output = r'''
 processor	: 0
 vendor_id	: GenuineIntel
 cpu family	: 6

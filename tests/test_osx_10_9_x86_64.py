@@ -22,7 +22,7 @@ class MockDataSource(object):
 	@staticmethod
 	def sysctl_machdep_cpu_hw_cpufrequency():
 		returncode = 0
-		output = '''
+		output = r'''
 machdep.cpu.max_basic: 5
 machdep.cpu.max_ext: 2147483656
 machdep.cpu.vendor: GenuineIntel

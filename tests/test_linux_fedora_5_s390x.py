@@ -28,7 +28,7 @@ class MockDataSource(object):
 	@staticmethod
 	def cat_proc_cpuinfo():
 		returncode = 0
-		output = '''
+		output = r'''
 vendor_id       : IBM/S390
 # processors    : 4
 bogomips per cpu: 2913.00
@@ -64,7 +64,7 @@ cpu MHz static  : 5504
 	@staticmethod
 	def lscpu():
 		returncode = 0
-		output = '''
+		output = r'''
 Architecture:          s390x
 CPU op-mode(s):        32-bit, 64-bit
 Byte Order:            Big Endian
@@ -99,7 +99,7 @@ Flags:                 esan3 zarch stfle msa ldisp eimm dfp etf3eh highgprs sie
 	@staticmethod
 	def dmesg_a():
 		returncode = 0
-		output = '''
+		output = r'''
 [623985.026158]            000003ffda1f9118 00e1526ff184ab35 00000000800008a0 000003ffda1f90f0
 [623985.026161]            0000000080000740 0000000000000000 000002aa4b1cf0a0 000003ffaa476f30
 [623985.026165]            000003ffaa428f58 000002aa4b1bf6b0 000003ffa9e22b9e 000003ffda1f8ee0

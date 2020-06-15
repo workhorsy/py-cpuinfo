@@ -24,7 +24,7 @@ class MockDataSource(object):
 	@staticmethod
 	def cat_proc_cpuinfo():
 		returncode = 0
-		output = '''
+		output = r'''
 processor       : 90
 BogoMIPS        : 200.00
 Features        : fp asimd evtstrm aes pmull sha1 sha2 crc32 atomics
@@ -86,7 +86,7 @@ CPU revision    : 0
 	@staticmethod
 	def lscpu():
 		returncode = 0
-		output = '''
+		output = r'''
 Architecture:          aarch64
 Byte Order:            Little Endian
 CPU(s):                96

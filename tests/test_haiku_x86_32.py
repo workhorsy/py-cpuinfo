@@ -20,7 +20,7 @@ class MockDataSource(object):
 	@staticmethod
 	def sysinfo_cpu():
 		returncode = 0
-		output = '''
+		output = r'''
 4 Intel Core i7, revision 46e5 running at 2928MHz (ID: 0x00000000 0x00000000)
 
 CPU #0: "Intel(R) Core(TM) i7 CPU         870  @ 2.93GHz"
