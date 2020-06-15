@@ -123,7 +123,6 @@ class TestWindows_10_X86_64_Ryzen7(unittest.TestCase):
 	def test_get_cpu_info_from_platform_uname(self):
 		info = cpuinfo._get_cpu_info_from_platform_uname()
 
-		# FIXME: Family is different here and other tests
 		self.assertEqual(2, info['stepping'])
 		self.assertEqual(8, info['model'])
 		self.assertEqual(23, info['family'])

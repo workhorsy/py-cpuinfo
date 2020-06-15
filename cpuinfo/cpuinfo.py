@@ -2075,7 +2075,6 @@ def _get_cpu_info_from_wmic():
 
 def _get_cpu_info_from_registry():
 	'''
-	FIXME: Is missing many of the newer CPU flags like sse3
 	Returns the CPU info gathered from the Windows Registry.
 	Returns {} if not on Windows.
 	'''
