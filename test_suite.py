@@ -35,6 +35,7 @@ sys.path.append(os.path.realpath('tests'))
 
 
 # Import all the test files
+from test_compile_errors import TestCompileErrors
 from test_example import TestExample
 from test_parse_errors import TestParseErrors
 from test_parse_cpu_string import TestParseCPUString
@@ -80,6 +81,7 @@ if __name__ == '__main__':
 
 	# Get all the tests
 	tests = [
+		TestCompileErrors,
 		TestParseCPUString,
 		TestExample,
 		TestParseErrors,
@@ -117,6 +119,8 @@ if __name__ == '__main__':
 		TestActual,
 		TestCLI
 	]
+
+	tests = [TestCompileErrors]
 
 	# Add the tests to the suite
 	suite = unittest.TestSuite()
