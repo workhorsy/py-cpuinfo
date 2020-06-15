@@ -99,7 +99,7 @@ class TestWindows_10_X86_64_Ryzen7(unittest.TestCase):
 
 		self.assertEqual(2, info['stepping'])
 		self.assertEqual(8, info['model'])
-		self.assertEqual(15, info['family'])
+		self.assertEqual(23, info['family'])
 		self.assertEqual(8, info['extended_family'])
 
 		self.assertEqual(64 * 1024, info['l2_cache_size'])
@@ -164,7 +164,7 @@ class TestWindows_10_X86_64_Ryzen7(unittest.TestCase):
 
 		self.assertEqual(2, info['stepping'])
 		self.assertEqual(8, info['model'])
-		self.assertEqual(15, info['family'])
+		self.assertEqual(23, info['family'])
 		self.assertEqual(8, info['extended_family'])
 
 		self.assertEqual(64 * 1024, info['l2_cache_size'])

@@ -868,20 +868,29 @@ class CPUID(object):
 		)
 
 		# Get the CPU info
-		stepping = (eax >> 0) & 0xF # 4 bits
+		stepping_id = (eax >> 0) & 0xF # 4 bits
 		model = (eax >> 4) & 0xF # 4 bits
-		family = (eax >> 8) & 0xF # 4 bits
+		family_id = (eax >> 8) & 0xF # 4 bits
 		processor_type = (eax >> 12) & 0x3 # 2 bits
-		extended_model = (eax >> 16) & 0xF # 4 bits
-		extended_family = (eax >> 20) & 0xFF # 8 bits
+		extended_model_id = (eax >> 16) & 0xF # 4 bits
+		extended_family_id = (eax >> 20) & 0xFF # 8 bits
+		family = 0
+
+		if family_id in [15]:
+			family = extended_family_id + family_id
+		else:
+			family = family_id
+
+		if family_id in [6, 15]:
+			model = (extended_model_id << 4) + model
 
 		return {
-			'stepping' : stepping,
+			'stepping' : stepping_id,
 			'model' : model,
 			'family' : family,
 			'processor_type' : processor_type,
-			'extended_model' : extended_model,
-			'extended_family' : extended_family
+			'extended_model' : extended_model_id,
+			'extended_family' : extended_family_id
 		}
 
 	# http://en.wikipedia.org/wiki/CPUID#EAX.3D80000000h:_Get_Highest_Extended_Function_Supported
@@ -1417,7 +1426,8 @@ def _get_cpu_info_from_cpuid():
 				output = queue.get()
 				return _b64_to_obj(output)
 		else:
-			return _get_cpu_info_from_cpuid_actual()
+			info = _get_cpu_info_from_cpuid_actual()
+			return info
 	except:
 		pass
 

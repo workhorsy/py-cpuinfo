@@ -116,7 +116,7 @@ class TestWindows_8_X86_64(unittest.TestCase):
 		self.assertEqual((2930000000, 0), info['hz_actual'])
 
 		self.assertEqual(5, info['stepping'])
-		self.assertEqual(14, info['model'])
+		self.assertEqual(30, info['model'])
 		self.assertEqual(6, info['family'])
 		#self.assertEqual(8, info['extended_family'])
 
