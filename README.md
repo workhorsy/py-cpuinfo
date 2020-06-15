@@ -62,8 +62,6 @@ Fields
 | "model"                       | 30                        | int                   |
 | "family"                      | 6                         | int                   |
 | "processor_type"              | 0                         | int                   |
-| "extended_model"              | 0                         | int                   |
-| "extended_family"             | 0                         | int                   |
 | "flags"                       | ['acpi', 'aperfmperf', 'apic', 'arch_perfmon', 'bts', 'clflush', 'cmov', 'constant_tsc', 'cx16', 'cx8', 'de', 'ds_cpl', 'dtes64', 'dtherm', 'dts', 'ept', 'est', 'flexpriority', 'fpu', 'fxsr', 'ht', 'ida', 'lahf_lm', 'lm', 'mca', 'mce', 'mmx', 'monitor', 'msr', 'mtrr', 'nonstop_tsc', 'nopl', 'nx', 'pae', 'pat', 'pbe', 'pdcm', 'pebs', 'pge', 'pni', 'popcnt', 'pse', 'pse36', 'rdtscp', 'rep_good', 'sep', 'smx', 'ss', 'sse', 'sse2', 'sse4_1', 'sse4_2', 'ssse3', 'syscall', 'tm', 'tm2', 'tpr_shadow', 'tsc', 'vme', 'vmx', 'vnmi', 'vpid', 'xtopology', 'xtpr'] | [string] |
 
 

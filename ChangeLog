@@ -1,4 +1,5 @@
 * Release 7.0.0
+	* Fixed Bug #147: Remove extended_model and extended_family fields
 	* Fixed Bug #146: CPUID family and model is wrong
 	* Fixed Bug #144: Cache fields should be full ints instead of kb strings
 

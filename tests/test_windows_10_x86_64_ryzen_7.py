@@ -82,9 +82,9 @@ class TestWindows_10_X86_64_Ryzen7(unittest.TestCase):
 		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_cat_var_run_dmesg_boot()))
 		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_ibm_pa_features()))
 		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_sysinfo()))
-		self.assertEqual(12, len(cpuinfo._get_cpu_info_from_cpuid()))
+		self.assertEqual(11, len(cpuinfo._get_cpu_info_from_cpuid()))
 		self.assertEqual(3, len(cpuinfo._get_cpu_info_from_platform_uname()))
-		self.assertEqual(21, len(cpuinfo._get_cpu_info_internal()))
+		self.assertEqual(20, len(cpuinfo._get_cpu_info_internal()))
 
 
 	def test_get_cpu_info_from_cpuid(self):
@@ -100,7 +100,6 @@ class TestWindows_10_X86_64_Ryzen7(unittest.TestCase):
 		self.assertEqual(2, info['stepping'])
 		self.assertEqual(8, info['model'])
 		self.assertEqual(23, info['family'])
-		self.assertEqual(8, info['extended_family'])
 
 		self.assertEqual(64 * 1024, info['l2_cache_size'])
 		self.assertEqual(512, info['l2_cache_line_size'])
@@ -165,7 +164,6 @@ class TestWindows_10_X86_64_Ryzen7(unittest.TestCase):
 		self.assertEqual(2, info['stepping'])
 		self.assertEqual(8, info['model'])
 		self.assertEqual(23, info['family'])
-		self.assertEqual(8, info['extended_family'])
 
 		self.assertEqual(64 * 1024, info['l2_cache_size'])
 		self.assertEqual(6, info['l2_cache_associativity'])

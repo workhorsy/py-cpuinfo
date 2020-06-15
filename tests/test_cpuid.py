@@ -217,7 +217,7 @@ class TestCPUID(unittest.TestCase):
 		self.assertEqual({'size_b': 64 * 1024, 'line_size_b': 512, 'associativity': 6}, cache_info)
 
 		info = cpuid.get_info()
-		self.assertEqual({'stepping': 2, 'model': 8, 'family': 23, 'processor_type': 0, 'extended_model': 0, 'extended_family': 8}, info)
+		self.assertEqual({'stepping': 2, 'model': 8, 'family': 23, 'processor_type': 0}, info)
 
 		processor_brand = cpuid.get_processor_brand(max_extension_support)
 		self.assertEqual("AMD Ryzen 7 2700X Eight-Core Processor", processor_brand)

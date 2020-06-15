@@ -179,8 +179,6 @@ class TestLinux_Aarch_64(unittest.TestCase):
 		self.assertEqual(0, info['model'])
 		self.assertEqual(0, info['family'])
 		self.assertEqual(0, info['processor_type'])
-		self.assertEqual(0, info['extended_model'])
-		self.assertEqual(0, info['extended_family'])
 		self.assertEqual(
 			['aes', 'asimd', 'atomics', 'crc32', 'evtstrm',
 			'fp', 'pmull', 'sha1', 'sha2']

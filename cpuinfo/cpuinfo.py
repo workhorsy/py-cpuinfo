@@ -266,7 +266,7 @@ def _copy_new_fields(info, new_info):
 		'arch_string_raw', 'uname_string_raw',
 		'l2_cache_size', 'l2_cache_line_size', 'l2_cache_associativity',
 		'stepping', 'model', 'family',
-		'processor_type', 'extended_model', 'extended_family', 'flags',
+		'processor_type', 'flags',
 		'l3_cache_size', 'l1_data_cache_size', 'l1_instruction_cache_size'
 	]
 
@@ -888,9 +888,7 @@ class CPUID(object):
 			'stepping' : stepping_id,
 			'model' : model,
 			'family' : family,
-			'processor_type' : processor_type,
-			'extended_model' : extended_model_id,
-			'extended_family' : extended_family_id
+			'processor_type' : processor_type
 		}
 
 	# http://en.wikipedia.org/wiki/CPUID#EAX.3D80000000h:_Get_Highest_Extended_Function_Supported
@@ -1371,8 +1369,6 @@ def _get_cpu_info_from_cpuid_actual():
 	'model' : info['model'],
 	'family' : info['family'],
 	'processor_type' : info['processor_type'],
-	'extended_model' : info['extended_model'],
-	'extended_family' : info['extended_family'],
 	'flags' : cpuid.get_flags(max_extension_support)
 	}
 
@@ -2425,8 +2421,6 @@ def main():
 		print('Model: {0}'.format(info.get('model', '')))
 		print('Family: {0}'.format(info.get('family', '')))
 		print('Processor Type: {0}'.format(info.get('processor_type', '')))
-		print('Extended Model: {0}'.format(info.get('extended_model', '')))
-		print('Extended Family: {0}'.format(info.get('extended_family', '')))
 		print('Flags: {0}'.format(', '.join(info.get('flags', ''))))
 
 
