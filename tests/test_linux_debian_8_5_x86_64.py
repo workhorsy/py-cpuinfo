@@ -28,7 +28,7 @@ class MockDataSource(object):
 	@staticmethod
 	def cat_proc_cpuinfo():
 		returncode = 0
-		output = '''
+		output = r'''
 processor	: 0
 vendor_id	: GenuineIntel
 cpu family	: 6
@@ -86,7 +86,7 @@ power management:
 	@staticmethod
 	def dmesg_a():
 		returncode = 0
-		output = '''
+		output = r'''
 [    0.000000] Initializing cgroup subsys cpuset
 [    0.000000] Initializing cgroup subsys cpu
 [    0.000000] Initializing cgroup subsys cpuacct
@@ -410,7 +410,7 @@ tlb_flushall_shift: 6
 	@staticmethod
 	def lscpu():
 		returncode = 0
-		output = '''
+		output = r'''
 Architecture:          x86_64
 CPU op-mode(s):        32-bit, 64-bit
 Byte Order:            Little Endian

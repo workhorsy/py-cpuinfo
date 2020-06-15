@@ -28,7 +28,7 @@ class MockDataSource(object):
 	@staticmethod
 	def cat_proc_cpuinfo():
 		returncode = 0
-		output = '''
+		output = r'''
 processor	: 0
 vendor_id	: GenuineIntel
 cpu family	: 6
@@ -88,7 +88,7 @@ power management:
 	@staticmethod
 	def dmesg_a():
 		returncode = 0
-		output = '''
+		output = r'''
 ===============================================================================
 [    0.000000] Linux version 4.5.2-aufs-r1 (root@jasmin) (gcc version 5.4.0 (Gentoo 5.4.0 p1.0, pie-0.6.5) ) #1 SMP Sun Jul 3 17:17:11 UTC 2016
 [    0.000000] Command line: BOOT_IMAGE=/isolinux/gentoo root=/dev/ram0 init=/linuxrc dokeymap aufs looptype=squashfs loop=/image.squashfs cdroot initrd=/isolinux/gentoo.xz console=tty1
@@ -413,7 +413,7 @@ power management:
 	@staticmethod
 	def lscpu():
 		returncode = 0
-		output = '''
+		output = r'''
 Architecture:          x86_64
 CPU op-mode(s):        32-bit, 64-bit
 Byte Order:            Little Endian

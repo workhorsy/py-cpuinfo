@@ -28,7 +28,7 @@ class MockDataSource(object):
 	@staticmethod
 	def cat_proc_cpuinfo():
 		returncode = 0
-		output = '''
+		output = r'''
 processor	: 0
 BogoMIPS	: 2.00
 Features	: fp asimd crc32
@@ -75,7 +75,7 @@ Revision	: 020c
 	@staticmethod
 	def lscpu():
 		returncode = 0
-		output = '''
+		output = r'''
 Architecture:          aarch64
 Byte Order:            Little Endian
 CPU(s):                4
@@ -91,7 +91,7 @@ CPU min MHz:           100.0000
 	@staticmethod
 	def cpufreq_info():
 		returncode = 0
-		output = '''
+		output = r'''
 cpufrequtils 008: cpufreq-info (C) Dominik Brodowski 2004-2009
 Report errors and bugs to cpufreq@vger.kernel.org, please.
 analyzing CPU 0:

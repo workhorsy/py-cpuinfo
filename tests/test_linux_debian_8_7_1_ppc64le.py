@@ -32,7 +32,7 @@ class MockDataSource(object):
 	@staticmethod
 	def ibm_pa_features():
 		returncode = 0
-		output = '''
+		output = r'''
 /proc/device-tree/cpus/PowerPC,POWER8@0/ibm,pa-features
                  18 00 f6 3f c7 c0 80 f0 80 00 00 00 00 00 00 00...?............
                  00 00 80 00 80 00 80 00 80 00                  ..........
@@ -43,7 +43,7 @@ class MockDataSource(object):
 	@staticmethod
 	def cat_proc_cpuinfo():
 		returncode = 0
-		output = '''
+		output = r'''
 processor	: 0
 cpu		: POWER7 (raw), altivec supported
 clock		: 1000.000000MHz
@@ -65,7 +65,7 @@ machine		: CHRP IBM pSeries (emulated by qemu)
 	@staticmethod
 	def dmesg_a():
 		returncode = 0
-		output = '''
+		output = r'''
 [    0.000000] Allocated 4718592 bytes for 2048 pacas at c00000000fb80000
 [    0.000000] Using pSeries machine description
 [    0.000000] Page sizes from device-tree:
@@ -390,7 +390,7 @@ machine		: CHRP IBM pSeries (emulated by qemu)
 	@staticmethod
 	def lscpu():
 		returncode = 0
-		output = '''
+		output = r'''
 Architecture:          ppc64le
 Byte Order:            Little Endian
 CPU(s):                2

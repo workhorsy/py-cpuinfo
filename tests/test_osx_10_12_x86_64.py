@@ -22,7 +22,7 @@ class MockDataSource(object):
 	@staticmethod
 	def sysctl_machdep_cpu_hw_cpufrequency():
 		returncode = 0
-		output = '''
+		output = r'''
 machdep.cpu.tsc_ccc.denominator: 0
 machdep.cpu.tsc_ccc.numerator: 0
 machdep.cpu.thread_count: 4

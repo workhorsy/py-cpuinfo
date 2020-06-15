@@ -23,7 +23,7 @@ class MockDataSource(object):
 	@staticmethod
 	def cat_proc_cpuinfo():
 		returncode = 0
-		output = '''
+		output = r'''
 processor       : 0
 model name      : ARMv6-compatible processor rev 7 (v6l)
 Features        : swp half thumb fastmult vfp edsp java tls
@@ -45,7 +45,7 @@ Serial          : 00000000be6d9ba0
 	@staticmethod
 	def cpufreq_info():
 		returncode = 0
-		output = '''
+		output = r'''
 cpufrequtils 008: cpufreq-info (C) Dominik Brodowski 2004-2009
 Report errors and bugs to cpufreq@vger.kernel.org, please.
 analyzing CPU 0:

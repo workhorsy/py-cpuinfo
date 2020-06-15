@@ -24,7 +24,7 @@ class MockDataSource(object):
 	@staticmethod
 	def isainfo_vb():
 		returncode = 0
-		output = '''
+		output = r'''
 64-bit amd64 applications
 	ssse3 tscp ahf sse3 sse2 sse fxsr mmx cmov amd_sysc cx8 tsc fpu
 
@@ -34,7 +34,7 @@ class MockDataSource(object):
 	@staticmethod
 	def kstat_m_cpu_info():
 		returncode = 0
-		output = '''
+		output = r'''
 module: cpu_info                        instance: 0
 name:   cpu_info0                       class:    misc
 	brand                           Intel(r) Core(tm) i7 CPU         870  @ 2.93GHz

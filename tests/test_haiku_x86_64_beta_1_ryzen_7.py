@@ -20,7 +20,7 @@ class MockDataSource(object):
 	@staticmethod
 	def sysinfo_cpu():
 		returncode = 0
-		output = '''
+		output = r'''
 2 AMD Ryzen 7, revision 800f82 running at 3693MHz
 
 CPU #0: "AMD Ryzen 7 2700X Eight-Core Processor         "

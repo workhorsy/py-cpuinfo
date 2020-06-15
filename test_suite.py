@@ -120,8 +120,6 @@ if __name__ == '__main__':
 		TestCLI
 	]
 
-	tests = [TestCompileErrors]
-
 	# Add the tests to the suite
 	suite = unittest.TestSuite()
 	for test in tests:

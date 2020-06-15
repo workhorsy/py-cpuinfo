@@ -24,7 +24,7 @@ class MockDataSource(object):
 	@staticmethod
 	def dmesg_a():
 		retcode = 0
-		output = '''Copyright (c) 1992-2014 The FreeBSD Project.
+		output = r'''Copyright (c) 1992-2014 The FreeBSD Project.
 Copyright (c) 1979, 1980, 1983, 1986, 1988, 1989, 1991, 1992, 1993, 1994
     The Regents of the University of California. All rights reserved.
 FreeBSD is a registered trademark of The FreeBSD Foundation.
@@ -45,7 +45,7 @@ CPU: Intel(R) Pentium(R) CPU G640 @ 2.80GHz (2793.73-MHz K8-class CPU)
 	@staticmethod
 	def cat_var_run_dmesg_boot():
 		retcode = 0
-		output = '''
+		output = r'''
 VT(vga): text 80x25
 CPU: Intel(R) Pentium(R) CPU G640 @ 2.80GHz (2793.73-MHz K8-class CPU)
   Origin="GenuineIntel"  Id=0x206a7  Family=0x6  Model=02a  Stepping=7
