@@ -211,8 +211,11 @@ if os.path.exists('/var/run/dmesg.boot'):
 	print_output('cat /var/run/dmesg.boot', output)
 
 if program_paths('sysinfo'):
-	returncode, output = run_and_get_stdout(['sysinfo', '-cpu'])
-	print_output('sysinfo -cpu', output)
+	uname = platform.system().strip().strip('"').strip("'").strip().lower()
+	is_beos = 'beos' in uname or 'haiku' in uname
+	if is_beos:
+		returncode, output = run_and_get_stdout(['sysinfo', '-cpu'])
+		print_output('sysinfo -cpu', output)
 
 if program_paths('lsprop'):
 	ibm_features = glob.glob('/proc/device-tree/cpus/*/ibm,pa-features')

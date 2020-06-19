@@ -81,7 +81,9 @@ class DataSource(object):
 
 	@staticmethod
 	def has_sysinfo():
-		return len(_program_paths('sysinfo')) > 0
+		uname = platform.system().strip().strip('"').strip("'").strip().lower()
+		is_beos = 'beos' in uname or 'haiku' in uname
+		return is_beos and len(_program_paths('sysinfo')) > 0
 
 	@staticmethod
 	def has_lscpu():
