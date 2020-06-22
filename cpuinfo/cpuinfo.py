@@ -722,16 +722,21 @@ def _filter_dict_keys_with_empty_values(info):
 
 	return info
 
-class CPUID(object):
-	def __init__(self):
-		self.prochandle = None
 
-		# Figure out if SE Linux is on and in enforcing mode
+class ASM(object):
+	def __init__(self, restype=None, argtypes=(), byte_code=[]):
+		self.restype = restype
+		self.argtypes = argtypes
+		self.byte_code = byte_code
+		self.prochandle = None
+		self.func = None
+		self.address = None
+		self.size = 0
 		self.is_selinux_enforcing = _is_selinux_enforcing()
 
-	def _asm_func(self, restype=None, argtypes=(), byte_code=[]):
-		byte_code = bytes.join(b'', byte_code)
-		address = None
+	def compile(self):
+		byte_code = bytes.join(b'', self.byte_code)
+		self.size = ctypes.c_size_t(len(byte_code))
 
 		if DataSource.is_windows:
 			# Allocate a memory segment the size of the byte code, and make it executable
@@ -742,20 +747,20 @@ class CPUID(object):
 			PAGE_READWRITE = ctypes.c_ulong(0x4)
 			pfnVirtualAlloc = ctypes.windll.kernel32.VirtualAlloc
 			pfnVirtualAlloc.restype = ctypes.c_void_p
-			address = pfnVirtualAlloc(None, ctypes.c_size_t(size), MEM_COMMIT, PAGE_READWRITE)
-			if not address:
+			self.address = pfnVirtualAlloc(None, ctypes.c_size_t(size), MEM_COMMIT, PAGE_READWRITE)
+			if not self.address:
 				raise Exception("Failed to VirtualAlloc")
 
 			# Copy the byte code into the memory segment
 			memmove = ctypes.CFUNCTYPE(ctypes.c_void_p, ctypes.c_void_p, ctypes.c_void_p, ctypes.c_size_t)(ctypes._memmove_addr)
-			if memmove(address, byte_code, size) < 0:
+			if memmove(self.address, byte_code, size) < 0:
 				raise Exception("Failed to memmove")
 
 			# Enable execute permissions
 			PAGE_EXECUTE = ctypes.c_ulong(0x10)
 			old_protect = ctypes.c_ulong(0)
 			pfnVirtualProtect = ctypes.windll.kernel32.VirtualProtect
-			res = pfnVirtualProtect(ctypes.c_void_p(address), ctypes.c_size_t(size), PAGE_EXECUTE, ctypes.byref(old_protect))
+			res = pfnVirtualProtect(ctypes.c_void_p(self.address), ctypes.c_size_t(size), PAGE_EXECUTE, ctypes.byref(old_protect))
 			if not res:
 				raise Exception("Failed VirtualProtect")
 
@@ -766,7 +771,7 @@ class CPUID(object):
 				pfnGetCurrentProcess.restype = ctypes.c_void_p
 				self.prochandle = ctypes.c_void_p(pfnGetCurrentProcess())
 			# Actually flush cache
-			res = ctypes.windll.kernel32.FlushInstructionCache(self.prochandle, ctypes.c_void_p(address), ctypes.c_size_t(size))
+			res = ctypes.windll.kernel32.FlushInstructionCache(self.prochandle, ctypes.c_void_p(self.address), ctypes.c_size_t(size))
 			if not res:
 				raise Exception("Failed FlushInstructionCache")
 		else:
@@ -774,55 +779,70 @@ class CPUID(object):
 			size = len(byte_code)
 			pfnvalloc = ctypes.pythonapi.valloc
 			pfnvalloc.restype = ctypes.c_void_p
-			address = pfnvalloc(ctypes.c_size_t(size))
-			if not address:
+			self.address = pfnvalloc(ctypes.c_size_t(size))
+			if not self.address:
 				raise Exception("Failed to valloc")
 
 			# Mark the memory segment as writeable only
 			if not self.is_selinux_enforcing:
 				WRITE = 0x2
-				if ctypes.pythonapi.mprotect(ctypes.c_void_p(address), size, WRITE) < 0:
+				if ctypes.pythonapi.mprotect(ctypes.c_void_p(self.address), size, WRITE) < 0:
 					raise Exception("Failed to mprotect")
 
 			# Copy the byte code into the memory segment
-			if ctypes.pythonapi.memmove(ctypes.c_void_p(address), byte_code, ctypes.c_size_t(size)) < 0:
+			if ctypes.pythonapi.memmove(ctypes.c_void_p(self.address), byte_code, ctypes.c_size_t(size)) < 0:
 				raise Exception("Failed to memmove")
 
 			# Mark the memory segment as writeable and executable only
 			if not self.is_selinux_enforcing:
 				WRITE_EXECUTE = 0x2 | 0x4
-				if ctypes.pythonapi.mprotect(ctypes.c_void_p(address), size, WRITE_EXECUTE) < 0:
+				if ctypes.pythonapi.mprotect(ctypes.c_void_p(self.address), size, WRITE_EXECUTE) < 0:
 					raise Exception("Failed to mprotect")
 
 		# Cast the memory segment into a function
-		functype = ctypes.CFUNCTYPE(restype, *argtypes)
-		fun = functype(address)
-		return fun, address
+		functype = ctypes.CFUNCTYPE(self.restype, *self.argtypes)
+		self.func = functype(self.address)
 
-	def _run_asm(self, *byte_code):
-		# Convert the byte code into a function that returns an int
-		restype = ctypes.c_uint32
-		argtypes = ()
-		func, address = self._asm_func(restype, argtypes, byte_code)
-
+	def run(self):
 		# Call the byte code like a function
-		retval = func()
+		retval = self.func()
 
-		byte_code = bytes.join(b'', byte_code)
-		size = ctypes.c_size_t(len(byte_code))
+		return retval
 
+	def free(self):
 		# Free the function memory segment
 		if DataSource.is_windows:
 			MEM_RELEASE = ctypes.c_ulong(0x8000)
-			ctypes.windll.kernel32.VirtualFree(ctypes.c_void_p(address), ctypes.c_size_t(0), MEM_RELEASE)
+			ctypes.windll.kernel32.VirtualFree(ctypes.c_void_p(self.address), ctypes.c_size_t(0), MEM_RELEASE)
 		else:
 			# Remove the executable tag on the memory
 			READ_WRITE = 0x1 | 0x2
-			if ctypes.pythonapi.mprotect(ctypes.c_void_p(address), size, READ_WRITE) < 0:
+			if ctypes.pythonapi.mprotect(ctypes.c_void_p(self.address), self.size, READ_WRITE) < 0:
 				raise Exception("Failed to mprotect")
 
-			ctypes.pythonapi.free(ctypes.c_void_p(address))
+			ctypes.pythonapi.free(ctypes.c_void_p(self.address))
 
+		self.func = None
+		self.address = None
+		self.size = 0
+		self.prochandle = None
+
+
+class CPUID(object):
+	def __init__(self):
+		# Figure out if SE Linux is on and in enforcing mode
+		self.is_selinux_enforcing = _is_selinux_enforcing()
+
+	def _asm_func(self, restype=None, argtypes=(), byte_code=[]):
+		asm = ASM(ctypes.c_uint32, (), byte_code)
+		asm.compile()
+		return asm
+
+	def _run_asm(self, *byte_code):
+		asm = ASM(ctypes.c_uint32, (), byte_code)
+		asm.compile()
+		retval = asm.run()
+		asm.free()
 		return retval
 
 	# http://en.wikipedia.org/wiki/CPUID#EAX.3D0:_Get_vendor_ID
@@ -1266,7 +1286,7 @@ class CPUID(object):
 			# Works on x86_32
 			restype = None
 			argtypes = (ctypes.POINTER(ctypes.c_uint), ctypes.POINTER(ctypes.c_uint))
-			get_ticks_x86_32, address = self._asm_func(restype, argtypes,
+			get_ticks_x86_32 = self._asm_func(restype, argtypes,
 				[
 				b"\x55",         # push bp
 				b"\x89\xE5",     # mov bp,sp
@@ -1285,13 +1305,14 @@ class CPUID(object):
 			high = ctypes.c_uint32(0)
 			low = ctypes.c_uint32(0)
 
-			get_ticks_x86_32(ctypes.byref(high), ctypes.byref(low))
+			get_ticks_x86_32.func(ctypes.byref(high), ctypes.byref(low))
 			retval = ((high.value << 32) & 0xFFFFFFFF00000000) | low.value
+			get_ticks_x86_32.free()
 		elif DataSource.bits == '64bit':
 			# Works on x86_64
 			restype = ctypes.c_uint64
 			argtypes = ()
-			get_ticks_x86_64, address = self._asm_func(restype, argtypes,
+			get_ticks_x86_64 = self._asm_func(restype, argtypes,
 				[
 				b"\x48",         # dec ax
 				b"\x31\xC0",     # xor ax,ax
@@ -1304,7 +1325,8 @@ class CPUID(object):
 				b"\xC3",         # ret
 				]
 			)
-			retval = get_ticks_x86_64()
+			retval = get_ticks_x86_64.func()
+			get_ticks_x86_64.free()
 
 		return retval
 
