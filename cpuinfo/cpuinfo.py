@@ -834,7 +834,7 @@ class CPUID(object):
 		self.is_selinux_enforcing = _is_selinux_enforcing()
 
 	def _asm_func(self, restype=None, argtypes=(), byte_code=[]):
-		asm = ASM(ctypes.c_uint32, (), byte_code)
+		asm = ASM(restype, argtypes, byte_code)
 		asm.compile()
 		return asm
 
