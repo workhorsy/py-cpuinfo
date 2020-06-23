@@ -1279,7 +1279,7 @@ class CPUID(object):
 
 		return cache_info
 
-	def get_ticks(self):
+	def get_ticks_func(self):
 		retval = None
 
 		if DataSource.bits == '32bit':
@@ -1302,12 +1302,20 @@ class CPUID(object):
 				]
 			)
 
-			high = ctypes.c_uint32(0)
-			low = ctypes.c_uint32(0)
+			# Monkey patch func to combine high and low args into one return
+			old_func = get_ticks_x86_32.func
+			def new_func():
+				# Pass two uint32s into function
+				high = ctypes.c_uint32(0)
+				low = ctypes.c_uint32(0)
+				old_func(ctypes.byref(high), ctypes.byref(low))
 
-			get_ticks_x86_32.func(ctypes.byref(high), ctypes.byref(low))
-			retval = ((high.value << 32) & 0xFFFFFFFF00000000) | low.value
-			get_ticks_x86_32.free()
+				# Shift the two uint32s into one uint64
+				retval = ((high.value << 32) & 0xFFFFFFFF00000000) | low.value
+				return retval
+			get_ticks_x86_32.func = new_func
+
+			retval = get_ticks_x86_32
 		elif DataSource.bits == '64bit':
 			# Works on x86_64
 			restype = ctypes.c_uint64
@@ -1325,21 +1333,21 @@ class CPUID(object):
 				b"\xC3",         # ret
 				]
 			)
-			retval = get_ticks_x86_64.func()
-			get_ticks_x86_64.free()
 
+			retval = get_ticks_x86_64
 		return retval
 
 	def get_raw_hz(self):
-		import time
+		from time import sleep
 
-		start = self.get_ticks()
+		ticks_fn = self.get_ticks_func()
 
-		time.sleep(1)
-
-		end = self.get_ticks()
+		start = ticks_fn.func()
+		sleep(1)
+		end = ticks_fn.func()
 
 		ticks = (end - start)
+		ticks_fn.free()
 
 		return ticks
 
