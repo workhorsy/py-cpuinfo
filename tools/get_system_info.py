@@ -266,15 +266,15 @@ class CPUID(object):
 
 		self.registers = []
 
-	def _asm_func(self, restype=None, argtypes=(), byte_code=[]):
+	def _asm_func(self, restype=None, argtypes=(), machine_code=[]):
 		import ctypes
 
-		byte_code = bytes.join(b'', byte_code)
+		machine_code = bytes.join(b'', machine_code)
 		address = None
 
 		if is_windows:
-			# Allocate a memory segment the size of the byte code, and make it executable
-			size = len(byte_code)
+			# Allocate a memory segment the size of the machine code, and make it executable
+			size = len(machine_code)
 			# Alloc at least 1 page to ensure we own all pages that we want to change protection on
 			if size < 0x1000: size = 0x1000
 			MEM_COMMIT = ctypes.c_ulong(0x1000)
@@ -285,9 +285,9 @@ class CPUID(object):
 			if not address:
 				raise Exception("Failed to VirtualAlloc")
 
-			# Copy the byte code into the memory segment
+			# Copy the machine code into the memory segment
 			memmove = ctypes.CFUNCTYPE(ctypes.c_void_p, ctypes.c_void_p, ctypes.c_void_p, ctypes.c_size_t)(ctypes._memmove_addr)
-			if memmove(address, byte_code, size) < 0:
+			if memmove(address, machine_code, size) < 0:
 				raise Exception("Failed to memmove")
 
 			# Enable execute permissions
@@ -309,8 +309,8 @@ class CPUID(object):
 			if not res:
 				raise Exception("Failed FlushInstructionCache")
 		else:
-			# Allocate a memory segment the size of the byte code
-			size = len(byte_code)
+			# Allocate a memory segment the size of the machine code
+			size = len(machine_code)
 			pfnvalloc = ctypes.pythonapi.valloc
 			pfnvalloc.restype = ctypes.c_void_p
 			address = pfnvalloc(ctypes.c_size_t(size))
@@ -323,8 +323,8 @@ class CPUID(object):
 				if ctypes.pythonapi.mprotect(ctypes.c_void_p(address), size, WRITE) < 0:
 					raise Exception("Failed to mprotect")
 
-			# Copy the byte code into the memory segment
-			if ctypes.pythonapi.memmove(ctypes.c_void_p(address), byte_code, ctypes.c_size_t(size)) < 0:
+			# Copy the machine code into the memory segment
+			if ctypes.pythonapi.memmove(ctypes.c_void_p(address), machine_code, ctypes.c_size_t(size)) < 0:
 				raise Exception("Failed to memmove")
 
 			# Mark the memory segment as writeable and executable only
@@ -338,19 +338,19 @@ class CPUID(object):
 		fun = functype(address)
 		return fun, address
 
-	def _run_asm(self, *byte_code):
+	def _run_asm(self, *machine_code):
 		import ctypes
 
-		# Convert the byte code into a function that returns an int
+		# Convert the machine code into a function that returns an int
 		restype = ctypes.c_uint32
 		argtypes = ()
-		func, address = self._asm_func(restype, argtypes, byte_code)
+		func, address = self._asm_func(restype, argtypes, machine_code)
 
-		# Call the byte code like a function
+		# Call the machine code like a function
 		retval = func()
 
-		byte_code = bytes.join(b'', byte_code)
-		size = ctypes.c_size_t(len(byte_code))
+		machine_code = bytes.join(b'', machine_code)
+		size = ctypes.c_size_t(len(machine_code))
 
 		# Free the function memory segment
 		if is_windows:

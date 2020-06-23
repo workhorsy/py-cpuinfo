@@ -724,10 +724,10 @@ def _filter_dict_keys_with_empty_values(info):
 
 
 class ASM(object):
-	def __init__(self, restype=None, argtypes=(), byte_code=[]):
+	def __init__(self, restype=None, argtypes=(), machine_code=[]):
 		self.restype = restype
 		self.argtypes = argtypes
-		self.byte_code = byte_code
+		self.machine_code = machine_code
 		self.prochandle = None
 		self.func = None
 		self.address = None
@@ -735,12 +735,12 @@ class ASM(object):
 		self.is_selinux_enforcing = _is_selinux_enforcing()
 
 	def compile(self):
-		byte_code = bytes.join(b'', self.byte_code)
-		self.size = ctypes.c_size_t(len(byte_code))
+		machine_code = bytes.join(b'', self.machine_code)
+		self.size = ctypes.c_size_t(len(machine_code))
 
 		if DataSource.is_windows:
-			# Allocate a memory segment the size of the byte code, and make it executable
-			size = len(byte_code)
+			# Allocate a memory segment the size of the machine code, and make it executable
+			size = len(machine_code)
 			# Alloc at least 1 page to ensure we own all pages that we want to change protection on
 			if size < 0x1000: size = 0x1000
 			MEM_COMMIT = ctypes.c_ulong(0x1000)
@@ -751,9 +751,9 @@ class ASM(object):
 			if not self.address:
 				raise Exception("Failed to VirtualAlloc")
 
-			# Copy the byte code into the memory segment
+			# Copy the machine code into the memory segment
 			memmove = ctypes.CFUNCTYPE(ctypes.c_void_p, ctypes.c_void_p, ctypes.c_void_p, ctypes.c_size_t)(ctypes._memmove_addr)
-			if memmove(self.address, byte_code, size) < 0:
+			if memmove(self.address, machine_code, size) < 0:
 				raise Exception("Failed to memmove")
 
 			# Enable execute permissions
@@ -775,8 +775,8 @@ class ASM(object):
 			if not res:
 				raise Exception("Failed FlushInstructionCache")
 		else:
-			# Allocate a memory segment the size of the byte code
-			size = len(byte_code)
+			# Allocate a memory segment the size of the machine code
+			size = len(machine_code)
 			pfnvalloc = ctypes.pythonapi.valloc
 			pfnvalloc.restype = ctypes.c_void_p
 			self.address = pfnvalloc(ctypes.c_size_t(size))
@@ -789,8 +789,8 @@ class ASM(object):
 				if ctypes.pythonapi.mprotect(ctypes.c_void_p(self.address), size, WRITE) < 0:
 					raise Exception("Failed to mprotect")
 
-			# Copy the byte code into the memory segment
-			if ctypes.pythonapi.memmove(ctypes.c_void_p(self.address), byte_code, ctypes.c_size_t(size)) < 0:
+			# Copy the machine code into the memory segment
+			if ctypes.pythonapi.memmove(ctypes.c_void_p(self.address), machine_code, ctypes.c_size_t(size)) < 0:
 				raise Exception("Failed to memmove")
 
 			# Mark the memory segment as writeable and executable only
@@ -804,7 +804,7 @@ class ASM(object):
 		self.func = functype(self.address)
 
 	def run(self):
-		# Call the byte code like a function
+		# Call the machine code like a function
 		retval = self.func()
 
 		return retval
@@ -833,13 +833,13 @@ class CPUID(object):
 		# Figure out if SE Linux is on and in enforcing mode
 		self.is_selinux_enforcing = _is_selinux_enforcing()
 
-	def _asm_func(self, restype=None, argtypes=(), byte_code=[]):
-		asm = ASM(restype, argtypes, byte_code)
+	def _asm_func(self, restype=None, argtypes=(), machine_code=[]):
+		asm = ASM(restype, argtypes, machine_code)
 		asm.compile()
 		return asm
 
-	def _run_asm(self, *byte_code):
-		asm = ASM(ctypes.c_uint32, (), byte_code)
+	def _run_asm(self, *machine_code):
+		asm = ASM(ctypes.c_uint32, (), machine_code)
 		asm.compile()
 		retval = asm.run()
 		asm.free()

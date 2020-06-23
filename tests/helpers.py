@@ -270,7 +270,7 @@ def monkey_patch_cpuid(cpuinfo, return_hz, return_values):
 		_counter = 0
 		_is_first = False
 
-		def _asm_func(self, restype=None, argtypes=(), byte_code=[]):
+		def _asm_func(self, restype=None, argtypes=(), machine_code=[]):
 			class CPUIDGetTicks(object):
 				# NOTE: This assumes that the function returned is a get_ticks function
 				def func(self):
@@ -286,7 +286,7 @@ def monkey_patch_cpuid(cpuinfo, return_hz, return_values):
 
 			return CPUIDGetTicks()
 
-		def _run_asm(self, *byte_code):
+		def _run_asm(self, *machine_code):
 			result = return_values[MockCPUID._counter]
 			MockCPUID._counter += 1
 			if MockCPUID._counter == len(return_values):

@@ -1,4 +1,5 @@
 * Release 7.0.0
+	* Fixed Bug #150: Change 'byte code' to 'machine code'
 	* Fixed Bug #128: Overhead from generating machine code throws off CPUID HZ
 	* Fixed Bug #136: On non BeOS systems, calling sysinfo may open GUI program
 	* Fixed Bug #138: Invalid escape sequences warn when building in Python 3.8
