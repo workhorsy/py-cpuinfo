@@ -5,25 +5,18 @@ from cpuinfo import *
 import helpers
 
 
-class MockCPUID(CPUID):
+class MockASM(ASM):
 	is_first = False
 
-	def __init__(self):
-		super(MockCPUID, self).__init__()
+	def __init__(self, restype=None, argtypes=(), byte_code=[]):
+		super(MockASM, self).__init__(restype, argtypes, byte_code)
 
-	def _asm_func(self, restype=None, argtypes=(), byte_code=[]):
-		# NOTE: This assumes that the function returned is a get_ticks function
-		def retval_func():
-			MockCPUID.is_first = not MockCPUID.is_first
+	def compile(self):
+		self.func = self.run
 
-			if MockCPUID.is_first:
-				return 19233706151817
-			else:
-				return 19237434253761
+	def run(self):
+		byte_code = tuple(self.byte_code)
 
-		return retval_func, 0
-
-	def _run_asm(self, *byte_code):
 		# get_max_extension_support
 		if byte_code == \
 			(b"\xB8\x00\x00\x00\x80" # mov ax,0x80000000
@@ -180,7 +173,42 @@ class MockCPUID(CPUID):
 			b"\xC3",):                 # ret
 			return 0x35c233ff
 
+		# get_ticks
+		# 32 bit
+		if byte_code == \
+			(b"\x55",         # push bp
+			b"\x89\xE5",     # mov bp,sp
+			b"\x31\xC0",     # xor ax,ax
+			b"\x0F\xA2",     # cpuid
+			b"\x0F\x31",     # rdtsc
+			b"\x8B\x5D\x08", # mov bx,[di+0x8]
+			b"\x8B\x4D\x0C", # mov cx,[di+0xc]
+			b"\x89\x13",     # mov [bp+di],dx
+			b"\x89\x01",     # mov [bx+di],ax
+			b"\x5D",         # pop bp
+			b"\xC3",):          # ret
+			raise Exception("FIXME: Add ticks for 32bit get_ticks")
+		# 64 bit
+		elif byte_code == \
+			(b"\x48",         # dec ax
+			b"\x31\xC0",     # xor ax,ax
+			b"\x0F\xA2",     # cpuid
+			b"\x0F\x31",     # rdtsc
+			b"\x48",         # dec ax
+			b"\xC1\xE2\x20", # shl dx,byte 0x20
+			b"\x48",         # dec ax
+			b"\x09\xD0",     # or ax,dx
+			b"\xC3",):         # ret
+			MockASM.is_first = not MockASM.is_first
+			if MockASM.is_first:
+				return 19233706151817
+			else:
+				return 19237434253761
+
 		raise Exception("Unexpected byte code")
+
+	def free(self):
+		self.func = None
 
 
 class MockDataSource(object):
@@ -197,15 +225,20 @@ class TestCPUID(unittest.TestCase):
 		helpers.backup_data_source(cpuinfo)
 		helpers.monkey_patch_data_source(cpuinfo, MockDataSource)
 
+		helpers.backup_asm(cpuinfo)
+		helpers.monkey_patch_asm(cpuinfo, MockASM)
+
 	def tearDown(self):
 		helpers.restore_data_source(cpuinfo)
+
+		helpers.restore_asm(cpuinfo)
 
 	# Make sure this returns {} on an invalid arch
 	def test_return_empty(self):
 		self.assertEqual({}, cpuinfo._get_cpu_info_from_cpuid())
 
 	def test_normal(self):
-		cpuid = MockCPUID()
+		cpuid = CPUID()
 		self.assertIsNotNone(cpuid)
 
 		self.assertFalse(cpuid.is_selinux_enforcing)
