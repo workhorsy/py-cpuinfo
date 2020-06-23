@@ -271,16 +271,20 @@ def monkey_patch_cpuid(cpuinfo, return_hz, return_values):
 		_is_first = False
 
 		def _asm_func(self, restype=None, argtypes=(), byte_code=[]):
-			# NOTE: This assumes that the function returned is a get_ticks function
-			def retval_func():
-				MockCPUID._is_first = not MockCPUID._is_first
+			class CPUIDGetTicks(object):
+				# NOTE: This assumes that the function returned is a get_ticks function
+				def func(self):
+					MockCPUID._is_first = not MockCPUID._is_first
 
-				if MockCPUID._is_first:
-					return return_hz
-				else:
-					return 0
+					if MockCPUID._is_first:
+						return return_hz
+					else:
+						return 0
 
-			return retval_func, 0
+				def free(self):
+					pass
+
+			return CPUIDGetTicks()
 
 		def _run_asm(self, *byte_code):
 			result = return_values[MockCPUID._counter]
@@ -295,3 +299,21 @@ def monkey_patch_cpuid(cpuinfo, return_hz, return_values):
 def restore_cpuid(cpuinfo):
 	cpuinfo.CPUID._run_asm = cpuinfo.BackupCPUID._run_asm
 	cpuinfo.CPUID._asm_func = cpuinfo.BackupCPUID._asm_func
+
+
+def backup_asm(cpuinfo):
+	BackupASM = type('BackupASM', (object,), {})
+	cpuinfo.BackupASM = BackupASM()
+	cpuinfo.BackupASM.compile = cpuinfo.ASM.compile
+	cpuinfo.BackupASM.run = cpuinfo.ASM.run
+	cpuinfo.BackupASM.free = cpuinfo.ASM.free
+
+def monkey_patch_asm(cpuinfo, NewASM):
+	cpuinfo.ASM.compile = NewASM.__dict__['compile']
+	cpuinfo.ASM.run = NewASM.__dict__['run']
+	cpuinfo.ASM.free = NewASM.__dict__['free']
+
+def restore_asm(cpuinfo):
+	cpuinfo.ASM.compile = cpuinfo.BackupASM.compile
+	cpuinfo.ASM.run = cpuinfo.BackupASM.run
+	cpuinfo.ASM.free = cpuinfo.BackupASM.free
