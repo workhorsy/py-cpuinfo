@@ -65,7 +65,6 @@ def run_and_get_stdout(command, pipe_command=None):
 			output = output.decode(encoding='UTF-8')
 		return p2.returncode, output
 
-
 def program_paths(program_name):
 	paths = []
 	exts = filter(None, os.environ.get('PATHEXT', '').split(os.pathsep))
@@ -79,6 +78,43 @@ def program_paths(program_name):
 			if os.access(pext, os.X_OK):
 				paths.append(pext)
 	return paths
+
+def has_sestatus():
+	return len(program_paths('sestatus')) > 0
+
+def sestatus_b():
+	return run_and_get_stdout(['sestatus', '-b'])
+
+def _is_selinux_enforcing():
+	# Just return if the SE Linux Status Tool is not installed
+	if not has_sestatus():
+		return False
+
+	# Run the sestatus, and just return if it failed to run
+	returncode, output = sestatus_b()
+	if returncode != 0:
+		return False
+
+	# Figure out if explicitly in enforcing mode
+	for line in output.splitlines():
+		line = line.strip().lower()
+		if line.startswith("current mode:"):
+			if line.endswith("enforcing"):
+				return True
+			else:
+				return False
+
+	# Figure out if we can execute heap and execute memory
+	can_selinux_exec_heap = False
+	can_selinux_exec_memory = False
+	for line in output.splitlines():
+		line = line.strip().lower()
+		if line.startswith("allow_execheap") and line.endswith("on"):
+			can_selinux_exec_heap = True
+		elif line.startswith("allow_execmem") and line.endswith("on"):
+			can_selinux_exec_memory = True
+
+	return (not can_selinux_exec_heap or not can_selinux_exec_memory)
 
 def parse_arch(arch_string_raw):
 	import re
@@ -257,20 +293,23 @@ if 'winreg' in sys.modules or '_winreg' in sys.modules:
 	print_output('winreg feature_bits', feature_bits)
 
 
-class CPUID(object):
-	def __init__(self):
+class ASM(object):
+	def __init__(self, restype=None, argtypes=(), machine_code=[]):
+		self.restype = restype
+		self.argtypes = argtypes
+		self.machine_code = machine_code
 		self.prochandle = None
+		self.mm = None
+		self.func = None
+		self.address = None
+		self.size = 0
+		self.is_selinux_enforcing = _is_selinux_enforcing()
 
-		# Figure out if SE Linux is on and in enforcing mode
-		self.is_selinux_enforcing = False
-
-		self.registers = []
-
-	def _asm_func(self, restype=None, argtypes=(), machine_code=[]):
+	def compile(self):
 		import ctypes
 
-		machine_code = bytes.join(b'', machine_code)
-		address = None
+		machine_code = bytes.join(b'', self.machine_code)
+		self.size = ctypes.c_size_t(len(machine_code))
 
 		if is_windows:
 			# Allocate a memory segment the size of the machine code, and make it executable
@@ -281,20 +320,20 @@ class CPUID(object):
 			PAGE_READWRITE = ctypes.c_ulong(0x4)
 			pfnVirtualAlloc = ctypes.windll.kernel32.VirtualAlloc
 			pfnVirtualAlloc.restype = ctypes.c_void_p
-			address = pfnVirtualAlloc(None, ctypes.c_size_t(size), MEM_COMMIT, PAGE_READWRITE)
-			if not address:
+			self.address = pfnVirtualAlloc(None, ctypes.c_size_t(size), MEM_COMMIT, PAGE_READWRITE)
+			if not self.address:
 				raise Exception("Failed to VirtualAlloc")
 
 			# Copy the machine code into the memory segment
 			memmove = ctypes.CFUNCTYPE(ctypes.c_void_p, ctypes.c_void_p, ctypes.c_void_p, ctypes.c_size_t)(ctypes._memmove_addr)
-			if memmove(address, machine_code, size) < 0:
+			if memmove(self.address, machine_code, size) < 0:
 				raise Exception("Failed to memmove")
 
 			# Enable execute permissions
 			PAGE_EXECUTE = ctypes.c_ulong(0x10)
 			old_protect = ctypes.c_ulong(0)
 			pfnVirtualProtect = ctypes.windll.kernel32.VirtualProtect
-			res = pfnVirtualProtect(ctypes.c_void_p(address), ctypes.c_size_t(size), PAGE_EXECUTE, ctypes.byref(old_protect))
+			res = pfnVirtualProtect(ctypes.c_void_p(self.address), ctypes.c_size_t(size), PAGE_EXECUTE, ctypes.byref(old_protect))
 			if not res:
 				raise Exception("Failed VirtualProtect")
 
@@ -305,65 +344,64 @@ class CPUID(object):
 				pfnGetCurrentProcess.restype = ctypes.c_void_p
 				self.prochandle = ctypes.c_void_p(pfnGetCurrentProcess())
 			# Actually flush cache
-			res = ctypes.windll.kernel32.FlushInstructionCache(self.prochandle, ctypes.c_void_p(address), ctypes.c_size_t(size))
+			res = ctypes.windll.kernel32.FlushInstructionCache(self.prochandle, ctypes.c_void_p(self.address), ctypes.c_size_t(size))
 			if not res:
 				raise Exception("Failed FlushInstructionCache")
 		else:
-			# Allocate a memory segment the size of the machine code
-			size = len(machine_code)
-			pfnvalloc = ctypes.pythonapi.valloc
-			pfnvalloc.restype = ctypes.c_void_p
-			address = pfnvalloc(ctypes.c_size_t(size))
-			if not address:
-				raise Exception("Failed to valloc")
+			from mmap import mmap, MAP_PRIVATE, MAP_ANONYMOUS, PROT_WRITE, PROT_READ, PROT_EXEC
 
-			# Mark the memory segment as writeable only
-			if not self.is_selinux_enforcing:
-				WRITE = 0x2
-				if ctypes.pythonapi.mprotect(ctypes.c_void_p(address), size, WRITE) < 0:
-					raise Exception("Failed to mprotect")
+			# Allocate a private and executable memory segment the size of the machine code
+			machine_code = bytes.join(b'', self.machine_code)
+			self.size = len(machine_code)
+			self.mm = mmap(-1, self.size, flags=MAP_PRIVATE | MAP_ANONYMOUS, prot=PROT_WRITE | PROT_READ | PROT_EXEC)
 
 			# Copy the machine code into the memory segment
-			if ctypes.pythonapi.memmove(ctypes.c_void_p(address), machine_code, ctypes.c_size_t(size)) < 0:
-				raise Exception("Failed to memmove")
-
-			# Mark the memory segment as writeable and executable only
-			if not self.is_selinux_enforcing:
-				WRITE_EXECUTE = 0x2 | 0x4
-				if ctypes.pythonapi.mprotect(ctypes.c_void_p(address), size, WRITE_EXECUTE) < 0:
-					raise Exception("Failed to mprotect")
+			self.mm.write(machine_code)
+			self.address = ctypes.addressof(ctypes.c_int.from_buffer(self.mm))
 
 		# Cast the memory segment into a function
-		functype = ctypes.CFUNCTYPE(restype, *argtypes)
-		fun = functype(address)
-		return fun, address
+		functype = ctypes.CFUNCTYPE(self.restype, *self.argtypes)
+		self.func = functype(self.address)
 
-	def _run_asm(self, *machine_code):
-		import ctypes
-
-		# Convert the machine code into a function that returns an int
-		restype = ctypes.c_uint32
-		argtypes = ()
-		func, address = self._asm_func(restype, argtypes, machine_code)
-
+	def run(self):
 		# Call the machine code like a function
-		retval = func()
+		retval = self.func()
 
-		machine_code = bytes.join(b'', machine_code)
-		size = ctypes.c_size_t(len(machine_code))
+		return retval
+
+	def free(self):
+		import ctypes
 
 		# Free the function memory segment
 		if is_windows:
 			MEM_RELEASE = ctypes.c_ulong(0x8000)
-			ctypes.windll.kernel32.VirtualFree(ctypes.c_void_p(address), ctypes.c_size_t(0), MEM_RELEASE)
+			ctypes.windll.kernel32.VirtualFree(ctypes.c_void_p(self.address), ctypes.c_size_t(0), MEM_RELEASE)
 		else:
-			# Remove the executable tag on the memory
-			READ_WRITE = 0x1 | 0x2
-			if ctypes.pythonapi.mprotect(ctypes.c_void_p(address), size, READ_WRITE) < 0:
-				raise Exception("Failed to mprotect")
+			self.mm.close()
 
-			ctypes.pythonapi.free(ctypes.c_void_p(address))
+		self.prochandle = None
+		self.mm = None
+		self.func = None
+		self.address = None
+		self.size = 0
 
+class CPUID(object):
+	def __init__(self):
+		# Figure out if SE Linux is on and in enforcing mode
+		self.is_selinux_enforcing = _is_selinux_enforcing()
+
+	def _asm_func(self, restype=None, argtypes=(), machine_code=[]):
+		asm = ASM(restype, argtypes, machine_code)
+		asm.compile()
+		return asm
+
+	def _run_asm(self, *machine_code):
+		import ctypes
+
+		asm = ASM(ctypes.c_uint32, (), machine_code)
+		asm.compile()
+		retval = asm.run()
+		asm.free()
 		return retval
 
 	# http://en.wikipedia.org/wiki/CPUID#EAX.3D0:_Get_vendor_ID
