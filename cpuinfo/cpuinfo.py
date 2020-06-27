@@ -729,6 +729,7 @@ class ASM(object):
 		self.argtypes = argtypes
 		self.machine_code = machine_code
 		self.prochandle = None
+		self.mm = None
 		self.func = None
 		self.address = None
 		self.size = 0
@@ -775,29 +776,16 @@ class ASM(object):
 			if not res:
 				raise Exception("Failed FlushInstructionCache")
 		else:
-			# Allocate a memory segment the size of the machine code
-			size = len(machine_code)
-			pfnvalloc = ctypes.pythonapi.valloc
-			pfnvalloc.restype = ctypes.c_void_p
-			self.address = pfnvalloc(ctypes.c_size_t(size))
-			if not self.address:
-				raise Exception("Failed to valloc")
+			from mmap import mmap, MAP_PRIVATE, MAP_ANONYMOUS, PROT_WRITE, PROT_READ, PROT_EXEC
 
-			# Mark the memory segment as writeable only
-			if not self.is_selinux_enforcing:
-				WRITE = 0x2
-				if ctypes.pythonapi.mprotect(ctypes.c_void_p(self.address), size, WRITE) < 0:
-					raise Exception("Failed to mprotect")
+			# Allocate a private and executable memory segment the size of the machine code
+			machine_code = bytes.join(b'', self.machine_code)
+			self.size = len(machine_code)
+			self.mm = mmap(-1, self.size, flags=MAP_PRIVATE | MAP_ANONYMOUS, prot=PROT_WRITE | PROT_READ | PROT_EXEC)
 
 			# Copy the machine code into the memory segment
-			if ctypes.pythonapi.memmove(ctypes.c_void_p(self.address), machine_code, ctypes.c_size_t(size)) < 0:
-				raise Exception("Failed to memmove")
-
-			# Mark the memory segment as writeable and executable only
-			if not self.is_selinux_enforcing:
-				WRITE_EXECUTE = 0x2 | 0x4
-				if ctypes.pythonapi.mprotect(ctypes.c_void_p(self.address), size, WRITE_EXECUTE) < 0:
-					raise Exception("Failed to mprotect")
+			self.mm.write(machine_code)
+			self.address = ctypes.addressof(ctypes.c_int.from_buffer(self.mm))
 
 		# Cast the memory segment into a function
 		functype = ctypes.CFUNCTYPE(self.restype, *self.argtypes)
@@ -815,17 +803,13 @@ class ASM(object):
 			MEM_RELEASE = ctypes.c_ulong(0x8000)
 			ctypes.windll.kernel32.VirtualFree(ctypes.c_void_p(self.address), ctypes.c_size_t(0), MEM_RELEASE)
 		else:
-			# Remove the executable tag on the memory
-			READ_WRITE = 0x1 | 0x2
-			if ctypes.pythonapi.mprotect(ctypes.c_void_p(self.address), self.size, READ_WRITE) < 0:
-				raise Exception("Failed to mprotect")
+			self.mm.close()
 
-			ctypes.pythonapi.free(ctypes.c_void_p(self.address))
-
+		self.prochandle = None
+		self.mm = None
 		self.func = None
 		self.address = None
 		self.size = 0
-		self.prochandle = None
 
 
 class CPUID(object):
