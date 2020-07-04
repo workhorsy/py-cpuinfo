@@ -11,6 +11,7 @@ all:
 clean:
 	rm -f *.pyc
 	rm -f */*.pyc
+	rm -f -rf __pycache__
 	rm -f -rf */__pycache__
 	rm -f -rf py_cpuinfo.egg-info
 	rm -f -rf dist
