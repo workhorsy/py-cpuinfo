@@ -1,4 +1,4 @@
-* Release 7.0.0
+07/05/2020 Release 7.0.0
 	* Fixed Bug #133: CPU flags vary between runs on Mac OS X
 	* Fixed Bug #150: Change 'byte code' to 'machine code'
 	* Fixed Bug #128: Overhead from generating machine code throws off CPUID HZ
