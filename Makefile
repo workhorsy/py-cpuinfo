@@ -44,8 +44,8 @@ install: remove
 	cd py-cpuinfo-$(VERSION)/ && python setup.py install
 	rm -f -rf py-cpuinfo-$(VERSION)
 
-	@echo now try "import cpuinfo"
-	@echo "cpuinfo.get_cpu_info()"
+	@echo now try "from cpuinfo import get_cpu_info"
+	@echo "get_cpu_info()"
 
 remove:
 	rm -f -rf /usr/local/lib/python2.7/dist-packages/py_cpuinfo-$(VERSION)-py2.7.egg
