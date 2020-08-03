@@ -38,6 +38,123 @@ IS_PY2 = sys.version_info[0] == 2
 CAN_CALL_CPUID_IN_SUBPROCESS = True
 
 
+class Trace(object):
+	def __init__(self, is_active, is_stored_in_string):
+		self._is_active = is_active
+		if not self._is_active:
+			return
+
+		from datetime import datetime
+
+		if IS_PY2:
+			from cStringIO import StringIO
+		else:
+			from io import StringIO
+
+		if is_stored_in_string:
+			self._output = StringIO()
+		else:
+			date = datetime.now().strftime("%Y-%m-%d_%H-%M-%S-%f")
+			self._output = open('cpuinfo_trace_{0}.log'.format(date), 'w')
+
+		self._stdout = StringIO()
+		self._stderr = StringIO()
+		self._err = None
+
+	def header(self, msg):
+		if not self._is_active: return
+
+		from inspect import stack
+		frame = stack()[1]
+		file = frame[1]
+		line = frame[2]
+		self._output.write("{0} ({1} {2})\n".format(msg, file, line))
+		self._output.flush()
+
+	def success(self):
+		if not self._is_active: return
+
+		self._output.write('Success ...\n\n')
+		self._output.flush()
+
+	def fail(self, msg):
+		if not self._is_active: return
+
+		if isinstance(msg, str):
+			msg = ''.join(['\t' + line for line in msg.split('\n')]) + '\n'
+
+			self._output.write(msg)
+			self._output.write('Failed ...\n\n')
+			self._output.flush()
+		elif isinstance(msg, Exception):
+			from traceback import format_exc
+			err_string = format_exc()
+			self._output.write('\tFailed ...\n')
+			self._output.write(''.join(['\t\t{0}\n'.format(n) for n in err_string.split('\n')]) + '\n')
+			self._output.flush()
+
+	def command_header(self, msg):
+		if not self._is_active: return
+
+		from inspect import stack
+		frame = stack()[1]
+		file = frame[1]
+		line = frame[2]
+		self._output.write("\t{0} ({1} {2})\n".format(msg, file, line))
+		self._output.flush()
+
+	def command_output(self, msg, output):
+		if not self._is_active: return
+
+		self._output.write("\t\t{0}\n".format(msg))
+		self._output.write(''.join(['\t\t\t{0}\n'.format(n) for n in output.split('\n')]) + '\n')
+		self._output.flush()
+
+	def keys(self, keys, info, new_info):
+		if not self._is_active: return
+
+		from inspect import stack
+		frame = stack()[1]
+		file = frame[1]
+		line = frame[2]
+
+		# List updated keys
+		self._output.write("\tChanged keys ({0} {1})\n".format(file, line))
+		changed_keys = [key for key in keys if key in info and key in new_info and info[key] != new_info[key]]
+		if changed_keys:
+			for key in changed_keys:
+				self._output.write('\t\t{0}: {1} to {2}\n'.format(key, info[key], new_info[key]))
+		else:
+			self._output.write('\t\tNone\n')
+
+		# List new keys
+		self._output.write("\tNew keys ({0} {1})\n".format(file, line))
+		new_keys = [key for key in keys if key in new_info and key not in info]
+		if new_keys:
+			for key in new_keys:
+				self._output.write('\t\t{0}: {1}\n'.format(key, new_info[key]))
+		else:
+			self._output.write('\t\tNone\n')
+
+		self._output.write('\n')
+		self._output.flush()
+
+	def write(self, msg):
+		if not self._is_active: return
+
+		self._output.write(msg + '\n')
+		self._output.flush()
+
+	def to_dict(self, info, is_fail):
+		return {
+		'output' : self._output.getvalue(),
+		'stdout' : self._stdout.getvalue(),
+		'stderr' : self._stderr.getvalue(),
+		'info' : info,
+		'err' : self._err,
+		'is_fail' : is_fail
+		}
+
 class DataSource(object):
 	bits = platform.architecture()[0]
 	cpu_count = multiprocessing.cpu_count()
