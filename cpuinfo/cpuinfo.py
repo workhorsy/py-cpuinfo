@@ -1687,7 +1687,9 @@ def _get_cpu_info_from_proc_cpuinfo():
 			info['hz_actual_friendly'] = _hz_short_to_friendly(hz_actual, 6)
 			info['hz_actual'] = _hz_short_to_full(hz_actual, 6)
 
-		return _filter_dict_keys_with_empty_values(info)
+		info = _filter_dict_keys_with_empty_values(info)
+		g_trace.success()
+		return info
 	except Exception as err:
 		g_trace.fail(err)
 		#raise # NOTE: To have this throw on error, uncomment this line
@@ -1732,7 +1734,9 @@ def _get_cpu_info_from_cpufreq_info():
 			'hz_actual' : _hz_short_to_full(hz_brand, scale),
 		}
 
-		return _filter_dict_keys_with_empty_values(info)
+		info = _filter_dict_keys_with_empty_values(info)
+		g_trace.success()
+		return info
 	except Exception as err:
 		g_trace.fail(err)
 		#raise # NOTE: To have this throw on error, uncomment this line
@@ -1819,7 +1823,9 @@ def _get_cpu_info_from_lscpu():
 			flags.sort()
 			info['flags'] = flags
 
-		return _filter_dict_keys_with_empty_values(info)
+		info = _filter_dict_keys_with_empty_values(info)
+		g_trace.success()
+		return info
 	except Exception as err:
 		g_trace.fail(err)
 		#raise # NOTE: To have this throw on error, uncomment this line
@@ -1850,7 +1856,9 @@ def _get_cpu_info_from_dmesg():
 		g_trace.fail('Failed to run \"dmesg -a\". Skipping ...')
 		return {}
 
-	return _parse_dmesg_output(output)
+	info = _parse_dmesg_output(output)
+	g_trace.success()
+	return info
 
 
 # https://openpowerfoundation.org/wp-content/uploads/2016/05/LoPAPR_DRAFT_v11_24March2016_cmt1.pdf
@@ -1974,7 +1982,9 @@ def _get_cpu_info_from_ibm_pa_features():
 		info = {
 			'flags' : flags
 		}
-		return _filter_dict_keys_with_empty_values(info)
+		info = _filter_dict_keys_with_empty_values(info)
+		g_trace.success()
+		return info
 	except Exception as err:
 		g_trace.fail(err)
 		return {}
@@ -1999,7 +2009,9 @@ def _get_cpu_info_from_cat_var_run_dmesg_boot():
 		g_trace.fail('Failed to run \"cat /var/run/dmesg.boot\". Skipping ...')
 		return {}
 
-	return _parse_dmesg_output(output)
+	info = _parse_dmesg_output(output)
+	g_trace.success()
+	return info
 
 
 def _get_cpu_info_from_sysctl():
@@ -2058,7 +2070,9 @@ def _get_cpu_info_from_sysctl():
 		'flags' : flags
 		}
 
-		return _filter_dict_keys_with_empty_values(info)
+		info = _filter_dict_keys_with_empty_values(info)
+		g_trace.success()
+		return info
 	except Exception as err:
 		g_trace.fail(err)
 		return {}
@@ -2131,7 +2145,9 @@ def _get_cpu_info_from_sysinfo_v1():
 		'flags' : flags
 		}
 
-		return _filter_dict_keys_with_empty_values(info)
+		info = _filter_dict_keys_with_empty_values(info)
+		g_trace.success()
+		return info
 	except Exception as err:
 		g_trace.fail(err)
 		#raise # NOTE: To have this throw on error, uncomment this line
@@ -2211,7 +2227,9 @@ def _get_cpu_info_from_sysinfo_v2():
 		'flags' : flags
 		}
 
-		return _filter_dict_keys_with_empty_values(info)
+		info = _filter_dict_keys_with_empty_values(info)
+		g_trace.success()
+		return info
 	except Exception as err:
 		g_trace.fail(err)
 		#raise # NOTE: To have this throw on error, uncomment this line
@@ -2293,7 +2311,9 @@ def _get_cpu_info_from_wmic():
 			'family' : family,
 		}
 
-		return _filter_dict_keys_with_empty_values(info)
+		info = _filter_dict_keys_with_empty_values(info)
+		g_trace.success()
+		return info
 	except Exception as err:
 		g_trace.fail(err)
 		#raise # NOTE: To have this throw on error, uncomment this line
@@ -2397,7 +2417,9 @@ def _get_cpu_info_from_registry():
 		'flags' : flags
 		}
 
-		return _filter_dict_keys_with_empty_values(info)
+		info = _filter_dict_keys_with_empty_values(info)
+		g_trace.success()
+		return info
 	except Exception as err:
 		g_trace.fail(err)
 		return {}
@@ -2463,7 +2485,9 @@ def _get_cpu_info_from_kstat():
 		'flags' : flags
 		}
 
-		return _filter_dict_keys_with_empty_values(info)
+		info = _filter_dict_keys_with_empty_values(info)
+		g_trace.success()
+		return info
 	except Exception as err:
 		g_trace.fail(err)
 		return {}
@@ -2495,7 +2519,9 @@ def _get_cpu_info_from_platform_uname():
 			'model' : model,
 			'stepping' : stepping
 		}
-		return _filter_dict_keys_with_empty_values(info)
+		info = _filter_dict_keys_with_empty_values(info)
+		g_trace.success()
+		return info
 	except Exception as err:
 		g_trace.fail(err)
 		return {}
