@@ -340,6 +340,8 @@ def _run_and_get_stdout(command, pipe_command=None):
 	return p1.returncode, stdout_output
 
 def _read_windows_registry_key(key_name, field_name):
+	g_trace.command_header('Reading Registry key "{0}" field "{1}" ...'.format(key_name, field_name))
+
 	try:
 		import _winreg as winreg
 	except ImportError as err:
