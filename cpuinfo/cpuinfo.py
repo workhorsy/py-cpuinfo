@@ -37,6 +37,8 @@ import ctypes
 IS_PY2 = sys.version_info[0] == 2
 CAN_CALL_CPUID_IN_SUBPROCESS = True
 
+g_trace = None
+
 
 class Trace(object):
 	def __init__(self, is_active, is_stored_in_string):
@@ -1522,6 +1524,9 @@ def _get_cpu_info_from_cpuid():
 	Returns {} on non X86 cpus.
 	Returns {} if SELinux is in enforcing mode.
 	'''
+
+	g_trace.header('Tying to get info from CPUID ...')
+
 	from multiprocessing import Process, Queue
 
 	# Return {} if can't cpuid
@@ -1568,6 +1573,9 @@ def _get_cpu_info_from_proc_cpuinfo():
 	Returns the CPU info gathered from /proc/cpuinfo.
 	Returns {} if /proc/cpuinfo is not found.
 	'''
+
+	g_trace.header('Tying to get info from /proc/cpuinfo ...')
+
 	try:
 		# Just return {} if there is no cpuinfo
 		if not DataSource.has_proc_cpuinfo():
@@ -1656,6 +1664,9 @@ def _get_cpu_info_from_cpufreq_info():
 	Returns the CPU info gathered from cpufreq-info.
 	Returns {} if cpufreq-info is not found.
 	'''
+
+	g_trace.header('Tying to get info from cpufreq-info ...')
+
 	try:
 		hz_brand, scale = '0.0', 0
 
@@ -1695,6 +1706,9 @@ def _get_cpu_info_from_lscpu():
 	Returns the CPU info gathered from lscpu.
 	Returns {} if lscpu is not found.
 	'''
+
+	g_trace.header('Tying to get info from lscpu ...')
+
 	try:
 		if not DataSource.has_lscpu():
 			return {}
@@ -1777,6 +1791,8 @@ def _get_cpu_info_from_dmesg():
 	Returns {} if dmesg is not found or does not have the desired info.
 	'''
 
+	g_trace.header('Tying to get info from the dmesg ...')
+
 	# Just return {} if this arch has an unreliable dmesg log
 	arch, bits = _parse_arch(DataSource.arch_string_raw)
 	if arch in ['S390X']:
@@ -1801,6 +1817,9 @@ def _get_cpu_info_from_ibm_pa_features():
 	Returns the CPU info gathered from lsprop /proc/device-tree/cpus/*/ibm,pa-features
 	Returns {} if lsprop is not found or ibm,pa-features does not have the desired info.
 	'''
+
+	g_trace.header('Tying to get info from lsprop ...')
+
 	try:
 		# Just return {} if there is no lsprop
 		if not DataSource.has_ibm_pa_features():
@@ -1920,6 +1939,9 @@ def _get_cpu_info_from_cat_var_run_dmesg_boot():
 	Returns the CPU info gathered from /var/run/dmesg.boot.
 	Returns {} if dmesg is not found or does not have the desired info.
 	'''
+
+	g_trace.header('Tying to get info from the /var/run/dmesg.boot log ...')
+
 	# Just return {} if there is no /var/run/dmesg.boot
 	if not DataSource.has_var_run_dmesg_boot():
 		return {}
@@ -1937,6 +1959,9 @@ def _get_cpu_info_from_sysctl():
 	Returns the CPU info gathered from sysctl.
 	Returns {} if sysctl is not found.
 	'''
+
+	g_trace.header('Tying to get info from sysctl ...')
+
 	try:
 		# Just return {} if there is no sysctl
 		if not DataSource.has_sysctl():
@@ -2002,6 +2027,9 @@ def _get_cpu_info_from_sysinfo_v1():
 	Returns the CPU info gathered from sysinfo.
 	Returns {} if sysinfo is not found.
 	'''
+
+	g_trace.header('Tying to get info from sysinfo version 1 ...')
+
 	try:
 		# Just return {} if there is no sysinfo
 		if not DataSource.has_sysinfo():
@@ -2059,6 +2087,9 @@ def _get_cpu_info_from_sysinfo_v2():
 	Returns the CPU info gathered from sysinfo.
 	Returns {} if sysinfo is not found.
 	'''
+
+	g_trace.header('Tying to get info from sysinfo version 2 ...')
+
 	try:
 		# Just return {} if there is no sysinfo
 		if not DataSource.has_sysinfo():
@@ -2133,6 +2164,7 @@ def _get_cpu_info_from_wmic():
 	Returns the CPU info gathered from WMI.
 	Returns {} if not on Windows, or wmic is not installed.
 	'''
+	g_trace.header('Tying to get info from wmic ...')
 
 	try:
 		# Just return {} if not Windows or there is no wmic
@@ -2211,6 +2243,9 @@ def _get_cpu_info_from_registry():
 	Returns the CPU info gathered from the Windows Registry.
 	Returns {} if not on Windows.
 	'''
+
+	g_trace.header('Tying to get info from Windows registry ...')
+
 	try:
 		# Just return {} if not on Windows
 		if not DataSource.is_windows:
@@ -2309,6 +2344,9 @@ def _get_cpu_info_from_kstat():
 	Returns the CPU info gathered from isainfo and kstat.
 	Returns {} if isainfo or kstat are not found.
 	'''
+
+	g_trace.header('Tying to get info from kstat ...')
+
 	try:
 		# Just return {} if there is no isainfo or kstat
 		if not DataSource.has_isainfo() or not DataSource.has_kstat():
@@ -2364,6 +2402,9 @@ def _get_cpu_info_from_kstat():
 		return {}
 
 def _get_cpu_info_from_platform_uname():
+
+	g_trace.header('Tying to get info from platform.uname ...')
+
 	try:
 		uname = DataSource.uname_string_raw.split(',')[0]
 
@@ -2397,6 +2438,8 @@ def _get_cpu_info_internal():
 	Returns {} if nothing is found.
 	'''
 
+	g_trace.write('!' * 80)
+
 	# Get the CPU arch and bits
 	arch, bits = _parse_arch(DataSource.arch_string_raw)
 
@@ -2413,6 +2456,13 @@ def _get_cpu_info_internal():
 		'count' : DataSource.cpu_count,
 		'arch_string_raw' : DataSource.arch_string_raw,
 	}
+
+	g_trace.write("python_version: {0}".format(info['python_version']))
+	g_trace.write("cpuinfo_version: {0}".format(info['cpuinfo_version']))
+	g_trace.write("arch: {0}".format(info['arch']))
+	g_trace.write("bits: {0}".format(info['bits']))
+	g_trace.write("count: {0}".format(info['count']))
+	g_trace.write("arch_string_raw: {0}".format(info['arch_string_raw']))
 
 	# Try the Windows wmic
 	_copy_new_fields(info, _get_cpu_info_from_wmic())
@@ -2452,6 +2502,8 @@ def _get_cpu_info_internal():
 
 	# Try platform.uname
 	_copy_new_fields(info, _get_cpu_info_from_platform_uname())
+
+	g_trace.write('!' * 80)
 
 	return info
 
@@ -2511,7 +2563,11 @@ def main():
 	parser = ArgumentParser(description='Gets CPU info with pure Python 2 & 3')
 	parser.add_argument('--json', action='store_true', help='Return the info in JSON format')
 	parser.add_argument('--version', action='store_true', help='Return the version of py-cpuinfo')
+	parser.add_argument('--trace', action='store_true', help='Traces code paths used to find CPU info to file')
 	args = parser.parse_args()
+
+	global g_trace
+	g_trace = Trace(args.trace, False)
 
 	try:
 		_check_arch()
