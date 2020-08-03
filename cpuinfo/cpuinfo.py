@@ -391,6 +391,9 @@ def _copy_new_fields(info, new_info):
 		'l3_cache_size', 'l1_data_cache_size', 'l1_instruction_cache_size'
 	]
 
+	g_trace.keys(keys, info, new_info)
+
+	# Update the keys with new values
 	for key in keys:
 		if new_info.get(key, None) and not info.get(key, None):
 			info[key] = new_info[key]
@@ -2548,6 +2551,7 @@ def _get_cpu_info_internal():
 	_copy_new_fields(info, _get_cpu_info_from_sysinfo())
 
 	# Try querying the CPU cpuid register
+	# FIXME: This should print stdout and stderr to trace log
 	_copy_new_fields(info, _get_cpu_info_from_cpuid())
 
 	# Try platform.uname
