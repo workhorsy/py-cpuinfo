@@ -81,22 +81,23 @@ allow_execmem                   off
 class TestSELinux(unittest.TestCase):
 	def setUp(self):
 		helpers.backup_data_source(cpuinfo)
+		self.trace = Trace(False, False)
 
 	def tearDown(self):
 		helpers.restore_data_source(cpuinfo)
 
 	def test_enforcing(self):
 		helpers.monkey_patch_data_source(cpuinfo, MockDataSource_enforcing)
-		self.assertEqual(True, cpuinfo._is_selinux_enforcing())
+		self.assertEqual(True, cpuinfo._is_selinux_enforcing(self.trace))
 
 	def test_not_enforcing(self):
 		helpers.monkey_patch_data_source(cpuinfo, MockDataSource_not_enforcing)
-		self.assertEqual(False, cpuinfo._is_selinux_enforcing())
+		self.assertEqual(False, cpuinfo._is_selinux_enforcing(self.trace))
 
 	def test_exec_mem_and_heap(self):
 		helpers.monkey_patch_data_source(cpuinfo, MockDataSource_exec_mem_and_heap)
-		self.assertEqual(False, cpuinfo._is_selinux_enforcing())
+		self.assertEqual(False, cpuinfo._is_selinux_enforcing(self.trace))
 
 	def test_no_exec_mem_and_heap(self):
 		helpers.monkey_patch_data_source(cpuinfo, MockDataSource_no_exec_mem_and_heap)
-		self.assertEqual(True, cpuinfo._is_selinux_enforcing())
+		self.assertEqual(True, cpuinfo._is_selinux_enforcing(self.trace))

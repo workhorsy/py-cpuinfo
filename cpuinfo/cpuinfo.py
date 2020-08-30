@@ -2779,4 +2779,5 @@ def main():
 if __name__ == '__main__':
 	main()
 else:
+	g_trace = Trace(False, False)
 	_check_arch()
