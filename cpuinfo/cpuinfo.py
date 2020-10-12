@@ -99,7 +99,7 @@ class Trace(object):
 		if not self._is_active: return
 
 		from inspect import stack
-		frame = stack()[1]
+		frame = stack()[3]
 		file = frame[1]
 		line = frame[2]
 		self._output.write("\t{0} ({1} {2})\n".format(msg, file, line))
