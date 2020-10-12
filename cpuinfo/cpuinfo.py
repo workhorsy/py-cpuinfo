@@ -116,7 +116,7 @@ class Trace(object):
 		if not self._is_active: return
 
 		from inspect import stack
-		frame = stack()[1]
+		frame = stack()[2]
 		file = frame[1]
 		line = frame[2]
 
