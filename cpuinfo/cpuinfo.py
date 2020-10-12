@@ -87,16 +87,21 @@ class Trace(object):
 	def fail(self, msg):
 		if not self._is_active: return
 
+		from inspect import stack
+		frame = stack()[1]
+		file = frame[1]
+		line = frame[2]
+
 		if isinstance(msg, str):
 			msg = ''.join(['\t' + line for line in msg.split('\n')]) + '\n'
 
 			self._output.write(msg)
-			self._output.write('Failed ...\n\n')
+			self._output.write("Failed ... ({0} {1})\n\n".format(file, line))
 			self._output.flush()
 		elif isinstance(msg, Exception):
 			from traceback import format_exc
 			err_string = format_exc()
-			self._output.write('\tFailed ...\n')
+			self._output.write("\tFailed ... ({0} {1})\n".format(file, line))
 			self._output.write(''.join(['\t\t{0}\n'.format(n) for n in err_string.split('\n')]) + '\n')
 			self._output.flush()
 
