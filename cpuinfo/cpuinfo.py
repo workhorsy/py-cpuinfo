@@ -76,7 +76,12 @@ class Trace(object):
 	def success(self):
 		if not self._is_active: return
 
-		self._output.write('Success ...\n\n')
+		from inspect import stack
+		frame = stack()[1]
+		file = frame[1]
+		line = frame[2]
+
+		self._output.write("Success ... ({0} {1})\n\n".format(file, line))
 		self._output.flush()
 
 	def fail(self, msg):
