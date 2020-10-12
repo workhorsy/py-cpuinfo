@@ -52,7 +52,7 @@ class TestCLI(unittest.TestCase):
 		from subprocess import Popen, PIPE
 
 		# Get all log files before test
-		before_log_files = [f for f in os.listdir('.') if os.path.isfile(f) and re.match(r'^cpuinfo_trace_\d+-\d+-\d+_\d+-\d+-\d+-\d+.log$', f)]
+		before_log_files = [f for f in os.listdir('.') if os.path.isfile(f) and re.match(r'^cpuinfo_trace_\d+-\d+-\d+_\d+-\d+-\d+-\d+.trace$', f)]
 		#print('\n', before_log_files)
 
 		# Run with trace to generate new log file
@@ -62,7 +62,7 @@ class TestCLI(unittest.TestCase):
 		self.assertEqual(0, p1.returncode)
 
 		# Get all log files after test
-		after_log_files = [f for f in os.listdir('.') if os.path.isfile(f) and re.match(r'^cpuinfo_trace_\d+-\d+-\d+_\d+-\d+-\d+-\d+.log$', f)]
+		after_log_files = [f for f in os.listdir('.') if os.path.isfile(f) and re.match(r'^cpuinfo_trace_\d+-\d+-\d+_\d+-\d+-\d+-\d+.trace$', f)]
 		#print('\n', after_log_files)
 
 		# Read the new log file into a string

@@ -57,7 +57,7 @@ class Trace(object):
 			self._output = StringIO()
 		else:
 			date = datetime.now().strftime("%Y-%m-%d_%H-%M-%S-%f")
-			self._output = open('cpuinfo_trace_{0}.log'.format(date), 'w')
+			self._output = open('cpuinfo_trace_{0}.trace'.format(date), 'w')
 
 		self._stdout = StringIO()
 		self._stderr = StringIO()
