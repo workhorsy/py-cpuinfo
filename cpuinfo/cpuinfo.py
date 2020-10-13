@@ -1561,7 +1561,7 @@ def _get_cpu_info_from_cpuid_actual():
 	except Exception as err:
 		from traceback import format_exc
 		err_string = format_exc()
-		trace.err = ''.join(['\t\t{0}\n'.format(n) for n in err_string.split('\n')]) + '\n'
+		trace._err = ''.join(['\t\t{0}\n'.format(n) for n in err_string.split('\n')]) + '\n'
 		return trace.to_dict(info, True)
 
 	return trace.to_dict(info, False)
