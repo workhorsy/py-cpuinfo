@@ -885,7 +885,6 @@ class ASM(object):
 		self.func = None
 		self.address = None
 		self.size = 0
-		self.is_selinux_enforcing = _is_selinux_enforcing(trace)
 
 	def compile(self):
 		machine_code = bytes.join(b'', self.machine_code)
