@@ -46,6 +46,37 @@ class TestCLI(unittest.TestCase):
 
 		self.assertEqual(cpuinfo.CPUINFO_VERSION_STRING, output)
 
+	def test_trace(self):
+		import os
+		import re
+		from subprocess import Popen, PIPE
+
+		# Get all log files before test
+		before_log_files = [f for f in os.listdir('.') if os.path.isfile(f) and re.match(r'^cpuinfo_trace_\d+-\d+-\d+_\d+-\d+-\d+-\d+.trace$', f)]
+		#print('\n', before_log_files)
+
+		# Run with trace to generate new log file
+		command = [sys.executable, 'cpuinfo/cpuinfo.py', '--trace']
+		p1 = Popen(command, stdout=PIPE, stderr=PIPE, stdin=PIPE)
+		output = p1.communicate()[0]
+		self.assertEqual(0, p1.returncode)
+
+		# Get all log files after test
+		after_log_files = [f for f in os.listdir('.') if os.path.isfile(f) and re.match(r'^cpuinfo_trace_\d+-\d+-\d+_\d+-\d+-\d+-\d+.trace$', f)]
+		#print('\n', after_log_files)
+
+		# Read the new log file into a string
+		new_log_file = list(set(after_log_files) - set(before_log_files))[0]
+		with open(new_log_file, 'r') as f:
+			output = f.read().strip()
+
+		# Remove the new log file
+		os.remove(new_log_file)
+
+		self.assertTrue(len(output) > 200)
+		self.assertTrue(output.startswith('!' * 80))
+		self.assertTrue(output.endswith('!' * 80))
+
 	def test_default(self):
 		from subprocess import Popen, PIPE
 
