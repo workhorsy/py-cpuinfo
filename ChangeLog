@@ -1,3 +1,6 @@
+* Release 8.0.0
+	* Fixed Bug #74: Add option to trace code paths to file
+
 07/05/2020 Release 7.0.0
 	* Fixed Bug #133: CPU flags vary between runs on Mac OS X
 	* Fixed Bug #150: Change 'byte code' to 'machine code'
