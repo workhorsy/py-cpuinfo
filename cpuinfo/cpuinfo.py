@@ -876,7 +876,7 @@ def _filter_dict_keys_with_empty_values(info):
 
 
 class ASM(object):
-	def __init__(self, restype=None, argtypes=(), machine_code=[], trace=None):
+	def __init__(self, restype=None, argtypes=(), machine_code=[]):
 		self.restype = restype
 		self.argtypes = argtypes
 		self.machine_code = machine_code
@@ -964,18 +964,20 @@ class ASM(object):
 
 
 class CPUID(object):
-	def __init__(self, trace):
-		self.trace = trace
+	def __init__(self, trace=None):
+		if trace == None:
+			trace = Trace(False, False)
+
 		# Figure out if SE Linux is on and in enforcing mode
-		self.is_selinux_enforcing = _is_selinux_enforcing(self.trace)
+		self.is_selinux_enforcing = _is_selinux_enforcing(trace)
 
 	def _asm_func(self, restype=None, argtypes=(), machine_code=[]):
-		asm = ASM(restype, argtypes, machine_code, self.trace)
+		asm = ASM(restype, argtypes, machine_code)
 		asm.compile()
 		return asm
 
 	def _run_asm(self, *machine_code):
-		asm = ASM(ctypes.c_uint32, (), machine_code, self.trace)
+		asm = ASM(ctypes.c_uint32, (), machine_code)
 		asm.compile()
 		retval = asm.run()
 		asm.free()

@@ -238,8 +238,7 @@ class TestCPUID(unittest.TestCase):
 		self.assertEqual({}, cpuinfo._get_cpu_info_from_cpuid())
 
 	def test_normal(self):
-		trace = Trace(False, False)
-		cpuid = CPUID(trace)
+		cpuid = CPUID()
 		self.assertIsNotNone(cpuid)
 
 		self.assertFalse(cpuid.is_selinux_enforcing)
