@@ -465,6 +465,8 @@ def _to_decimal_string(ticks):
 	try:
 		# Convert to string
 		ticks = '{0}'.format(ticks)
+		# Sometimes ',' is used as a decimal separator
+		ticks = ticks.replace(',', '.')
 
 		# Strip off non numbers and decimal places
 		ticks = "".join(n for n in ticks if n.isdigit() or n=='.').strip()
@@ -1887,6 +1889,8 @@ def _get_cpu_info_from_lscpu():
 		model = _get_field(False, output, None, None, 'Model')
 		if model and model.isdigit():
 			info['model'] = int(model)
+		elif not brand:
+			info['brand_raw'] = model
 
 		l1_data_cache_size = _get_field(False, output, None, None, 'L1d cache')
 		if l1_data_cache_size:
