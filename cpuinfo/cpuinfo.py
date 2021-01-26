@@ -1716,7 +1716,7 @@ def _get_cpu_info_from_proc_cpuinfo():
 		hardware = _get_field(False, output, None, '', 'Hardware')
 
 		# Flags
-		flags = _get_field(False, output, None, None, 'flags', 'Features')
+		flags = _get_field(False, output, None, None, 'flags', 'Features', 'ASEs implemented')
 		if flags:
 			flags = flags.split()
 			flags.sort()
@@ -1905,7 +1905,7 @@ def _get_cpu_info_from_lscpu():
 			info['l3_cache_size'] = _friendly_bytes_to_int(l3_cache_size)
 
 		# Flags
-		flags = _get_field(False, output, None, None, 'flags', 'Features')
+		flags = _get_field(False, output, None, None, 'flags', 'Features', 'ASEs implemented')
 		if flags:
 			flags = flags.split()
 			flags.sort()

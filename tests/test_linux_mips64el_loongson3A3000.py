@@ -141,7 +141,7 @@ class TestLinux_mips64el_Loongson3A3000(unittest.TestCase):
 		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_registry()))
 		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_cpufreq_info()))
 		self.assertEqual(5, len(cpuinfo._get_cpu_info_from_lscpu()))
-		self.assertEqual(5, len(cpuinfo._get_cpu_info_from_proc_cpuinfo()))
+		self.assertEqual(6, len(cpuinfo._get_cpu_info_from_proc_cpuinfo()))
 		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_sysctl()))
 		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_kstat()))
 		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_dmesg()))
@@ -149,7 +149,7 @@ class TestLinux_mips64el_Loongson3A3000(unittest.TestCase):
 		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_ibm_pa_features()))
 		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_sysinfo()))
 		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_cpuid()))
-		self.assertEqual(16, len(cpuinfo._get_cpu_info_internal()))
+		self.assertEqual(17, len(cpuinfo._get_cpu_info_internal()))
 
 	def test_get_cpu_info_from_lscpu(self):
 		info = cpuinfo._get_cpu_info_from_lscpu()
@@ -160,7 +160,6 @@ class TestLinux_mips64el_Loongson3A3000(unittest.TestCase):
 		self.assertEqual(262144, info['l2_cache_size'])
 		self.assertEqual(2097152, info['l3_cache_size'])
 
-
 	def test_get_cpu_info_from_proc_cpuinfo(self):
 		info = cpuinfo._get_cpu_info_from_proc_cpuinfo()
 
@@ -169,6 +168,7 @@ class TestLinux_mips64el_Loongson3A3000(unittest.TestCase):
 		self.assertEqual('1.4490 GHz', info['hz_actual_friendly'])
 		self.assertEqual((1449000000, 0), info['hz_advertised'])
 		self.assertEqual((1449000000, 0), info['hz_actual'])
+		self.assertEqual(['vz'], info['flags'])
 
 	def test_all(self):
 		info = cpuinfo._get_cpu_info_internal()
@@ -178,3 +178,4 @@ class TestLinux_mips64el_Loongson3A3000(unittest.TestCase):
 		self.assertEqual(64, info['bits'])
 		self.assertEqual(4, info['count'])
 		self.assertEqual('mips64', info['arch_string_raw'])
+		self.assertEqual(['vz'], info['flags'])
