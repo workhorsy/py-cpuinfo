@@ -170,6 +170,14 @@ These approaches are used for getting info:
 11. Querying the CPUID register (Intel X86 CPUs)
 
 
+Run Test Suite
+-----
+
+~~~bash
+python test_suite.py
+~~~
+
+
 Bugs and Corrections
 -----
 
