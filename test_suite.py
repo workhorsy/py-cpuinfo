@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: UTF-8 -*-
 
-# Copyright (c) 2014-2020 Matthew Brennan Jones <matthew.brennan.jones@gmail.com>
+# Copyright (c) 2014-2021 Matthew Brennan Jones <matthew.brennan.jones@gmail.com>
 # Py-cpuinfo gets CPU info with pure Python 2 & 3
 # It uses the MIT License
 # It is hosted at: https://github.com/workhorsy/py-cpuinfo
@@ -56,6 +56,7 @@ from test_linux_beagle_bone_arm import TestLinux_BeagleBone
 from test_linux_raspberry_pi_model_b_arm import TestLinux_RaspberryPiModelB
 from test_linux_odroid_c2_aarch64 import TestLinux_Odroid_C2_Aarch_64
 from test_linux_odroid_xu3_arm_32 import TestLinux_Odroid_XU3_arm_32
+from test_linux_alt_p9_mipsel_bfk3 import TestLinuxAlt_p9_mipsel_bfk3
 from test_linux_mips64el_loongson3A3000 import TestLinux_mips64el_Loongson3A3000
 from test_pcbsd_10_x86_64 import TestPCBSD
 from test_free_bsd_11_x86_64 import TestFreeBSD_11_X86_64
@@ -88,6 +89,8 @@ if __name__ == '__main__':
 		TestParseErrors,
 		TestInvalidCPU,
 		TestSELinux,
+		TestLinuxAlt_p9_mipsel_bfk3,
+		TestLinux_mips64el_Loongson3A3000,
 		TestLinuxDebian_8_X86_64,
 		TestLinuxDebian_8_5_X86_64,
 		TestLinuxDebian_8_7_1_ppc64le,
