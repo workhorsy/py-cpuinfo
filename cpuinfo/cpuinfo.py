@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: UTF-8 -*-
 
-# Copyright (c) 2014-2020 Matthew Brennan Jones <matthew.brennan.jones@gmail.com>
+# Copyright (c) 2014-2021 Matthew Brennan Jones <matthew.brennan.jones@gmail.com>
 # Py-cpuinfo gets CPU info with pure Python 2 & 3
 # It uses the MIT License
 # It is hosted at: https://github.com/workhorsy/py-cpuinfo
@@ -1877,6 +1877,10 @@ def _get_cpu_info_from_lscpu():
 		brand = _get_field(False, output, None, None, 'Model name')
 		if brand:
 			info['brand_raw'] = brand
+		else:
+			brand = _get_field(False, output, None, None, 'Model')
+			if brand and not brand.isdigit():
+				info['brand_raw'] = brand
 
 		family = _get_field(False, output, None, None, 'CPU family')
 		if family and family.isdigit():
@@ -1889,8 +1893,6 @@ def _get_cpu_info_from_lscpu():
 		model = _get_field(False, output, None, None, 'Model')
 		if model and model.isdigit():
 			info['model'] = int(model)
-		elif not brand:
-			info['brand_raw'] = model
 
 		l1_data_cache_size = _get_field(False, output, None, None, 'L1d cache')
 		if l1_data_cache_size:
