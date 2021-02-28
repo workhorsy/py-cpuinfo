@@ -794,7 +794,7 @@ def _parse_arch(arch_string_raw):
 		arch = 'X86_64'
 		bits = 64
 	# ARM
-	elif re.match(r'^armv8-a|aarch64$', arch_string_raw):
+	elif re.match(r'^armv8-a|aarch64|arm64$', arch_string_raw):
 		arch = 'ARM_8'
 		bits = 64
 	elif re.match(r'^armv7$|^armv7[a-z]$|^armv7-[a-z]$|^armv6[a-z]$', arch_string_raw):
