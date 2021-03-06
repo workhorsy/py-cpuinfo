@@ -2131,7 +2131,7 @@ def _get_cpu_info_from_sysctl():
 		# Various fields
 		vendor_id = _get_field(False, output, None, None, 'machdep.cpu.vendor')
 		processor_brand = _get_field(True, output, None, None, 'machdep.cpu.brand_string')
-		cache_size = _get_field(False, output, None, None, 'machdep.cpu.cache.size')
+		cache_size = _get_field(False, output, int, 0, 'machdep.cpu.cache.size')
 		stepping = _get_field(False, output, int, 0, 'machdep.cpu.stepping')
 		model = _get_field(False, output, int, 0, 'machdep.cpu.model')
 		family = _get_field(False, output, int, 0, 'machdep.cpu.family')
