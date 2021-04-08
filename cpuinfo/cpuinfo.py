@@ -794,7 +794,7 @@ def _parse_arch(arch_string_raw):
 		arch = 'X86_64'
 		bits = 64
 	# ARM
-	elif re.match(r'^armv8-a|aarch64$', arch_string_raw):
+	elif re.match(r'^armv8-a|aarch64|arm64$', arch_string_raw):
 		arch = 'ARM_8'
 		bits = 64
 	elif re.match(r'^armv7$|^armv7[a-z]$|^armv7-[a-z]$|^armv6[a-z]$', arch_string_raw):
@@ -2131,7 +2131,7 @@ def _get_cpu_info_from_sysctl():
 		# Various fields
 		vendor_id = _get_field(False, output, None, None, 'machdep.cpu.vendor')
 		processor_brand = _get_field(True, output, None, None, 'machdep.cpu.brand_string')
-		cache_size = _get_field(False, output, None, None, 'machdep.cpu.cache.size')
+		cache_size = _get_field(False, output, int, 0, 'machdep.cpu.cache.size')
 		stepping = _get_field(False, output, int, 0, 'machdep.cpu.stepping')
 		model = _get_field(False, output, int, 0, 'machdep.cpu.model')
 		family = _get_field(False, output, int, 0, 'machdep.cpu.family')
