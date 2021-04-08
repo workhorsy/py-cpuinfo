@@ -1,4 +1,5 @@
 * Release 8.0.0
+	* Fixed Bug #161: Accept arm64 as an alias for aarch64
 	* Fixed Bug #160: Add MIPS architecture support
 	* Fixed Bug #74: Add option to trace code paths to file
 	* Fixed Bug #157: Remove multiple checks for sestatus
