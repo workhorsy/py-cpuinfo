@@ -1,0 +1,32 @@
+name: Python test
+
+on: [push, pull_request]
+
+jobs:
+  test:
+    name: Python Tests
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macOS-latest]
+        python-version: [2.7, 3.7, 3.9]
+        architecture: [x64, x86]
+        exclude:
+          - os: ubuntu-latest
+            architecture: x86
+          - os: macOS-latest
+            architecture: x86
+
+    runs-on: ${{ matrix.os }}
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v2
+      with:
+        python-version: ${{ matrix.python-version }}
+        architecture: ${{ matrix.architecture }}
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+    - name: Run tests
+      run: |
+        python setup.py test
