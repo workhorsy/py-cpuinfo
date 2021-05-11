@@ -594,6 +594,10 @@ def _friendly_bytes_to_int(friendly_bytes):
 		'mb' : 1024 * 1024,
 		'kb' : 1024,
 
+		'gib' : 1024 * 1024 * 1024,
+		'mib' : 1024 * 1024,
+		'kib' : 1024,
+
 		'g' : 1024 * 1024 * 1024,
 		'm' : 1024 * 1024,
 		'k' : 1024,
@@ -603,7 +607,7 @@ def _friendly_bytes_to_int(friendly_bytes):
 	try:
 		for pattern, multiplier in formats.items():
 			if input.endswith(pattern):
-				return int(input.split(pattern)[0].strip()) * multiplier
+				return int(float(input.split(pattern)[0].strip()) * multiplier)
 
 	except Exception as err:
 		pass
