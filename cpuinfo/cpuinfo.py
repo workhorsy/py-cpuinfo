@@ -361,9 +361,9 @@ def _check_arch():
 	arch, bits = _parse_arch(DataSource.arch_string_raw)
 	if not arch in ['X86_32', 'X86_64', 'ARM_7', 'ARM_8',
 	                'PPC_64', 'S390X', 'MIPS_32', 'MIPS_64',
-	                'RISCV_32', 'RISCV_64']:
+	                'RISCV_32', 'RISCV_64', 'Loong_32', 'Loong_64']:
 		raise Exception("py-cpuinfo currently only works on X86 "
-		                "and some ARM/PPC/S390X/MIPS/RISCV CPUs.")
+		                "and some ARM/PPC/S390X/MIPS/RISCV/LoongArch CPUs.")
 
 def _obj_to_b64(thing):
 	import pickle
@@ -815,10 +815,11 @@ def _parse_arch(arch_string_raw):
 	elif re.match(r'^s390x$', arch_string_raw):
 		arch = 'S390X'
 		bits = 64
-	elif arch_string_raw == 'mips':
+	# MIPS
+	elif re.match('^mips$', arch_string_raw):
 		arch = 'MIPS_32'
 		bits = 32
-	elif arch_string_raw == 'mips64':
+	elif re.match('^mips64$', arch_string_raw):
 		arch = 'MIPS_64'
 		bits = 64
 	# RISCV
@@ -827,6 +828,12 @@ def _parse_arch(arch_string_raw):
 		bits = 32
 	elif re.match(r'^riscv64$|^riscv64be$', arch_string_raw):
 		arch = 'RISCV_64'
+	# LoongArch
+	elif re.match('^loongarch32$', arch_string_raw):
+		arch = 'Loong_32'
+		bits = 32
+	elif re.match('^loongarch64$', arch_string_raw):
+		arch = 'Loong_64'
 		bits = 64
 
 	return (arch, bits)
