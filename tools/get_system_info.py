@@ -157,6 +157,13 @@ def parse_arch(arch_string_raw):
 	elif re.match(r'^s390x$', arch_string_raw):
 		arch = 'S390X'
 		bits = 64
+	# RISCV
+	elif re.match(r'^riscv$|^riscv32$|^riscv32be$', arch_string_raw):
+		arch = 'RISCV_32'
+		bits = 32
+	elif re.match(r'^riscv64$|^riscv64be$', arch_string_raw):
+		arch = 'RISCV_64'
+		bits = 64
 
 	return (arch, bits)
 
