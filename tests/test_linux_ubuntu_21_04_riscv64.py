@@ -120,7 +120,7 @@ class TestLinuxUbuntu_21_04_riscv64(unittest.TestCase):
 		self.assertEqual(32 * 1024, info['l1_data_cache_size'])
 		self.assertEqual(2 * 1024 * 1024, info['l2_cache_size'])
 		self.assertEqual(3, len(info))
-	
+
 	def test_get_cpu_info_from_proc_cpuinfo(self):
 		info = cpuinfo._get_cpu_info_from_proc_cpuinfo()
 		self.assertEqual('sifive,u74-mc', info['brand_raw'])
@@ -128,7 +128,6 @@ class TestLinuxUbuntu_21_04_riscv64(unittest.TestCase):
 
 	def test_all(self):
 		info = cpuinfo._get_cpu_info_internal()
-		print(info)
 
 		self.assertEqual('sifive,u74-mc', info['brand_raw'])
 		self.assertEqual('RISCV_64', info['arch'])
