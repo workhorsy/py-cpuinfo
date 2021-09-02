@@ -370,9 +370,10 @@ def _read_windows_registry_key(key_name, field_name):
 def _check_arch():
 	arch, bits = _parse_arch(DataSource.arch_string_raw)
 	if not arch in ['X86_32', 'X86_64', 'ARM_7', 'ARM_8',
-	               'PPC_64', 'S390X', 'MIPS_32', 'MIPS_64']:
+	               'PPC_64', 'S390X', 'MIPS_32', 'MIPS_64',
+				   "RISCV_32", "RISCV_64"]:
 		raise Exception("py-cpuinfo currently only works on X86 "
-		                "and some ARM/PPC/S390X/MIPS CPUs.")
+		                "and some ARM/PPC/S390X/MIPS/RISCV CPUs.")
 
 def _obj_to_b64(thing):
 	import pickle
@@ -590,6 +591,10 @@ def _friendly_bytes_to_int(friendly_bytes):
 	input = friendly_bytes.lower()
 
 	formats = {
+		'gib' : 1024 * 1024 * 1024,
+		'mib' : 1024 * 1024,
+		'kib' : 1024,
+
 		'gb' : 1024 * 1024 * 1024,
 		'mb' : 1024 * 1024,
 		'kb' : 1024,
@@ -826,6 +831,13 @@ def _parse_arch(arch_string_raw):
 		bits = 32
 	elif arch_string_raw == 'mips64':
 		arch = 'MIPS_64'
+		bits = 64
+	# RISCV
+	elif re.match(r'^riscv$|^riscv32$|^riscv32be$', arch_string_raw):
+		arch = 'RISCV_32'
+		bits = 32
+	elif re.match(r'^riscv64$|^riscv64be$', arch_string_raw):
+		arch = 'RISCV_64'
 		bits = 64
 
 	return (arch, bits)
@@ -1710,7 +1722,7 @@ def _get_cpu_info_from_proc_cpuinfo():
 
 		# Various fields
 		vendor_id = _get_field(False, output, None, '', 'vendor_id', 'vendor id', 'vendor')
-		processor_brand = _get_field(True, output, None, None, 'model name','cpu', 'processor')
+		processor_brand = _get_field(True, output, None, None, 'model name', 'cpu', 'processor', 'uarch')
 		cache_size = _get_field(False, output, None, '', 'cache size')
 		stepping = _get_field(False, output, int, 0, 'stepping')
 		model = _get_field(False, output, int, 0, 'model')
