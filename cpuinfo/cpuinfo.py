@@ -590,23 +590,25 @@ def _to_friendly_bytes(input):
 def _friendly_bytes_to_int(friendly_bytes):
 	input = friendly_bytes.lower()
 
-	formats = {
-		'gib' : 1024 * 1024 * 1024,
-		'mib' : 1024 * 1024,
-		'kib' : 1024,
+	formats = [
+		{'gib' : 1024 * 1024 * 1024},
+		{'mib' : 1024 * 1024},
+		{'kib' : 1024},
 
-		'gb' : 1024 * 1024 * 1024,
-		'mb' : 1024 * 1024,
-		'kb' : 1024,
+		{'gb' : 1024 * 1024 * 1024},
+		{'mb' : 1024 * 1024},
+		{'kb' : 1024},
 
-		'g' : 1024 * 1024 * 1024,
-		'm' : 1024 * 1024,
-		'k' : 1024,
-		'b' : 1,
-	}
+		{'g' : 1024 * 1024 * 1024},
+		{'m' : 1024 * 1024},
+		{'k' : 1024},
+		{'b' : 1},
+	]
 
 	try:
-		for pattern, multiplier in formats.items():
+		for entry in formats:
+			pattern = list(entry.keys())[0]
+			multiplier = list(entry.values())[0]
 			if input.endswith(pattern):
 				return int(input.split(pattern)[0].strip()) * multiplier
 
