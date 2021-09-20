@@ -58,6 +58,7 @@ from test_linux_odroid_c2_aarch64 import TestLinux_Odroid_C2_Aarch_64
 from test_linux_odroid_xu3_arm_32 import TestLinux_Odroid_XU3_arm_32
 from test_linux_alt_p9_mipsel_bfk3 import TestLinuxAlt_p9_mipsel_bfk3
 from test_linux_mips64el_loongson3A3000 import TestLinux_mips64el_Loongson3A3000
+from test_linux_loongarch64_loongson3A5000LL import TestLinux_loongarch64_Loongson3A5000LL
 from test_pcbsd_10_x86_64 import TestPCBSD
 from test_free_bsd_11_x86_64 import TestFreeBSD_11_X86_64
 from test_osx_10_9_x86_64 import TestOSX_10_9
@@ -91,6 +92,7 @@ if __name__ == '__main__':
 		TestSELinux,
 		TestLinuxAlt_p9_mipsel_bfk3,
 		TestLinux_mips64el_Loongson3A3000,
+		TestLinux_loongarch64_Loongson3A5000LL,
 		TestLinuxDebian_8_X86_64,
 		TestLinuxDebian_8_5_X86_64,
 		TestLinuxDebian_8_7_1_ppc64le,
