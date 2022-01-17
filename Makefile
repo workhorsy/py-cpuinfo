@@ -1,6 +1,7 @@
 
 VERSION = 8.0.0
 
+.PHONY: all
 all:
 	@echo build: Builds the python source dist package
 	@echo install: Installs python source dist package
@@ -8,8 +9,8 @@ all:
 	@echo rst: uses pandoc to generate the README.rst file from README.md
 	@echo test: Runs the unit tests
 
-.PHONY: clean
-clean:
+.PHONY: clean-temp-files
+clean-temp-files:
 	rm -f *.pyc
 	rm -f */*.pyc
 	rm -f -rf __pycache__
@@ -17,23 +18,32 @@ clean:
 	rm -f -rf py_cpuinfo.egg-info
 	rm -f -rf dist
 	rm -f -rf build
+
+.PHONY: clean-dist-files
+clean-dist-files:
 	rm -f -rf py-cpuinfo-$(VERSION)
 	rm -f -rf py-cpuinfo-$(VERSION).tar.gz
 	rm -f -rf py-cpuinfo-$(VERSION).zip
 	rm -f -rf py_cpuinfo-$(VERSION)-py2.py3-none-any.whl
 
+.PHONY: clean
+clean: clean-temp-files clean-dist-files
+
+.PHONY: _actual_build
 _actual_build:
 	python3 setup.py sdist --formats=gztar,zip
-	python3 setup.py bdist_wheel --universal
+	python3 setup.py bdist_wheel
 
 build: clean _actual_build move_built
-	$(MAKE) clean
+	$(MAKE) clean-temp-files
 
+.PHONY: move_built
 move_built:
 	mv dist/py-cpuinfo-$(VERSION).tar.gz py-cpuinfo-$(VERSION).tar.gz
 	mv dist/py-cpuinfo-$(VERSION).zip py-cpuinfo-$(VERSION).zip
 	mv dist/py_cpuinfo-$(VERSION)-py2.py3-none-any.whl py_cpuinfo-$(VERSION)-py2.py3-none-any.whl
 
+.PHONY: release
 release:
 	# Create release
 	git commit -a -m "Release $(VERSION)"
@@ -43,6 +53,7 @@ release:
 	git tag v$(VERSION) -m "Release $(VERSION)"
 	git push --tags
 
+.PHONY: upload
 upload: clean _actual_build
 	twine upload dist/py-cpuinfo-$(VERSION).tar.gz
 	twine upload dist/py_cpuinfo-$(VERSION)-py2.py3-none-any.whl
