@@ -590,19 +590,25 @@ def _to_friendly_bytes(input):
 def _friendly_bytes_to_int(friendly_bytes):
 	input = friendly_bytes.lower()
 
-	formats = {
-		'gb' : 1024 * 1024 * 1024,
-		'mb' : 1024 * 1024,
-		'kb' : 1024,
+	formats = [
+		{'gib' : 1024 * 1024 * 1024},
+		{'mib' : 1024 * 1024},
+		{'kib' : 1024},
 
-		'g' : 1024 * 1024 * 1024,
-		'm' : 1024 * 1024,
-		'k' : 1024,
-		'b' : 1,
-	}
+		{'gb' : 1024 * 1024 * 1024},
+		{'mb' : 1024 * 1024},
+		{'kb' : 1024},
+
+		{'g' : 1024 * 1024 * 1024},
+		{'m' : 1024 * 1024},
+		{'k' : 1024},
+		{'b' : 1},
+	]
 
 	try:
-		for pattern, multiplier in formats.items():
+		for entry in formats:
+			pattern = list(entry.keys())[0]
+			multiplier = list(entry.values())[0]
 			if input.endswith(pattern):
 				return int(input.split(pattern)[0].strip()) * multiplier
 
@@ -1726,7 +1732,7 @@ def _get_cpu_info_from_proc_cpuinfo():
 
 		# Various fields
 		vendor_id = _get_field(False, output, None, '', 'vendor_id', 'vendor id', 'vendor')
-		processor_brand = _get_field(True, output, None, None, 'model name','cpu', 'processor')
+		processor_brand = _get_field(True, output, None, None, 'model name', 'cpu', 'processor', 'uarch')
 		cache_size = _get_field(False, output, None, '', 'cache size')
 		stepping = _get_field(False, output, int, 0, 'stepping')
 		model = _get_field(False, output, int, 0, 'model')

@@ -109,6 +109,7 @@ if __name__ == '__main__':
 		TestLinux_RaspberryPiModelB,
 		TestLinux_Odroid_C2_Aarch_64,
 		TestLinux_Odroid_XU3_arm_32,
+		TestLinuxUbuntu_21_04_riscv64,
 		TestFreeBSD_11_X86_64,
 		TestPCBSD,
 		TestOSX_10_9,
