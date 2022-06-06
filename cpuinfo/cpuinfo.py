@@ -28,6 +28,7 @@
 CPUINFO_VERSION = (8, 0, 0)
 CPUINFO_VERSION_STRING = '.'.join([str(n) for n in CPUINFO_VERSION])
 
+from curses.ascii import isdigit
 import os, sys
 import platform
 import multiprocessing
@@ -415,7 +416,7 @@ def _copy_new_fields(info, new_info):
 		'l2_cache_size', 'l2_cache_line_size', 'l2_cache_associativity',
 		'stepping', 'model', 'family',
 		'processor_type', 'flags',
-		'l3_cache_size', 'l1_data_cache_size', 'l1_instruction_cache_size'
+		'l3_cache_size', 'l1_data_cache_size', 'l1_instruction_cache_size', 'socket_count',
 	]
 
 	g_trace.keys(keys, info, new_info)
@@ -446,8 +447,41 @@ def _get_field_actual(cant_be_number, raw_string, field_names):
 
 	return None
 
+def _get_field_actual_max(raw_string, field_names):
+	max_value = -1
+	for line in raw_string.splitlines():
+		for field_name in field_names:
+			field_name = field_name.lower()
+			if ':' in line:
+				left, right = line.split(':', 1)
+				left = left.strip().lower()
+				right = right.strip()
+				if left == field_name and len(right) > 0:
+					if int(right) > max_value:
+						max_value = int(right)
+	if max_value != -1:
+		return max_value
+	
+	return  None
+
 def _get_field(cant_be_number, raw_string, convert_to, default_value, *field_names):
 	retval = _get_field_actual(cant_be_number, raw_string, field_names)
+
+	# Convert the return value
+	if retval and convert_to:
+		try:
+			retval = convert_to(retval)
+		except:
+			retval = default_value
+
+	# Return the default if there is no return value
+	if retval is None:
+		retval = default_value
+
+	return retval
+
+def _get_field_max(raw_string, convert_to, default_value, *field_names):
+	retval = _get_field_actual_max(raw_string, field_names)
 
 	# Convert the return value
 	if retval and convert_to:
@@ -1730,6 +1764,8 @@ def _get_cpu_info_from_proc_cpuinfo():
 		model = _get_field(False, output, int, 0, 'model')
 		family = _get_field(False, output, int, 0, 'cpu family')
 		hardware = _get_field(False, output, None, '', 'Hardware')
+		socket_count = _get_field_max(output,int,None,'physical id')
+		if socket_count != None : socket_count += 1
 
 		# Flags
 		flags = _get_field(False, output, None, None, 'flags', 'Features', 'ASEs implemented')
@@ -1774,6 +1810,7 @@ def _get_cpu_info_from_proc_cpuinfo():
 		'stepping' : stepping,
 		'model' : model,
 		'family' : family,
+        'socket_count' : socket_count,
 		}
 
 		# Make the Hz the same for actual and advertised if missing any
@@ -2813,6 +2850,7 @@ def main():
 		print('Family: {0}'.format(info.get('family', '')))
 		print('Processor Type: {0}'.format(info.get('processor_type', '')))
 		print('Flags: {0}'.format(', '.join(info.get('flags', ''))))
+		print('Socket count: {0}'.format(info.get('socket_count', '')))
 
 
 if __name__ == '__main__':

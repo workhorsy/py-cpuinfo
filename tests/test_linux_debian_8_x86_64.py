@@ -68,7 +68,7 @@ class TestLinuxDebian_8_X86_64(unittest.TestCase):
 		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_registry()))
 		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_cpufreq_info()))
 		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_lscpu()))
-		self.assertEqual(11, len(cpuinfo._get_cpu_info_from_proc_cpuinfo()))
+		self.assertEqual(12, len(cpuinfo._get_cpu_info_from_proc_cpuinfo()))
 		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_sysctl()))
 		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_kstat()))
 		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_dmesg()))
@@ -76,7 +76,7 @@ class TestLinuxDebian_8_X86_64(unittest.TestCase):
 		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_ibm_pa_features()))
 		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_sysinfo()))
 		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_cpuid()))
-		self.assertEqual(18, len(cpuinfo._get_cpu_info_internal()))
+		self.assertEqual(19, len(cpuinfo._get_cpu_info_internal()))
 
 	def test_get_cpu_info_from_proc_cpuinfo(self):
 		info = cpuinfo._get_cpu_info_from_proc_cpuinfo()
@@ -101,6 +101,7 @@ class TestLinuxDebian_8_X86_64(unittest.TestCase):
 			,
 			info['flags']
 		)
+		self.assertEqual(1, info['socket_count'])
 
 	def test_all(self):
 		info = cpuinfo._get_cpu_info_internal()
@@ -130,3 +131,4 @@ class TestLinuxDebian_8_X86_64(unittest.TestCase):
 			,
 			info['flags']
 		)
+		self.assertEqual(1, info['socket_count'])
