@@ -322,8 +322,6 @@ def _program_paths(program_name):
 def _run_and_get_stdout(command, pipe_command=None):
 	from subprocess import Popen, PIPE
 
-	p1, p2, stdout_output, stderr_output = None, None, None, None
-
 	g_trace.command_header('Running command "' + ' '.join(command) + '" ...')
 
 	# Run the command normally
