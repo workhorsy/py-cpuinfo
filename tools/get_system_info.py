@@ -654,7 +654,7 @@ def get_cpu_info_from_cpuid():
 try:
 	output = get_cpu_info_from_cpuid()
 	print_output('CPUID', output)
-except:
+except Exception:
 	pass
 
 out_file.close()

@@ -390,7 +390,7 @@ def _b64_to_obj(thing):
 		a = base64.b64decode(thing)
 		b = pickle.loads(a)
 		return b
-	except:
+	except Exception:
 		return {}
 
 def _utf_to_str(input):
@@ -450,7 +450,7 @@ def _get_field(cant_be_number, raw_string, convert_to, default_value, *field_nam
 	if retval and convert_to:
 		try:
 			retval = convert_to(retval)
-		except:
+		except Exception:
 			retval = default_value
 
 	# Return the default if there is no return value
@@ -486,7 +486,7 @@ def _to_decimal_string(ticks):
 		ticks = float(ticks)
 		ticks = '{0}'.format(ticks)
 		return ticks
-	except:
+	except Exception:
 		return '0.0'
 
 def _hz_short_to_full(ticks, scale):
@@ -505,7 +505,7 @@ def _hz_short_to_full(ticks, scale):
 		left, right = hz.split('.')
 		left, right = int(left), int(right)
 		return (left, right)
-	except:
+	except Exception:
 		return (0, 0)
 
 def _hz_friendly_to_full(hz_string):
@@ -527,7 +527,7 @@ def _hz_friendly_to_full(hz_string):
 		hz, scale = _hz_short_to_full(hz, scale)
 
 		return (hz, scale)
-	except:
+	except Exception:
 		return (0, 0)
 
 def _hz_short_to_friendly(ticks, scale):
@@ -561,7 +561,7 @@ def _hz_short_to_friendly(ticks, scale):
 		result = '{0:.4f} {1}'.format(float(result), symbol)
 		result = result.rstrip('0')
 		return result
-	except:
+	except Exception:
 		return '0.0000 Hz'
 
 def _to_friendly_bytes(input):
