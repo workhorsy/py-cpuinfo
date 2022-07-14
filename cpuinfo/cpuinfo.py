@@ -780,7 +780,6 @@ def _parse_dmesg_output(output):
 	except Exception as err:
 		g_trace.fail(err)
 		#raise
-		pass
 
 	return {}
 
@@ -1695,7 +1694,6 @@ def _get_cpu_info_from_cpuid():
 			return output['info']
 	except Exception as err:
 		g_trace.fail(err)
-		pass
 
 	# Return {} if everything failed
 	return {}
