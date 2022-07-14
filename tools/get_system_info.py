@@ -68,7 +68,6 @@ def run_and_get_stdout(command, pipe_command=None):
 def program_paths(program_name):
 	paths = []
 	exts = filter(None, os.environ.get('PATHEXT', '').split(os.pathsep))
-	path = os.environ['PATH']
 	for p in os.environ['PATH'].split(os.pathsep):
 		p = os.path.join(p, program_name)
 		if os.access(p, os.X_OK):
