@@ -985,7 +985,7 @@ class ASM(object):
 
 class CPUID(object):
 	def __init__(self, trace=None):
-		if trace == None:
+		if trace is None:
 			trace = Trace(False, False)
 
 		# Figure out if SE Linux is on and in enforcing mode
@@ -1955,7 +1955,7 @@ def _get_cpu_info_from_dmesg():
 
 	# If dmesg fails return {}
 	returncode, output = DataSource.dmesg_a()
-	if output == None or returncode != 0:
+	if output is None or returncode != 0:
 		g_trace.fail('Failed to run \"dmesg -a\". Skipping ...')
 		return {}
 
@@ -1982,7 +1982,7 @@ def _get_cpu_info_from_ibm_pa_features():
 
 		# If ibm,pa-features fails return {}
 		returncode, output = DataSource.ibm_pa_features()
-		if output == None or returncode != 0:
+		if output is None or returncode != 0:
 			g_trace.fail('Failed to glob /proc/device-tree/cpus/*/ibm,pa-features. Skipping ...')
 			return {}
 
@@ -2108,7 +2108,7 @@ def _get_cpu_info_from_cat_var_run_dmesg_boot():
 
 	# If dmesg.boot fails return {}
 	returncode, output = DataSource.cat_var_run_dmesg_boot()
-	if output == None or returncode != 0:
+	if output is None or returncode != 0:
 		g_trace.fail('Failed to run \"cat /var/run/dmesg.boot\". Skipping ...')
 		return {}
 
@@ -2133,7 +2133,7 @@ def _get_cpu_info_from_sysctl():
 
 		# If sysctl fails return {}
 		returncode, output = DataSource.sysctl_machdep_cpu_hw_cpufrequency()
-		if output == None or returncode != 0:
+		if output is None or returncode != 0:
 			g_trace.fail('Failed to run \"sysctl machdep.cpu hw.cpufrequency\". Skipping ...')
 			return {}
 
@@ -2207,7 +2207,7 @@ def _get_cpu_info_from_sysinfo_v1():
 
 		# If sysinfo fails return {}
 		returncode, output = DataSource.sysinfo_cpu()
-		if output == None or returncode != 0:
+		if output is None or returncode != 0:
 			g_trace.fail('Failed to run \"sysinfo -cpu\". Skipping ...')
 			return {}
 
@@ -2272,7 +2272,7 @@ def _get_cpu_info_from_sysinfo_v2():
 
 		# If sysinfo fails return {}
 		returncode, output = DataSource.sysinfo_cpu()
-		if output == None or returncode != 0:
+		if output is None or returncode != 0:
 			g_trace.fail('Failed to run \"sysinfo -cpu\". Skipping ...')
 			return {}
 
@@ -2352,7 +2352,7 @@ def _get_cpu_info_from_wmic():
 			return {}
 
 		returncode, output = DataSource.wmic_cpu()
-		if output == None or returncode != 0:
+		if output is None or returncode != 0:
 			g_trace.fail('Failed to run wmic. Skipping ...')
 			return {}
 
@@ -2543,13 +2543,13 @@ def _get_cpu_info_from_kstat():
 
 		# If isainfo fails return {}
 		returncode, flag_output = DataSource.isainfo_vb()
-		if flag_output == None or returncode != 0:
+		if flag_output is None or returncode != 0:
 			g_trace.fail('Failed to run \"isainfo -vb\". Skipping ...')
 			return {}
 
 		# If kstat fails return {}
 		returncode, kstat = DataSource.kstat_m_cpu_info()
-		if kstat == None or returncode != 0:
+		if kstat is None or returncode != 0:
 			g_trace.fail('Failed to run \"kstat -m cpu_info\". Skipping ...')
 			return {}
 
