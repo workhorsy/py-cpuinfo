@@ -309,7 +309,6 @@ class DataSource(object):
 def _program_paths(program_name):
 	paths = []
 	exts = filter(None, os.environ.get('PATHEXT', '').split(os.pathsep))
-	path = os.environ['PATH']
 	for p in os.environ['PATH'].split(os.pathsep):
 		p = os.path.join(p, program_name)
 		if os.access(p, os.X_OK):
@@ -322,8 +321,6 @@ def _program_paths(program_name):
 
 def _run_and_get_stdout(command, pipe_command=None):
 	from subprocess import Popen, PIPE
-
-	p1, p2, stdout_output, stderr_output = None, None, None, None
 
 	g_trace.command_header('Running command "' + ' '.join(command) + '" ...')
 
@@ -393,7 +390,7 @@ def _b64_to_obj(thing):
 		a = base64.b64decode(thing)
 		b = pickle.loads(a)
 		return b
-	except:
+	except Exception:
 		return {}
 
 def _utf_to_str(input):
@@ -453,7 +450,7 @@ def _get_field(cant_be_number, raw_string, convert_to, default_value, *field_nam
 	if retval and convert_to:
 		try:
 			retval = convert_to(retval)
-		except:
+		except Exception:
 			retval = default_value
 
 	# Return the default if there is no return value
@@ -489,7 +486,7 @@ def _to_decimal_string(ticks):
 		ticks = float(ticks)
 		ticks = '{0}'.format(ticks)
 		return ticks
-	except:
+	except Exception:
 		return '0.0'
 
 def _hz_short_to_full(ticks, scale):
@@ -508,7 +505,7 @@ def _hz_short_to_full(ticks, scale):
 		left, right = hz.split('.')
 		left, right = int(left), int(right)
 		return (left, right)
-	except:
+	except Exception:
 		return (0, 0)
 
 def _hz_friendly_to_full(hz_string):
@@ -530,7 +527,7 @@ def _hz_friendly_to_full(hz_string):
 		hz, scale = _hz_short_to_full(hz, scale)
 
 		return (hz, scale)
-	except:
+	except Exception:
 		return (0, 0)
 
 def _hz_short_to_friendly(ticks, scale):
@@ -564,7 +561,7 @@ def _hz_short_to_friendly(ticks, scale):
 		result = '{0:.4f} {1}'.format(float(result), symbol)
 		result = result.rstrip('0')
 		return result
-	except:
+	except Exception:
 		return '0.0000 Hz'
 
 def _to_friendly_bytes(input):
@@ -783,7 +780,6 @@ def _parse_dmesg_output(output):
 	except Exception as err:
 		g_trace.fail(err)
 		#raise
-		pass
 
 	return {}
 
@@ -989,7 +985,7 @@ class ASM(object):
 
 class CPUID(object):
 	def __init__(self, trace=None):
-		if trace == None:
+		if trace is None:
 			trace = Trace(False, False)
 
 		# Figure out if SE Linux is on and in enforcing mode
@@ -1698,7 +1694,6 @@ def _get_cpu_info_from_cpuid():
 			return output['info']
 	except Exception as err:
 		g_trace.fail(err)
-		pass
 
 	# Return {} if everything failed
 	return {}
@@ -1960,7 +1955,7 @@ def _get_cpu_info_from_dmesg():
 
 	# If dmesg fails return {}
 	returncode, output = DataSource.dmesg_a()
-	if output == None or returncode != 0:
+	if output is None or returncode != 0:
 		g_trace.fail('Failed to run \"dmesg -a\". Skipping ...')
 		return {}
 
@@ -1987,7 +1982,7 @@ def _get_cpu_info_from_ibm_pa_features():
 
 		# If ibm,pa-features fails return {}
 		returncode, output = DataSource.ibm_pa_features()
-		if output == None or returncode != 0:
+		if output is None or returncode != 0:
 			g_trace.fail('Failed to glob /proc/device-tree/cpus/*/ibm,pa-features. Skipping ...')
 			return {}
 
@@ -2113,7 +2108,7 @@ def _get_cpu_info_from_cat_var_run_dmesg_boot():
 
 	# If dmesg.boot fails return {}
 	returncode, output = DataSource.cat_var_run_dmesg_boot()
-	if output == None or returncode != 0:
+	if output is None or returncode != 0:
 		g_trace.fail('Failed to run \"cat /var/run/dmesg.boot\". Skipping ...')
 		return {}
 
@@ -2138,7 +2133,7 @@ def _get_cpu_info_from_sysctl():
 
 		# If sysctl fails return {}
 		returncode, output = DataSource.sysctl_machdep_cpu_hw_cpufrequency()
-		if output == None or returncode != 0:
+		if output is None or returncode != 0:
 			g_trace.fail('Failed to run \"sysctl machdep.cpu hw.cpufrequency\". Skipping ...')
 			return {}
 
@@ -2212,7 +2207,7 @@ def _get_cpu_info_from_sysinfo_v1():
 
 		# If sysinfo fails return {}
 		returncode, output = DataSource.sysinfo_cpu()
-		if output == None or returncode != 0:
+		if output is None or returncode != 0:
 			g_trace.fail('Failed to run \"sysinfo -cpu\". Skipping ...')
 			return {}
 
@@ -2277,7 +2272,7 @@ def _get_cpu_info_from_sysinfo_v2():
 
 		# If sysinfo fails return {}
 		returncode, output = DataSource.sysinfo_cpu()
-		if output == None or returncode != 0:
+		if output is None or returncode != 0:
 			g_trace.fail('Failed to run \"sysinfo -cpu\". Skipping ...')
 			return {}
 
@@ -2357,7 +2352,7 @@ def _get_cpu_info_from_wmic():
 			return {}
 
 		returncode, output = DataSource.wmic_cpu()
-		if output == None or returncode != 0:
+		if output is None or returncode != 0:
 			g_trace.fail('Failed to run wmic. Skipping ...')
 			return {}
 
@@ -2548,13 +2543,13 @@ def _get_cpu_info_from_kstat():
 
 		# If isainfo fails return {}
 		returncode, flag_output = DataSource.isainfo_vb()
-		if flag_output == None or returncode != 0:
+		if flag_output is None or returncode != 0:
 			g_trace.fail('Failed to run \"isainfo -vb\". Skipping ...')
 			return {}
 
 		# If kstat fails return {}
 		returncode, kstat = DataSource.kstat_m_cpu_info()
-		if kstat == None or returncode != 0:
+		if kstat is None or returncode != 0:
 			g_trace.fail('Failed to run \"kstat -m cpu_info\". Skipping ...')
 			return {}
 
