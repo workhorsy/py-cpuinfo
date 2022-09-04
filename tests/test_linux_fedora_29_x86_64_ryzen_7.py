@@ -453,7 +453,7 @@ class Test_Linux_Fedora_29_X86_64_Ryzen_7(unittest.TestCase):
 		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_registry()))
 		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_cpufreq_info()))
 		self.assertEqual(14, len(cpuinfo._get_cpu_info_from_lscpu()))
-		self.assertEqual(11, len(cpuinfo._get_cpu_info_from_proc_cpuinfo()))
+		self.assertEqual(12, len(cpuinfo._get_cpu_info_from_proc_cpuinfo()))
 		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_sysctl()))
 		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_kstat()))
 		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_dmesg()))
@@ -461,7 +461,7 @@ class Test_Linux_Fedora_29_X86_64_Ryzen_7(unittest.TestCase):
 		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_ibm_pa_features()))
 		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_sysinfo()))
 		self.assertEqual(0, len(cpuinfo._get_cpu_info_from_cpuid()))
-		self.assertEqual(21, len(cpuinfo._get_cpu_info_internal()))
+		self.assertEqual(22, len(cpuinfo._get_cpu_info_internal()))
 
 	def test_get_cpu_info_from_lscpu(self):
 		info = cpuinfo._get_cpu_info_from_lscpu()
@@ -527,6 +527,7 @@ class Test_Linux_Fedora_29_X86_64_Ryzen_7(unittest.TestCase):
 			,
 			info['flags']
 		)
+		self.assertEqual(1, info['socket_count'])
 
 	def test_all(self):
 		info = cpuinfo._get_cpu_info_internal()
@@ -568,3 +569,4 @@ class Test_Linux_Fedora_29_X86_64_Ryzen_7(unittest.TestCase):
 			,
 			info['flags']
 		)
+		self.assertEqual(1, info['socket_count'])
