@@ -8,7 +8,7 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest, windows-latest, macOS-latest]
-        python-version: ["2.7", "3.7", "3.9", "3.10"]
+        python-version: ["3.7", "3.9", "3.10"]
         architecture: [x64, x86]
         exclude:
           - os: ubuntu-latest
