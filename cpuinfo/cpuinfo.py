@@ -2,7 +2,7 @@
 # -*- coding: UTF-8 -*-
 
 # Copyright (c) 2014-2022 Matthew Brennan Jones <matthew.brennan.jones@gmail.com>
-# Py-cpuinfo gets CPU info with pure Python 2 & 3
+# Py-cpuinfo gets CPU info with pure Python
 # It uses the MIT License
 # It is hosted at: https://github.com/workhorsy/py-cpuinfo
 #
@@ -2746,7 +2746,7 @@ def main():
 	import json
 
 	# Parse args
-	parser = ArgumentParser(description='Gets CPU info with pure Python 2 & 3')
+	parser = ArgumentParser(description='Gets CPU info with pure Python')
 	parser.add_argument('--json', action='store_true', help='Return the info in JSON format')
 	parser.add_argument('--version', action='store_true', help='Return the version of py-cpuinfo')
 	parser.add_argument('--trace', action='store_true', help='Traces code paths used to find CPU info to file')
