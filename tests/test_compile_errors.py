@@ -1,7 +1,7 @@
 
 
+import sys
 import unittest
-from cpuinfo import *
 import helpers
 
 
@@ -25,11 +25,8 @@ class TestCompileErrors(unittest.TestCase):
 		p1 = Popen(command.split(' '), stdout=PIPE, stderr=PIPE, stdin=PIPE)
 		p1_stdout, p1_stderr = p1.communicate()
 
-		if not cpuinfo.IS_PY2:
-			p1_stdout = p1_stdout.decode(encoding='UTF-8')
-
-		if not cpuinfo.IS_PY2:
-			p1_stderr = p1_stderr.decode(encoding='UTF-8')
+		p1_stdout = p1_stdout.decode(encoding='UTF-8')
+		p1_stderr = p1_stderr.decode(encoding='UTF-8')
 
 		# Check for no errors
 		self.assertEqual("", p1_stderr)

@@ -40,7 +40,6 @@ except ImportError as err:
 	except ImportError as err:
 		pass
 
-IS_PY2 = sys.version_info[0] == 2
 is_windows = platform.system().lower() == 'windows'
 
 out_file_name = 'system_info.txt'
@@ -53,16 +52,14 @@ def run_and_get_stdout(command, pipe_command=None):
 	if not pipe_command:
 		p1 = Popen(command, stdout=PIPE, stderr=PIPE, stdin=PIPE)
 		output = p1.communicate()[0]
-		if not IS_PY2:
-			output = output.decode(encoding='UTF-8')
+		output = output.decode(encoding='UTF-8')
 		return p1.returncode, output
 	else:
 		p1 = Popen(command, stdout=PIPE, stderr=PIPE, stdin=PIPE)
 		p2 = Popen(pipe_command, stdin=p1.stdout, stdout=PIPE, stderr=PIPE)
 		p1.stdout.close()
 		output = p2.communicate()[0]
-		if not IS_PY2:
-			output = output.decode(encoding='UTF-8')
+		output = output.decode(encoding='UTF-8')
 		return p2.returncode, output
 
 def program_paths(program_name):
