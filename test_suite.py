@@ -128,8 +128,9 @@ if __name__ == '__main__':
 
 	# Add the tests to the suite
 	suite = unittest.TestSuite()
+	loader = unittest.TestLoader()
 	for test in tests:
-		suite.addTest(unittest.makeSuite(test))
+		suite.addTest(loader.loadTestsFromTestCase(test))
 
 	# Run the tests
 	runner = unittest.TextTestRunner()
