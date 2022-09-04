@@ -1,4 +1,5 @@
 * Release 8.1.0
+	* Fixed Bug #173: Fix lgtm.com alerts
 	* Fixed Bug #165: Support Wheel
 	* Fixed Bug #167: Add support for RISC-V
 
