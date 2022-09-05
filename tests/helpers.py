@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: UTF-8 -*-
 
-# Copyright (c) 2014-2021 Matthew Brennan Jones <matthew.brennan.jones@gmail.com>
-# Py-cpuinfo gets CPU info with pure Python 2 & 3
+# Copyright (c) 2014-2022 Matthew Brennan Jones <matthew.brennan.jones@gmail.com>
+# Py-cpuinfo gets CPU info with pure Python
 # It uses the MIT License
 # It is hosted at: https://github.com/workhorsy/py-cpuinfo
 #

@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: UTF-8 -*-
 
-# Copyright (c) 2014-2021 Matthew Brennan Jones <matthew.brennan.jones@gmail.com>
-# Py-cpuinfo gets CPU info with pure Python 2 & 3
+# Copyright (c) 2014-2022 Matthew Brennan Jones <matthew.brennan.jones@gmail.com>
+# Py-cpuinfo gets CPU info with pure Python
 # It uses the MIT License
 # It is hosted at: https://github.com/workhorsy/py-cpuinfo
 #
@@ -34,7 +34,6 @@ import multiprocessing
 import ctypes
 
 
-IS_PY2 = sys.version_info[0] == 2
 CAN_CALL_CPUID_IN_SUBPROCESS = True
 
 g_trace = None
@@ -47,11 +46,7 @@ class Trace(object):
 			return
 
 		from datetime import datetime
-
-		if IS_PY2:
-			from cStringIO import StringIO
-		else:
-			from io import StringIO
+		from io import StringIO
 
 		if is_stored_in_string:
 			self._output = StringIO()
@@ -335,9 +330,8 @@ def _run_and_get_stdout(command, pipe_command=None):
 
 	# Get the stdout and stderr
 	stdout_output, stderr_output = p1.communicate()
-	if not IS_PY2:
-		stdout_output = stdout_output.decode(encoding='UTF-8')
-		stderr_output = stderr_output.decode(encoding='UTF-8')
+	stdout_output = stdout_output.decode(encoding='UTF-8')
+	stderr_output = stderr_output.decode(encoding='UTF-8')
 
 	# Send the result to the logger
 	g_trace.command_output('return code:', str(p1.returncode))
@@ -394,9 +388,7 @@ def _b64_to_obj(thing):
 		return {}
 
 def _utf_to_str(input):
-	if IS_PY2 and isinstance(input, unicode):
-		return input.encode('utf-8')
-	elif isinstance(input, list):
+	if isinstance(input, list):
 		return [_utf_to_str(element) for element in input]
 	elif isinstance(input, dict):
 		return {_utf_to_str(key): _utf_to_str(value)
@@ -1516,10 +1508,7 @@ def _get_cpu_info_from_cpuid_actual():
 	It will safely call this function in another process.
 	'''
 
-	if IS_PY2:
-		from cStringIO import StringIO
-	else:
-		from io import StringIO
+	from io import StringIO
 
 	trace = Trace(True, True)
 	info = {}
@@ -2733,8 +2722,7 @@ def get_cpu_info_json():
 		if p1.returncode != 0:
 			return "{}"
 
-		if not IS_PY2:
-			output = output.decode(encoding='UTF-8')
+		output = output.decode(encoding='UTF-8')
 
 	return output
 
@@ -2758,7 +2746,7 @@ def main():
 	import json
 
 	# Parse args
-	parser = ArgumentParser(description='Gets CPU info with pure Python 2 & 3')
+	parser = ArgumentParser(description='Gets CPU info with pure Python')
 	parser.add_argument('--json', action='store_true', help='Return the info in JSON format')
 	parser.add_argument('--version', action='store_true', help='Return the version of py-cpuinfo')
 	parser.add_argument('--trace', action='store_true', help='Traces code paths used to find CPU info to file')

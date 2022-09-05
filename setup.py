@@ -1,5 +1,5 @@
-# Copyright (c) 2014-2021 Matthew Brennan Jones <matthew.brennan.jones@gmail.com>
-# Py-cpuinfo gets CPU info with pure Python 2 & 3
+# Copyright (c) 2014-2022 Matthew Brennan Jones <matthew.brennan.jones@gmail.com>
+# Py-cpuinfo gets CPU info with pure Python
 # It uses the MIT License
 # It is hosted at: https://github.com/workhorsy/py-cpuinfo
 
@@ -14,7 +14,7 @@ setup(
     version = "8.0.0",
     author = "Matthew Brennan Jones",
     author_email = "matthew.brennan.jones@gmail.com",
-    description = "Get CPU info with pure Python 2 & 3",
+    description = "Get CPU info with pure Python",
     long_description=readme_content,
     license = "MIT",
     url = "https://github.com/workhorsy/py-cpuinfo",
@@ -27,7 +27,6 @@ setup(
         "Development Status :: 5 - Production/Stable",
         "Topic :: Utilities",
         "License :: OSI Approved :: MIT License",
-        "Programming Language :: Python :: 2.7",
         "Programming Language :: Python :: 3"
     ],
 )
