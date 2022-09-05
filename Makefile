@@ -24,7 +24,7 @@ clean-dist-files:
 	rm -f -rf py-cpuinfo-$(VERSION)
 	rm -f -rf py-cpuinfo-$(VERSION).tar.gz
 	rm -f -rf py-cpuinfo-$(VERSION).zip
-	rm -f -rf py_cpuinfo-$(VERSION)-py2.py3-none-any.whl
+	rm -f -rf py_cpuinfo-$(VERSION)-py3-none-any.whl
 
 .PHONY: clean
 clean: clean-temp-files clean-dist-files
@@ -41,7 +41,7 @@ build: clean _actual_build move_built
 move_built:
 	mv dist/py-cpuinfo-$(VERSION).tar.gz py-cpuinfo-$(VERSION).tar.gz
 	mv dist/py-cpuinfo-$(VERSION).zip py-cpuinfo-$(VERSION).zip
-	mv dist/py_cpuinfo-$(VERSION)-py2.py3-none-any.whl py_cpuinfo-$(VERSION)-py2.py3-none-any.whl
+	mv dist/py_cpuinfo-$(VERSION)-py3-none-any.whl py_cpuinfo-$(VERSION)-py3-none-any.whl
 
 .PHONY: release
 release:
@@ -56,7 +56,7 @@ release:
 .PHONY: upload
 upload: clean _actual_build
 	twine upload dist/py-cpuinfo-$(VERSION).tar.gz
-	twine upload dist/py_cpuinfo-$(VERSION)-py2.py3-none-any.whl
+	twine upload dist/py_cpuinfo-$(VERSION)-py3-none-any.whl
 
 install: remove
 	tar xzf py-cpuinfo-$(VERSION).tar.gz
