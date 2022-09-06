@@ -1,4 +1,5 @@
 * Release 8.1.0
+	* Fixed Bug #152: CPU stepping, model, and family values are blank if 0
 	* Fixed Bug #177: Officially drop support for Python 2
 	* Fixed Bug #171: Replace Python 3.11 deprecated unittest.makeSuite
 	* Fixed Bug #173: Fix lgtm.com alerts

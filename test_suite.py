@@ -75,6 +75,8 @@ from test_windows_10_x86_64_ryzen_7 import TestWindows_10_X86_64_Ryzen7
 from test_cpuid import TestCPUID
 from test_actual import TestActual
 from test_cli import TestCLI
+from test_bug_152_cpu_zero import TestBug152
+from test_filter import TestFilter
 
 if __name__ == '__main__':
 	def logger(msg):
@@ -123,7 +125,9 @@ if __name__ == '__main__':
 		TestWindows_10_X86_64_Ryzen7,
 		TestCPUID,
 		TestActual,
-		TestCLI
+		TestCLI,
+		TestBug152,
+		TestFilter,
 	]
 
 	# Add the tests to the suite
