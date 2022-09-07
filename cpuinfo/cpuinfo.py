@@ -1912,18 +1912,22 @@ def _get_cpu_info_from_lscpu():
 
 		l1_data_cache_size = _get_field(False, output, None, None, 'L1d cache')
 		if l1_data_cache_size:
+			l1_data_cache_size = l1_data_cache_size.split('(')[0].strip()
 			info['l1_data_cache_size'] = _friendly_bytes_to_int(l1_data_cache_size)
 
 		l1_instruction_cache_size = _get_field(False, output, None, None, 'L1i cache')
 		if l1_instruction_cache_size:
+			l1_instruction_cache_size = l1_instruction_cache_size.split('(')[0].strip()
 			info['l1_instruction_cache_size'] = _friendly_bytes_to_int(l1_instruction_cache_size)
 
 		l2_cache_size = _get_field(False, output, None, None, 'L2 cache', 'L2d cache')
 		if l2_cache_size:
+			l2_cache_size = l2_cache_size.split('(')[0].strip()
 			info['l2_cache_size'] = _friendly_bytes_to_int(l2_cache_size)
 
 		l3_cache_size = _get_field(False, output, None, None, 'L3 cache')
 		if l3_cache_size:
+			l3_cache_size = l3_cache_size.split('(')[0].strip()
 			info['l3_cache_size'] = _friendly_bytes_to_int(l3_cache_size)
 
 		# Flags
