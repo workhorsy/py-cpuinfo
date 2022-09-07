@@ -874,18 +874,36 @@ def _is_selinux_enforcing(trace):
 
 	return (not can_selinux_exec_heap or not can_selinux_exec_memory)
 
-def _filter_dict_keys_with_empty_values(info):
-	# Filter out None, 0, "", (), {}, []
-	info = {k: v for k, v in info.items() if v}
+def _filter_dict_keys_with_empty_values(info, acceptable_values = {}):
+	filtered_info = {}
+	for key in info:
+		value = info[key]
 
-	# Filter out (0, 0)
-	info = {k: v for k, v in info.items() if v != (0, 0)}
+		# Keep if value is acceptable
+		if key in acceptable_values:
+			if acceptable_values[key] == value:
+				filtered_info[key] = value
+				continue
 
-	# Filter out strings that start with "0.0"
-	info = {k: v for k, v in info.items() if not (type(v) == str and v.startswith('0.0'))}
+		# Filter out None, 0, "", (), {}, []
+		if not value:
+			continue
 
-	return info
+		# Filter out (0, 0)
+		if value == (0, 0):
+			continue
 
+		# Filter out -1
+		if value == -1:
+			continue
+
+		# Filter out strings that start with "0.0"
+		if type(value) == str and value.startswith('0.0'):
+			continue
+
+		filtered_info[key] = value
+
+	return filtered_info
 
 class ASM(object):
 	def __init__(self, restype=None, argtypes=(), machine_code=[]):
@@ -1710,9 +1728,9 @@ def _get_cpu_info_from_proc_cpuinfo():
 		vendor_id = _get_field(False, output, None, '', 'vendor_id', 'vendor id', 'vendor')
 		processor_brand = _get_field(True, output, None, None, 'model name', 'cpu', 'processor', 'uarch')
 		cache_size = _get_field(False, output, None, '', 'cache size')
-		stepping = _get_field(False, output, int, 0, 'stepping')
-		model = _get_field(False, output, int, 0, 'model')
-		family = _get_field(False, output, int, 0, 'cpu family')
+		stepping = _get_field(False, output, int, -1, 'stepping')
+		model = _get_field(False, output, int, -1, 'model')
+		family = _get_field(False, output, int, -1, 'cpu family')
 		hardware = _get_field(False, output, None, '', 'Hardware')
 
 		# Flags
@@ -1775,7 +1793,7 @@ def _get_cpu_info_from_proc_cpuinfo():
 			info['hz_actual_friendly'] = _hz_short_to_friendly(hz_actual, 6)
 			info['hz_actual'] = _hz_short_to_full(hz_actual, 6)
 
-		info = _filter_dict_keys_with_empty_values(info)
+		info = _filter_dict_keys_with_empty_values(info, {'stepping':0, 'model':0, 'family':0})
 		g_trace.success()
 		return info
 	except Exception as err:
@@ -1919,7 +1937,7 @@ def _get_cpu_info_from_lscpu():
 			flags.sort()
 			info['flags'] = flags
 
-		info = _filter_dict_keys_with_empty_values(info)
+		info = _filter_dict_keys_with_empty_values(info, {'stepping':0, 'model':0, 'family':0})
 		g_trace.success()
 		return info
 	except Exception as err:
