@@ -565,7 +565,7 @@ class TestLinuxUbuntu_22_04_X86_64(unittest.TestCase):
 		self.assertEqual(512 * 1024, info['l1_instruction_cache_size'])
 		self.assertEqual(256 * 1024, info['l1_data_cache_size'])
 		self.assertEqual(4 * 1024 * 1024, info['l2_cache_size'])
-		self.assertEqual(512 * 1024, info['l3_cache_size'])
+		self.assertEqual(16 * 1024 * 1024, info['l3_cache_size'])
 		self.assertEqual(
 			['3dnowprefetch', 'abm', 'adx', 'aes', 'aperfmperf', 'apic', 'arat',
             'avic', 'avx', 'avx2', 'bmi1', 'bmi2', 'bpext', 'clflush',
