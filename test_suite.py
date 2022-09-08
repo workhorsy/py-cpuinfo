@@ -131,6 +131,7 @@ if __name__ == '__main__':
 		TestBug152,
 		TestFilter,
 	]
+	tests = [TestActual]
 
 	# Add the tests to the suite
 	suite = unittest.TestSuite()
