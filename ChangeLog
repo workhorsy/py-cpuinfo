@@ -1,4 +1,4 @@
-* Release 8.1.0
+10/25/2022 Release 9.0.0
 	* Fixed Bug #178: Changes to lscpu breaks parsing of cache info
 	* Fixed Bug #152: CPU stepping, model, and family values are blank if 0
 	* Fixed Bug #177: Officially drop support for Python 2
