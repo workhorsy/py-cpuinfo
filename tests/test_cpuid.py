@@ -211,7 +211,7 @@ class MockASM(ASM):
 		self.func = None
 
 
-class MockDataSource(object):
+class MockDataSource:
 	bits = '64bit'
 	cpu_count = 1
 	is_windows = platform.system().lower() == 'windows'

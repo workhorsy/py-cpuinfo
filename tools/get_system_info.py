@@ -295,7 +295,7 @@ if 'winreg' in sys.modules or '_winreg' in sys.modules:
 	print_output('winreg feature_bits', feature_bits)
 
 
-class ASM(object):
+class ASM:
 	def __init__(self, restype=None, argtypes=(), machine_code=[]):
 		self.restype = restype
 		self.argtypes = argtypes
@@ -387,7 +387,7 @@ class ASM(object):
 		self.address = None
 		self.size = 0
 
-class CPUID(object):
+class CPUID:
 	def __init__(self):
 		# Figure out if SE Linux is on and in enforcing mode
 		self.is_selinux_enforcing = _is_selinux_enforcing()

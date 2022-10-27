@@ -38,7 +38,7 @@ CAN_CALL_CPUID_IN_SUBPROCESS = True
 g_trace = None
 
 
-class Trace(object):
+class Trace:
 	def __init__(self, is_active, is_stored_in_string):
 		self._is_active = is_active
 		if not self._is_active:
@@ -161,7 +161,7 @@ class Trace(object):
 		'is_fail' : is_fail
 		}
 
-class DataSource(object):
+class DataSource:
 	bits = platform.architecture()[0]
 	cpu_count = multiprocessing.cpu_count()
 	is_windows = platform.system().lower() == 'windows'
@@ -904,7 +904,7 @@ def _filter_dict_keys_with_empty_values(info, acceptable_values = {}):
 
 	return filtered_info
 
-class ASM(object):
+class ASM:
 	def __init__(self, restype=None, argtypes=(), machine_code=[]):
 		self.restype = restype
 		self.argtypes = argtypes
@@ -992,7 +992,7 @@ class ASM(object):
 		self.size = 0
 
 
-class CPUID(object):
+class CPUID:
 	def __init__(self, trace=None):
 		if trace is None:
 			trace = Trace(False, False)

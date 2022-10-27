@@ -26,7 +26,7 @@
 
 
 
-class EmptyDataSource(object):
+class EmptyDataSource:
 	@staticmethod
 	def has_proc_cpuinfo():
 		return False
@@ -265,12 +265,12 @@ def backup_cpuid(cpuinfo):
 	cpuinfo.BackupCPUID._asm_func = cpuinfo.CPUID._asm_func
 
 def monkey_patch_cpuid(cpuinfo, return_hz, return_values):
-	class MockCPUID(object):
+	class MockCPUID:
 		_counter = 0
 		_is_first = False
 
 		def _asm_func(self, restype=None, argtypes=(), machine_code=[]):
-			class CPUIDGetTicks(object):
+			class CPUIDGetTicks:
 				# NOTE: This assumes that the function returned is a get_ticks function
 				def func(self):
 					MockCPUID._is_first = not MockCPUID._is_first

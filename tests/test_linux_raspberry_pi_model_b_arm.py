@@ -5,7 +5,7 @@ from cpuinfo import *
 import helpers
 
 
-class MockDataSource(object):
+class MockDataSource:
 	bits = '32bit'
 	cpu_count = 1
 	is_windows = False
