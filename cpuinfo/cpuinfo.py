@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# -*- coding: UTF-8 -*-
 
 # Copyright (c) 2014-2022 Matthew Brennan Jones <matthew.brennan.jones@gmail.com>
 # Py-cpuinfo gets CPU info with pure Python
@@ -39,7 +38,7 @@ CAN_CALL_CPUID_IN_SUBPROCESS = True
 g_trace = None
 
 
-class Trace(object):
+class Trace:
 	def __init__(self, is_active, is_stored_in_string):
 		self._is_active = is_active
 		if not self._is_active:
@@ -162,7 +161,7 @@ class Trace(object):
 		'is_fail' : is_fail
 		}
 
-class DataSource(object):
+class DataSource:
 	bits = platform.architecture()[0]
 	cpu_count = multiprocessing.cpu_count()
 	is_windows = platform.system().lower() == 'windows'
@@ -361,8 +360,8 @@ def _read_windows_registry_key(key_name, field_name):
 def _check_arch():
 	arch, bits = _parse_arch(DataSource.arch_string_raw)
 	if not arch in ['X86_32', 'X86_64', 'ARM_7', 'ARM_8',
-	               'PPC_64', 'S390X', 'MIPS_32', 'MIPS_64',
-				   "RISCV_32", "RISCV_64"]:
+	                'PPC_64', 'S390X', 'MIPS_32', 'MIPS_64',
+	                'RISCV_32', 'RISCV_64']:
 		raise Exception("py-cpuinfo currently only works on X86 "
 		                "and some ARM/PPC/S390X/MIPS/RISCV CPUs.")
 
@@ -905,7 +904,7 @@ def _filter_dict_keys_with_empty_values(info, acceptable_values = {}):
 
 	return filtered_info
 
-class ASM(object):
+class ASM:
 	def __init__(self, restype=None, argtypes=(), machine_code=[]):
 		self.restype = restype
 		self.argtypes = argtypes
@@ -993,7 +992,7 @@ class ASM(object):
 		self.size = 0
 
 
-class CPUID(object):
+class CPUID:
 	def __init__(self, trace=None):
 		if trace is None:
 			trace = Trace(False, False)

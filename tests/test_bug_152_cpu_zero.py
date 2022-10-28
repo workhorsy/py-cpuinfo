@@ -5,7 +5,7 @@ from cpuinfo import *
 import helpers
 
 
-class MockDataSource(object):
+class MockDataSource:
 	bits = '64bit'
 	cpu_count = 1
 	is_windows = False
@@ -123,4 +123,3 @@ class TestBug152(unittest.TestCase):
 		self.assertEqual(0, info['stepping'])
 		self.assertEqual(0, info['model'])
 		self.assertEqual(0, info['family'])
-

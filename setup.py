@@ -6,7 +6,7 @@
 import os
 from setuptools import setup
 
-with open(os.path.join(os.getcwd(), 'README.rst'), 'r') as f:
+with open(os.path.join(os.getcwd(), 'README.rst')) as f:
     readme_content = f.read()
 
 setup(
