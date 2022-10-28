@@ -32,6 +32,7 @@ import os, sys
 import platform
 import multiprocessing
 import ctypes
+from contextlib import suppress
 
 
 CAN_CALL_CPUID_IN_SUBPROCESS = True
@@ -1741,7 +1742,7 @@ def _get_cpu_info_from_proc_cpuinfo():
 
 		# Check for other cache format
 		if not cache_size:
-			try:
+			with suppress(Exception):
 				for i in range(0, 10):
 					name = "cache{0}".format(i)
 					value = _get_field(False, output, None, None, name)
@@ -1751,8 +1752,6 @@ def _get_cpu_info_from_proc_cpuinfo():
 						if 'level' in value and value['level'] == '3' and 'size' in value:
 							cache_size = value['size']
 							break
-			except Exception:
-				pass
 
 		# Convert from MHz string to Hz
 		hz_actual = _get_field(False, output, None, '', 'cpu MHz', 'cpu speed', 'clock', 'cpu MHz dynamic', 'cpu MHz static')
@@ -1761,10 +1760,8 @@ def _get_cpu_info_from_proc_cpuinfo():
 
 		# Convert from GHz/MHz string to Hz
 		hz_advertised, scale = (None, 0)
-		try:
+		with suppress(Exception):
 			hz_advertised, scale = _parse_cpu_brand_string(processor_brand)
-		except Exception:
-			pass
 
 		info = {
 		'hardware_raw' : hardware,

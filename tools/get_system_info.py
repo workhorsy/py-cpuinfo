@@ -31,6 +31,7 @@ import glob
 import platform
 import multiprocessing
 import subprocess
+from contextlib import suppress
 
 try:
 	import _winreg as winreg
@@ -648,11 +649,9 @@ def get_cpu_info_from_cpuid():
 	return output
 
 
-try:
+with suppress(Exception):
 	output = get_cpu_info_from_cpuid()
 	print_output('CPUID', output)
-except Exception:
-	pass
 
 out_file.close()
 print('System info written to "{0}"'.format(out_file_name))
