@@ -32,7 +32,7 @@
 	* Fixed Bug #115: Missing data on Ryzen CPUs
 	* Fixed Bug #122: Rename fields to be more clear
 	* Fixed Bug #125: Add option to return --version
- 	* Fixed Bug #126: Make test suite also check SELinux
+	* Fixed Bug #126: Make test suite also check SELinux
 	* Fixed Bug #120: Make unit tests also test CPUID
 	* Fixed Bug #69: Add s390x support
 
