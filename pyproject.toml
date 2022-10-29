@@ -1,7 +1,6 @@
 [build-system]
-requires = ["setuptools>=64.0.0", "setuptools-scm"]
+requires = ["setuptools>=61.0"]
 build-backend = "setuptools.build_meta"
-
 
 [project]
 name = "py-cpuinfo"
@@ -11,7 +10,7 @@ license = {text = "MIT"}
 authors = [
     {name = "Matthew Brennan Jones", email = "matthew.brennan.jones@gmail.com"}
 ]
-readme = "README.rst"
+readme = "README.md"
 requires-python = ">=3"
 classifiers=[
     "Development Status :: 5 - Production/Stable",
@@ -22,8 +21,13 @@ classifiers=[
 packages=["cpuinfo"]
 
 [project.urls]
-homepage = "https://github.com/workhorsy/py-cpuinfo"
-repository = "https://github.com/workhorsy/py-cpuinfo.git"
+Homepage = "https://github.com/workhorsy/py-cpuinfo"
+Repository = "https://github.com/workhorsy/py-cpuinfo.git"
+Issues = "https://github.com/workhorsy/py-cpuinfo/issues"
+Changelog = "https://github.com/workhorsy/py-cpuinfo/blob/master/ChangeLog"
 
 [project.scripts]
 cpuinfo = "cpuinfo:main"
+
+[tool.distutils.bdist_wheel]
+universal = false
