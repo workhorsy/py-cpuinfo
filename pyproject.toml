@@ -1,5 +1,29 @@
 [build-system]
-requires = [
-    "setuptools",
-]
+requires = ["setuptools>=64.0.0", "setuptools-scm"]
 build-backend = "setuptools.build_meta"
+
+
+[project]
+name = "py-cpuinfo"
+version = "9.0.0"
+description = "Get CPU info with pure Python"
+license = {text = "MIT"}
+authors = [
+    {name = "Matthew Brennan Jones", email = "matthew.brennan.jones@gmail.com"}
+]
+readme = "README.rst"
+requires-python = ">=3"
+classifiers=[
+    "Development Status :: 5 - Production/Stable",
+    "Topic :: Utilities",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3"
+]
+packages=["cpuinfo"]
+
+[project.urls]
+homepage = "https://github.com/workhorsy/py-cpuinfo"
+repository = "https://github.com/workhorsy/py-cpuinfo.git"
+
+[project.scripts]
+cpuinfo = "cpuinfo:main"
