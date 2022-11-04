@@ -1,4 +1,13 @@
-* Release 8.1.0
+* Release 9.1.0
+	* Fixed Bug #186: Move to Python 3 style classes and default UTF-8 encoding
+
+10/25/2022 Release 9.0.0
+	* Fixed Bug #178: Changes to lscpu breaks parsing of cache info
+	* Fixed Bug #152: CPU stepping, model, and family values are blank if 0
+	* Fixed Bug #177: Officially drop support for Python 2
+	* Fixed Bug #171: Replace Python 3.11 deprecated unittest.makeSuite
+	* Fixed Bug #173: Fix lgtm.com alerts
+	* Fixed Bug #165: Support Wheel
 	* Fixed Bug #167: Add support for RISC-V
 
 04/14/2021 Release 8.0.0
@@ -23,7 +32,7 @@
 	* Fixed Bug #115: Missing data on Ryzen CPUs
 	* Fixed Bug #122: Rename fields to be more clear
 	* Fixed Bug #125: Add option to return --version
- 	* Fixed Bug #126: Make test suite also check SELinux
+	* Fixed Bug #126: Make test suite also check SELinux
 	* Fixed Bug #120: Make unit tests also test CPUID
 	* Fixed Bug #69: Add s390x support
 
