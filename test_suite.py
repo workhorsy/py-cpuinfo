@@ -1,8 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: UTF-8 -*-
 
-# Copyright (c) 2014-2021 Matthew Brennan Jones <matthew.brennan.jones@gmail.com>
-# Py-cpuinfo gets CPU info with pure Python 2 & 3
+# Copyright (c) 2014-2022 Matthew Brennan Jones <matthew.brennan.jones@gmail.com>
+# Py-cpuinfo gets CPU info with pure Python
 # It uses the MIT License
 # It is hosted at: https://github.com/workhorsy/py-cpuinfo
 #
@@ -45,6 +44,7 @@ from test_linux_debian_8_x86_64 import TestLinuxDebian_8_X86_64
 from test_linux_debian_8_5_x86_64 import TestLinuxDebian_8_5_X86_64
 from test_linux_debian_8_7_1_ppc64le import TestLinuxDebian_8_7_1_ppc64le
 from test_linux_ubuntu_16_04_x86_64 import TestLinuxUbuntu_16_04_X86_64
+from test_linux_ubuntu_22_04_x86_64 import TestLinuxUbuntu_22_04_X86_64
 from test_linux_fedora_24_x86_64 import TestLinuxFedora_24_X86_64
 from test_linux_fedora_24_ppc64le import TestLinuxFedora_24_ppc64le
 from test_linux_fedora_29_x86_64_ryzen_7 import Test_Linux_Fedora_29_X86_64_Ryzen_7
@@ -76,6 +76,8 @@ from test_windows_10_x86_64_ryzen_7 import TestWindows_10_X86_64_Ryzen7
 from test_cpuid import TestCPUID
 from test_actual import TestActual
 from test_cli import TestCLI
+from test_bug_152_cpu_zero import TestBug152
+from test_filter import TestFilter
 
 if __name__ == '__main__':
 	def logger(msg):
@@ -98,6 +100,7 @@ if __name__ == '__main__':
 		TestLinuxDebian_8_5_X86_64,
 		TestLinuxDebian_8_7_1_ppc64le,
 		TestLinuxUbuntu_16_04_X86_64,
+		TestLinuxUbuntu_22_04_X86_64,
 		TestLinuxFedora_24_X86_64,
 		TestLinuxFedora_24_ppc64le,
 		Test_Linux_Fedora_29_X86_64_Ryzen_7,
@@ -125,13 +128,16 @@ if __name__ == '__main__':
 		TestWindows_10_X86_64_Ryzen7,
 		TestCPUID,
 		TestActual,
-		TestCLI
+		TestCLI,
+		TestBug152,
+		TestFilter,
 	]
 
 	# Add the tests to the suite
 	suite = unittest.TestSuite()
+	loader = unittest.TestLoader()
 	for test in tests:
-		suite.addTest(unittest.makeSuite(test))
+		suite.addTest(loader.loadTestsFromTestCase(test))
 
 	# Run the tests
 	runner = unittest.TextTestRunner()

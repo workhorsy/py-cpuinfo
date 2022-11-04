@@ -5,7 +5,7 @@ from cpuinfo import *
 import helpers
 
 
-class MockDataSource_enforcing(object):
+class MockDataSource_enforcing:
 	@staticmethod
 	def has_sestatus():
 		return True
@@ -27,7 +27,7 @@ Max kernel policy version:      31
 '''
 		return returncode, output
 
-class MockDataSource_not_enforcing(object):
+class MockDataSource_not_enforcing:
 	@staticmethod
 	def has_sestatus():
 		return True
@@ -49,7 +49,7 @@ Max kernel policy version:      31
 '''
 		return returncode, output
 
-class MockDataSource_exec_mem_and_heap(object):
+class MockDataSource_exec_mem_and_heap:
 	@staticmethod
 	def has_sestatus():
 		return True
@@ -63,7 +63,7 @@ allow_execmem                   on
 '''
 		return returncode, output
 
-class MockDataSource_no_exec_mem_and_heap(object):
+class MockDataSource_no_exec_mem_and_heap:
 	@staticmethod
 	def has_sestatus():
 		return True
