@@ -67,7 +67,6 @@ install: remove
 	@echo "get_cpu_info()"
 
 remove:
-	rm -f -rf /usr/local/lib/python2.7/dist-packages/py_cpuinfo-$(VERSION)-py2.7.egg
 	rm -f /usr/local/bin/cpuinfo
 
 test:

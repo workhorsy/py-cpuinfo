@@ -16,6 +16,7 @@ setup(
     author_email = "matthew.brennan.jones@gmail.com",
     description = "Get CPU info with pure Python",
     long_description=readme_content,
+    python_requires='>=3',
     license = "MIT",
     url = "https://github.com/workhorsy/py-cpuinfo",
     packages=['cpuinfo'],
