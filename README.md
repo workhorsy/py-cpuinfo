@@ -50,7 +50,7 @@ Fields
 | "hz_actual_friendly"          | "1.7330 GHz"              | string                |
 | "hz_advertised"               | (2930000000, 0)           | (int, int)            |
 | "hz_actual"                   | (1733000000, 0)           | (int, int)            |
-| "arch"                        | "X86_64"                  | "X86_32", "X86_64", "ARM_8", "ARM_7", "PPC_32", "PPC_64", "SPARC_32", "SPARC_64", "S390X", "MIPS_32", "MIPS_64", "RISCV_32", "RISCV_64" |
+| "arch"                        | "X86_64"                  | 'ARM_7', 'ARM_8', 'LOONG_32', 'LOONG_64', 'MIPS_32', 'MIPS_64', 'PPC_32', 'PPC_64', 'RISCV_32', 'RISCV_64', 'SPARC_32', 'SPARC_64', 'S390X', 'X86_32', 'X86_64'|
 | "bits"                        | 64                        | int                   |
 | "count"                       | 4                         | int                   |
 | "l1_data_cache_size"          | 32768                     | int                   |
@@ -151,7 +151,7 @@ OS Support
 CPU Support
 -----
 * X86 32bit and 64bit
-* Some ARM, PPC, S390X, MIPS and RISCV CPUs
+* Some ARM, LoongArch, MIPS, PPC, RISCV, SPARC, S390X
 
 
 These approaches are used for getting info:
