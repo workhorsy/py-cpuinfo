@@ -151,7 +151,7 @@ OS Support
 CPU Support
 -----
 * X86 32bit and 64bit
-* Some ARM, LoongArch, MIPS, PPC, RISCV, SPARC, S390X
+* Some ARM, LoongArch, MIPS, PPC, RISCV, SPARC, and S390X CPUs
 
 
 These approaches are used for getting info:
