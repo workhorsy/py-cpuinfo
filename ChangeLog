@@ -1,5 +1,6 @@
 * Release 9.1.0
 	* Fixed Bug #186: Move to Python 3 style classes and default UTF-8 encoding
+	* Fixed Bug #194: Add support for LoongArch
 
 10/25/2022 Release 9.0.0
 	* Fixed Bug #178: Changes to lscpu breaks parsing of cache info
