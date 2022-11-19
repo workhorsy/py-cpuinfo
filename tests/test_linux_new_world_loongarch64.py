@@ -164,7 +164,7 @@ class TestLinux_NewWorld_loongarch64(unittest.TestCase):
 		info = cpuinfo._get_cpu_info_internal()
 
 		self.assertEqual('Loongson-3A5000', info['brand_raw'])
-		self.assertEqual('Loong_64', info['arch'])
+		self.assertEqual('LOONG_64', info['arch'])
 		self.assertEqual(64, info['bits'])
 		self.assertEqual(4, info['count'])
 		self.assertEqual('loongarch64', info['arch_string_raw'])
