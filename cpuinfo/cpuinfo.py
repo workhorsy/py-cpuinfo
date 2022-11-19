@@ -821,10 +821,10 @@ def _parse_arch(arch_string_raw):
 		arch = 'S390X'
 		bits = 64
 	# MIPS
-	elif re.match('^mips$', arch_string_raw):
+	elif re.match(r'^mips$', arch_string_raw):
 		arch = 'MIPS_32'
 		bits = 32
-	elif re.match('^mips64$', arch_string_raw):
+	elif re.match(r'^mips64$', arch_string_raw):
 		arch = 'MIPS_64'
 		bits = 64
 	# RISCV
@@ -835,10 +835,10 @@ def _parse_arch(arch_string_raw):
 		arch = 'RISCV_64'
 		bits = 64
 	# LoongArch
-	elif re.match('^loongarch32$', arch_string_raw):
+	elif re.match(r'^loongarch32$', arch_string_raw):
 		arch = 'LOONG_32'
 		bits = 32
-	elif re.match('^loongarch64$', arch_string_raw):
+	elif re.match(r'^loongarch64$', arch_string_raw):
 		arch = 'LOONG_64'
 		bits = 64
 
