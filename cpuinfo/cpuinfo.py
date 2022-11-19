@@ -828,6 +828,7 @@ def _parse_arch(arch_string_raw):
 		bits = 32
 	elif re.match(r'^riscv64$|^riscv64be$', arch_string_raw):
 		arch = 'RISCV_64'
+		bits = 64
 	# LoongArch
 	elif re.match('^loongarch32$', arch_string_raw):
 		arch = 'Loong_32'
