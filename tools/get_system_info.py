@@ -296,7 +296,7 @@ if 'winreg' in sys.modules or '_winreg' in sys.modules:
 
 
 class ASM:
-	def __init__(self, restype=None, argtypes=(), machine_code=[]):
+	def __init__(self, restype=None, argtypes=(), machine_code=None):
 		self.restype = restype
 		self.argtypes = argtypes
 		self.machine_code = machine_code
@@ -392,7 +392,7 @@ class CPUID:
 		# Figure out if SE Linux is on and in enforcing mode
 		self.is_selinux_enforcing = _is_selinux_enforcing()
 
-	def _asm_func(self, restype=None, argtypes=(), machine_code=[]):
+	def _asm_func(self, restype=None, argtypes=(), machine_code=None):
 		asm = ASM(restype, argtypes, machine_code)
 		asm.compile()
 		return asm

@@ -8,7 +8,7 @@ import helpers
 class MockASM(ASM):
 	is_first = False
 
-	def __init__(self, restype=None, argtypes=(), machine_code=[]):
+	def __init__(self, restype=None, argtypes=(), machine_code=None):
 		super(MockASM, self).__init__(restype, argtypes, machine_code)
 
 	def compile(self):
