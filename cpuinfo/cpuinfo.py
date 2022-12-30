@@ -2671,7 +2671,6 @@ def _get_cpu_info_internal(sources=None):
     Returns the CPU info by using the best sources of information for your OS.
     Returns {} if nothing is found.
     '''
-
     if not sources:
         sources = SOURCES
 
@@ -2780,6 +2779,8 @@ def get_cpu_info_json(sources=None):
         from subprocess import Popen, PIPE
 
         command = [sys.executable, __file__, '--json']
+        if sources:
+            command += ["--sources", ",".join(sources)]
         p1 = Popen(command, stdout=PIPE, stderr=PIPE, stdin=PIPE)
         output = p1.communicate()[0]
 
