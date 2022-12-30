@@ -35,6 +35,20 @@ import ctypes
 
 CAN_CALL_CPUID_IN_SUBPROCESS = True
 
+SOURCES = ["WMIC",
+           "REGISTRY",
+           "PROC_CPUINFO",
+           "CPUFREQ_INFO",
+           "LSCPU",
+           "SYSCTL",
+           "KSTAT",
+           "DMESG",
+           "DMESG_BOOT",
+           "LSPROP",
+           "SYSINFO",
+           "CPUID",
+           "UNAME"]
+
 g_trace = None
 
 
@@ -2652,11 +2666,14 @@ def _get_cpu_info_from_platform_uname():
         g_trace.fail(err)
         return {}
 
-def _get_cpu_info_internal():
+def _get_cpu_info_internal(sources=None):
     '''
     Returns the CPU info by using the best sources of information for your OS.
     Returns {} if nothing is found.
     '''
+
+    if not sources:
+        sources = SOURCES
 
     g_trace.write('!' * 80)
 
@@ -2685,50 +2702,63 @@ def _get_cpu_info_internal():
     g_trace.write("arch_string_raw: {0}".format(info['arch_string_raw']))
 
     # Try the Windows wmic
-    _copy_new_fields(info, _get_cpu_info_from_wmic())
+    if "WMIC" in sources:
+        _copy_new_fields(info, _get_cpu_info_from_wmic())
 
     # Try the Windows registry
-    _copy_new_fields(info, _get_cpu_info_from_registry())
+    if "REGISTRY" in sources:
+        _copy_new_fields(info, _get_cpu_info_from_registry())
 
     # Try /proc/cpuinfo
-    _copy_new_fields(info, _get_cpu_info_from_proc_cpuinfo())
+    if "PROC_CPUINFO" in sources:
+        _copy_new_fields(info, _get_cpu_info_from_proc_cpuinfo())
 
     # Try cpufreq-info
-    _copy_new_fields(info, _get_cpu_info_from_cpufreq_info())
+    if "CPUFREQ_INFO" in sources:
+        _copy_new_fields(info, _get_cpu_info_from_cpufreq_info())
 
     # Try LSCPU
-    _copy_new_fields(info, _get_cpu_info_from_lscpu())
+    if "LSCPU" in sources:
+        _copy_new_fields(info, _get_cpu_info_from_lscpu())
 
     # Try sysctl
-    _copy_new_fields(info, _get_cpu_info_from_sysctl())
+    if "SYSCTL" in sources:
+        _copy_new_fields(info, _get_cpu_info_from_sysctl())
 
     # Try kstat
-    _copy_new_fields(info, _get_cpu_info_from_kstat())
+    if "KSTAT" in sources:
+        _copy_new_fields(info, _get_cpu_info_from_kstat())
 
     # Try dmesg
-    _copy_new_fields(info, _get_cpu_info_from_dmesg())
+    if "DMESG" in sources:
+        _copy_new_fields(info, _get_cpu_info_from_dmesg())
 
     # Try /var/run/dmesg.boot
-    _copy_new_fields(info, _get_cpu_info_from_cat_var_run_dmesg_boot())
+    if "DMESG_BOOT" in sources:
+        _copy_new_fields(info, _get_cpu_info_from_cat_var_run_dmesg_boot())
 
     # Try lsprop ibm,pa-features
-    _copy_new_fields(info, _get_cpu_info_from_ibm_pa_features())
+    if "LSPROP" in sources:
+        _copy_new_fields(info, _get_cpu_info_from_ibm_pa_features())
 
     # Try sysinfo
-    _copy_new_fields(info, _get_cpu_info_from_sysinfo())
+    if "SYSINFO" in sources:
+        _copy_new_fields(info, _get_cpu_info_from_sysinfo())
 
     # Try querying the CPU cpuid register
     # FIXME: This should print stdout and stderr to trace log
-    _copy_new_fields(info, _get_cpu_info_from_cpuid())
+    if "CPUID" in sources:
+        _copy_new_fields(info, _get_cpu_info_from_cpuid())
 
     # Try platform.uname
-    _copy_new_fields(info, _get_cpu_info_from_platform_uname())
+    if "UNAME" in sources:
+        _copy_new_fields(info, _get_cpu_info_from_platform_uname())
 
     g_trace.write('!' * 80)
 
     return info
 
-def get_cpu_info_json():
+def get_cpu_info_json(sources=None):
     '''
     Returns the CPU info by using the best sources of information for your OS.
     Returns the result in a json string
@@ -2740,7 +2770,7 @@ def get_cpu_info_json():
 
     # If running under pyinstaller, run normally
     if getattr(sys, 'frozen', False):
-        info = _get_cpu_info_internal()
+        info = _get_cpu_info_internal(sources=sources)
         output = json.dumps(info)
         output = "{0}".format(output)
     # if not running under pyinstaller, run in another process.
@@ -2760,7 +2790,7 @@ def get_cpu_info_json():
 
     return output
 
-def get_cpu_info():
+def get_cpu_info(sources=None):
     '''
     Returns the CPU info by using the best sources of information for your OS.
     Returns the result in a dict
@@ -2768,7 +2798,7 @@ def get_cpu_info():
 
     import json
 
-    output = get_cpu_info_json()
+    output = get_cpu_info_json(sources=sources)
 
     # Convert JSON to Python with non unicode strings
     output = json.loads(output, object_hook = _utf_to_str)
@@ -2784,6 +2814,7 @@ def main():
     parser.add_argument('--json', action='store_true', help='Return the info in JSON format')
     parser.add_argument('--version', action='store_true', help='Return the version of py-cpuinfo')
     parser.add_argument('--trace', action='store_true', help='Traces code paths used to find CPU info to file')
+    parser.add_argument('--sources', help='Sources to use when gathering data')
     args = parser.parse_args()
 
     global g_trace
@@ -2795,7 +2826,14 @@ def main():
         sys.stderr.write(str(err) + "\n")
         sys.exit(1)
 
-    info = _get_cpu_info_internal()
+    try:
+        sources = [s for s in args.sources.split(",") if s]
+        if not sources:
+            sources = None
+    except AttributeError:
+        sources = None
+
+    info = _get_cpu_info_internal(sources=sources)
 
     if not info:
         sys.stderr.write("Failed to find cpu info\n")
