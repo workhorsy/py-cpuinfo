@@ -1898,17 +1898,27 @@ def _get_cpu_info_from_lscpu():
 			info['hz_advertised'] = _hz_short_to_full(new_hz, scale)
 			info['hz_actual'] = _hz_short_to_full(new_hz, scale)
 
-		vendor_id = _get_field(False, output, None, None, 'Vendor ID')
-		if vendor_id:
-			info['vendor_id_raw'] = vendor_id
-
-		brand = _get_field(False, output, None, None, 'Model name')
-		if brand:
-			info['brand_raw'] = brand
+		# Use SMBIOS data if available, ARM results are too generic otherwise
+		bios_vendor_id = _get_field(False, output, None, None, 'BIOS Vendor ID')
+		if bios_vendor_id:
+			info['vendor_id_raw'] = bios_vendor_id
 		else:
-			brand = _get_field(False, output, None, None, 'Model')
-			if brand and not brand.isdigit():
+			vendor_id = _get_field(False, output, None, None, 'Vendor ID')
+			if vendor_id:
+				info['vendor_id_raw'] = vendor_id
+
+		# Again Use SMBIOS data if available, ARM results are too generic otherwise
+		bios_brand = _get_field(False, output, None, None, 'BIOS Model name')
+		if bios_brand:
+			info['brand_raw'] = bios_brand
+		else:
+			brand = _get_field(False, output, None, None, 'Model name')
+			if brand:
 				info['brand_raw'] = brand
+			else:
+				brand = _get_field(False, output, None, None, 'Model')
+				if brand and not brand.isdigit():
+					info['brand_raw'] = brand
 
 		family = _get_field(False, output, None, None, 'CPU family')
 		if family and family.isdigit():
