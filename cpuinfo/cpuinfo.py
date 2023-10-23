@@ -24,7 +24,7 @@
 # TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-CPUINFO_VERSION = (9, 0, 0)
+CPUINFO_VERSION = (9, 1, 0)
 CPUINFO_VERSION_STRING = '.'.join([str(n) for n in CPUINFO_VERSION])
 
 import os, sys
@@ -1214,6 +1214,16 @@ class CPUID:
 				b"\xC3"             # ret
 			)
 
+			# EDX
+			ecx = self._run_asm(
+				b"\x31\xC9",            # xor ecx,ecx
+				b"\xB8\x07\x00\x00\x00" # mov eax,7
+				b"\x0f\xa2"         # cpuid
+				b"\x89\xC8"         # mov ax,dx
+				b"\xC3"             # ret
+			)
+
+
 			# Get the extended CPU flags
 			extended_flags = {
 				#'fsgsbase' : _is_bit_set(ebx, 0),
@@ -1281,6 +1291,9 @@ class CPUID:
 				#'reserved' : _is_bit_set(ecx, 29),
 				'sgx_lc' : _is_bit_set(ecx, 30),
 				#'reserved' : _is_bit_set(ecx, 31)
+				'amx_bf16' : _is_bit_set(edx, 22),
+				'amx_tile' : _is_bit_set(edx, 24),
+				'amx_int8' : _is_bit_set(edx, 25)
 			}
 
 			# Get a list of only the flags that are true
