@@ -31,6 +31,7 @@ import os, sys
 import platform
 import multiprocessing
 import ctypes
+from time import perf_counter
 
 
 CAN_CALL_CPUID_IN_SUBPROCESS = True
@@ -1517,19 +1518,31 @@ class CPUID:
 			retval = get_ticks_x86_64
 		return retval
 
-	def get_raw_hz(self):
-		from time import sleep
+	def get_raw_hz(self, measurement_time=0.01):
+		from time import sleep, perf_counter_ns
 
 		ticks_fn = self.get_ticks_func()
 
-		start = ticks_fn.func()
-		sleep(1)
-		end = ticks_fn.func()
+		# when testing, more consistent results between different
+		# measurement times were obtained by measuring the actual time
+		# spend, not just using the user-provided value. For some reason,
+		# it was also better to have the time around the ticks_func / sleep calls
+		# and then account for the time spend in the ticks_func
+		ticks_start = perf_counter_ns()
+		ticks_fn.func()
+		ticks_fn_time = perf_counter_ns() - ticks_start
 
-		ticks = (end - start)
+		t0 = perf_counter_ns()
+		start = ticks_fn.func()
+		sleep(measurement_time)
+		end = ticks_fn.func()
+		t1 = perf_counter_ns()
+		measurement_time = (t1 - t0) - 2 * ticks_fn_time
+
+		frequency = 1e9 * (end - start) / measurement_time
 		ticks_fn.free()
 
-		return ticks
+		return frequency
 
 def _get_cpu_info_from_cpuid_actual():
 	'''
