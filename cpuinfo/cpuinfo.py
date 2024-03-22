@@ -1737,7 +1737,7 @@ def _get_cpu_info_from_proc_cpuinfo():
 			return {}
 
 		# Various fields
-		vendor_id = _get_field(False, output, None, '', 'vendor_id', 'vendor id', 'vendor')
+		vendor_id = _get_field(False, output, None, '', 'vendor_id', 'vendor id', 'vendor', 'mvendorid')
 		processor_brand = _get_field(True, output, None, None, 'model name', 'cpu', 'processor', 'uarch')
 		cache_size = _get_field(False, output, None, '', 'cache size')
 		stepping = _get_field(False, output, int, -1, 'stepping')
