@@ -803,7 +803,7 @@ def _parse_arch(arch_string_raw):
 		arch = 'ARM_8'
 		bits = 32
 	# PPC
-	elif re.match(r'^ppc32$|^prep$|^pmac$|^powermac$', arch_string_raw):
+	elif re.match(r'^ppc32$|^prep$|^pmac$|^powermac$|^ppc$', arch_string_raw):
 		arch = 'PPC_32'
 		bits = 32
 	elif re.match(r'^powerpc$|^ppc64$|^ppc64le$', arch_string_raw):
