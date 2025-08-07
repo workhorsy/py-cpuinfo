@@ -165,8 +165,8 @@ class DataSource:
 	bits = platform.architecture()[0]
 	cpu_count = multiprocessing.cpu_count()
 	is_windows = platform.system().lower() == 'windows'
-	arch_string_raw = platform.machine()
 	uname_string_raw = platform.uname()[5]
+	arch_string_raw = uname_string_raw if platform.system() == 'AIX' else platform.machine()
 	can_cpuid = True
 
 	@staticmethod
