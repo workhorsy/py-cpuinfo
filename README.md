@@ -128,20 +128,8 @@ if __name__ == '__main__':
 ~~~
 
 l3_cache_size: 1024.00 KB
+
 l3_cache_size: 1000.00 KiB
-l3_cache_size: 1024000 KiB
-l2_cache_size: 6291.46 KB
-l2_cache_size: 6144.00 KiB
-l2_cache_size: 6291456 KiB
-l1_data_cache_size: 196.61 KB
-l1_data_cache_size: 192.00 KiB
-l1_data_cache_size: 196608 KiB
-l1_instruction_cache_size: 196.61 KB
-l1_instruction_cache_size: 192.00 KiB
-l1_instruction_cache_size: 196608 KiB
-l2_cache_line_size: 1.02 KB
-l2_cache_line_size: 1.00 KiB
-l2_cache_line_size: 1024 KiB
 
 
 Run under Pyinstaller
