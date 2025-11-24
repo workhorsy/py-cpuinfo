@@ -561,41 +561,51 @@ def _hz_short_to_friendly(ticks, scale):
 		return '0.0000 Hz'
 
 def _to_friendly_bytes(input):
-	import re
+    import re
 
-	if not input:
-		return input
-	input = "{0}".format(input)
+    if not input:
+        return input
+    input = "{0}".format(input)
 
-	formats = {
-		r"^[0-9]+B$" : 'B',
-		r"^[0-9]+K$" : 'KB',
-		r"^[0-9]+M$" : 'MB',
-		r"^[0-9]+G$" : 'GB',
-		r"^[0-9]+T$" : 'TB'
-	}
+    formats = {
+        r"^[0-9]+B$"   : 'B',
+        r"^[0-9]+K$"   : 'KB',
+        r"^[0-9]+M$"   : 'MB',
+        r"^[0-9]+G$"   : 'GB',
+        r"^[0-9]+T$"   : 'TB',
+        r"^[0-9]+KiB$" : 'KiB',
+        r"^[0-9]+MiB$" : 'MiB',
+        r"^[0-9]+GiB$" : 'GiB',
+        r"^[0-9]+TiB$" : 'TiB',
+    }
 
-	for pattern, friendly_size in formats.items():
-		if re.match(pattern, input):
-			return "{0} {1}".format(input[ : -1].strip(), friendly_size)
+    for pattern, friendly_size in formats.items():
+        if re.match(pattern, input):
+            # remove unit suffix
+            number = re.findall(r"[0-9]+", input)[0]
+            return "{0} {1}".format(number.strip(), friendly_size)
 
-	return input
+    return input
+
 
 def _friendly_bytes_to_int(friendly_bytes):
-    input_str = friendly_bytes.lower()
+    input_str = friendly_bytes.lower().strip()
 
     formats = [
-        {'tib': 1024**4},   # Tebibyte (binary TB)
+        # IEC binary units
+        {'tib': 1024**4},
         {'gib': 1024**3},
         {'mib': 1024**2},
         {'kib': 1024},
 
-        {'tb': 1024**4},    # Terabyte (binary tabanlı)
-        {'gb': 1024**3},
-        {'mb': 1024**2},
-        {'kb': 1024},
+        # SI decimal units
+        {'tb': 1000**4},
+        {'gb': 1000**3},
+        {'mb': 1000**2},
+        {'kb': 1000},
 
-        {'t': 1024**4},     # Kısaltma: T
+        # Short forms (binary by default)
+        {'t': 1024**4},
         {'g': 1024**3},
         {'m': 1024**2},
         {'k': 1024},
@@ -607,7 +617,8 @@ def _friendly_bytes_to_int(friendly_bytes):
             pattern = list(entry.keys())[0]
             multiplier = list(entry.values())[0]
             if input_str.endswith(pattern):
-                return int(input_str.split(pattern)[0].strip()) * multiplier
+                number = input_str.replace(pattern, "").strip()
+                return int(number) * multiplier
     except Exception:
         pass
 
