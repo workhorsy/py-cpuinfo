@@ -103,6 +103,47 @@ if __name__ == '__main__':
     print(info)
 ~~~
 
+Run as a library: IEC (binary) or SI (decimal)
+-----
+~~~python
+import cpuinfo
+from cpuinfo.cpuinfo import _to_friendly_bytes
+
+if __name__ == '__main__':
+    info = cpuinfo.get_cpu_info()
+    for key, value in info.items():
+        if isinstance(value, int) and ("cache_size" in key or "cache_line_size" in key):
+            # Örneğin hep KB olarak görmek istiyorsan:
+            kb_value = value / 1000   # decimal KB
+            print(f"{key}: {kb_value:.2f} KB")
+
+            # Eğer binary KiB istiyorsan:
+            kib_value = value / 1024
+            print(f"{key}: {kib_value:.2f} KiB")
+
+            # Ya da fonksiyonla otomatik:
+            print(f"{key}: {_to_friendly_bytes(str(value)+'KiB')}")
+        else:
+            print(f"{key}: {value}")
+~~~
+
+l3_cache_size: 1024.00 KB
+l3_cache_size: 1000.00 KiB
+l3_cache_size: 1024000 KiB
+l2_cache_size: 6291.46 KB
+l2_cache_size: 6144.00 KiB
+l2_cache_size: 6291456 KiB
+l1_data_cache_size: 196.61 KB
+l1_data_cache_size: 192.00 KiB
+l1_data_cache_size: 196608 KiB
+l1_instruction_cache_size: 196.61 KB
+l1_instruction_cache_size: 192.00 KiB
+l1_instruction_cache_size: 196608 KiB
+l2_cache_line_size: 1.02 KB
+l2_cache_line_size: 1.00 KiB
+l2_cache_line_size: 1024 KiB
+
+
 Run under Pyinstaller
 -----
 ~~~python
