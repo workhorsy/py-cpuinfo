@@ -101,8 +101,8 @@ class TestWindows_10_X86_64_Ryzen7(unittest.TestCase):
 		self.assertEqual(8, info['model'])
 		self.assertEqual(23, info['family'])
 
-		self.assertEqual(64 * 1024, info['l2_cache_size'])
-		self.assertEqual(512, info['l2_cache_line_size'])
+		self.assertEqual(512 * 1024, info['l2_cache_size'])
+		self.assertEqual(64, info['l2_cache_line_size'])
 		self.assertEqual(6, info['l2_cache_associativity'])
 
 		self.assertEqual(
@@ -164,9 +164,9 @@ class TestWindows_10_X86_64_Ryzen7(unittest.TestCase):
 		self.assertEqual(8, info['model'])
 		self.assertEqual(23, info['family'])
 
-		self.assertEqual(64 * 1024, info['l2_cache_size'])
+		self.assertEqual(512 * 1024, info['l2_cache_size'])
 		self.assertEqual(6, info['l2_cache_associativity'])
-		self.assertEqual(512, info['l2_cache_line_size'])
+		self.assertEqual(64, info['l2_cache_line_size'])
 
 		self.assertEqual(
 			['3dnow', '3dnowprefetch', 'abm', 'adx', 'aes', 'apic', 'avx',

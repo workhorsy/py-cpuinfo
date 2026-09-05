@@ -1452,9 +1452,9 @@ class CPUID:
 		)
 
 		cache_info = {
-			'size_b' : (ecx & 0xFF) * 1024,
+			'size_b' : ((ecx >> 16) & 0xFFFF) * 1024,
 			'associativity' : (ecx >> 12) & 0xF,
-			'line_size_b' : (ecx >> 16) & 0xFFFF
+			'line_size_b' : ecx & 0xFF
 		}
 
 		return cache_info

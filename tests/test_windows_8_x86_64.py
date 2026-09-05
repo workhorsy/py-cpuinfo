@@ -119,8 +119,8 @@ class TestWindows_8_X86_64(unittest.TestCase):
 		self.assertEqual(30, info['model'])
 		self.assertEqual(6, info['family'])
 
-		self.assertEqual(64 * 1024, info['l2_cache_size'])
-		self.assertEqual(256, info['l2_cache_line_size'])
+		self.assertEqual(256 * 1024, info['l2_cache_size'])
+		self.assertEqual(64, info['l2_cache_line_size'])
 		self.assertEqual(6, info['l2_cache_associativity'])
 
 		self.assertEqual(
@@ -198,7 +198,7 @@ class TestWindows_8_X86_64(unittest.TestCase):
 		self.assertEqual(256 * 1024, info['l2_cache_size'])
 		self.assertEqual(8192 * 1024, info['l3_cache_size'])
 		self.assertEqual(6, info['l2_cache_associativity'])
-		self.assertEqual(256, info['l2_cache_line_size'])
+		self.assertEqual(64, info['l2_cache_line_size'])
 
 		self.assertEqual(
 			['acpi', 'apic', 'clflush', 'cmov', 'cx16', 'cx8', 'de', 'ds_cpl',
