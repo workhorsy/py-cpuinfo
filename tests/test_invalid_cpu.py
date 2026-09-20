@@ -33,4 +33,4 @@ class TestInvalidCPU(unittest.TestCase):
 			cpuinfo._check_arch()
 			self.fail('Failed to raise Exception')
 		except Exception as err:
-			self.assertEqual('py-cpuinfo currently only works on X86 and some ARM/LoongArch/MIPS/PPC/RISCV/SPARC/S390X CPUs.', err.args[0])
+			self.assertEqual('py-cpuinfo currently only works on X86 and some ALPHA/ARM/LoongArch/MIPS/PPC/RISCV/SPARC/S390X CPUs.', err.args[0])

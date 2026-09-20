@@ -359,7 +359,8 @@ def _read_windows_registry_key(key_name, field_name):
 # Make sure we are running on a supported system
 def _check_arch():
 	arch, bits = _parse_arch(DataSource.arch_string_raw)
-	if not arch in ['ARM_7', 'ARM_8',
+	if not arch in ['ALPHA',
+	                'ARM_7', 'ARM_8',
 	                'LOONG_32', 'LOONG_64',
 	                'MIPS_32', 'MIPS_64',
 	                'PPC_32', 'PPC_64',
@@ -368,7 +369,7 @@ def _check_arch():
 	                'S390X',
 	                'X86_32', 'X86_64']:
 		raise Exception("py-cpuinfo currently only works on X86 "
-		                "and some ARM/LoongArch/MIPS/PPC/RISCV/SPARC/S390X CPUs.")
+		                "and some ALPHA/ARM/LoongArch/MIPS/PPC/RISCV/SPARC/S390X CPUs.")
 
 def _obj_to_b64(thing):
 	import pickle
@@ -791,6 +792,10 @@ def _parse_arch(arch_string_raw):
 		bits = 32
 	elif re.match(r'^x64$|^x86_64$|^x86_64t$|^i686-64$|^amd64$|^ia64$|^ia-64$', arch_string_raw):
 		arch = 'X86_64'
+		bits = 64
+	# ALPHA
+	elif re.match(r'^alpha$', arch_string_raw):
+		arch = 'ALPHA'
 		bits = 64
 	# ARM
 	elif re.match(r'^armv8-a|aarch64|arm64$', arch_string_raw):
@@ -1739,11 +1744,13 @@ def _get_cpu_info_from_proc_cpuinfo():
 		# Various fields
 		vendor_id = _get_field(False, output, None, '', 'vendor_id', 'vendor id', 'vendor')
 		processor_brand = _get_field(True, output, None, None, 'model name', 'cpu', 'processor', 'uarch')
+		if processor_brand == "Alpha":
+			processor_brand = _get_field(True, output, None, None, 'cpu model')
 		cache_size = _get_field(False, output, None, '', 'cache size')
 		stepping = _get_field(False, output, int, -1, 'stepping')
 		model = _get_field(False, output, int, -1, 'model')
 		family = _get_field(False, output, int, -1, 'cpu family')
-		hardware = _get_field(False, output, None, '', 'Hardware')
+		hardware = _get_field(False, output, None, '', 'Hardware', 'platform string')
 
 		# Flags
 		flags = _get_field(False, output, None, None, 'flags', 'Features', 'ASEs implemented')
@@ -1766,10 +1773,17 @@ def _get_cpu_info_from_proc_cpuinfo():
 			except Exception:
 				pass
 
-		# Convert from MHz string to Hz
-		hz_actual = _get_field(False, output, None, '', 'cpu MHz', 'cpu speed', 'clock', 'cpu MHz dynamic', 'cpu MHz static')
-		hz_actual = hz_actual.lower().rstrip('mhz').strip()
-		hz_actual = _to_decimal_string(hz_actual)
+		# Frequency in Hz
+		hz_actual = _get_field(False, output, None, None, 'cycle frequency [Hz]')
+		if hz_actual:
+			hz_actual = _to_decimal_string(hz_actual)
+			hz_scale = 0
+		else:
+			# Convert from MHz string to Hz
+			hz_actual = _get_field(False, output, None, '', 'cpu MHz', 'cpu speed', 'clock', 'cpu MHz dynamic', 'cpu MHz static')
+			hz_actual = hz_actual.lower().rstrip('mhz').strip()
+			hz_actual = _to_decimal_string(hz_actual)
+			hz_scale = 6
 
 		# Convert from GHz/MHz string to Hz
 		hz_advertised, scale = (None, 0)
@@ -1793,7 +1807,7 @@ def _get_cpu_info_from_proc_cpuinfo():
 		# Make the Hz the same for actual and advertised if missing any
 		if not hz_advertised or hz_advertised == '0.0':
 			hz_advertised = hz_actual
-			scale = 6
+			scale = hz_scale
 		elif not hz_actual or hz_actual == '0.0':
 			hz_actual = hz_advertised
 
@@ -1802,8 +1816,8 @@ def _get_cpu_info_from_proc_cpuinfo():
 			info['hz_advertised_friendly'] = _hz_short_to_friendly(hz_advertised, scale)
 			info['hz_advertised'] = _hz_short_to_full(hz_advertised, scale)
 		if _hz_short_to_full(hz_actual, scale) > (0, 0):
-			info['hz_actual_friendly'] = _hz_short_to_friendly(hz_actual, 6)
-			info['hz_actual'] = _hz_short_to_full(hz_actual, 6)
+			info['hz_actual_friendly'] = _hz_short_to_friendly(hz_actual, hz_scale)
+			info['hz_actual'] = _hz_short_to_full(hz_actual, hz_scale)
 
 		info = _filter_dict_keys_with_empty_values(info, {'stepping':0, 'model':0, 'family':0})
 		g_trace.success()
