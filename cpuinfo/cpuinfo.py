@@ -1451,10 +1451,15 @@ class CPUID:
 			b"\xC3"                   # ret
 		)
 
+		# ECX layout of leaf 0x80000006, see:
+		#   bits 7:0   - L2 cache line size in bytes
+		#   bits 11:8  - L2 cache lines per tag
+		#   bits 15:12 - L2 cache associativity
+		#   bits 31:16 - L2 cache size in KB
 		cache_info = {
-			'size_b' : (ecx & 0xFF) * 1024,
+			'size_b' : ((ecx >> 16) & 0xFFFF) * 1024,
 			'associativity' : (ecx >> 12) & 0xF,
-			'line_size_b' : (ecx >> 16) & 0xFFFF
+			'line_size_b' : ecx & 0xFF
 		}
 
 		return cache_info

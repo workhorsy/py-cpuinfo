@@ -56,7 +56,7 @@ Fields
 | "l1_data_cache_size"          | 32768                     | int                   |
 | "l1_instruction_cache_size"   | 32768                     | int                   |
 | "l2_cache_size"               | 262144                    | int                   |
-| "l2_cache_line_size"          | 256                       | int                   |
+| "l2_cache_line_size"          | 64                        | int                   |
 | "l2_cache_associativity"      | 6                         | int                   |
 | "l3_cache_size"               | 3145728                   | int                   |
 | "stepping"                    | 5                         | int                   |
